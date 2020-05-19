@@ -1,0 +1,28 @@
+spring:
+  redis:
+    host: dustlight.cn
+    port: 30010
+  datasource:
+    url: jdbc:mysql://dustlight.cn:30020/oauth?characterEncoding=UTF-8&useSSL=false
+    username: hansin
+    password: 123456
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      maximum-pool-size: 4
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+uim:
+  csrf-enabled: false
+  public-paths:
+    - /api/**
+  form-login:
+    login-page: /api/user/login
+    login-processing-url: /api/user/login
+  logout:
+    logout-url: /api/user/logout
+    delete-cookies:
+      - SESSION
