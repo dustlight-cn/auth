@@ -46,5 +46,4 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         JdbcClientDetailsServiceBuilder jdbcClientDetailsServiceBuilder = clients.jdbc(dataSource);
         jdbcClientDetailsServiceBuilder.passwordEncoder(passwordEncoder);
     }
-
 }

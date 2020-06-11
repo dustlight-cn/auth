@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "uim")
+@ConfigurationProperties(prefix = "dustlight.uim")
 public class UimProperties {
 
     private String[] publicPaths = { };
