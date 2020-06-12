@@ -3,6 +3,7 @@ package cn.dustlight.uim.controllers;
 import cn.dustlight.uim.RestfulConstants;
 import cn.dustlight.uim.RestfulResult;
 import cn.dustlight.uim.configurations.UimProperties;
+import cn.dustlight.uim.models.UserDetails;
 import cn.dustlight.uim.services.IEmailSender;
 import cn.dustlight.uim.services.IVerificationCodeGenerator;
 import cn.dustlight.uim.services.UserDetailsMapper;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 public class UserController implements IUserController {
@@ -189,5 +191,24 @@ public class UserController implements IUserController {
         if (phone == null || (phone = phone.trim()).length() == 0)
             return RestfulConstants.ERROR_PHONE_INVALID;
         return RestfulResult.success(userDetailsMapper.isPhoneExist(phone));
+    }
+
+    @Override
+    public RestfulResult<UserDetails> getUserDetails(String username, Principal principal) {
+        UserDetails user = userDetailsMapper.loadUser(username);
+        if(user == null)
+            return RestfulConstants.ERROR_USER_NOT_FOUND;
+        if(principal == null || !principal.getName().equals(username))
+        {
+            user.setEmail(null);
+            user.setPhone(null);
+            user.setRole(null);
+        }
+        return RestfulResult.success(user);
+    }
+
+    @Override
+    public RestfulResult<List<UserDetails>> getUsersDetails(List<String> usernameArray, Principal principal) {
+        return RestfulResult.success(userDetailsMapper.loadUsers(usernameArray));
     }
 }

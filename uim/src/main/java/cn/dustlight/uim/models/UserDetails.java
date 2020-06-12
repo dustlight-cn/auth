@@ -3,6 +3,7 @@ package cn.dustlight.uim.models;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
@@ -38,10 +39,6 @@ public class UserDetails implements IUserDetails {
     private Date createdAt;
 
     private Date updatedAt;
-
-    public long getUid() {
-        return uid;
-    }
 
     public void setUid(long uid) {
         this.uid = uid;
@@ -104,7 +101,7 @@ public class UserDetails implements IUserDetails {
     }
 
     @Override
-    public long getUID() {
+    public long getUid() {
         return this.uid;
     }
 
@@ -140,7 +137,7 @@ public class UserDetails implements IUserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == null)
+        if (this.role == null)
             return null;
         return AuthorityUtils.commaSeparatedStringToAuthorityList(this.role);
     }

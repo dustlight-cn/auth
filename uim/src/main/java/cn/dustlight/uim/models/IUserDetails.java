@@ -13,7 +13,7 @@ public interface IUserDetails extends UserDetails {
      * Get user's ID;
      * @return user ID
      */
-    long getUID();
+    long getUid();
 
     /**
      * Get user's E-mail

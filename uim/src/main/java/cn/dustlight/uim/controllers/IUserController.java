@@ -1,10 +1,13 @@
 package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulResult;
+import cn.dustlight.uim.models.UserDetails;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.List;
 
 @RequestMapping("/api/user")
 public interface IUserController {
@@ -42,4 +45,11 @@ public interface IUserController {
     @GetMapping("/exists/phone")
     RestfulResult<Boolean> isPhoneExists(@RequestParam(required = false) String phone);
 
+    @PreAuthorize("hasAuthority('ROLE_BASE')")
+    @GetMapping("/details/{username}")
+    RestfulResult<UserDetails> getUserDetails(@PathVariable(required = false) String username, Principal principal);
+
+    @PreAuthorize("hasAuthority('ROLE_BASE')")
+    @PostMapping("/details")
+    RestfulResult<List<UserDetails>> getUsersDetails(@RequestBody List<String> usernameArray, Principal principal);
 }

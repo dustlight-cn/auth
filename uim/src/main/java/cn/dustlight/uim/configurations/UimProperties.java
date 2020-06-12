@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class UimProperties {
 
     private String[] publicPaths = { };
+    private String[] resourcePaths = { };
     @Autowired
     private FormLogin formLogin;
     @Autowired
@@ -26,6 +27,14 @@ public class UimProperties {
 
     public void setResetPasswordVerificationCodeLength(int resetPasswordVerificationCodeLength) {
         this.resetPasswordVerificationCodeLength = resetPasswordVerificationCodeLength;
+    }
+
+    public String[] getResourcePaths() {
+        return resourcePaths;
+    }
+
+    public void setResourcePaths(String[] resourcePaths) {
+        this.resourcePaths = resourcePaths;
     }
 
     public int getSnowflakeWorkerId() {

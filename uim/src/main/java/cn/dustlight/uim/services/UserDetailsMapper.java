@@ -4,6 +4,8 @@ import cn.dustlight.uim.models.UserDetails;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * User Details Mapper
  */
@@ -19,6 +21,38 @@ public interface UserDetailsMapper {
             @Result(property = "credentialsExpired", column = "credentials_expired"),
             @Result(property = "accountLocked", column = "account_locked")})
     UserDetails loadUserOAuth(String uoe);
+
+    @Select("SELECT uid,username,email,nickname,phone,gender,createdAt,updatedAt,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username=#{username}")
+    @Results({@Result(property = "uid", column = "uid"),
+            @Result(property = "username", column = "username"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "nickname", column = "nickname"),
+            @Result(property = "phone", column = "phone"),
+            @Result(property = "gender", column = "gender"),
+            @Result(property = "createdAt", column = "createdAt"),
+            @Result(property = "updatedAt", column = "updatedAt"),
+            @Result(property = "role", column = "role"),
+            @Result(property = "enabled", column = "enabled"),
+            @Result(property = "accountExpired", column = "account_expired"),
+            @Result(property = "credentialsExpired", column = "credentials_expired"),
+            @Result(property = "accountLocked", column = "account_locked")})
+    UserDetails loadUser(String username);
+
+    @Select({"<script>SELECT uid,username,nickname,gender,createdAt,updatedAt,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username IN ",
+            "<foreach collection='usernameArray' item='username' open='(' separator=',' close=')'>#{username}</foreach>",
+            "</script>"})
+    @Results({@Result(property = "uid", column = "uid"),
+            @Result(property = "username", column = "username"),
+            @Result(property = "nickname", column = "nickname"),
+            @Result(property = "gender", column = "gender"),
+            @Result(property = "createdAt", column = "createdAt"),
+            @Result(property = "updatedAt", column = "updatedAt"),
+            @Result(property = "role", column = "role"),
+            @Result(property = "enabled", column = "enabled"),
+            @Result(property = "accountExpired", column = "account_expired"),
+            @Result(property = "credentialsExpired", column = "credentials_expired"),
+            @Result(property = "accountLocked", column = "account_locked")})
+    List<UserDetails> loadUsers(@Param("usernameArray") List<String> usernameArray);
 
     @Select("SELECT COUNT(*) FROM user_details WHERE email=#{email}")
     boolean isEmailExist(String email);

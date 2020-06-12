@@ -27,3 +27,6 @@ dustlight:
       logout-url: /api/user/logout
       delete-cookies:
         - SESSION
+    resource-paths:
+      - /api/user/details/**
+      - /hello
