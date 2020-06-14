@@ -194,21 +194,26 @@ public class UserController implements IUserController {
     }
 
     @Override
-    public RestfulResult<UserDetails> getUserDetails(String username, Principal principal) {
-        UserDetails user = userDetailsMapper.loadUser(username);
-        if(user == null)
+    public RestfulResult<UserDetails> getCurrentUserDetails(Principal principal) {
+        UserDetails user = userDetailsMapper.loadUser(principal.getName());
+        if (user == null)
             return RestfulConstants.ERROR_USER_NOT_FOUND;
-        if(principal == null || !principal.getName().equals(username))
-        {
-            user.setEmail(null);
-            user.setPhone(null);
-            user.setRole(null);
-        }
         return RestfulResult.success(user);
     }
 
     @Override
-    public RestfulResult<List<UserDetails>> getUsersDetails(List<String> usernameArray, Principal principal) {
+    public RestfulResult<UserDetails> getUserDetails(String username) {
+        UserDetails user = userDetailsMapper.loadUser(username);
+        if (user == null)
+            return RestfulConstants.ERROR_USER_NOT_FOUND;
+        user.setEmail(null);
+        user.setPhone(null);
+        user.setRole(null);
+        return RestfulResult.success(user);
+    }
+
+    @Override
+    public RestfulResult<List<UserDetails>> getUsersDetails(List<String> usernameArray) {
         return RestfulResult.success(userDetailsMapper.loadUsers(usernameArray));
     }
 }

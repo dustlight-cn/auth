@@ -26,7 +26,6 @@ public class UimApplication {
         @GetMapping("/hello")
         public RestfulResult hello(OAuth2Authentication user) {
             Map<String, Object> userInfo = new HashMap<>();
-
             userInfo.put("Username", user.getUserAuthentication().getName());
             userInfo.put("User Authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication().getAuthorities()));
             userInfo.put("OAuth2 Authorities", AuthorityUtils.authorityListToSet(user.getOAuth2Request().getAuthorities()));

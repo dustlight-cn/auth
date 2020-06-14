@@ -21,9 +21,8 @@ dustlight:
     public-paths:
       - /api/**
     resource-paths:
-      - /api/user/details/**
-      - /api/user/details
       - /hello
+      - /api/res/**
     form-login:
       login-page: /api/user/login
       login-processing-url: /api/user/login
