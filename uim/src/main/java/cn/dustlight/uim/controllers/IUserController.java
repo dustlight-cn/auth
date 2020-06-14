@@ -45,11 +45,11 @@ public interface IUserController {
     @GetMapping("/exists/phone")
     RestfulResult<Boolean> isPhoneExists(@RequestParam(required = false) String phone);
 
-    @PreAuthorize("hasAuthority('ROLE_BASE')")
+    @PreAuthorize("#oauth2.hasScope('read') and hasRole('USER')")
     @GetMapping("/details/{username}")
     RestfulResult<UserDetails> getUserDetails(@PathVariable(required = false) String username, Principal principal);
 
-    @PreAuthorize("hasAuthority('ROLE_BASE')")
+    @PreAuthorize("#oauth2.hasScope('read') and hasRole('USER')")
     @PostMapping("/details")
     RestfulResult<List<UserDetails>> getUsersDetails(@RequestBody List<String> usernameArray, Principal principal);
 }

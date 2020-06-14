@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,23 +15,22 @@ import java.util.logging.Logger;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UimProperties uimProperties;
+    public UimProperties uimProperties;
 
     @Autowired
-    private UnauthorizedEntryPoint unauthorizedEntryPoint;
+    public UnauthorizedEntryPoint unauthorizedEntryPoint;
 
     @Autowired
-    private SignInSuccessHandler signInSuccessHandler;
+    public SignInSuccessHandler signInSuccessHandler;
 
     @Autowired
-    private SignInFailureHandler signInFailureHandler;
+    public SignInFailureHandler signInFailureHandler;
 
     @Autowired
-    private LogoutHandler logoutHandler;
+    public LogoutHandler logoutHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -49,9 +47,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         String[] publicPaths = uimProperties.getPublicPaths();
         Logger.getLogger(getClass().getName()).info("Public paths: " + Arrays.toString(publicPaths));
+
         http.authorizeRequests()
                 .antMatchers(publicPaths).permitAll()
-                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedEntryPoint)
@@ -73,13 +71,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
         ;
 
-        if(uimProperties.isHttpBasicEnabled())
+        if (uimProperties.isHttpBasicEnabled())
             http.httpBasic();
         else
             http.httpBasic().disable();
-        if(uimProperties.isCsrfEnabled())
+        if (uimProperties.isCsrfEnabled())
             http.csrf();
         else
             http.csrf().disable();
     }
+
 }

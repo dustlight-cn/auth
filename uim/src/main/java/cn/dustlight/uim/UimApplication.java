@@ -4,8 +4,6 @@ import cn.dustlight.uim.utils.ExceptionSupplier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-@EnableAuthorizationServer
-@EnableResourceServer
 @SpringBootApplication
 public class UimApplication {
 
@@ -28,12 +24,14 @@ public class UimApplication {
     public static class HelloController {
 
         @GetMapping("/hello")
-        public RestfulResult hello(OAuth2Authentication user, @RequestParam(required = false) String client) {
+        public RestfulResult hello(OAuth2Authentication user) {
             Map<String, Object> userInfo = new HashMap<>();
 
-            userInfo.put("user", user.getUserAuthentication().getName());
-            userInfo.put("authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication().getAuthorities()));
-            userInfo.put("authorities2",user.getOAuth2Request().getAuthorities());
+            userInfo.put("Username", user.getUserAuthentication().getName());
+            userInfo.put("User Authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication().getAuthorities()));
+            userInfo.put("OAuth2 Authorities", AuthorityUtils.authorityListToSet(user.getOAuth2Request().getAuthorities()));
+            userInfo.put("Client-id",user.getOAuth2Request().getClientId());
+            userInfo.put("Extensions",user.getOAuth2Request().getExtensions());
             return RestfulResult.success(userInfo);
         }
 
