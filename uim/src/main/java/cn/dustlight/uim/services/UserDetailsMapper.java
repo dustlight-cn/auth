@@ -74,4 +74,7 @@ public interface UserDetailsMapper {
 
     @Update("UPDATE user_details SET nickname=#{nickname} WHERE username=#{username}")
     boolean changeNickname(String username, String nickname);
+
+    @Update("UPDATE user_details SET gender=#{gender} WHERE username=#{username}")
+    boolean changeGender(String username, int gender);
 }

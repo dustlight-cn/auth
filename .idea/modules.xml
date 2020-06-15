@@ -3,6 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Dustlight.iml" filepath="$PROJECT_DIR$/.idea/Dustlight.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sender/core/core.iml" filepath="$PROJECT_DIR$/sender/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sender/email-core/email-core.iml" filepath="$PROJECT_DIR$/sender/email-core/email-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sender/email-simple/email-simple.iml" filepath="$PROJECT_DIR$/sender/email-simple/email-simple.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sender/sender.iml" filepath="$PROJECT_DIR$/sender/sender.iml" />
       <module fileurl="file://$PROJECT_DIR$/uim/uim.iml" filepath="$PROJECT_DIR$/uim/uim.iml" />
     </modules>
   </component>

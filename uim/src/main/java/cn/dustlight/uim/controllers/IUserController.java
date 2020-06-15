@@ -36,7 +36,11 @@ public interface IUserController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/reset/nickname")
-    RestfulResult resetNickname(@RequestParam(required = false) String nickname, Principal principal, HttpSession session);
+    RestfulResult resetNickname(@RequestParam(required = false) String nickname, Principal principal);
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/reset/gender")
+    RestfulResult resetGender(@RequestParam(required = false) int gender, Principal principal);
 
     @GetMapping("/exists/username")
     RestfulResult<Boolean> isUsernameExists(@RequestParam(required = false) String username);

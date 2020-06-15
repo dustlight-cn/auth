@@ -163,12 +163,20 @@ public class UserController implements IUserController {
     }
 
     @Override
-    public RestfulResult resetNickname(String nickname, Principal principal, HttpSession session) {
+    public RestfulResult resetNickname(String nickname, Principal principal) {
         if (principal == null)
             return RestfulConstants.ERROR_UNAUTHORIZED;
         if (nickname == null)
             nickname = "";
         boolean result = userDetailsMapper.changeNickname(principal.getName(), nickname);
+        return result ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult resetGender(int gender, Principal principal) {
+        if (principal == null)
+            return RestfulConstants.ERROR_UNAUTHORIZED;
+        boolean result = userDetailsMapper.changeGender(principal.getName(), gender);
         return result ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
