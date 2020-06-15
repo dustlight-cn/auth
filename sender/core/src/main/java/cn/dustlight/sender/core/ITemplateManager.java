@@ -12,6 +12,8 @@ public interface ITemplateManager {
 
     void setTemplate(String templateName, String templateContent) throws IOException;
 
+    void deleteTemplate(String... templateNames) throws IOException;
+
     Map<String, String> getTemplates() throws IOException;
 
     void setTemplates(Map<String, String> templates) throws IOException;

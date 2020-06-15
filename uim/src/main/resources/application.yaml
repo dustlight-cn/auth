@@ -15,6 +15,10 @@ spring:
     throw-exception-if-no-handler-found: true
   resources:
     add-mappings: false
+  mail:
+    host: smtp.exmail.qq.com
+    username: noreply@dustlight.cn
+    password: Lb845612500
 dustlight:
   uim:
     csrf-enabled: false

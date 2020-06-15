@@ -6,10 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="uim" />
+        <module name="email-simple" />
         <module name="core" />
         <module name="mail" />
-        <module name="email-simple" />
-        <module name="uim" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -21,6 +21,7 @@
       <module name="ot" target="1.8" />
       <module name="ot (1)" target="1.8" />
       <module name="sender" target="1.8" />
+      <module name="template-manager-jdbc" target="1.8" />
       <module name="uim" target="1.8" />
     </bytecodeTargetLevel>
   </component>
@@ -32,6 +33,7 @@
       <module name="ot" options="-parameters" />
       <module name="ot (1)" options="-parameters" />
       <module name="sender" options="-parameters" />
+      <module name="template-manager-jdbc" options="-parameters" />
       <module name="uim" options="-parameters" />
     </option>
   </component>

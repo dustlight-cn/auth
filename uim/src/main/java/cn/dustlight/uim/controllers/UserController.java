@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -48,10 +49,14 @@ public class UserController implements IUserController {
         session.setAttribute("code_email", code);
         session.setAttribute("email", email);
         session.setAttribute("email_verified", false);
-        HashMap<String, String> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>();
         data.put("code", code);
-        emailSender.Send("registerVerificationCode", data, email);
-        return RestfulConstants.SUCCESS;
+        try {
+            emailSender.send("registerVerificationCode", data, email);
+            return RestfulConstants.SUCCESS;
+        } catch (IOException e) {
+            return RestfulResult.error(e.getMessage());
+        }
     }
 
     @Override
@@ -64,10 +69,14 @@ public class UserController implements IUserController {
         session.setAttribute("code_email_reset", code);
         session.setAttribute("email_reset", email);
         session.setAttribute("email_reset_verified", false);
-        HashMap<String, String> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>();
         data.put("code", code);
-        emailSender.Send("resetPasswordVerificationCode", data, email);
-        return RestfulConstants.SUCCESS;
+        try {
+            emailSender.send("resetPasswordVerificationCode", data, email);
+            return RestfulConstants.SUCCESS;
+        } catch (IOException e) {
+            return RestfulResult.error(e.getMessage());
+        }
     }
 
     @Override

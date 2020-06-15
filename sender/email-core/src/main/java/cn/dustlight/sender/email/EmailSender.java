@@ -8,6 +8,7 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class EmailSender implements ISender {
@@ -27,8 +28,14 @@ public abstract class EmailSender implements ISender {
         context.setVariables(parameters);
         String content = engine.process(template, context);
         String subject = data.getOrDefault("subject", "subject");
-        String from = data.getOrDefault("from", "from");
+        String from = data.getOrDefault("from", null);
         doSend(subject, content, from, receivers);
+    }
+
+    public void send(String template, String subject, Map<String, Object> parameters, String... receivers) throws IOException {
+        Map<String, String> data = new HashMap<>();
+        data.put("subject", subject);
+        send(template, data, parameters, receivers);
     }
 
     protected abstract void doSend(String subject, String content, String from, String... receivers) throws IOException;
