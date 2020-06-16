@@ -1,0 +1,70 @@
+<template>
+  <div class="q-pa-md vertical-middle" style="margin: 0 auto;max-width: 400px">
+
+    <h4>登录</h4>
+    <q-form
+      @submit="onSubmit"
+      class="q-gutter-md"
+    >
+      <q-input
+        filled
+        v-model="account"
+        label="请输入账号"
+        hint="您的用户名或邮箱"
+        lazy-rules
+        :rules="[ val => account && (account = account.trim()).length > 0 || '请输入账号']"
+      />
+
+      <q-input
+        filled
+        type="password"
+        v-model="password"
+        label="请输入密码"
+        hint="您的密码"
+        lazy-rules
+        :rules="[
+          val => val && val !== '' || '请输入密码'
+        ]"
+      />
+
+      <div style="min-height: 100px"/>
+      <div class="absolute-bottom-right">
+        <q-btn label="登录" type="submit" color="primary"/>
+        <q-btn label="注册" @click="register" color="primary" flat class="q-ml-sm"/>
+      </div>
+    </q-form>
+
+  </div>
+</template>
+
+<script>
+  import axios from 'axios'
+  import qs from 'qs'
+
+  export default {
+    name: 'Login',
+    data() {
+      return {
+        account: "",
+        password: ""
+      }
+    },
+    methods: {
+      onSubmit() {
+        let userdata = {username: this.account, password: this.password};
+        console.log(userdata);
+        axios.post("/api/user/login", qs.stringify(userdata))
+          .then(res => {
+            console.log(res);
+          }).catch(e => {
+          console.log(e);
+        })
+      },
+      register() {
+        this.$router.push({
+          path: '/register'
+        })
+      }
+    }
+  }
+</script>

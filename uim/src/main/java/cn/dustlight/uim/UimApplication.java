@@ -29,8 +29,8 @@ public class UimApplication {
             userInfo.put("Username", user.getUserAuthentication().getName());
             userInfo.put("User Authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication().getAuthorities()));
             userInfo.put("OAuth2 Authorities", AuthorityUtils.authorityListToSet(user.getOAuth2Request().getAuthorities()));
-            userInfo.put("Client-id",user.getOAuth2Request().getClientId());
-            userInfo.put("Extensions",user.getOAuth2Request().getExtensions());
+            userInfo.put("Client-id", user.getOAuth2Request().getClientId());
+            userInfo.put("Extensions", user.getOAuth2Request().getExtensions());
             return RestfulResult.success(userInfo);
         }
 
