@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,12 @@ public class UimApplication {
     public static class HelloController {
 
         @GetMapping("/hello")
-        public RestfulResult hello(OAuth2Authentication user) {
+        public RestfulResult hello(HttpServletRequest request) {
+            return RestfulResult.success().setMsg("Hello World").setData(request.getParameterMap());
+        }
+
+        @GetMapping("/oauth_info")
+        public RestfulResult oauthInfo(OAuth2Authentication user) {
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("Username", user.getUserAuthentication().getName());
             userInfo.put("User Authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication().getAuthorities()));
@@ -33,6 +39,7 @@ public class UimApplication {
             userInfo.put("Extensions", user.getOAuth2Request().getExtensions());
             return RestfulResult.success(userInfo);
         }
+
 
         @ExceptionHandler(Exception.class)
         public RestfulResult onException(Exception e) throws UnsupportedEncodingException {

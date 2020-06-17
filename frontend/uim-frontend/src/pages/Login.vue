@@ -50,19 +50,28 @@
       }
     },
     methods: {
+
       onSubmit() {
         let userdata = {username: this.account, password: this.password};
         console.log(userdata);
         axios.post("/api/user/login", qs.stringify(userdata))
           .then(res => {
             console.log(res);
+            if (res.data.code == 200) {
+              if (this.$route.query.redirect_uri)
+                location.href = this.$route.query.redirect_uri
+              else
+                location.href = '/'
+            } else
+              throw new Error(res);
           }).catch(e => {
           console.log(e);
         })
       },
       register() {
         this.$router.push({
-          path: '/register'
+          path: '/register',
+          query: {redirect_uri: location.href}
         })
       }
     }

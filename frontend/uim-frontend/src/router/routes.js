@@ -17,6 +17,12 @@ const routes = [
     children: [
       {path: '', component: () => import('pages/Register')}
     ]
+  }, {
+    path: '/authorize',
+    component: () => import('layouts/ClearLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/Authorize')}
+    ]
   }
 ]
 

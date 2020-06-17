@@ -8,8 +8,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "dustlight.uim")
 public class UimProperties {
 
-    private String[] publicPaths = { };
-    private String[] resourcePaths = { };
+    private String[] publicPaths = {};
+    private String[] resourcePaths = {};
+    private String[] redirectToLoginPath = {};
     @Autowired
     private FormLogin formLogin;
     @Autowired
@@ -51,6 +52,14 @@ public class UimProperties {
 
     public void setRegisterVerificationCodeLength(int registerVerificationCodeLength) {
         this.registerVerificationCodeLength = registerVerificationCodeLength;
+    }
+
+    public String[] getRedirectToLoginPath() {
+        return redirectToLoginPath;
+    }
+
+    public void setRedirectToLoginPath(String[] redirectToLoginPath) {
+        this.redirectToLoginPath = redirectToLoginPath;
     }
 
     public boolean isHttpBasicEnabled() {

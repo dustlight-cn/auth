@@ -112,7 +112,7 @@
   import qs from 'qs'
 
   export default {
-    name: 'Login',
+    name: 'Register',
     data() {
       return {
         step: 1,
@@ -169,6 +169,10 @@
             console.log(res.data);
             if (res.data.code == 200) {
 
+              if (this.$route.query.redirect_uri)
+                location.href = this.$route.query.redirect_uri
+              else
+                location.href = '/Login'
             } else {
               throw new Error(res.data.msg);
             }

@@ -25,10 +25,10 @@ dustlight:
     public-paths:
       - /api/**
     resource-paths:
-      - /hello
+      - /oauth_info
       - /api/res/**
     form-login:
-      login-page: /api/user/login
+      login-page: /login
       login-processing-url: /api/user/login
     logout:
       logout-url: /api/user/logout
