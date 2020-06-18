@@ -12,18 +12,18 @@ import java.util.List;
 public interface ITemplateManagerController {
 
     @GetMapping("/names")
-    @PreAuthorize("hasRole('ROOT')")
+    @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
     RestfulResult<List<String>> getTemplateNames() throws IOException;
 
     @GetMapping("/text/{name}")
-    @PreAuthorize("hasRole('ROOT')")
+    @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
     RestfulResult<String> getTemplate(@PathVariable String name) throws IOException;
 
     @PostMapping("/text/{name}")
-    @PreAuthorize("hasRole('ROOT')")
+    @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
     RestfulResult setTemplate(@PathVariable String name, @RequestParam String text) throws IOException;
 
     @DeleteMapping("/delete")
-    @PreAuthorize("hasRole('ROOT')")
+    @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
     RestfulResult deleteTemplate(@RequestBody String[] names) throws IOException;
 }

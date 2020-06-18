@@ -4,4 +4,6 @@ public interface IVerificationCodeGenerator {
 
     String generatorCode(int length);
 
+    String generatorCode(int length, char[] extendChars);
+
 }

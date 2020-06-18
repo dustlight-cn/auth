@@ -23,6 +23,18 @@ const routes = [
     children: [
       {path: '', component: () => import('pages/Authorize')}
     ]
+  },{
+    path: '/templates',
+    component: () => import('layouts/ClearLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/Templaets.vue')}
+    ]
+  },{
+    path: '/edit_template',
+    component: () => import('layouts/ClearLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/EditTemplate.vue')}
+    ]
   }
 ]
 

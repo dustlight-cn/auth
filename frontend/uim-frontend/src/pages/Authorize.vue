@@ -77,21 +77,28 @@
       axios.get('/oauth/authorize?' + qs.stringify(data))
         .then(res => {
           let r = res.data;
-          if (r.code == 200) {
-            console.log(r.data);
-            this.clientId = r.data.clientId;
-            this.scopes = r.data.scopes;
-            this.scopesValues = new Array();
-            this.scopes.forEach(val => {
-              this.scopesValues.push(true)
-            })
-          } else if (r.code == 501) {
-            this.$router.push({
-              path: '/Login',
-              query: {redirect_uri: location.href}
-            })
+
+          console.log(r.data);
+          if (!r.code) {
+            location.href = location.protocol + "//" +
+              location.host
+              + '/oauth/authorize?' + qs.stringify(data);
           } else {
-            throw new Error(r.msg);
+            if (r.code == 200) {
+              this.clientId = r.data.clientId;
+              this.scopes = r.data.scopes;
+              this.scopesValues = new Array();
+              this.scopes.forEach(val => {
+                this.scopesValues.push(true)
+              })
+            } else if (r.code == 501) {
+              this.$router.push({
+                path: '/Login',
+                query: {redirect_uri: location.href}
+              })
+            } else {
+              throw new Error(r.msg);
+            }
           }
         }).catch(e => {
         console.error(e);

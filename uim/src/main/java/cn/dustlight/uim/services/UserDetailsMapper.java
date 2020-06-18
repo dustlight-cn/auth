@@ -13,8 +13,9 @@ import java.util.List;
 @Service
 public interface UserDetailsMapper {
 
-    @Select("SELECT password,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username=#{uoe} OR email=#{uoe}")
-    @Results({@Result(property = "password", column = "password"),
+    @Select("SELECT uid,password,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username=#{uoe} OR email=#{uoe}")
+    @Results({@Result(property = "uid", column = "uid"),
+            @Result(property = "password", column = "password"),
             @Result(property = "role", column = "role"),
             @Result(property = "enabled", column = "enabled"),
             @Result(property = "accountExpired", column = "account_expired"),
