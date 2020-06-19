@@ -28,7 +28,7 @@ import java.util.Set;
 @RestController
 public class ClientController implements IClientController {
 
-    @Autowired
+    //@Autowired
     ClientMapper mapper;
 
     @Autowired
@@ -71,10 +71,10 @@ public class ClientController implements IClientController {
         }
         ClientDetails appDetails = new ClientDetails();
         appDetails.setUid(userDetails.getUid());
-        appDetails.setAppKey(appKey);
-        appDetails.setAppName(appName);
-        appDetails.setAppSecret(appSecret);
-        appDetails.setRedirectUri(redirectUri);
+        appDetails.setClientId(appKey);
+        appDetails.setClientName(appName);
+        appDetails.setClientSecret(appSecret);
+        appDetails.setRegisteredRedirectUri(redirectUri);
         appDetails.setScope(scope);
         return RestfulResult.success(appDetails);
     }
@@ -95,7 +95,7 @@ public class ClientController implements IClientController {
     @Override
     public RestfulResult<String> resetAppSecret(String appKey, Authentication authentication) {
         ClientDetails client = checkRole(appKey, authentication);
-        client.setAppSecret(sha1(authentication.getName() +
+        client.setClientSecret(sha1(authentication.getName() +
                 client.getUid() +
                 verificationCodeGenerator.generatorCode(128)));
         boolean flag = mapper.updateSecret(appKey, passwordEncoder.encode(client.getClientSecret()));

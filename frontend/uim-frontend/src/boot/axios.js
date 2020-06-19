@@ -12,7 +12,8 @@ class ApiError extends Error {
     super(message + ": " + data)
     this.code = code
     this.data = data;
-    Error.captureStackTrace(this, this.constructor)
+    if (Error.captureStackTrace)
+      Error.captureStackTrace(this, this.constructor)
   }
 }
 

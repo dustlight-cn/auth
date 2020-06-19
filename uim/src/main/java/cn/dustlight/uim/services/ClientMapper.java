@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 
-@Service
-@Mapper
+//@Service
+//@Mapper
 public interface ClientMapper {
 
     @Insert("INSERT INTO oauth_client_details " +

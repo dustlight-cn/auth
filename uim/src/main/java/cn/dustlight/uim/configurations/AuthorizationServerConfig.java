@@ -38,21 +38,18 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private DataSource dataSource;
 
-    @Autowired
-    ClientMapper clientMapper;
-
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
-                .tokenStore(redisTokenStore)
-        .setClientDetailsService(new ClientDetailsService() {
-            @Override
-            public ClientDetails loadClientByClientId(String s) throws ClientRegistrationException {
-                clientMapper.getClient(s);
-                return null;
-            }
-        });
+                .tokenStore(redisTokenStore);
+//        .setClientDetailsService(new ClientDetailsService() {
+//            @Override
+//            public ClientDetails loadClientByClientId(String s) throws ClientRegistrationException {
+//                clientMapper.getClient(s);
+//                return null;
+//            }
+//        });
     }
 
     @Override
