@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public interface IClientController {
     @PostMapping("/reset_secret/{appKey}")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN','DEV')")
     RestfulResult<String> resetAppSecret(@PathVariable String appKey,
-                                 Authentication authentication);
+                                         Authentication authentication);
 
     @PostMapping("/update_name/{appKey}")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN','DEV')")
@@ -56,14 +57,14 @@ public interface IClientController {
 
     @GetMapping("/all_apps")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
-    RestfulResult<List<IAppDetails>> getAllApps();
+    <T extends IAppDetails,L extends List<T>> RestfulResult<L> getAllApps();
 
     @GetMapping("/user_apps")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN','DEV')")
-    RestfulResult<List<IAppDetails>> getCurrentUserApps();
+    <T extends IAppDetails,L extends List<T>> RestfulResult<L> getCurrentUserApps(Principal principal);
 
-    @GetMapping("/user_apps/{uid}")
+    @GetMapping("/user_apps/{username}")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
-    RestfulResult<List<IAppDetails>> getUserApps(@PathVariable Long uid);
+    <T extends IAppDetails,L extends List<T>> RestfulResult<L> getUserApps(@PathVariable String username);
 
 }

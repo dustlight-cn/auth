@@ -29,8 +29,6 @@ public class UimApplication {
 
         @GetMapping("/oauth_info")
         public RestfulResult oauthInfo(OAuth2Authentication user) {
-
-            Logger.getLogger("?").info(user.getDetails().toString());
             if (user.getDetails() instanceof OAuth2AuthenticationDetails) {
                 OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) user.getDetails();
                 if (details.getRemoteAddress().equals("127.0.0.1") || details.getRemoteAddress().equals("0:0:0:0:0:0:0:1"))
