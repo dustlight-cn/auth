@@ -1,5 +1,11 @@
 package cn.dustlight.uim;
 
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import java.util.*;
+
 /**
  * Restful Result
  *
@@ -85,5 +91,23 @@ public class RestfulResult<T> {
         instance.code = this.code;
         instance.msg = this.msg;
         return instance;
+    }
+
+    private static final MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
+
+    static {
+        Set<String> set = new HashSet<>();
+        set.add("msg");
+        set.add("code");
+        set.add("data");
+
+        jsonView.setModelKeys(set);
+    }
+
+    public ModelAndView toModelAndView() {
+        return new ModelAndView(jsonView)
+                .addObject("msg", msg)
+                .addObject("code", code)
+                .addObject("data", data);
     }
 }

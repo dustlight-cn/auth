@@ -4,8 +4,7 @@
     <h4>授权</h4>
     <q-form
       class="q-gutter-md"
-      method="post"
-      action="/oauth/authorize"
+      @submit="onSubmit"
     >
       <input type="hidden" hidden name="user_oauth_approval" value="true"/>
       <q-list>
@@ -55,14 +54,18 @@
           data['scope.' + val] = this.scopesValues[i];
         })
         console.log(data);
-        // axios.post("/oauth/authorize", data)
-        //   .then(res => {
-        //     let data = res.data;
-        //     console.log(data);
-        //     if(data)
-        //   }).catch(e => {
-        //   console.error(e);
-        // })
+        axios.post('/oauth/authorize?' + qs.stringify(this.$route.query), qs.stringify(data))
+          .then(res => {
+            let r = res.data;
+            console.log(r);
+            if (r.code == 200) {
+              location.href = r.data;
+            } else {
+              throw new Error(r.msg + "," + r.data)
+            }
+          }).catch(e => {
+          console.error(e);
+        })
       }
     },
     mounted() {
@@ -79,26 +82,24 @@
           let r = res.data;
 
           console.log(r.data);
-          if (!r.code) {
-            location.href = location.protocol + "//" +
-              location.host
-              + '/oauth/authorize?' + qs.stringify(data);
-          } else {
-            if (r.code == 200) {
-              this.clientId = r.data.clientId;
-              this.scopes = r.data.scopes;
-              this.scopesValues = new Array();
-              this.scopes.forEach(val => {
-                this.scopesValues.push(true)
-              })
-            } else if (r.code == 501) {
-              this.$router.push({
-                path: '/Login',
-                query: {redirect_uri: location.href}
-              })
-            } else {
-              throw new Error(r.msg);
+          if (r.code == 200) {
+            if (r.data.redirect_uri) {
+              location.href = r.data.redirect_uri
+              return
             }
+            this.clientId = r.data.clientId;
+            this.scopes = r.data.scopes;
+            this.scopesValues = new Array();
+            this.scopes.forEach(val => {
+              this.scopesValues.push(true)
+            })
+          } else if (r.code == 501) {
+            this.$router.push({
+              path: '/Login',
+              query: {redirect_uri: location.href}
+            })
+          } else {
+            throw new Error(r.msg);
           }
         }).catch(e => {
         console.error(e);
