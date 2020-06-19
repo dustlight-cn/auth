@@ -2,8 +2,8 @@ package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulConstants;
 import cn.dustlight.uim.RestfulResult;
-import cn.dustlight.uim.models.AppDetails;
-import cn.dustlight.uim.models.IAppDetails;
+import cn.dustlight.uim.models.ClientDetails;
+import cn.dustlight.uim.models.IClientDetails;
 import cn.dustlight.uim.models.IUserDetails;
 import cn.dustlight.uim.services.ClientMapper;
 import cn.dustlight.uim.services.IVerificationCodeGenerator;
@@ -44,7 +44,7 @@ public class ClientController implements IClientController {
     AuthorizationEndpoint authorizationEndpoint;
 
     @Override
-    public RestfulResult<IAppDetails> createApp(String appName, String scope, String redirectUri, Authentication authentication) {
+    public RestfulResult<IClientDetails> createApp(String appName, Set<String> scope, Set<String> redirectUri, Authentication authentication) {
         IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Long id = snowflake.getNextId();
@@ -69,7 +69,7 @@ public class ClientController implements IClientController {
                 "1")) {
             return RestfulConstants.ERROR_UNKNOWN;
         }
-        AppDetails appDetails = new AppDetails();
+        ClientDetails appDetails = new ClientDetails();
         appDetails.setUid(userDetails.getUid());
         appDetails.setAppKey(appKey);
         appDetails.setAppName(appName);
@@ -80,7 +80,7 @@ public class ClientController implements IClientController {
     }
 
     @Override
-    public RestfulResult<IAppDetails> getApp(String appKey, Authentication authentication) {
+    public RestfulResult<IClientDetails> getApp(String appKey, Authentication authentication) {
         return RestfulResult.success(checkRole(appKey, authentication));
     }
 
@@ -94,12 +94,12 @@ public class ClientController implements IClientController {
 
     @Override
     public RestfulResult<String> resetAppSecret(String appKey, Authentication authentication) {
-        AppDetails client = checkRole(appKey, authentication);
+        ClientDetails client = checkRole(appKey, authentication);
         client.setAppSecret(sha1(authentication.getName() +
                 client.getUid() +
                 verificationCodeGenerator.generatorCode(128)));
-        boolean flag = mapper.updateSecret(appKey, passwordEncoder.encode(client.getAppSecret()));
-        return flag ? RestfulResult.success(client.getAppSecret()) : RestfulConstants.ERROR_UNKNOWN;
+        boolean flag = mapper.updateSecret(appKey, passwordEncoder.encode(client.getClientSecret()));
+        return flag ? RestfulResult.success(client.getClientSecret()) : RestfulConstants.ERROR_UNKNOWN;
     }
 
     @Override
@@ -124,31 +124,31 @@ public class ClientController implements IClientController {
     }
 
     @Override
-    public RestfulResult<List<AppDetails>> getAllApps() {
-        return RestfulResult.success(mapper.getApps());
+    public RestfulResult<List<ClientDetails>> getAllApps() {
+        return RestfulResult.success(mapper.getAllClients());
     }
 
     @Override
-    public RestfulResult<List<AppDetails>> getCurrentUserApps(Principal principal) {
+    public RestfulResult<List<ClientDetails>> getCurrentUserApps(Principal principal) {
         if (principal instanceof IUserDetails)
-            return RestfulResult.success(mapper.getAppsByUid(((IUserDetails) principal).getUid()));
+            return RestfulResult.success(mapper.getClientsByUid(((IUserDetails) principal).getUid()));
         else
-            return RestfulResult.success(mapper.getAppsByUsername(principal.getName()));
+            return RestfulResult.success(mapper.getClientsByUsername(principal.getName()));
     }
 
     @Override
-    public RestfulResult<List<AppDetails>> getUserApps(String username) {
-        return RestfulResult.success(mapper.getAppsByUsername(username));
+    public RestfulResult<List<ClientDetails>> getUserApps(String username) {
+        return RestfulResult.success(mapper.getClientsByUsername(username));
     }
 
     protected String sha1(String str) {
         return DigestUtils.sha1Hex(str);
     }
 
-    protected AppDetails checkRole(String appKey, Authentication authentication) throws AccessDeniedException {
+    protected ClientDetails checkRole(String appKey, Authentication authentication) throws AccessDeniedException {
         IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-        AppDetails client = mapper.getClient(appKey);
+        ClientDetails client = mapper.getClient(appKey);
         if (client == null)
             throw new NullPointerException("Client not found");
         if (!(roles.contains("ROLE_ROOT") || roles.contains("ROLE_ADMIN")) &&

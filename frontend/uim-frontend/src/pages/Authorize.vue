@@ -1,34 +1,43 @@
 <template>
   <div class="q-pa-md vertical-middle" style="margin: 0 auto;max-width: 400px">
-
     <h4>授权</h4>
-    <q-form
-      class="q-gutter-md"
-      @submit="onSubmit"
+    <transition
+      appear
+      enter-active-class="animated fadeIn"
+      leave-active-class="animated fadeOut"
     >
-      <input type="hidden" hidden name="user_oauth_approval" value="true"/>
-      <q-list>
-        <q-item-label header>应用 "{{clientId}}" 申请以下权限：</q-item-label>
-        <q-item v-for="(scope,i) in scopes" tag="label" v-ripple>
-          <q-item-section side top>
-            <q-checkbox :name="'scope.'+scope" v-model="scopesValues[i]"/>
-          </q-item-section>
+      <q-form
+        class="q-gutter-md"
+        @submit="onSubmit"
+        v-show="!loading"
+      >
 
-          <q-item-section>
-            <q-item-label>{{scope}}</q-item-label>
-            <q-item-label caption>
-              权限描述
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
+        <input type="hidden" hidden name="user_oauth_approval" value="true"/>
+        <q-list>
+          <q-item-label header>应用 "{{clientId}}" 申请以下权限：</q-item-label>
+          <q-item v-for="(scope,i) in scopes" tag="label" v-ripple>
+            <q-item-section side top>
+              <q-checkbox :name="'scope.'+scope" v-model="scopesValues[i]"/>
+            </q-item-section>
 
-      <div style="min-height: 100px"/>
-      <div class="absolute-bottom-right">
-        <q-btn label="授权" type="submit" color="primary"/>
-      </div>
-    </q-form>
+            <q-item-section>
+              <q-item-label>{{scope}}</q-item-label>
+              <q-item-label caption>
+                权限描述
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
 
+        <div style="min-height: 100px"/>
+        <div class="absolute-bottom-right">
+          <q-btn label="授权" type="submit" color="primary"/>
+        </div>
+      </q-form>
+    </transition>
+    <q-inner-loading :showing="loading">
+      <q-spinner-gears size="50px" color="primary"/>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -42,7 +51,8 @@
       return {
         clientId: "unknow",
         scopes: [],
-        scopesValues: []
+        scopesValues: [],
+        loading: true
       }
     },
     methods: {
@@ -56,13 +66,7 @@
         console.log(data);
         axios.post('/oauth/authorize?' + qs.stringify(this.$route.query), qs.stringify(data))
           .then(res => {
-            let r = res.data;
-            console.log(r);
-            if (r.code == 200) {
-              location.href = r.data;
-            } else {
-              throw new Error(r.msg + "," + r.data)
-            }
+            location.href = res;
           }).catch(e => {
           console.error(e);
         })
@@ -76,34 +80,18 @@
         scope: this.$route.query.scope,
         state: this.$route.query.state
       }
-      console.log(qs.stringify(data));
       axios.get('/oauth/authorize?' + qs.stringify(data))
         .then(res => {
-          let r = res.data;
-
-          console.log(r.data);
-          if (r.code == 200) {
-            if (r.data.redirect_uri) {
-              location.href = r.data.redirect_uri
-              return
-            }
-            this.clientId = r.data.clientId;
-            this.scopes = r.data.scopes;
-            this.scopesValues = new Array();
-            this.scopes.forEach(val => {
-              this.scopesValues.push(true)
-            })
-          } else if (r.code == 501) {
-            this.$router.push({
-              path: '/Login',
-              query: {redirect_uri: location.href}
-            })
-          } else {
-            throw new Error(r.msg);
-          }
+          console.log(res)
+          this.clientId = res.clientId;
+          this.scopes = res.scopes;
+          this.scopesValues = new Array();
+          this.scopes.forEach(val => {
+            this.scopesValues.push(true)
+          })
         }).catch(e => {
         console.error(e);
-      })
+      }).finally(() => this.loading = false)
     }
   }
 </script>

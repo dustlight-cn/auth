@@ -1,10 +1,11 @@
 package cn.dustlight.uim.services;
 
-import cn.dustlight.uim.models.AppDetails;
+import cn.dustlight.uim.models.ClientDetails;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Mapper
@@ -18,9 +19,9 @@ public interface ClientMapper {
                          String clientName,
                          String resourceIds,
                          String clientSecret,
-                         String scope,
+                         Set<String> scope,
                          String authorizedGrantTypes,
-                         String redirectUri,
+                         Set<String> redirectUri,
                          String authorities,
                          String additionalInformation,
                          String autoApprove);
@@ -33,7 +34,7 @@ public interface ClientMapper {
             @Result(property = "scope", column = "scope"),
             @Result(property = "redirectUri", column = "web_server_redirect_uri")
     }, id = "AppDetails")
-    AppDetails getClient(String clientId);
+    ClientDetails getClient(String clientId);
 
     @Delete("DELETE FROM oauth_client_details WHERE client_id=#{clientId}")
     boolean deleteClient(String clientId);
@@ -52,13 +53,13 @@ public interface ClientMapper {
 
     @Select("SELECT uid,client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details")
     @ResultMap("AppDetails")
-    List<AppDetails> getApps();
+    List<ClientDetails> getAllClients();
 
     @Select("SELECT uid,client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details WHERE uid=#{uid}")
     @ResultMap("AppDetails")
-    List<AppDetails> getAppsByUid(long uid);
+    List<ClientDetails> getClientsByUid(long uid);
 
     @Select("SELECT client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details,user_details WHERE oauth_client_details.uid=user_details.uid and user_details.username=#{username}")
     @ResultMap("AppDetails")
-    List<AppDetails> getAppsByUsername(String username);
+    List<ClientDetails> getClientsByUsername(String username);
 }

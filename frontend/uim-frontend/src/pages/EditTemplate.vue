@@ -3,7 +3,7 @@
     style="padding: 16px"
     @submit="OnSubmit">
     <h4>{{template.name}}</h4>
-    <q-input
+    <q-editor
       filled
       type="textarea" v-model="template.text"/>
     <q-btn type="submit" label="Submit"/>

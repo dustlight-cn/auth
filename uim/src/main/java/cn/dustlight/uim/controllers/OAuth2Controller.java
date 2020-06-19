@@ -39,6 +39,7 @@ public class OAuth2Controller {
             AuthorizationRequest authorizationRequest = (AuthorizationRequest) model.get("authorizationRequest");
             data.put("clientId", authorizationRequest.getClientId());
             data.put("scopes", authorizationRequest.getScope());
+            data.put("all", authorizationRequest);
         }
         return RestfulResult.success(data).toModelAndView();
     }
