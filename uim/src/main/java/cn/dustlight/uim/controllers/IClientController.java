@@ -1,13 +1,11 @@
 package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulResult;
-import cn.dustlight.uim.models.IClientDetails;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,16 +15,16 @@ import java.util.Set;
 public interface IClientController {
 
     @PostMapping("/app")
-    @PreAuthorize("hasAnyRole('ROOT','ADMIN','DEV')")
-    RestfulResult<IClientDetails> createApp(@RequestParam(name = "app_name") String appName,
-                                            @RequestParam Set<String> scope,
-                                            @RequestParam(name = "redirect_uri") Set<String> redirectUri,
-                                            Authentication authentication);
+    @PreAuthorize("hasAuthority('CERATE_CLIENT')")
+    RestfulResult createApp(@RequestParam(name = "app_name") String appName,
+                            @RequestParam Set<String> scope,
+                            @RequestParam(name = "redirect_uri") Set<String> redirectUri,
+                            Authentication authentication);
 
     @GetMapping("/app/{appKey}")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN','DEV')")
-    RestfulResult<IClientDetails> getApp(@PathVariable String appKey,
-                                         Authentication authentication);
+    RestfulResult getApp(@PathVariable String appKey,
+                         Authentication authentication);
 
     @DeleteMapping("/app/{appKey}")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN','DEV')")
@@ -35,8 +33,8 @@ public interface IClientController {
 
     @PostMapping("/reset_secret/{appKey}")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN','DEV')")
-    RestfulResult<String> resetAppSecret(@PathVariable String appKey,
-                                         Authentication authentication);
+    RestfulResult resetAppSecret(@PathVariable String appKey,
+                                 Authentication authentication);
 
     @PostMapping("/update_name/{appKey}")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN','DEV')")
@@ -58,14 +56,13 @@ public interface IClientController {
 
     @GetMapping("/all_apps")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
-    <T extends IClientDetails,L extends List<T>> RestfulResult<L> getAllApps();
+    RestfulResult getAllApps();
 
     @GetMapping("/user_apps")
     @PreAuthorize("hasAnyRole('ROOT','ADMIN','DEV')")
-    <T extends IClientDetails,L extends List<T>> RestfulResult<L> getCurrentUserApps(Principal principal);
+    RestfulResult getCurrentUserApps(Principal principal);
 
     @GetMapping("/user_apps/{username}")
-    @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
-    <T extends IClientDetails,L extends List<T>> RestfulResult<L> getUserApps(@PathVariable String username);
+    RestfulResult getUserApps(@PathVariable String username);
 
 }

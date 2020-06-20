@@ -2,10 +2,11 @@ package cn.dustlight.uim.models;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * User Details
@@ -26,7 +27,7 @@ public class UserDetails implements IUserDetails {
 
     private int gender;
 
-    private String role;
+    private Long role;
 
     private boolean enabled;
 
@@ -39,6 +40,10 @@ public class UserDetails implements IUserDetails {
     private Date createdAt;
 
     private Date updatedAt;
+
+    private String[] authorities;
+
+    private String roleName;
 
     public void setUid(long uid) {
         this.uid = uid;
@@ -72,7 +77,7 @@ public class UserDetails implements IUserDetails {
         this.gender = gender;
     }
 
-    public void setRole(String role) {
+    public void setRole(Long role) {
         this.role = role;
     }
 
@@ -100,6 +105,14 @@ public class UserDetails implements IUserDetails {
         this.updatedAt = updatedAt;
     }
 
+    public void setAuthorities(String[] authorities) {
+        this.authorities = authorities;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
     @Override
     public long getUid() {
         return this.uid;
@@ -121,8 +134,12 @@ public class UserDetails implements IUserDetails {
     }
 
     @Override
-    public String getRole() {
+    public Long getRole() {
         return this.role;
+    }
+
+    public String getRoleName() {
+        return this.roleName;
     }
 
     @Override
@@ -137,9 +154,11 @@ public class UserDetails implements IUserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.role == null)
+        if (this.authorities == null)
             return null;
-        return AuthorityUtils.commaSeparatedStringToAuthorityList(this.role);
+        List<GrantedAuthority> result = AuthorityUtils.createAuthorityList(authorities);
+        result.add(new SimpleGrantedAuthority(roleName));
+        return result;
     }
 
     @Override

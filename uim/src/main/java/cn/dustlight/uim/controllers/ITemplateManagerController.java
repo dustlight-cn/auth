@@ -1,7 +1,6 @@
 package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulResult;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,18 +11,18 @@ import java.util.List;
 public interface ITemplateManagerController {
 
     @GetMapping("/names")
-    @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
+    @PreAuthorize("hasAuthority('READ_TEMPLATE')")
     RestfulResult<List<String>> getTemplateNames() throws IOException;
 
     @GetMapping("/text/{name}")
-    @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
+    @PreAuthorize("hasAuthority('READ_TEMPLATE')")
     RestfulResult<String> getTemplate(@PathVariable String name) throws IOException;
 
     @PostMapping("/text/{name}")
-    @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
+    @PreAuthorize("hasAuthority('WRITE_TEMPLATE')")
     RestfulResult setTemplate(@PathVariable String name, @RequestParam String text) throws IOException;
 
     @DeleteMapping("/delete")
-    @PreAuthorize("hasAnyRole('ROOT','ADMIN')")
+    @PreAuthorize("hasAuthority('WRITE_TEMPLATE')")
     RestfulResult deleteTemplate(@RequestBody String[] names) throws IOException;
 }

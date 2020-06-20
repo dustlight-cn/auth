@@ -9,22 +9,23 @@ import java.util.List;
 /**
  * User Details Mapper
  */
+@CacheNamespace
 @Mapper
 @Service
 public interface UserDetailsMapper {
 
+    @Select("SELECT role_name FROM role_details where id=#{id}")
+    String getRoleNameByRoleId(Long id);
+
+    @Select("SELECT authority_name FROM authority_details,role_details,role_authority where role_details.id=#{id} and role_details.id=role_authority.rid and authority_details.id=role_authority.aid")
+    String[] getAuthorityByRoleId(Long id);
+
     @Select("SELECT uid,password,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username=#{uoe} OR email=#{uoe}")
-    @Results({@Result(property = "uid", column = "uid"),
-            @Result(property = "password", column = "password"),
-            @Result(property = "role", column = "role"),
-            @Result(property = "enabled", column = "enabled"),
-            @Result(property = "accountExpired", column = "account_expired"),
-            @Result(property = "credentialsExpired", column = "credentials_expired"),
-            @Result(property = "accountLocked", column = "account_locked")})
+    @ResultMap("UserDetails")
     UserDetails loadUserOAuth(String uoe);
 
     @Select("SELECT uid,username,email,nickname,phone,gender,createdAt,updatedAt,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username=#{username}")
-    @Results({@Result(property = "uid", column = "uid"),
+    @Results(id = "UserDetails", value = {@Result(property = "uid", column = "uid"),
             @Result(property = "username", column = "username"),
             @Result(property = "email", column = "email"),
             @Result(property = "nickname", column = "nickname"),
@@ -36,23 +37,16 @@ public interface UserDetailsMapper {
             @Result(property = "enabled", column = "enabled"),
             @Result(property = "accountExpired", column = "account_expired"),
             @Result(property = "credentialsExpired", column = "credentials_expired"),
-            @Result(property = "accountLocked", column = "account_locked")})
+            @Result(property = "accountLocked", column = "account_locked"),
+            @Result(property = "roleName", column = "role", one = @One(select = "cn.dustlight.uim.services.UserDetailsMapper.getRoleNameByRoleId")),
+            @Result(property = "authorities", column = "role", many = @Many(select = "cn.dustlight.uim.services.UserDetailsMapper.getAuthorityByRoleId"))
+    })
     UserDetails loadUser(String username);
 
     @Select({"<script>SELECT uid,username,nickname,gender,createdAt,updatedAt,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username IN ",
             "<foreach collection='usernameArray' item='username' open='(' separator=',' close=')'>#{username}</foreach>",
             "</script>"})
-    @Results({@Result(property = "uid", column = "uid"),
-            @Result(property = "username", column = "username"),
-            @Result(property = "nickname", column = "nickname"),
-            @Result(property = "gender", column = "gender"),
-            @Result(property = "createdAt", column = "createdAt"),
-            @Result(property = "updatedAt", column = "updatedAt"),
-            @Result(property = "role", column = "role"),
-            @Result(property = "enabled", column = "enabled"),
-            @Result(property = "accountExpired", column = "account_expired"),
-            @Result(property = "credentialsExpired", column = "credentials_expired"),
-            @Result(property = "accountLocked", column = "account_locked")})
+    @ResultMap("UserDetails")
     List<UserDetails> loadUsers(@Param("usernameArray") List<String> usernameArray);
 
     @Select("SELECT COUNT(*) FROM user_details WHERE email=#{email}")

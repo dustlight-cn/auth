@@ -1,3 +1,4 @@
+# Spring配置（Mail、MySQL、Redis）
 spring:
   redis:
     host: dustlight.cn
@@ -10,7 +11,7 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-      maximum-pool-size: 4
+      maximum-pool-size: 1
   mvc:
     throw-exception-if-no-handler-found: true
   resources:
@@ -19,6 +20,20 @@ spring:
     host: smtp.exmail.qq.com
     username: noreply@dustlight.cn
     password: Lb845612500
+# 日志输出
+logging:
+  level:
+    cn:
+      dustlight:
+        uim:
+          services:
+            ClientMapper: debug
+# Mybatis 缓存
+mybatis-plus:
+  configuration:
+    cache-enabled: true
+    local-cache-scope: session
+# 应用配置
 dustlight:
   uim:
     csrf-enabled: false

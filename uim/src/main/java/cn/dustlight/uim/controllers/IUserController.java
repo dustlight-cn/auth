@@ -27,19 +27,19 @@ public interface IUserController {
     @PostMapping("/register")
     RestfulResult register(@RequestParam(required = false) String username, @RequestParam(required = false) String password, @RequestParam(required = false) String nickname, HttpSession session);
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/reset/email")
+    @PreAuthorize("hasAuthority('WRITE_USERINFO')")
     RestfulResult resetEmail(@RequestParam(required = false) String email, Principal principal, HttpSession session);
 
     @PostMapping("/reset/email/password")
     RestfulResult resetPasswordByEmail(@RequestParam(required = false) String email, @RequestParam(required = false) String password, HttpSession session);
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/reset/nickname")
+    @PreAuthorize("hasAuthority('WRITE_USERINFO')")
     RestfulResult resetNickname(@RequestParam(required = false) String nickname, Principal principal);
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/reset/gender")
+    @PreAuthorize("hasAuthority('WRITE_USERINFO')")
     RestfulResult resetGender(@RequestParam(required = false) int gender, Principal principal);
 
     @GetMapping("/exists/username")
@@ -51,13 +51,15 @@ public interface IUserController {
     @GetMapping("/exists/phone")
     RestfulResult<Boolean> isPhoneExists(@RequestParam(required = false) String phone);
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/details")
+    @PreAuthorize("hasAuthority('READ_USERINFO')")
     RestfulResult<UserDetails> getCurrentUserDetails(Principal principal);
 
     @GetMapping("/details/{username}")
+    @PreAuthorize("hasAuthority('READ_USERINFO_ANY')")
     RestfulResult<UserDetails> getUserDetails(@PathVariable(required = false) String username);
 
     @PostMapping("/details")
+    @PreAuthorize("hasAuthority('READ_USERINFO_ANY')")
     RestfulResult<List<UserDetails>> getUsersDetails(@RequestBody List<String> usernameArray);
 }

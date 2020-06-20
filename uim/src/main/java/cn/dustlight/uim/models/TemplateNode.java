@@ -1,6 +1,8 @@
 package cn.dustlight.uim.models;
 
-public class TemplateNode {
+import java.io.Serializable;
+
+public class TemplateNode implements Serializable {
 
     public String name;
     public String text;

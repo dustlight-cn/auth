@@ -37,7 +37,7 @@ public interface IUserDetails extends UserDetails {
      * Get user's role
      * @return user's role
      */
-    String getRole();
+    Long getRole();
 
     /**
      * Get user details creation time

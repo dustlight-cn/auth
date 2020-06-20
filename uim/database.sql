@@ -52,6 +52,77 @@ INSERT INTO `authority_details` VALUES (0,'READ_USERINFO','获取用户信息','
 UNLOCK TABLES;
 
 --
+-- Table structure for table `client_authority`
+--
+
+DROP TABLE IF EXISTS `client_authority`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `client_authority` (
+  `cid` varchar(256) NOT NULL,
+  `aid` bigint(20) NOT NULL,
+  PRIMARY KEY (`cid`,`aid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `client_authority`
+--
+
+LOCK TABLES `client_authority` WRITE;
+/*!40000 ALTER TABLE `client_authority` DISABLE KEYS */;
+INSERT INTO `client_authority` VALUES ('order-client',1);
+/*!40000 ALTER TABLE `client_authority` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `client_grant_types`
+--
+
+DROP TABLE IF EXISTS `client_grant_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `client_grant_types` (
+  `cid` bigint(20) NOT NULL,
+  `tid` bigint(20) NOT NULL,
+  PRIMARY KEY (`cid`,`tid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `client_grant_types`
+--
+
+LOCK TABLES `client_grant_types` WRITE;
+/*!40000 ALTER TABLE `client_grant_types` DISABLE KEYS */;
+INSERT INTO `client_grant_types` VALUES (0,0),(0,4);
+/*!40000 ALTER TABLE `client_grant_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `client_resource`
+--
+
+DROP TABLE IF EXISTS `client_resource`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `client_resource` (
+  `cid` varchar(256) NOT NULL,
+  `rid` bigint(20) NOT NULL,
+  PRIMARY KEY (`cid`,`rid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `client_resource`
+--
+
+LOCK TABLES `client_resource` WRITE;
+/*!40000 ALTER TABLE `client_resource` DISABLE KEYS */;
+/*!40000 ALTER TABLE `client_resource` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `client_scope`
 --
 
@@ -59,9 +130,10 @@ DROP TABLE IF EXISTS `client_scope`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `client_scope` (
-  `client_id` varchar(256) NOT NULL,
-  `scope_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`client_id`,`scope_id`)
+  `cid` varchar(256) NOT NULL,
+  `sid` bigint(20) NOT NULL,
+  `auto_approve` int(1) DEFAULT NULL,
+  PRIMARY KEY (`cid`,`sid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -71,8 +143,33 @@ CREATE TABLE `client_scope` (
 
 LOCK TABLES `client_scope` WRITE;
 /*!40000 ALTER TABLE `client_scope` DISABLE KEYS */;
-INSERT INTO `client_scope` VALUES ('order-client',0),('rO0ABXcJbn+t0wl58AAA',0),('rO0ABXcJbn+t1ee58AAA',0),('rO0ABXcJbn+t1Jh58AAA',0),('rO0ABXcJbn7Q7uQJ8AAA',0),('user-client',0);
+INSERT INTO `client_scope` VALUES ('order-client',0,0),('rO0ABXcJbn+t0wl58AAA',0,1),('rO0ABXcJbn+t1ee58AAA',0,1),('rO0ABXcJbn+t1Jh58AAA',0,1),('rO0ABXcJbn7Q7uQJ8AAA',0,1),('user-client',0,1);
 /*!40000 ALTER TABLE `client_scope` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `grant_types`
+--
+
+DROP TABLE IF EXISTS `grant_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `grant_types` (
+  `id` bigint(20) NOT NULL,
+  `grant_type` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `grant_type_UNIQUE` (`grant_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `grant_types`
+--
+
+LOCK TABLES `grant_types` WRITE;
+/*!40000 ALTER TABLE `grant_types` DISABLE KEYS */;
+INSERT INTO `grant_types` VALUES (0,'authorization_code'),(2,'client_credentials'),(3,'implicit '),(1,'password'),(4,'refresh_token');
+/*!40000 ALTER TABLE `grant_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -85,18 +182,18 @@ DROP TABLE IF EXISTS `oauth_client_details`;
 CREATE TABLE `oauth_client_details` (
   `client_id` varchar(256) NOT NULL,
   `uid` bigint(20) NOT NULL DEFAULT 0,
-  `client_name` varchar(256) NOT NULL,
-  `resource_ids` varchar(256) DEFAULT NULL,
   `client_secret` varchar(256) NOT NULL,
-  `scope` varchar(256) DEFAULT NULL,
-  `authorized_grant_types` varchar(256) DEFAULT NULL,
-  `web_server_redirect_uri` varchar(256) DEFAULT NULL,
-  `authorities` varchar(256) DEFAULT NULL,
+  `client_name` varchar(256) NOT NULL,
+  `redirect_uri` varchar(1024) DEFAULT NULL,
   `access_token_validity` int(11) DEFAULT NULL,
   `refresh_token_validity` int(11) DEFAULT NULL,
   `additional_information` varchar(4096) DEFAULT NULL,
-  `autoapprove` varchar(256) DEFAULT NULL,
-  PRIMARY KEY (`client_id`)
+  `enabled` int(1) DEFAULT NULL,
+  `description` varchar(4096) DEFAULT NULL,
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`client_id`),
+  UNIQUE KEY `client_name_UNIQUE` (`client_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -106,8 +203,35 @@ CREATE TABLE `oauth_client_details` (
 
 LOCK TABLES `oauth_client_details` WRITE;
 /*!40000 ALTER TABLE `oauth_client_details` DISABLE KEYS */;
-INSERT INTO `oauth_client_details` VALUES ('order-client',0,'','','$2a$10$sNNrAJ/Cdh8YHCK1f8s7KeS0zPfdgFyuxIy7m5CRaaV1w8vuUe2Oe','userinfo','authorization_code,refresh_token,password,implicit,client_credentials','http://localhost:8080/hello','ROLE_BASIC',3600,36000,NULL,'1'),('rO0ABXcJbn+t0wl58AAA',7951073035650945024,'App1','','$2a$10$z8ctejDAi.iHg0CHuMOftun/Ekd4rVZ7cLrDP4JndwM0AsPXjoEGi','userinfo,all','authorization_code,refresh_token,password,implicit','http://localhost:1234/','',NULL,NULL,NULL,'1'),('rO0ABXcJbn+t1ee58AAA',7951073035650945024,'App1','','$2a$10$0nDfIHggkJUa5wXWYwhXUO2xlhbopg/h38Qstadg1AUXxWFHJaDpa','userinfo,all','authorization_code,refresh_token,password,implicit','http://localhost:1234/','',NULL,NULL,NULL,'1'),('rO0ABXcJbn+t1Jh58AAA',7951073035650945024,'App1','','$2a$10$uHTrb6IcZrmJnsmIhZWZY.1NHNRLYtfRsWjYhXkQdCS8oCGA88h/q','userinfo,all','authorization_code,refresh_token,password,implicit','http://localhost:1234/','',NULL,NULL,'{“name\": \"123\"}','1'),('rO0ABXcJbn7Q7uQJ8AAA',7951073035650945024,'App1','','$2a$10$sed.JRDVMSwVHSYgjw4NxuLSiIILAd1U4frUqDzzxjgJ4pGvvZdiy','userinfo,all','authorization_code,refresh_token,password,implicit,client_credentials','http://localhost:1234/','',NULL,NULL,NULL,'1'),('user-client',0,'','','$2a$10$sNNrAJ/Cdh8YHCK1f8s7KeS0zPfdgFyuxIy7m5CRaaV1w8vuUe2Oe','all','authorization_code,refresh_token,password','http://localhost:8080/hello','',3600,36000,NULL,'1');
+INSERT INTO `oauth_client_details` VALUES ('order-client',0,'$2a$10$sNNrAJ/Cdh8YHCK1f8s7KeS0zPfdgFyuxIy7m5CRaaV1w8vuUe2Oe','order-client','http://localhost:8080/hello',3600,36000,NULL,NULL,NULL,'2020-06-20 09:23:22','2020-06-20 09:23:22');
 /*!40000 ALTER TABLE `oauth_client_details` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `resource_details`
+--
+
+DROP TABLE IF EXISTS `resource_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `resource_details` (
+  `id` bigint(20) NOT NULL,
+  `resource_name` varchar(128) NOT NULL,
+  `description` varchar(512) DEFAULT NULL,
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `resource_name_UNIQUE` (`resource_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `resource_details`
+--
+
+LOCK TABLES `resource_details` WRITE;
+/*!40000 ALTER TABLE `resource_details` DISABLE KEYS */;
+/*!40000 ALTER TABLE `resource_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -274,7 +398,7 @@ CREATE TABLE `user_details` (
 
 LOCK TABLES `user_details` WRITE;
 /*!40000 ALTER TABLE `user_details` DISABLE KEYS */;
-INSERT INTO `user_details` VALUES (0,'hansin','$2a$10$1QW45Y2n8HB2B57Rqh.TC.qL5YbjOUixejBQKSSUeEr0HYs8lX.Wy','',NULL,NULL,00,0,1,0,0,0,'2020-05-16 17:26:58','2020-06-19 19:13:24'),(7950744839713804288,'hansin1997','$2a$10$pMas8axi9Q626lalsYz6BeflYPyb2s6RI4fHx2TtZJal/uAWTIDDe','hansin@dustlight.cn',NULL,NULL,00,NULL,1,0,0,0,'2020-05-18 15:25:01','2020-06-19 19:12:48'),(7950788585357135872,'111111','$10$1QW45Y2n8HB2B57Rqh.TC.qL5YbjOUixejBQKSSUeEr0HYs8lX.Wy','gg@GG','',NULL,00,NULL,1,0,0,0,'2020-05-18 18:18:51','2020-06-19 19:12:48'),(7951073035650945024,'222222','$2a$10$cFAoUfkHm4FzwQ95jZUJvutJdYlBJFF.JmNR6kMPD7z8ZIb4myjGS','ww','gggg',NULL,00,NULL,1,0,0,0,'2020-05-19 13:09:09','2020-06-19 19:12:48'),(7961394947674992640,'wwwwww','$2a$10$w/9Q6C6TZMGIx2lEX.M2vuePcKr.ViLFEGg7Z6ZGcliS5VgMNCPFa','lbgzs2010@live.cn','',NULL,00,NULL,1,0,0,0,'2020-06-17 00:44:45','2020-06-19 19:12:48');
+INSERT INTO `user_details` VALUES (0,'hansin','$2a$10$1QW45Y2n8HB2B57Rqh.TC.qL5YbjOUixejBQKSSUeEr0HYs8lX.Wy','',NULL,NULL,00,0,1,0,0,0,'2020-05-16 17:26:58','2020-06-19 19:13:24'),(7950744839713804288,'hansin1997','$2a$10$pMas8axi9Q626lalsYz6BeflYPyb2s6RI4fHx2TtZJal/uAWTIDDe','hansin@dustlight.cn',NULL,NULL,00,NULL,1,0,0,0,'2020-05-18 15:25:01','2020-06-19 19:12:48'),(7950788585357135872,'111111','$10$1QW45Y2n8HB2B57Rqh.TC.qL5YbjOUixejBQKSSUeEr0HYs8lX.Wy','gg@GG','',NULL,00,NULL,1,0,0,0,'2020-05-18 18:18:51','2020-06-19 19:12:48'),(7951073035650945024,'222222','$2a$10$cFAoUfkHm4FzwQ95jZUJvutJdYlBJFF.JmNR6kMPD7z8ZIb4myjGS','ww','gggg',NULL,00,0,1,0,0,0,'2020-05-19 13:09:09','2020-06-20 07:11:37'),(7961394947674992640,'wwwwww','$2a$10$w/9Q6C6TZMGIx2lEX.M2vuePcKr.ViLFEGg7Z6ZGcliS5VgMNCPFa','lbgzs2010@live.cn','',NULL,00,NULL,1,0,0,0,'2020-06-17 00:44:45','2020-06-19 19:12:48');
 /*!40000 ALTER TABLE `user_details` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -287,4 +411,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-20  4:56:45
+-- Dump completed on 2020-06-20 23:34:57

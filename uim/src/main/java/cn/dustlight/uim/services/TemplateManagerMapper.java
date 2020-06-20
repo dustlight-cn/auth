@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@CacheNamespace
 @Service
 @Mapper
 public interface TemplateManagerMapper {

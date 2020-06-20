@@ -28,7 +28,7 @@ public class OAuth2Controller {
     @Autowired
     AuthorizationServerEndpointsConfiguration authorizationServerEndpointsConfiguration;
 
-    @RequestMapping({"/oauth/authorize"})
+    @RequestMapping(value = {"/oauth/authorize"}, method = RequestMethod.GET)
     public ModelAndView authorize(Map<String, Object> model, @RequestParam Map<String, String> parameters, SessionStatus sessionStatus, Principal principal) {
         Map<String, Object> data = new HashMap<>();
         ModelAndView mv = endpoint.authorize(model, parameters, sessionStatus, principal);

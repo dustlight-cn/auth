@@ -21,9 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.security.Principal;
-import java.util.Base64;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 public class ClientController implements IClientController {
@@ -44,7 +42,7 @@ public class ClientController implements IClientController {
     AuthorizationEndpoint authorizationEndpoint;
 
     @Override
-    public RestfulResult<IClientDetails> createApp(String appName, Set<String> scope, Set<String> redirectUri, Authentication authentication) {
+    public RestfulResult createApp(String appName, Set<String> scope, Set<String> redirectUri, Authentication authentication) {
         IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Long id = snowflake.getNextId();
@@ -69,14 +67,10 @@ public class ClientController implements IClientController {
                 "1")) {
             return RestfulConstants.ERROR_UNKNOWN;
         }
-        ClientDetails appDetails = new ClientDetails();
-        appDetails.setUid(userDetails.getUid());
-        appDetails.setClientId(appKey);
-        appDetails.setClientName(appName);
-        appDetails.setClientSecret(appSecret);
-        appDetails.setRegisteredRedirectUri(redirectUri);
-        appDetails.setScope(scope);
-        return RestfulResult.success(appDetails);
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("appKey", appKey);
+        data.put("appSecret", appSecret);
+        return RestfulResult.success(data);
     }
 
     @Override
@@ -95,11 +89,11 @@ public class ClientController implements IClientController {
     @Override
     public RestfulResult<String> resetAppSecret(String appKey, Authentication authentication) {
         ClientDetails client = checkRole(appKey, authentication);
-        client.setClientSecret(sha1(authentication.getName() +
+        String newSecret = sha1(authentication.getName() +
                 client.getUid() +
-                verificationCodeGenerator.generatorCode(128)));
-        boolean flag = mapper.updateSecret(appKey, passwordEncoder.encode(client.getClientSecret()));
-        return flag ? RestfulResult.success(client.getClientSecret()) : RestfulConstants.ERROR_UNKNOWN;
+                verificationCodeGenerator.generatorCode(128));
+        boolean flag = mapper.updateSecret(appKey, passwordEncoder.encode(newSecret));
+        return flag ? RestfulResult.success(newSecret) : RestfulConstants.ERROR_UNKNOWN;
     }
 
     @Override
