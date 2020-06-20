@@ -18,6 +18,12 @@ public interface ClientMapper {
     @Select("SELECT authority_name FROM authority_details,scope_authority WHERE scope_authority.sid=#{scopeId} AND authority_details.id=scope_authority.aid")
     String[] getAuthoritiesByScopeId(Long scopeId);
 
+    @Select({"<script>SELECT authority_name FROM authority_details,scope_authority,scope_details WHERE authority_details.id=scope_authority.aid AND scope_details.id=scope_authority.sid AND scope_details.scope_name IN " +
+            "<foreach collection='names' item='name' open='(' separator=',' close=')'>",
+            "#{name}",
+            "</foreach></script>"})
+    String[] getAuthoritiesByScopeNames(@Param("names") String[] names);
+
     @Select("SELECT grant_type FROM grant_types,client_grant_types WHERE client_grant_types.cid=#{clientId} AND grant_types.id=client_grant_types.tid")
     List<String> getClientGrantTypesByClientId(String clientId);
 
@@ -28,7 +34,7 @@ public interface ClientMapper {
     @Results(id = "ClientScope", value = {
             @Result(property = "scopeName", column = "scope_name"),
             @Result(property = "autoApprove", column = "auto_approve"),
-            @Result(property = "authorities", column = "scope_details.id", many = @Many(select = "cn.dustlight.uim.services.ClientMapper.getAuthoritiesByScopeId"))
+            @Result(property = "scopeId", column = "scope_details.id")
     })
     List<ClientDetails.ClientScope> getClientScopeByClientId(String clientId);
 
@@ -53,7 +59,7 @@ public interface ClientMapper {
     })
     ClientDetails loadClientByClientId(String clientId);
 
-//    @Insert("INSERT INTO oauth_client_details " +
+    //    @Insert("INSERT INTO oauth_client_details " +
 //            "(client_id,uid,client_name,resource_ids,client_secret,scope,authorized_grant_types,web_server_redirect_uri,authorities,additional_information,autoapprove) VALUES " +
 //            "(#{clientId},#{uid},#{clientName},#{resourceIds},#{clientSecret},#{scope},#{authorizedGrantTypes},#{redirectUri},#{authorities},#{additionalInformation},#{autoApprove})")
     boolean insertClient(String clientId,
@@ -69,7 +75,7 @@ public interface ClientMapper {
                          String additionalInformation,
                          String autoApprove);
 
-//    @Select("SELECT uid,client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details WHERE client_id=#{clientId}")
+    //    @Select("SELECT uid,client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details WHERE client_id=#{clientId}")
 //    @Results(value = {
 //            @Result(property = "uid", column = "uid"),
 //            @Result(property = "appKey", column = "client_id"),
@@ -94,15 +100,15 @@ public interface ClientMapper {
     @Update("UPDATE oauth_client_details SET web_server_redirect_uri=#{redirectUri} WHERE client_id=#{clientId}")
     boolean updateRedirectUri(String clientId, String redirectUri);
 
-//    @Select("SELECT uid,client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details")
+    //    @Select("SELECT uid,client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details")
 //    @ResultMap("AppDetails")
     List<ClientDetails> getAllClients();
 
-//    @Select("SELECT uid,client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details WHERE uid=#{uid}")
+    //    @Select("SELECT uid,client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details WHERE uid=#{uid}")
 //    @ResultMap("AppDetails")
     List<ClientDetails> getClientsByUid(long uid);
 
-//    @Select("SELECT client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details,user_details WHERE oauth_client_details.uid=user_details.uid and user_details.username=#{username}")
+    //    @Select("SELECT client_id,client_name,scope,web_server_redirect_uri FROM oauth_client_details,user_details WHERE oauth_client_details.uid=user_details.uid and user_details.username=#{username}")
 //    @ResultMap("AppDetails")
     List<ClientDetails> getClientsByUsername(String username);
 }

@@ -148,22 +148,28 @@ public class ClientDetails implements IClientDetails {
     public Date getUpdatedAt() {
         return updatedAt;
     }
-
-    public Map<String, List<GrantedAuthority>> getScopeAuthorities() {
-        if (scope == null || scope.isEmpty())
-            return null;
-        Map<String, List<GrantedAuthority>> scopeAuthorities = new LinkedHashMap<>();
-        for (ClientScope s : scope) {
-            scopeAuthorities.put(s.getScopeName(), s.getAuthorities());
-        }
-        return scopeAuthorities;
-    }
+//
+//    public Map<String, List<GrantedAuthority>> getScopeAuthorities() {
+//        if (scope == null || scope.isEmpty())
+//            return null;
+//        Map<String, List<GrantedAuthority>> scopeAuthorities = new LinkedHashMap<>();
+//        for (ClientScope s : scope) {
+//
+//            try {
+//                Logger.getLogger("???").info(new ObjectMapper().writeValueAsString(s));
+//            } catch (JsonProcessingException e) {
+//                e.printStackTrace();
+//            }
+//            scopeAuthorities.put(s.getScopeName(), s.getAuthorities());
+//        }
+//        return scopeAuthorities;
+//    }
 
     public static class ClientScope implements Serializable {
 
         private String scopeName;
         private boolean autoApprove;
-        private String[] authorities;
+//        private String[] authorities;
 
         public String getScopeName() {
             return scopeName;
@@ -172,11 +178,11 @@ public class ClientDetails implements IClientDetails {
         public boolean isAutoApprove() {
             return autoApprove;
         }
-
-        public List<GrantedAuthority> getAuthorities() {
-            if (authorities == null || authorities.length == 0)
-                return null;
-            return AuthorityUtils.createAuthorityList(authorities);
-        }
+//
+//        public List<GrantedAuthority> getAuthorities() {
+//            if (authorities == null || authorities.length == 0)
+//                return null;
+//            return AuthorityUtils.createAuthorityList(authorities);
+//        }
     }
 }
