@@ -23,6 +23,12 @@ class UnauthorizedError extends ApiError {
   }
 }
 
+class AccessDenied extends ApiError {
+  constructor(message, code, data) {
+    super(message, code, data);
+  }
+}
+
 axios.interceptors.response.use(response => {
   let data = response.data;
   if (data && data.code) {
@@ -30,6 +36,11 @@ axios.interceptors.response.use(response => {
       if (data.code == 501) {
         location.href = location.protocol + "//" + location.host + "/Login?redirect_uri=" + encodeURIComponent(location.href)
         let e = new ApiError(data.msg, data.code, data.data)
+        Vue.prototype.$throw(e)
+        throw e
+      } else if (data.code == 503) {
+        let e = new AccessDenied(data.msg, data.code, data.data);
+        location.href = location.protocol + "//" + location.host + "/error/403?redirect_uri=" + encodeURIComponent(location.href)
         Vue.prototype.$throw(e)
         throw e
       }
@@ -58,7 +69,7 @@ const errorHandler = (e, vm) => {
     message: (e.message || '异常') + (e.code ? ", 错误码：" + e.code : ""),
     caption: (e.data ? e.data : e),
     icon: 'warning',
-    color: 'secondary'
+    color: 'red-5'
   })
 }
 Vue.config.errorHandler = errorHandler;

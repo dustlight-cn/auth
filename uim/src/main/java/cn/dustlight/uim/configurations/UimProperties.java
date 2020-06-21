@@ -19,8 +19,25 @@ public class UimProperties {
     private boolean httpBasicEnabled = true;
     private int snowflakeWorkerId = -1;
     private int registerVerificationCodeLength = 6;
-
     private int resetPasswordVerificationCodeLength = 12;
+    private String registerEmail = "Register";
+    private String resetPasswordEmail = "Password Reset";
+
+    public String getRegisterEmail() {
+        return registerEmail;
+    }
+
+    public String getResetPasswordEmail() {
+        return resetPasswordEmail;
+    }
+
+    public void setRegisterEmail(String registerEmail) {
+        this.registerEmail = registerEmail;
+    }
+
+    public void setResetPasswordEmail(String resetPasswordEmail) {
+        this.resetPasswordEmail = resetPasswordEmail;
+    }
 
     public int getResetPasswordVerificationCodeLength() {
         return resetPasswordVerificationCodeLength;
@@ -104,7 +121,7 @@ public class UimProperties {
 
 
     @Component
-    @ConfigurationProperties(prefix = "uim.form-login")
+    @ConfigurationProperties(prefix = "dustlight.uim.form-login")
     public static class FormLogin {
 
         private String loginPage = "/login";

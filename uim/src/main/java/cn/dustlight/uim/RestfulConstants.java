@@ -21,6 +21,10 @@ public class RestfulConstants {
     public static final int CODE_AUTHENTICATION_FAILURE = 2;
     public static final RestfulResult ERROR_AUTHENTICATION_FAILURE = RestfulResult.error(CODE_AUTHENTICATION_FAILURE, MSG_AUTHENTICATION_FAILURE);
 
+    public static final String MSG_ACCESS_DENIED = "access denied";
+    public static final int CODE_ACCESS_DENIED = 3;
+    public static final RestfulResult ERROR_ACCESS_DENIED = RestfulResult.error(CODE_ACCESS_DENIED, MSG_ACCESS_DENIED);
+
     public static final String MSG_PARAMETER_INVALID = "parameter invalid";
     public static final int CODE_PARAMETER_INVALID = 100;
     public static final RestfulResult ERROR_PARAMETER_INVALID = RestfulResult.error(CODE_PARAMETER_INVALID, MSG_PARAMETER_INVALID);

@@ -20,15 +20,16 @@
       }
     },
     mounted() {
+
+      this.$q.loading.show()
       axios.get('/api/template/names')
         .then(res => {
-          let data = res.data;
-          if (data.code == 200)
-            this.templates = data.data;
-          else
-            throw new Error(data.msg + "," + data.data);
+          this.templates = res
         }).catch(e => {
         console.error(e);
+      }).finally(() => {
+
+        this.$q.loading.hide()
       })
     }
   }

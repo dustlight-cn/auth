@@ -5,7 +5,14 @@
     <h4>{{template.name}}</h4>
     <q-editor
       filled
-      type="textarea" v-model="template.text"/>
+      type="textarea"
+
+      v-model="template.text"/>
+
+    <q-input
+      filled
+      type="textarea"
+      v-model="template.text"/>
     <q-btn type="submit" label="Submit"/>
   </q-form>
 </template>
@@ -26,32 +33,29 @@
     },
     methods: {
       OnSubmit() {
+
+        this.$q.loading.show()
         axios.post('/api/template/text/' + encodeURIComponent(this.$route.query.name)
           , qs.stringify({text: this.template.text}))
           .then(res => {
-            let data = res.data;
-            if (data.code == 200) {
-
-            } else {
-              throw new Error(data.msg + "," + data.data)
-            }
           }).catch(e => {
           console.error(e);
+        }).finally(() => {
+          this.$q.loading.hide()
         })
       }
     },
     mounted() {
       if (this.$route.query.name) {
         this.template.name = this.$route.query.name
+        this.$q.loading.show()
         axios.get('/api/template/text/' + encodeURIComponent(this.$route.query.name))
           .then(res => {
-            let data = res.data;
-            if (data.code == 200)
-              this.template.text = data.data;
-            else
-              throw new Error(data.msg + "," + data.data);
+            this.template.text = res;
           }).catch(e => {
-          console.error(e);
+          console.error(e)
+        }).finally(() => {
+          this.$q.loading.hide()
         })
       }
 

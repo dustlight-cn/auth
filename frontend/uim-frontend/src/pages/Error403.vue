@@ -7,19 +7,29 @@
       >
     </p>
     <p class="text-faded">
-      页面未找到<strong>(404)</strong>
+      没有访问权限<strong>(403)</strong>
     </p>
     <q-btn
       color="secondary"
       style="width:200px;"
-      to="/"
-      label="主页"
+      @click="login"
+      label="登录或切换账号"
     />
   </div>
 </template>
 
 <script>
   export default {
-    name: 'Error404'
+    name: 'Error403',
+    methods: {
+      login() {
+        this.$router.push({
+          path: "/Login",
+          query: {
+            redirect_uri: this.$route.query.redirect_uri
+          }
+        })
+      }
+    }
   }
 </script>

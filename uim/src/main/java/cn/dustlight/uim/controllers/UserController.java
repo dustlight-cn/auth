@@ -52,7 +52,7 @@ public class UserController implements IUserController {
         HashMap<String, Object> data = new HashMap<>();
         data.put("code", code);
         try {
-            emailSender.send("registerVerificationCode", data, email);
+            emailSender.send(uimProperties.getRegisterEmail(), data, email);
             return RestfulConstants.SUCCESS;
         } catch (IOException e) {
             return RestfulResult.error(e.getMessage());
@@ -72,7 +72,7 @@ public class UserController implements IUserController {
         HashMap<String, Object> data = new HashMap<>();
         data.put("code", code);
         try {
-            emailSender.send("resetPasswordVerificationCode", data, email);
+            emailSender.send(uimProperties.getResetPasswordEmail(), data, email);
             return RestfulConstants.SUCCESS;
         } catch (IOException e) {
             return RestfulResult.error(e.getMessage());

@@ -49,3 +49,5 @@ dustlight:
       logout-url: /api/user/logout
       delete-cookies:
         - SESSION
+    register-email: 邮箱验证
+    reset-password-email: 密码重置
