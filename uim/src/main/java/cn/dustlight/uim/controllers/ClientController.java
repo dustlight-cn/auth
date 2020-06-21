@@ -26,7 +26,7 @@ import java.util.*;
 @RestController
 public class ClientController implements IClientController {
 
-    //@Autowired
+    @Autowired
     ClientMapper mapper;
 
     @Autowired
@@ -142,7 +142,7 @@ public class ClientController implements IClientController {
     protected ClientDetails checkRole(String appKey, Authentication authentication) throws AccessDeniedException {
         IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-        ClientDetails client = mapper.getClient(appKey);
+        ClientDetails client = mapper.loadClientByClientId(appKey);
         if (client == null)
             throw new NullPointerException("Client not found");
         if (!(roles.contains("ROLE_ROOT") || roles.contains("ROLE_ADMIN")) &&

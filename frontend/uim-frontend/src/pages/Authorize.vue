@@ -14,19 +14,21 @@
 
         <input type="hidden" hidden name="user_oauth_approval" value="true"/>
         <q-list>
-          <q-item-label header>应用 "{{clientId}}" 申请以下权限：</q-item-label>
-          <q-item v-for="(scope,i) in scopes" tag="label" v-ripple>
+          <q-item-label header>应用 "{{clientName}}" 申请以下权限：</q-item-label>
+          <q-item v-for="scope in scopes" tag="label" v-ripple>
             <q-item-section side top>
-              <q-checkbox :name="'scope.'+scope" v-model="scopesValues[i]"/>
+              <q-checkbox v-if="scope && scope.approved" disable :name="'scope.'+ scope.scope"
+                          v-model="scope.value"/>
+              <q-checkbox v-else :name="'scope.'+ scope.scope" v-model="scope.value"/>
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>{{scope}}</q-item-label>
-              <q-item-label caption>
-                权限描述
-              </q-item-label>
+              <q-item-label>{{scope.description || scope.scope}}</q-item-label>
+              <q-item-label v-if="scope.approved" caption>已授权</q-item-label>
             </q-item-section>
           </q-item>
+
+          <!--          <q-item-label caption>{{clientDescription}}</q-item-label>-->
         </q-list>
 
         <div style="min-height: 100px"/>
@@ -49,10 +51,10 @@
     name: 'Authorize',
     data() {
       return {
-        clientId: "unknow",
-        scopes: [],
-        scopesValues: [],
-        loading: true
+        loading: true,
+        clientName: this.$route.query.client_id || "Unknown",
+        clientDescription: "",
+        scopes: []
       }
     },
     methods: {
@@ -60,15 +62,18 @@
         let data = {
           user_oauth_approval: true
         }
-        this.scopes.forEach((val, i) => {
-          data['scope.' + val] = this.scopesValues[i];
+        this.scopes.forEach(scope => {
+          data['scope.' + scope.scope] = scope.value;
         })
-        console.log(data);
+        this.$q.loading.show()
         axios.post('/oauth/authorize?' + qs.stringify(this.$route.query), qs.stringify(data))
           .then(res => {
+
             location.href = res;
           }).catch(e => {
           console.error(e);
+        }).finally(() => {
+          this.$q.loading.hide()
         })
       }
     },
@@ -82,13 +87,17 @@
       }
       axios.get('/oauth/authorize?' + qs.stringify(data))
         .then(res => {
-          console.log(res)
-          this.clientId = res.clientId;
-          this.scopes = res.scopes;
-          this.scopesValues = new Array();
-          this.scopes.forEach(val => {
-            this.scopesValues.push(true)
-          })
+          this.clientName = res.clientName;
+          this.clientDescription = res.description;
+          if (res.scopes) {
+            for (var i in res.scopes)
+              this.scopes.push({
+                scope: i,
+                approved: res.scopes[i].approved,
+                description: res.scopes[i].description,
+                value: true
+              })
+          }
         }).catch(e => {
         console.error(e);
       }).finally(() => this.loading = false)

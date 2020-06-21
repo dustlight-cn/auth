@@ -53,6 +53,8 @@
 
       onSubmit() {
         let userdata = {username: this.account, password: this.password};
+
+        this.$q.loading.show()
         axios.post("/api/user/login", qs.stringify(userdata))
           .then(res => {
             if (this.$route.query.redirect_uri)
@@ -61,6 +63,8 @@
               location.href = '/'
           }).catch(e => {
           console.log(e);
+        }).finally(() => {
+          this.$q.loading.hide();
         })
       },
       register() {

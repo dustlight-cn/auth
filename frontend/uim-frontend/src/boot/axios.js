@@ -9,7 +9,7 @@ const router = typeof createRouter === 'function'
 
 class ApiError extends Error {
   constructor(message, code, data) {
-    super(message + ": " + data)
+    super(message)
     this.code = code
     this.data = data;
     if (Error.captureStackTrace)
@@ -28,13 +28,14 @@ axios.interceptors.response.use(response => {
   if (data && data.code) {
     if (data.code != 200) {
       if (data.code == 501) {
-        router.push({
-          path: '/Login',
-          query: {redirect_uri: location.href}
-        })
-        throw new UnauthorizedError(data.msg, data.code, data.data);
+        location.href = location.protocol + "//" + location.host + "/Login?redirect_uri=" + encodeURIComponent(location.href)
+        let e = new ApiError(data.msg, data.code, data.data)
+        Vue.prototype.$throw(e)
+        throw e
       }
-      throw new ApiError(data.msg, data.code, data.data)
+      let e = new ApiError(data.msg, data.code, data.data)
+      Vue.prototype.$throw(e)
+      throw e
     } else {
       if (data.data && data.data.redirect_uri)
         location.href = data.data.redirect_uri;
@@ -44,7 +45,21 @@ axios.interceptors.response.use(response => {
   return response
 }, error => {
   console.log(error)
+  Vue.prototype.$throw(error)
   return Promise.reject(error.response.status)
 })
 
 Vue.prototype.$axios = axios
+
+//系统错误捕获
+const errorHandler = (e, vm) => {
+  console.error(e);
+  Vue.prototype.$q.notify({
+    message: (e.message || '异常') + (e.code ? ", 错误码：" + e.code : ""),
+    caption: (e.data ? e.data : e),
+    icon: 'warning',
+    color: 'secondary'
+  })
+}
+Vue.config.errorHandler = errorHandler;
+Vue.prototype.$throw = (error) => errorHandler(error, this);

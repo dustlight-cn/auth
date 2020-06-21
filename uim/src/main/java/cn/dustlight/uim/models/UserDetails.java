@@ -157,7 +157,8 @@ public class UserDetails implements IUserDetails {
         if (this.authorities == null)
             return null;
         List<GrantedAuthority> result = AuthorityUtils.createAuthorityList(authorities);
-        result.add(new SimpleGrantedAuthority(roleName));
+        if (roleName != null)
+            result.add(new SimpleGrantedAuthority(roleName));
         return result;
     }
 

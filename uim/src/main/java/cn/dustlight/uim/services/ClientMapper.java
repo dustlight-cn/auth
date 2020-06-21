@@ -30,11 +30,11 @@ public interface ClientMapper {
     @Select("SELECT resource_name FROM resource_details,client_resource WHERE client_resource.cid=#{clientId} AND resource_details.id=client_resource.rid")
     List<String> getClientResourceIdsByClientId(String clientId);
 
-    @Select("SELECT scope_details.id,scope_name,auto_approve FROM scope_details,client_scope WHERE client_scope.cid=#{clientId} AND scope_details.id=client_scope.sid")
+    @Select("SELECT scope_name,auto_approve,scope_details.description as des FROM scope_details,client_scope WHERE client_scope.cid=#{clientId} AND scope_details.id=client_scope.sid")
     @Results(id = "ClientScope", value = {
             @Result(property = "scopeName", column = "scope_name"),
             @Result(property = "autoApprove", column = "auto_approve"),
-            @Result(property = "scopeId", column = "scope_details.id")
+            @Result(property = "scopeDescription", column = "des")
     })
     List<ClientDetails.ClientScope> getClientScopeByClientId(String clientId);
 
@@ -58,6 +58,10 @@ public interface ClientMapper {
             @Result(property = "updatedAt", column = "updatedAt")
     })
     ClientDetails loadClientByClientId(String clientId);
+
+    @Select("SELECT client_id,client_name,description FROM oauth_client_details WHERE client_id=#{clientId}")
+    @ResultMap("ClientDetails")
+    ClientDetails loadClientDescription(String clientId);
 
     //    @Insert("INSERT INTO oauth_client_details " +
 //            "(client_id,uid,client_name,resource_ids,client_secret,scope,authorized_grant_types,web_server_redirect_uri,authorities,additional_information,autoapprove) VALUES " +

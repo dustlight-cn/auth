@@ -11,7 +11,7 @@ import java.security.Principal;
 public interface IResourceController {
 
     @GetMapping("/details")
-    @PreAuthorize("hasAuthority('READ_USERINFO')")
+    @PreAuthorize("hasAuthority('READ_USERINFO') and #oauth2.clientHasRole('READ_USERINFO')")
     RestfulResult<UserDetails> getCurrentUserDetails(Principal principal);
 
 }

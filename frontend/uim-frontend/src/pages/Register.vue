@@ -128,34 +128,28 @@
         // this.step = 2;
         // return;
         let data = {email: this.email}
-        console.log(data)
+        this.$q.loading.show()
         axios.post("/api/user/code/email/register", qs.stringify(data))
           .then(res => {
-            console.log(res.data);
-            if (res.data.code == 200) {
-              this.step = 2;
-            } else {
-              throw new Error(res.data.msg);
-            }
+            this.step = 2;
           }).catch(e => {
           console.error(e);
+        }).finally(() => {
+          this.$q.loading.hide()
         })
       },
       verifyEmail() {
         // this.step = 3;
         // return;
         let data = {email: this.email, code: this.code}
-        console.log(data)
+        this.$q.loading.show()
         axios.post("/api/user/verify/email/register", qs.stringify(data))
           .then(res => {
-            console.log(res.data);
-            if (res.data.code == 200) {
-              this.step = 3;
-            } else {
-              throw new Error(res.data.msg);
-            }
+            this.step = 3;
           }).catch(e => {
           console.error(e);
+        }).finally(() => {
+          this.$q.loading.hide()
         })
       },
       register() {
@@ -164,20 +158,18 @@
           return;
         }
         let data = {username: this.username, password: this.password}
+
+        this.$q.loading.show()
         axios.post("/api/user/register", qs.stringify(data))
           .then(res => {
-            console.log(res.data);
-            if (res.data.code == 200) {
-
-              if (this.$route.query.redirect_uri)
-                location.href = this.$route.query.redirect_uri
-              else
-                location.href = '/Login'
-            } else {
-              throw new Error(res.data.msg);
-            }
+            if (this.$route.query.redirect_uri)
+              location.href = this.$route.query.redirect_uri
+            else
+              location.href = '/Login'
           }).catch(e => {
           console.error(e);
+        }).finally(() => {
+          this.$q.loading.hide()
         })
       }
     }
