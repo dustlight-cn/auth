@@ -11,7 +11,7 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-      maximum-pool-size: 1
+      maximum-pool-size: 4
   mvc:
     throw-exception-if-no-handler-found: true
   resources:
@@ -28,6 +28,8 @@ logging:
         uim:
           services:
             ClientMapper: debug
+            TemplateManagerMapper: debug
+            UserDetailsMapper: debug
 # Mybatis 缓存
 mybatis-plus:
   configuration:
