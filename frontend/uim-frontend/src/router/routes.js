@@ -24,13 +24,13 @@ const routes = [
       {path: '', component: () => import('pages/Authorize')}
     ]
   }, {
-    path: '/templates',
+    path: '/templates/list',
     component: () => import('layouts/ClearLayout.vue'),
     children: [
       {path: '', component: () => import('pages/Templaets.vue')}
     ]
   }, {
-    path: '/edit_template',
+    path: '/templates/edit',
     component: () => import('layouts/ClearLayout.vue'),
     children: [
       {path: '', component: () => import('pages/EditTemplate.vue')}

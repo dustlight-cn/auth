@@ -1,10 +1,7 @@
 package cn.dustlight.uim.controllers;
 
-import cn.dustlight.uim.RestfulConstants;
 import cn.dustlight.uim.RestfulResult;
-import cn.dustlight.uim.models.ClientDetails;
-import cn.dustlight.uim.models.IClientDetails;
-import cn.dustlight.uim.models.IUserDetails;
+import cn.dustlight.uim.models.*;
 import cn.dustlight.uim.services.ClientMapper;
 import cn.dustlight.uim.services.IVerificationCodeGenerator;
 import cn.dustlight.uim.utils.Snowflake;
@@ -22,6 +19,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.security.Principal;
 import java.util.*;
+import java.util.logging.Logger;
 
 @RestController
 public class ClientController implements IClientController {
@@ -41,7 +39,6 @@ public class ClientController implements IClientController {
     @Autowired
     AuthorizationEndpoint authorizationEndpoint;
 
-    @Override
     public RestfulResult createApp(String appName, Set<String> scope, Set<String> redirectUri, Authentication authentication) {
         IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -54,85 +51,23 @@ public class ClientController implements IClientController {
         }
         String appKey = Base64.getEncoder().encodeToString(out.toByteArray());
         String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generatorCode(128));
-        if (!mapper.insertClient(appKey,
-                userDetails.getUid(),
-                appName,
-                "",
-                passwordEncoder.encode(appSecret),
-                scope,
-                "authorization_code,refresh_token,password,implicit",
-                redirectUri,
-                "",
-                null,
-                "1")) {
-            return RestfulConstants.ERROR_UNKNOWN;
-        }
+//        if (!mapper.insertClient(appKey,
+//                userDetails.getUid(),
+//                appName,
+//                "",
+//                passwordEncoder.encode(appSecret),
+//                scope,
+//                "authorization_code,refresh_token,password,implicit",
+//                redirectUri,
+//                "",
+//                null,
+//                "1")) {
+//            return RestfulConstants.ERROR_UNKNOWN;
+//        }
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("appKey", appKey);
         data.put("appSecret", appSecret);
         return RestfulResult.success(data);
-    }
-
-    @Override
-    public RestfulResult<IClientDetails> getApp(String appKey, Authentication authentication) {
-        return RestfulResult.success(checkRole(appKey, authentication));
-    }
-
-    @Override
-    public RestfulResult deleteApp(String appKey, Authentication authentication) {
-        checkRole(appKey, authentication);
-        if (mapper.deleteClient(appKey))
-            return RestfulConstants.SUCCESS;
-        return RestfulConstants.ERROR_UNKNOWN;
-    }
-
-    @Override
-    public RestfulResult<String> resetAppSecret(String appKey, Authentication authentication) {
-        ClientDetails client = checkRole(appKey, authentication);
-        String newSecret = sha1(authentication.getName() +
-                client.getUid() +
-                verificationCodeGenerator.generatorCode(128));
-        boolean flag = mapper.updateSecret(appKey, passwordEncoder.encode(newSecret));
-        return flag ? RestfulResult.success(newSecret) : RestfulConstants.ERROR_UNKNOWN;
-    }
-
-    @Override
-    public RestfulResult updateAppName(String appKey, String appName, Authentication authentication) {
-        checkRole(appKey, authentication);
-        boolean flag = mapper.updateName(appKey, appName.trim());
-        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
-    }
-
-    @Override
-    public RestfulResult updateAppScope(String appKey, String scope, Authentication authentication) {
-        checkRole(appKey, authentication);
-        boolean flag = mapper.updateScope(appKey, scope.trim());
-        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
-    }
-
-    @Override
-    public RestfulResult updateAppRedirectUri(String appKey, String redirectUri, Authentication authentication) {
-        checkRole(appKey, authentication);
-        boolean flag = mapper.updateRedirectUri(appKey, redirectUri.trim());
-        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
-    }
-
-    @Override
-    public RestfulResult<List<ClientDetails>> getAllApps() {
-        return RestfulResult.success(mapper.getAllClients());
-    }
-
-    @Override
-    public RestfulResult<List<ClientDetails>> getCurrentUserApps(Principal principal) {
-        if (principal instanceof IUserDetails)
-            return RestfulResult.success(mapper.getClientsByUid(((IUserDetails) principal).getUid()));
-        else
-            return RestfulResult.success(mapper.getClientsByUsername(principal.getName()));
-    }
-
-    @Override
-    public RestfulResult<List<ClientDetails>> getUserApps(String username) {
-        return RestfulResult.success(mapper.getClientsByUsername(username));
     }
 
     protected String sha1(String str) {
@@ -149,5 +84,40 @@ public class ClientController implements IClientController {
                 client.getUid() != userDetails.getUid())
             throw new AccessDeniedException("Access Denied");
         return client;
+    }
+
+    @Override
+    public RestfulResult<List<ScopeDetails>> getScopeDetails() {
+        return RestfulResult.success(mapper.getScopes());
+    }
+
+    @Override
+    public RestfulResult<List<AuthorityDetails>> getAuthorityDetails() {
+        return RestfulResult.success(mapper.getAuthorities());
+    }
+
+    @Override
+    public RestfulResult<List<ClientDetails>> getCurrentUserClientDetails(Authentication authentication) {
+
+        Logger.getLogger(getClass().getName()).info(authentication.getPrincipal().toString()
+        );
+        IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
+        Logger.getLogger(getClass().getName()).info(userDetails.getUid() + "!!");
+        return RestfulResult.success(mapper.loadClientsByUserId(userDetails.getUid()));
+    }
+
+    @Override
+    public RestfulResult<List<ClientDetails>> getUserClientDetails(Long userId) {
+        return RestfulResult.success(mapper.loadClientsByUserId(userId));
+    }
+
+    @Override
+    public RestfulResult<List<AuthorityDetails>> getRoleAuthorities(Long roleId) {
+        return RestfulResult.success(mapper.getRoleAuthorities(roleId));
+    }
+
+    @Override
+    public RestfulResult<List<AuthorityDetails>> getScopeAuthorities(Long scopeId) {
+        return RestfulResult.success(mapper.getScopeAuthorities(scopeId));
     }
 }

@@ -34,7 +34,7 @@ CREATE TABLE `authority_details` (
   `id` bigint(20) NOT NULL,
   `authority_name` varchar(45) NOT NULL,
   `description` varchar(512) DEFAULT NULL,
-  `ceratedAt` datetime DEFAULT current_timestamp(),
+  `createdAt` datetime DEFAULT current_timestamp(),
   `updatedAt` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `authority_name_UNIQUE` (`authority_name`)
@@ -47,7 +47,7 @@ CREATE TABLE `authority_details` (
 
 LOCK TABLES `authority_details` WRITE;
 /*!40000 ALTER TABLE `authority_details` DISABLE KEYS */;
-INSERT INTO `authority_details` VALUES (0,'READ_USERINFO','获取用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(1,'WRITE_USERINFO','修改用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(2,'READ_USERINFNO_ANY','获取任意用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(3,'WRITE_USERINFO_ANY','修改任意用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(4,'CREATE_CLIENT','创建应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(5,'DELETE_CLIENT','删除应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(6,'DELETE_CLIENT_ANY','删除任意应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(7,'UPDATE_CLIENT','修改应用信息','2020-06-19 18:57:02','2020-06-19 18:57:02'),(8,'UPDATE_CLIENT_ANY','修改任意应用信息','2020-06-19 18:57:02','2020-06-19 18:57:02'),(9,'READ_TEMPLATE','获取模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(10,'WRITE_TEMPLATE','修改模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(11,'DELETE_TEMPLATE','删除模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(100,'TEST','测试权限','2020-06-20 22:27:19','2020-06-20 22:27:19');
+INSERT INTO `authority_details` VALUES (0,'READ_USERINFO','获取用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(1,'WRITE_USERINFO','修改用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(2,'READ_USERINFNO_ANY','获取任意用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(3,'WRITE_USERINFO_ANY','修改任意用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(4,'CREATE_CLIENT','创建应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(5,'DELETE_CLIENT','删除应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(6,'DELETE_CLIENT_ANY','删除任意应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(7,'UPDATE_CLIENT','修改应用信息','2020-06-19 18:57:02','2020-06-19 18:57:02'),(8,'UPDATE_CLIENT_ANY','修改任意应用信息','2020-06-19 18:57:02','2020-06-19 18:57:02'),(9,'READ_TEMPLATE','获取模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(10,'WRITE_TEMPLATE','修改模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(11,'DELETE_TEMPLATE','删除模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(12,'QUERY_USER_CLIENT','查询用户应用','2020-06-22 08:32:12','2020-06-22 08:32:12'),(13,'MANAGE_AUTHORITY','管理权限，包括对权限的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(14,'MANAGE_SCOPE','管理Scope，包括对Scope的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(15,'MANAGE_ROLE','管理角色，包括对角色的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(100,'TEST','测试权限','2020-06-20 22:27:19','2020-06-20 22:27:19');
 /*!40000 ALTER TABLE `authority_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -61,7 +61,10 @@ DROP TABLE IF EXISTS `client_authority`;
 CREATE TABLE `client_authority` (
   `cid` varchar(256) NOT NULL,
   `aid` bigint(20) NOT NULL,
-  PRIMARY KEY (`cid`,`aid`)
+  PRIMARY KEY (`cid`,`aid`),
+  KEY `client_authority_aid_idx` (`aid`),
+  CONSTRAINT `client_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `client_authority_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -83,9 +86,12 @@ DROP TABLE IF EXISTS `client_grant_types`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `client_grant_types` (
-  `cid` bigint(20) NOT NULL,
+  `cid` varchar(256) NOT NULL,
   `tid` bigint(20) NOT NULL,
-  PRIMARY KEY (`cid`,`tid`)
+  PRIMARY KEY (`cid`,`tid`),
+  KEY `client_grant_types_type_id_idx` (`tid`),
+  CONSTRAINT `client_grant_types_client_id` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `client_grant_types_type_id` FOREIGN KEY (`tid`) REFERENCES `grant_types` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -95,7 +101,7 @@ CREATE TABLE `client_grant_types` (
 
 LOCK TABLES `client_grant_types` WRITE;
 /*!40000 ALTER TABLE `client_grant_types` DISABLE KEYS */;
-INSERT INTO `client_grant_types` VALUES (0,0),(0,4);
+INSERT INTO `client_grant_types` VALUES ('order-client',0),('order-client',4);
 /*!40000 ALTER TABLE `client_grant_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -109,7 +115,10 @@ DROP TABLE IF EXISTS `client_resource`;
 CREATE TABLE `client_resource` (
   `cid` varchar(256) NOT NULL,
   `rid` bigint(20) NOT NULL,
-  PRIMARY KEY (`cid`,`rid`)
+  PRIMARY KEY (`cid`,`rid`),
+  KEY `client_resource_rid_idx` (`rid`),
+  CONSTRAINT `client_resource_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `client_resource_rid` FOREIGN KEY (`rid`) REFERENCES `resource_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -133,7 +142,10 @@ CREATE TABLE `client_scope` (
   `cid` varchar(256) NOT NULL,
   `sid` bigint(20) NOT NULL,
   `auto_approve` int(1) DEFAULT NULL,
-  PRIMARY KEY (`cid`,`sid`)
+  PRIMARY KEY (`cid`,`sid`),
+  KEY `client_scope_sid_idx` (`sid`),
+  CONSTRAINT `client_scope_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `client_scope_sid` FOREIGN KEY (`sid`) REFERENCES `scope_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -193,7 +205,9 @@ CREATE TABLE `oauth_client_details` (
   `createdAt` datetime DEFAULT current_timestamp(),
   `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`client_id`),
-  UNIQUE KEY `client_name_UNIQUE` (`client_name`)
+  UNIQUE KEY `client_name_UNIQUE` (`client_name`),
+  KEY `oauth_client_details_uid_idx` (`uid`),
+  CONSTRAINT `oauth_client_details_uid` FOREIGN KEY (`uid`) REFERENCES `user_details` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -244,7 +258,10 @@ DROP TABLE IF EXISTS `role_authority`;
 CREATE TABLE `role_authority` (
   `rid` bigint(20) NOT NULL,
   `aid` bigint(20) NOT NULL,
-  PRIMARY KEY (`rid`,`aid`)
+  PRIMARY KEY (`rid`,`aid`),
+  KEY `role_authority_aid_idx` (`aid`),
+  CONSTRAINT `role_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `role_authority_rid` FOREIGN KEY (`rid`) REFERENCES `role_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -254,7 +271,7 @@ CREATE TABLE `role_authority` (
 
 LOCK TABLES `role_authority` WRITE;
 /*!40000 ALTER TABLE `role_authority` DISABLE KEYS */;
-INSERT INTO `role_authority` VALUES (0,0),(0,1),(0,2),(0,3),(0,4),(0,5),(0,6),(0,7),(0,8),(0,9),(0,10),(0,11),(4,0),(4,1);
+INSERT INTO `role_authority` VALUES (0,0),(0,1),(0,2),(0,3),(0,4),(0,5),(0,6),(0,7),(0,8),(0,9),(0,10),(0,11),(0,12),(3,0),(3,1);
 /*!40000 ALTER TABLE `role_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -296,7 +313,10 @@ DROP TABLE IF EXISTS `scope_authority`;
 CREATE TABLE `scope_authority` (
   `sid` bigint(20) NOT NULL,
   `aid` bigint(20) NOT NULL,
-  PRIMARY KEY (`sid`,`aid`)
+  PRIMARY KEY (`sid`,`aid`),
+  KEY `scope_authority_aid_idx` (`aid`),
+  CONSTRAINT `scope_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `scope_authority_sid` FOREIGN KEY (`sid`) REFERENCES `scope_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -358,7 +378,7 @@ CREATE TABLE `sender_templates` (
 
 LOCK TABLES `sender_templates` WRITE;
 /*!40000 ALTER TABLE `sender_templates` DISABLE KEYS */;
-INSERT INTO `sender_templates` VALUES ('registerVerificationCode','\n\n<title>邮箱验证</title>\n\n\n<h4>邮箱x哈哈验证</h4>\n<p>您的验证码是： <b th:text=\"${code}\"></b></p>\n\n'),('邮箱验证','<h2 id=\"Specifications\" style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: rgb(61, 126, 154); border-top-style: solid; border-top-width: 3px; color: rgb(51, 51, 51); font-family: x-locale-heading-primary,zillaslab,Palatino,&amp;quot;Palatino Linotype&amp;quot;,x-locale-heading-secondary,serif; font-size: 2.33rem; font-style: normal; font-variant: normal; font-weight: 700; letter-spacing: normal; line-height: 1.2; margin-bottom: 20px; margin-left: 0px; margin-right: 0px; margin-top: 60px; orphans: 2; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 40px; position: relative; text-align: left; text-decoration: none; text-indent: 0px; text-transform: none; -webkit-text-stroke-width: 0px; white-space: normal; word-spacing: 0px;\">Specifications</h2><h4><p style=\"border: 0px none currentcolor; box-sizing: border-box; color: rgb(51, 51, 51); font-family: Arial, x-locale-body, sans-serif; font-size: 16px; font-variant-numeric: normal; font-variant-east-asian: normal; letter-spacing: normal; margin-bottom: 24px; max-width: 42rem; padding: 0px;\"></p><span style=\"color: rgb(51, 51, 51); font-family: Arial, x-locale-body, sans-serif; font-size: 16px; font-variant-numeric: normal; font-variant-east-asian: normal; letter-spacing: normal;\">\n\n</span><span style=\"color: rgb(51, 51, 51); font-family: Arial, x-locale-body, sans-serif; font-size: 16px; font-variant-numeric: normal; font-variant-east-asian: normal; letter-spacing: normal;\">\n\n</span><table class=\"standard-table\" style=\"border: 2px solid rgb(255, 255, 255); border-collapse: collapse; box-sizing: border-box; color: rgb(51, 51, 51); font-family: Arial, x-locale-body, sans-serif; font-size: 16px; font-variant-numeric: normal; font-variant-east-asian: normal; letter-spacing: normal; margin: 0px 0px 24px; max-width: 100%; padding: 0px; width: 100%;\">\n <thead style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">\n  <tr style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">\n   <th scope=\"col\" style=\"background: none 0% 0% / auto repeat scroll padding-box border-box rgba(212, 221, 228, 0.5); border-color: rgb(255, 255, 255) rgb(255, 255, 255) rgb(212, 221, 228); border-style: solid; border-width: 2px; border-image: none 100% / 1 / 0 stretch; font-style: inherit; margin: 0px; padding: 2px 8px 4px; text-align: left;\">Specification</th>\n   <th scope=\"col\" style=\"background: none 0% 0% / auto repeat scroll padding-box border-box rgba(212, 221, 228, 0.5); border-color: rgb(255, 255, 255) rgb(255, 255, 255) rgb(212, 221, 228); border-style: solid; border-width: 2px; border-image: none 100% / 1 / 0 stretch; font-style: inherit; margin: 0px; padding: 2px 8px 4px; text-align: left;\">Status</th>\n   <th scope=\"col\" style=\"background: none 0% 0% / auto repeat scroll padding-box border-box rgba(212, 221, 228, 0.5); border-color: rgb(255, 255, 255) rgb(255, 255, 255) rgb(212, 221, 228); border-style: solid; border-width: 2px; border-image: none 100% / 1 / 0 stretch; font-style: inherit; margin: 0px; padding: 2px 8px 4px; text-align: left;\">Comment</th>\n  </tr>\n </thead>\n <tbody style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">\n  <tr style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">\n   <td style=\"background-color: rgba(212, 221, 228, 0.25); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\"><a class=\"external\" lang=\"en\" href=\"https://html.spec.whatwg.org/multipage/editing.html#attr-contenteditable\" rel=\"noopener\" hreflang=\"en\" style=\"border: 0px none currentcolor; color: rgb(61, 126, 154); margin: 0px; padding: 0px; text-decoration-line: none;\">HTML Living Standard<br><small lang=\"en-US\" style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">The definition of \'contenteditable\' in that specification.</small></a></td>\n   <td style=\"background-color: rgba(212, 221, 228, 0.25); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\"><span class=\"spec-Living\" style=\"background-color: rgb(238, 238, 238); border-color: currentcolor; border-radius: 2px; border-style: none none none solid; border-width: 0px 0px 0px 4px; border-image: none 100% / 1 / 0 stretch; color: rgb(0, 83, 159); display: inline-block; font-family: Helvetica, arial, sans-serif; font-size: 14px; line-height: normal; margin: 0px 0px 0px 10px; min-width: 20px; padding: 0.45em 0.35em; vertical-align: baseline;\">Living Standard</span></td>\n   <td style=\"background-color: rgba(212, 221, 228, 0.25); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\">No change from latest snapshot, <a title=\"The \'HTML 5.2\' specification\" class=\"external\" lang=\"en\" href=\"https://www.w3.org/TR/html52/\" rel=\"noopener\" hreflang=\"en\" style=\"border: 0px none currentcolor; color: rgb(61, 126, 154); margin: 0px; padding: 0px; text-decoration-line: none;\">HTML 5.2</a></td>\n  </tr>\n  <tr style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">\n   <td style=\"background-color: rgba(212, 221, 228, 0.15); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\"><a class=\"external\" lang=\"en\" href=\"https://www.w3.org/TR/html52/editing.html#making-document-regions-editable-the-contenteditable-content-attribute\" rel=\"noopener\" hreflang=\"en\" style=\"border: 0px none currentcolor; color: rgb(61, 126, 154); margin: 0px; padding: 0px; text-decoration-line: none;\">HTML 5.2<br><small lang=\"en-US\" style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">The definition of \'contenteditable\' in that specification.</small></a></td>\n   <td style=\"background-color: rgba(212, 221, 228, 0.15); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\"><span class=\"spec-REC\" style=\"background-color: rgb(238, 238, 238); border-color: currentcolor; border-radius: 2px; border-style: none none none solid; border-width: 0px 0px 0px 4px; border-image: none 100% / 1 / 0 stretch; color: rgb(48, 156, 64); display: inline-block; font-family: Helvetica, arial, sans-serif; font-size: 14px; line-height: normal; margin: 0px 0px 0px 10px; min-width: 20px; padding: 0.45em 0.35em; vertical-align: baseline;\">Recommendation</span></td>\n   <td style=\"background-color: rgba(212, 221, 228, 0.15); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\">Snapshot of <a title=\"The \'HTML Living Standard\' specification\" class=\"external\" lang=\"en\" href=\"https://html.spec.whatwg.org/multipage/\" rel=\"noopener\" hreflang=\"en\" style=\"border: 0px none currentcolor; color: rgb(61, 126, 154); margin: 0px; padding: 0px; text-decoration-line: none;\">HTML Living Standard</a>, no change from <a title=\"The \'HTML 5.1\' specification\" class=\"external\" lang=\"en\" href=\"https://www.w3.org/TR/html51/\" rel=\"noopener\" hreflang=\"en\" style=\"border: 0px none currentcolor; color: rgb(61, 126, 154); margin: 0px; padding: 0px; text-decoration-line: none;\">HTML 5.1</a></td>\n  </tr>\n  <tr style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">\n   <td style=\"background-color: rgba(212, 221, 228, 0.25); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\"><a class=\"external\" lang=\"en\" href=\"https://www.w3.org/TR/html51/editing.html#making-document-regions-editable-the-contenteditable-content-attribute\" rel=\"noopener\" hreflang=\"en\" style=\"border: 0px none currentcolor; color: rgb(61, 126, 154); margin: 0px; padding: 0px; text-decoration-line: none;\">HTML 5.1<br><small lang=\"en-US\" style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">The definition of \'contenteditable\' in that specification.</small></a></td>\n   <td style=\"background-color: rgba(212, 221, 228, 0.25); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\"><span class=\"spec-REC\" style=\"background-color: rgb(238, 238, 238); border-color: currentcolor; border-radius: 2px; border-style: none none none solid; border-width: 0px 0px 0px 4px; border-image: none 100% / 1 / 0 stretch; color: rgb(48, 156, 64); display: inline-block; font-family: Helvetica, arial, sans-serif; font-size: 14px; line-height: normal; margin: 0px 0px 0px 10px; min-width: 20px; padding: 0.45em 0.35em; vertical-align: baseline;\">Recommendation</span></td>\n   <td style=\"background-color: rgba(212, 221, 228, 0.25); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\">Snapshot of <a title=\"The \'HTML Living Standard\' specification\" class=\"external\" lang=\"en\" href=\"https://html.spec.whatwg.org/multipage/\" rel=\"noopener\" hreflang=\"en\" style=\"border: 0px none currentcolor; color: rgb(61, 126, 154); margin: 0px; padding: 0px; text-decoration-line: none;\">HTML Living Standard</a>, no change from <a title=\"The \'HTML5\' specification\" class=\"external\" lang=\"en\" href=\"https://www.w3.org/TR/html52/\" rel=\"noopener\" hreflang=\"en\" style=\"border: 0px none currentcolor; color: rgb(61, 126, 154); margin: 0px; padding: 0px; text-decoration-line: none;\">HTML5</a></td>\n  </tr>\n  <tr style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">\n   <td style=\"background-color: rgba(212, 221, 228, 0.15); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\"><a class=\"external\" lang=\"en\" href=\"https://www.w3.org/TR/html52/editing.html#attr-contenteditable\" rel=\"noopener\" hreflang=\"en\" style=\"border: 0px none currentcolor; color: rgb(61, 126, 154); margin: 0px; padding: 0px; text-decoration-line: none;\">HTML5<br><small lang=\"en-US\" style=\"border-bottom-color: currentColor; border-bottom-style: none; border-bottom-width: 0px; border-image-outset: 0; border-image-repeat: stretch; border-image-slice: 100%; border-image-source: none; border-image-width: 1; border-left-color: currentColor; border-left-style: none; border-left-width: 0px; border-right-color: currentColor; border-right-style: none; border-right-width: 0px; border-top-color: currentColor; border-top-style: none; border-top-width: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;\">The definition of \'contenteditable\' in that specification.</small></a></td>\n   <td style=\"background-color: rgba(212, 221, 228, 0.15); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\"><span class=\"spec-REC\" style=\"background-color: rgb(238, 238, 238); border-color: currentcolor; border-radius: 2px; border-style: none none none solid; border-width: 0px 0px 0px 4px; border-image: none 100% / 1 / 0 stretch; color: rgb(48, 156, 64); display: inline-block; font-family: Helvetica, arial, sans-serif; font-size: 14px; line-height: normal; margin: 0px 0px 0px 10px; min-width: 20px; padding: 0.45em 0.35em; vertical-align: baseline;\">Recommendation</span></td>\n   <td style=\"background-color: rgba(212, 221, 228, 0.15); border: 2px solid rgb(255, 255, 255); box-shadow: rgba(212, 221, 228, 0.5) 0px -1px 0px 0px inset; margin: 0px; padding: 6px 8px;\">Snapshot of <a title=\"The \'HTML Living Standard\' specification\" class=\"external\" lang=\"en\" href=\"https://html.spec.whatwg.org/multipage/\" rel=\"noopener\" hreflang=\"en\" style=\"border: 0px none currentcolor; color: rgb(61, 126, 154); margin: 0px; padding: 0px; text-decoration-line: none;\">HTML Living Standard</a>, initial definition.</td></tr></tbody></table></h4>');
+INSERT INTO `sender_templates` VALUES ('registerVerificationCode','\n\n<title>邮箱验证</title>\n\n\n<h4>邮箱验证</h4>\n<p>您的验证码是： <b th:text=\"${code}\"></b></p>\n\n'),('邮箱验证','<div><b>邮箱验证</b></div><div><br></div><div>您的邮箱验证码是：<b>${code}</b></div>');
 /*!40000 ALTER TABLE `sender_templates` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -377,7 +397,7 @@ CREATE TABLE `user_details` (
   `nickname` varchar(45) DEFAULT NULL,
   `phone` varchar(30) DEFAULT NULL,
   `gender` int(2) unsigned zerofill DEFAULT 00,
-  `role` bigint(20) DEFAULT 4,
+  `role` bigint(20) DEFAULT 3,
   `enabled` int(1) DEFAULT 1,
   `account_expired` int(1) DEFAULT 0,
   `credentials_expired` int(1) DEFAULT 0,
@@ -388,7 +408,9 @@ CREATE TABLE `user_details` (
   UNIQUE KEY `uid_UNIQUE` (`uid`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`),
-  UNIQUE KEY `phone_UNIQUE` (`phone`)
+  UNIQUE KEY `phone_UNIQUE` (`phone`),
+  KEY `user_details_role_idx` (`role`),
+  CONSTRAINT `user_details_role` FOREIGN KEY (`role`) REFERENCES `role_details` (`id`) ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -398,7 +420,7 @@ CREATE TABLE `user_details` (
 
 LOCK TABLES `user_details` WRITE;
 /*!40000 ALTER TABLE `user_details` DISABLE KEYS */;
-INSERT INTO `user_details` VALUES (0,'hansin','$2a$10$1QW45Y2n8HB2B57Rqh.TC.qL5YbjOUixejBQKSSUeEr0HYs8lX.Wy','',NULL,NULL,00,0,1,0,0,0,'2020-05-16 17:26:58','2020-06-19 19:13:24'),(7962943190178328576,'hansin1997','$2a$10$kexcic1HeA3.ZuQcqkJOEOzpdItnTRy4H9nL7HeN0PA17XzNWTnJW','hansin@dustlight.cn','',NULL,00,4,1,0,0,0,'2020-06-21 07:16:55','2020-06-21 07:16:55'),(7962953799328985088,'lbgzs2010','$2a$10$bhqVV6UpPlutKXPm4pidzOtcK41vu.Lgr81XTqaAqFvFTHX0aOVQO','lbgzs2010@live.cn','',NULL,00,4,1,0,0,0,'2020-06-21 07:59:04','2020-06-21 07:59:04');
+INSERT INTO `user_details` VALUES (0,'hansin','$2a$10$1QW45Y2n8HB2B57Rqh.TC.qL5YbjOUixejBQKSSUeEr0HYs8lX.Wy','',NULL,NULL,00,0,1,0,0,0,'2020-05-16 17:26:58','2020-06-19 19:13:24'),(7962943190178328576,'hansin1997','$2a$10$kexcic1HeA3.ZuQcqkJOEOzpdItnTRy4H9nL7HeN0PA17XzNWTnJW','hansin@dustlight.cn','',NULL,00,3,1,0,0,0,'2020-06-21 07:16:55','2020-06-22 16:52:32');
 /*!40000 ALTER TABLE `user_details` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -411,4 +433,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-22  3:06:47
+-- Dump completed on 2020-06-23  0:59:21

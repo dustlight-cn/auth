@@ -40,7 +40,7 @@ dustlight:
   uim:
     csrf-enabled: false
     public-paths:
-      - /api/**
+      - /api/user
     resource-paths:
       - /oauth_info
       - /api/res/**
