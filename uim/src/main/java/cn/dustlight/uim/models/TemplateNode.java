@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class TemplateNode implements Serializable {
 
-    public Integer id;
+    public Long id;
     public String name;
     public String text;
 
@@ -33,12 +33,12 @@ public class TemplateNode implements Serializable {
         this.text = text;
     }
 
-    public Integer getId() {
-        return id;
+    public String getId() {
+        return String.valueOf(id);
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setId(String id) {
+        this.id = Long.valueOf(id);
     }
 
     @Override

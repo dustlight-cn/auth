@@ -2,6 +2,7 @@ package cn.dustlight.uim.services;
 
 import cn.dustlight.sender.core.ITemplateManager;
 import cn.dustlight.uim.models.TemplateNode;
+import cn.dustlight.uim.utils.Snowflake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ public class TemplateManager implements ITemplateManager {
 
     @Autowired
     protected TemplateManagerMapper managerMapper;
+
+    @Autowired
+    protected Snowflake snowflake;
 
     @Override
     public List<String> getTemplatesName() throws IOException {
@@ -26,7 +30,7 @@ public class TemplateManager implements ITemplateManager {
 
     @Override
     public void setTemplate(String templateName, String templateContent) throws IOException {
-        managerMapper.setTemplate(templateName, templateContent);
+        managerMapper.setTemplate(snowflake.getNextId(), templateName, templateContent);
     }
 
     @Override
@@ -54,5 +58,13 @@ public class TemplateManager implements ITemplateManager {
             list.add(new TemplateNode(kv.getKey(), kv.getValue()));
         }
         managerMapper.setTemplates(list);
+    }
+
+    public void updateName(Long id, String name) {
+        managerMapper.updateTemplateName(id, name);
+    }
+
+    public List<TemplateNode> getTemplatesList() {
+        return managerMapper.getTemplates();
     }
 }

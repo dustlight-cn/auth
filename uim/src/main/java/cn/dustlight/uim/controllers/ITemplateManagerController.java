@@ -34,5 +34,5 @@ public interface ITemplateManagerController {
 
     @PostMapping("/name/{id}")
     @PreAuthorize("hasAuthority('WRITE_TEMPLATE')")
-    RestfulResult updateName(@PathVariable Integer id, String name);
+    RestfulResult updateName(@PathVariable Long id, String name);
 }

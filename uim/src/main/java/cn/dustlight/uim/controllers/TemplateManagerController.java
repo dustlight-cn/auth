@@ -1,10 +1,9 @@
 package cn.dustlight.uim.controllers;
 
-import cn.dustlight.sender.core.ITemplateManager;
 import cn.dustlight.uim.RestfulConstants;
 import cn.dustlight.uim.RestfulResult;
 import cn.dustlight.uim.models.TemplateNode;
-import cn.dustlight.uim.services.TemplateManagerMapper;
+import cn.dustlight.uim.services.TemplateManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,10 +14,7 @@ import java.util.List;
 public class TemplateManagerController implements ITemplateManagerController {
 
     @Autowired
-    private ITemplateManager templateManager;
-
-    @Autowired
-    private TemplateManagerMapper managerMapper;
+    private TemplateManager templateManager;
 
     @Override
     public RestfulResult<List<String>> getTemplateNames() throws IOException {
@@ -27,7 +23,7 @@ public class TemplateManagerController implements ITemplateManagerController {
 
     @Override
     public RestfulResult<List<TemplateNode>> getTemplates() throws IOException {
-        return RestfulResult.success(managerMapper.getTemplates());
+        return RestfulResult.success(templateManager.getTemplatesList());
     }
 
     @Override
@@ -48,8 +44,8 @@ public class TemplateManagerController implements ITemplateManagerController {
     }
 
     @Override
-    public RestfulResult updateName(Integer id, String name) {
-        return managerMapper.updateTemplateName(id, name) ?
-                RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    public RestfulResult updateName(Long id, String name) {
+        templateManager.updateName(id, name);
+        return RestfulConstants.SUCCESS;
     }
 }

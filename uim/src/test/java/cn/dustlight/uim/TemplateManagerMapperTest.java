@@ -2,6 +2,7 @@ package cn.dustlight.uim;
 
 import cn.dustlight.uim.models.TemplateNode;
 import cn.dustlight.uim.services.TemplateManagerMapper;
+import cn.dustlight.uim.utils.Snowflake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,9 @@ public class TemplateManagerMapperTest {
 
     @Autowired
     TemplateManagerMapper mapper;
+
+    @Autowired
+    Snowflake snowflake;
 
     Logger logger = Logger.getLogger(getClass().getName());
 
@@ -34,12 +38,12 @@ public class TemplateManagerMapperTest {
     public void createTemplate() {
         String name = getClass().getName();
         String text = new Date().toString() + " - " + System.currentTimeMillis();
-        mapper.setTemplate(name,text);
+        mapper.setTemplate(snowflake.getNextId(), name, text);
         logger.info(mapper.getTemplate(name));
     }
 
     @Test
-    public void deleteAll(){
+    public void deleteAll() {
         List<String> list = mapper.getTemplatesName();
         mapper.deleteTemplate(list);
         getTemplateNames();

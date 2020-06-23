@@ -17,8 +17,8 @@ public interface TemplateManagerMapper {
     @Select("SELECT text FROM sender_templates where name=#{templateName}")
     String getTemplate(String templateName);
 
-    @Insert("INSERT INTO sender_templates (name,text) VALUES (#{templateName},#{templateContent}) ON DUPLICATE KEY UPDATE text=#{templateContent}")
-    boolean setTemplate(String templateName, String templateContent);
+    @Insert("INSERT INTO sender_templates (id,name,text) VALUES (#{id},#{templateName},#{templateContent}) ON DUPLICATE KEY UPDATE text=#{templateContent}")
+    boolean setTemplate(Long id, String templateName, String templateContent);
 
     @Select("SELECT * FROM sender_templates")
     List<TemplateNode> getTemplates();
@@ -35,5 +35,5 @@ public interface TemplateManagerMapper {
     boolean deleteTemplate(@Param("templateNames") List<String> templateNames);
 
     @Update("UPDATE sender_templates SET name=#{name} WHERE id=#{id}")
-    boolean updateTemplateName(Integer id, String name);
+    boolean updateTemplateName(Long id, String name);
 }

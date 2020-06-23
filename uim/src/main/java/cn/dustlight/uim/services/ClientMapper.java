@@ -19,6 +19,8 @@ public interface ClientMapper {
     })
     List<AuthorityDetails> getAuthorities();
 
+//    boolean updateAuthority(Long authorit);
+
     @Select("SELECT * FROM scope_details")
     @Results(id = "ScopeDetails", value = {
             @Result(property = "name", column = "scope_name")
