@@ -1,6 +1,7 @@
 package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulResult;
+import cn.dustlight.uim.models.TemplateNode;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,11 @@ public interface ITemplateManagerController {
     @PreAuthorize("hasAuthority('READ_TEMPLATE')")
     RestfulResult<List<String>> getTemplateNames() throws IOException;
 
+    @GetMapping("/list")
+    @PreAuthorize("hasAuthority('READ_TEMPLATE')")
+    RestfulResult<List<TemplateNode>> getTemplates() throws IOException;
+
+
     @GetMapping("/text/{name}")
     @PreAuthorize("hasAuthority('READ_TEMPLATE')")
     RestfulResult<String> getTemplate(@PathVariable String name) throws IOException;
@@ -25,4 +31,8 @@ public interface ITemplateManagerController {
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('WRITE_TEMPLATE')")
     RestfulResult deleteTemplate(@RequestBody String[] names) throws IOException;
+
+    @PostMapping("/name/{id}")
+    @PreAuthorize("hasAuthority('WRITE_TEMPLATE')")
+    RestfulResult updateName(@PathVariable Integer id, String name);
 }

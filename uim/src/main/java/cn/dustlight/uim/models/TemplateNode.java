@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class TemplateNode implements Serializable {
 
+    public Integer id;
     public String name;
     public String text;
 
@@ -32,10 +33,19 @@ public class TemplateNode implements Serializable {
         this.text = text;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "TemplateNode{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", text='" + text + '\'' +
                 '}';
     }

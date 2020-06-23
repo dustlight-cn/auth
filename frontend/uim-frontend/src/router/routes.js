@@ -36,6 +36,12 @@ const routes = [
       {path: '', component: () => import('pages/EditTemplate.vue')}
     ]
   }, {
+    path: '/client/authorities',
+    component: () => import('layouts/ClearLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/EditAuthorities.vue')}
+    ]
+  }, {
     path: '/error/403',
     component: () => import('pages/Error403.vue')
   }

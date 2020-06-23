@@ -98,7 +98,7 @@ module.exports = function (/* ctx */) {
 
       // Quasar plugins
       plugins: [
-        'Loading', 'Notify'
+        'Loading', 'Notify', 'Dialog'
       ],
       config: {
         loading: { /* Loading defaults */}, notify: { /* Notify defaults */}

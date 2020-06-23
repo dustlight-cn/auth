@@ -18,7 +18,7 @@ public interface TemplateManagerMapper {
     String getTemplate(String templateName);
 
     @Insert("INSERT INTO sender_templates (name,text) VALUES (#{templateName},#{templateContent}) ON DUPLICATE KEY UPDATE text=#{templateContent}")
-    void setTemplate(String templateName, String templateContent);
+    boolean setTemplate(String templateName, String templateContent);
 
     @Select("SELECT * FROM sender_templates")
     List<TemplateNode> getTemplates();
@@ -26,11 +26,14 @@ public interface TemplateManagerMapper {
     @Insert({"<script><foreach collection='templates' item='template' separator=';'>",
             "INSERT INTO sender_templates (name,text) VALUES (#{template.name},#{template.text}) ON DUPLICATE KEY UPDATE text=#{template.text}",
             "</foreach></script>"})
-    void setTemplates(@Param("templates") List<TemplateNode> templates);
+    boolean setTemplates(@Param("templates") List<TemplateNode> templates);
 
     @Delete({"<script>DELETE FROM sender_templates WHERE name IN " +
             "<foreach collection='templateNames' item='name' open='(' separator=',' close=')'>",
             "#{name}",
             "</foreach></script>"})
-    void deleteTemplate(@Param("templateNames") List<String> templateNames);
+    boolean deleteTemplate(@Param("templateNames") List<String> templateNames);
+
+    @Update("UPDATE sender_templates SET name=#{name} WHERE id=#{id}")
+    boolean updateTemplateName(Integer id, String name);
 }
