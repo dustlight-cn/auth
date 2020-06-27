@@ -14,12 +14,6 @@ import java.util.List;
 @Service
 public interface UserDetailsMapper {
 
-    @Select("SELECT role_name FROM role_details where id=#{id}")
-    String getRoleNameByRoleId(Long id);
-
-    @Select("SELECT authority_name FROM authority_details,role_details,role_authority where role_details.id=#{id} and role_details.id=role_authority.rid and authority_details.id=role_authority.aid")
-    String[] getAuthorityByRoleId(Long id);
-
     @Select("SELECT uid,password,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username=#{uoe} OR email=#{uoe}")
     @ResultMap("UserDetails")
     UserDetails loadUserOAuth(String uoe);
@@ -38,8 +32,8 @@ public interface UserDetailsMapper {
             @Result(property = "accountExpired", column = "account_expired"),
             @Result(property = "credentialsExpired", column = "credentials_expired"),
             @Result(property = "accountLocked", column = "account_locked"),
-            @Result(property = "roleName", column = "role", one = @One(select = "cn.dustlight.uim.services.UserDetailsMapper.getRoleNameByRoleId")),
-            @Result(property = "authorities", column = "role", many = @Many(select = "cn.dustlight.uim.services.UserDetailsMapper.getAuthorityByRoleId"))
+            @Result(property = "roleName", column = "role", one = @One(select = "cn.dustlight.uim.services.RoleDetailsMapper.getRoleNameByRoleId")),
+            @Result(property = "authorities", column = "role", many = @Many(select = "cn.dustlight.uim.services.AuthorityDetailsMapper.getAuthorityByRoleId"))
     })
     UserDetails loadUser(String username);
 

@@ -1,6 +1,7 @@
 package cn.dustlight.uim.configurations;
 
-import cn.dustlight.uim.services.ClientMapper;
+import cn.dustlight.uim.services.AuthorityDetailsMapper;
+import cn.dustlight.uim.services.ClientDetailsMapper;
 import cn.dustlight.uim.services.OAuthClientDetailsService;
 import cn.dustlight.uim.services.OAuthUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +35,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private OAuthClientDetailsService clientDetailsService;
 
     @Autowired
+    private AuthorityDetailsMapper authorityDetailsMapper;
+
+    @Autowired
     private ApprovalStore approvalStore;
 
     private UserApproveHandler userApproveHandler = new UserApproveHandler();
 
     @Autowired
-    private ClientMapper clientMapper;
+    private ClientDetailsMapper clientDetailsMapper;
 
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
@@ -50,7 +54,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         userApproveHandler.setApprovalStore(approvalStore);
         userApproveHandler.setRequestFactory(endpoints.getOAuth2RequestFactory());
         userApproveHandler.setClientDetailsService(clientDetailsService);
-        userApproveHandler.setMapper(clientMapper);
+        userApproveHandler.setMapper(authorityDetailsMapper);
 
         endpoints.userApprovalHandler(userApproveHandler);
     }

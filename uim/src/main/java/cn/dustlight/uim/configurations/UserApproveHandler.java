@@ -1,6 +1,7 @@
 package cn.dustlight.uim.configurations;
 
-import cn.dustlight.uim.services.ClientMapper;
+import cn.dustlight.uim.services.AuthorityDetailsMapper;
+import cn.dustlight.uim.services.ClientDetailsMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -13,17 +14,17 @@ import java.util.Set;
 
 public class UserApproveHandler extends ApprovalStoreUserApprovalHandler implements UserApprovalHandler {
 
-    private ClientMapper mapper;
+    private AuthorityDetailsMapper mapper;
 
     public UserApproveHandler() {
 
     }
 
-    public void setMapper(ClientMapper mapper) {
+    public void setMapper(AuthorityDetailsMapper mapper) {
         this.mapper = mapper;
     }
 
-    public ClientMapper getMapper() {
+    public AuthorityDetailsMapper getMapper() {
         return mapper;
     }
 

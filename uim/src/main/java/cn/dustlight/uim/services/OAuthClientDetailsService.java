@@ -10,7 +10,7 @@ import java.util.List;
 public class OAuthClientDetailsService implements ClientDetailsService, ClientRegistrationService {
 
     @Autowired
-    private ClientMapper mapper;
+    private ClientDetailsMapper mapper;
 
     @Override
     public ClientDetails loadClientByClientId(String s) throws ClientRegistrationException {

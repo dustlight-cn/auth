@@ -2,7 +2,7 @@ package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulResult;
 import cn.dustlight.uim.models.ClientDetails;
-import cn.dustlight.uim.services.ClientMapper;
+import cn.dustlight.uim.services.ClientDetailsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.approval.Approval;
@@ -28,7 +28,7 @@ public class OAuth2Controller {
     private AuthorizationEndpoint endpoint;
 
     @Autowired
-    private ClientMapper mapper;
+    private ClientDetailsMapper mapper;
 
     @Autowired
     private ApprovalStore approvalStore;

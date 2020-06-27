@@ -19,6 +19,9 @@ import java.util.Set;
  */
 @RequestMapping("/api/client")
 public interface IClientController {
+//
+//    @PostMapping("/create_client")
+//    RestfulResult createClient();
 
     @GetMapping("/scopes")
     RestfulResult<List<ScopeDetails>> getScopeDetails();
@@ -39,4 +42,5 @@ public interface IClientController {
 
     @GetMapping("/authorities/scope/{scopeId}")
     RestfulResult<List<AuthorityDetails>> getScopeAuthorities(@PathVariable Long scopeId);
+
 }

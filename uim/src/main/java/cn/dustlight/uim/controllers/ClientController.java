@@ -2,8 +2,10 @@ package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulResult;
 import cn.dustlight.uim.models.*;
-import cn.dustlight.uim.services.ClientMapper;
+import cn.dustlight.uim.services.AuthorityDetailsMapper;
+import cn.dustlight.uim.services.ClientDetailsMapper;
 import cn.dustlight.uim.services.IVerificationCodeGenerator;
+import cn.dustlight.uim.services.ScopeDetailsMapper;
 import cn.dustlight.uim.utils.Snowflake;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.security.Principal;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -25,7 +26,14 @@ import java.util.logging.Logger;
 public class ClientController implements IClientController {
 
     @Autowired
-    ClientMapper mapper;
+    ClientDetailsMapper clientMapper;
+
+    @Autowired
+    ScopeDetailsMapper scopeDetailsMapper;
+
+    @Autowired
+    AuthorityDetailsMapper authorityDetailsMapper;
+
 
     @Autowired
     Snowflake snowflake;
@@ -77,7 +85,7 @@ public class ClientController implements IClientController {
     protected ClientDetails checkRole(String appKey, Authentication authentication) throws AccessDeniedException {
         IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-        ClientDetails client = mapper.loadClientByClientId(appKey);
+        ClientDetails client = clientMapper.loadClientByClientId(appKey);
         if (client == null)
             throw new NullPointerException("Client not found");
         if (!(roles.contains("ROLE_ROOT") || roles.contains("ROLE_ADMIN")) &&
@@ -88,12 +96,12 @@ public class ClientController implements IClientController {
 
     @Override
     public RestfulResult<List<ScopeDetails>> getScopeDetails() {
-        return RestfulResult.success(mapper.getScopes());
+        return RestfulResult.success(scopeDetailsMapper.getScopes());
     }
 
     @Override
     public RestfulResult<List<AuthorityDetails>> getAuthorityDetails() {
-        return RestfulResult.success(mapper.getAuthorities());
+        return RestfulResult.success(authorityDetailsMapper.getAuthorities());
     }
 
     @Override
@@ -103,21 +111,21 @@ public class ClientController implements IClientController {
         );
         IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
         Logger.getLogger(getClass().getName()).info(userDetails.getUid() + "!!");
-        return RestfulResult.success(mapper.loadClientsByUserId(userDetails.getUid()));
+        return RestfulResult.success(clientMapper.loadClientsByUserId(userDetails.getUid()));
     }
 
     @Override
     public RestfulResult<List<ClientDetails>> getUserClientDetails(Long userId) {
-        return RestfulResult.success(mapper.loadClientsByUserId(userId));
+        return RestfulResult.success(clientMapper.loadClientsByUserId(userId));
     }
 
     @Override
     public RestfulResult<List<AuthorityDetails>> getRoleAuthorities(Long roleId) {
-        return RestfulResult.success(mapper.getRoleAuthorities(roleId));
+        return RestfulResult.success(authorityDetailsMapper.getRoleAuthorities(roleId));
     }
 
     @Override
     public RestfulResult<List<AuthorityDetails>> getScopeAuthorities(Long scopeId) {
-        return RestfulResult.success(mapper.getScopeAuthorities(scopeId));
+        return RestfulResult.success(authorityDetailsMapper.getScopeAuthorities(scopeId));
     }
 }
