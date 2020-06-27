@@ -41,6 +41,7 @@ dustlight:
     csrf-enabled: false
     public-paths:
       - /api/user/**
+      - /oauth/check_token
     resource-paths:
       - /oauth_info
       - /api/res/**
