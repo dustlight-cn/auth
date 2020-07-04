@@ -1,8 +1,8 @@
--- MySQL dump 10.16  Distrib 10.1.44-MariaDB, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.30, for Linux (x86_64)
 --
 -- Host: dustlight.cn    Database: oauth
 -- ------------------------------------------------------
--- Server version	10.4.13-MariaDB-1:10.4.13+maria~bionic
+-- Server version	8.0.20
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -19,7 +19,7 @@
 -- Current Database: `oauth`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `oauth` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `oauth` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE `oauth`;
 
@@ -31,14 +31,14 @@ DROP TABLE IF EXISTS `authority_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `authority_details` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint NOT NULL,
   `authority_name` varchar(45) NOT NULL,
   `description` varchar(512) DEFAULT NULL,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp(),
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `authority_name_UNIQUE` (`authority_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,12 +60,12 @@ DROP TABLE IF EXISTS `client_authority`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `client_authority` (
   `cid` varchar(256) NOT NULL,
-  `aid` bigint(20) NOT NULL,
+  `aid` bigint NOT NULL,
   PRIMARY KEY (`cid`,`aid`),
   KEY `client_authority_aid_idx` (`aid`),
-  CONSTRAINT `client_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `client_authority_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  CONSTRAINT `client_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `client_authority_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +74,6 @@ CREATE TABLE `client_authority` (
 
 LOCK TABLES `client_authority` WRITE;
 /*!40000 ALTER TABLE `client_authority` DISABLE KEYS */;
-INSERT INTO `client_authority` VALUES ('order-client',1);
 /*!40000 ALTER TABLE `client_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,12 +86,12 @@ DROP TABLE IF EXISTS `client_grant_types`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `client_grant_types` (
   `cid` varchar(256) NOT NULL,
-  `tid` bigint(20) NOT NULL,
+  `tid` bigint NOT NULL,
   PRIMARY KEY (`cid`,`tid`),
   KEY `client_grant_types_type_id_idx` (`tid`),
-  CONSTRAINT `client_grant_types_client_id` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `client_grant_types_type_id` FOREIGN KEY (`tid`) REFERENCES `grant_types` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  CONSTRAINT `client_grant_types_client_id` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE,
+  CONSTRAINT `client_grant_types_type_id` FOREIGN KEY (`tid`) REFERENCES `grant_types` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,7 +100,7 @@ CREATE TABLE `client_grant_types` (
 
 LOCK TABLES `client_grant_types` WRITE;
 /*!40000 ALTER TABLE `client_grant_types` DISABLE KEYS */;
-INSERT INTO `client_grant_types` VALUES ('order-client',0),('order-client',4);
+INSERT INTO `client_grant_types` VALUES ('VTWQABLXBFXJGJUIIBMDAAAA',0);
 /*!40000 ALTER TABLE `client_grant_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,12 +113,12 @@ DROP TABLE IF EXISTS `client_resource`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `client_resource` (
   `cid` varchar(256) NOT NULL,
-  `rid` bigint(20) NOT NULL,
+  `rid` bigint NOT NULL,
   PRIMARY KEY (`cid`,`rid`),
   KEY `client_resource_rid_idx` (`rid`),
-  CONSTRAINT `client_resource_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `client_resource_rid` FOREIGN KEY (`rid`) REFERENCES `resource_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  CONSTRAINT `client_resource_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE,
+  CONSTRAINT `client_resource_rid` FOREIGN KEY (`rid`) REFERENCES `resource_details` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,13 +139,13 @@ DROP TABLE IF EXISTS `client_scope`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `client_scope` (
   `cid` varchar(256) NOT NULL,
-  `sid` bigint(20) NOT NULL,
-  `auto_approve` int(1) DEFAULT NULL,
+  `sid` bigint NOT NULL,
+  `auto_approve` int DEFAULT NULL,
   PRIMARY KEY (`cid`,`sid`),
   KEY `client_scope_sid_idx` (`sid`),
-  CONSTRAINT `client_scope_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `client_scope_sid` FOREIGN KEY (`sid`) REFERENCES `scope_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  CONSTRAINT `client_scope_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE,
+  CONSTRAINT `client_scope_sid` FOREIGN KEY (`sid`) REFERENCES `scope_details` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,7 +154,7 @@ CREATE TABLE `client_scope` (
 
 LOCK TABLES `client_scope` WRITE;
 /*!40000 ALTER TABLE `client_scope` DISABLE KEYS */;
-INSERT INTO `client_scope` VALUES ('order-client',0,0),('order-client',1,0);
+INSERT INTO `client_scope` VALUES ('VTWQABLXBFXJGJUIIBMDAAAA',0,NULL),('VTWQABLXBFXJGJUIIBMDAAAA',1,NULL);
 /*!40000 ALTER TABLE `client_scope` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -167,11 +166,11 @@ DROP TABLE IF EXISTS `grant_types`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `grant_types` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint NOT NULL,
   `grant_type` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `grant_type_UNIQUE` (`grant_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,22 +192,22 @@ DROP TABLE IF EXISTS `oauth_client_details`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oauth_client_details` (
   `client_id` varchar(256) NOT NULL,
-  `uid` bigint(20) NOT NULL DEFAULT 0,
+  `uid` bigint NOT NULL DEFAULT '0',
   `client_secret` varchar(256) NOT NULL,
   `client_name` varchar(256) NOT NULL,
   `redirect_uri` varchar(1024) DEFAULT NULL,
-  `access_token_validity` int(11) DEFAULT NULL,
-  `refresh_token_validity` int(11) DEFAULT NULL,
+  `access_token_validity` int DEFAULT '7200',
+  `refresh_token_validity` int DEFAULT '86400',
   `additional_information` varchar(4096) DEFAULT NULL,
-  `enabled` int(1) DEFAULT NULL,
+  `enabled` int DEFAULT NULL,
   `description` varchar(4096) DEFAULT NULL,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`client_id`),
   UNIQUE KEY `client_name_UNIQUE` (`client_name`),
   KEY `oauth_client_details_uid_idx` (`uid`),
-  CONSTRAINT `oauth_client_details_uid` FOREIGN KEY (`uid`) REFERENCES `user_details` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  CONSTRAINT `oauth_client_details_uid` FOREIGN KEY (`uid`) REFERENCES `user_details` (`uid`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,7 +216,7 @@ CREATE TABLE `oauth_client_details` (
 
 LOCK TABLES `oauth_client_details` WRITE;
 /*!40000 ALTER TABLE `oauth_client_details` DISABLE KEYS */;
-INSERT INTO `oauth_client_details` VALUES ('order-client',0,'$2a$10$sNNrAJ/Cdh8YHCK1f8s7KeS0zPfdgFyuxIy7m5CRaaV1w8vuUe2Oe','测试应用','http://localhost:8080/hello',3600,36000,NULL,NULL,'这是一个测试应用！','2020-06-20 09:23:22','2020-06-21 03:51:36');
+INSERT INTO `oauth_client_details` VALUES ('VTWQABLXBFXJGJUIIBMDAAAA',7963536486284521472,'$2a$10$jeL0Gx7EpPYm4ZytRdF4F.n9jcc0CpnOfCG2XyuyaCzrUEkJyrVz6','测试应用','http://localhost',NULL,NULL,NULL,1,'测试啊啊a','2020-07-04 13:55:27','2020-07-04 13:55:27');
 /*!40000 ALTER TABLE `oauth_client_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,14 +228,14 @@ DROP TABLE IF EXISTS `resource_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `resource_details` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint NOT NULL,
   `resource_name` varchar(128) NOT NULL,
   `description` varchar(512) DEFAULT NULL,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `resource_name_UNIQUE` (`resource_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -256,13 +255,13 @@ DROP TABLE IF EXISTS `role_authority`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `role_authority` (
-  `rid` bigint(20) NOT NULL,
-  `aid` bigint(20) NOT NULL,
+  `rid` bigint NOT NULL,
+  `aid` bigint NOT NULL,
   PRIMARY KEY (`rid`,`aid`),
   KEY `role_authority_aid_idx` (`aid`),
-  CONSTRAINT `role_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `role_authority_rid` FOREIGN KEY (`rid`) REFERENCES `role_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  CONSTRAINT `role_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `role_authority_rid` FOREIGN KEY (`rid`) REFERENCES `role_details` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -271,7 +270,7 @@ CREATE TABLE `role_authority` (
 
 LOCK TABLES `role_authority` WRITE;
 /*!40000 ALTER TABLE `role_authority` DISABLE KEYS */;
-INSERT INTO `role_authority` VALUES (0,0),(0,1),(0,2),(0,3),(0,4),(0,5),(0,6),(0,7),(0,8),(0,9),(0,10),(0,11),(0,12),(3,0),(3,1);
+INSERT INTO `role_authority` VALUES (0,0),(3,0),(0,1),(3,1),(0,2),(0,3),(0,4),(0,5),(0,6),(0,7),(0,8),(0,9),(0,10),(0,11),(0,12);
 /*!40000 ALTER TABLE `role_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -283,14 +282,14 @@ DROP TABLE IF EXISTS `role_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `role_details` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint NOT NULL,
   `role_name` varchar(45) NOT NULL,
   `description` varchar(512) DEFAULT NULL,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `role_name_UNIQUE` (`role_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -311,13 +310,13 @@ DROP TABLE IF EXISTS `scope_authority`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scope_authority` (
-  `sid` bigint(20) NOT NULL,
-  `aid` bigint(20) NOT NULL,
+  `sid` bigint NOT NULL,
+  `aid` bigint NOT NULL,
   PRIMARY KEY (`sid`,`aid`),
   KEY `scope_authority_aid_idx` (`aid`),
-  CONSTRAINT `scope_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `scope_authority_sid` FOREIGN KEY (`sid`) REFERENCES `scope_details` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  CONSTRAINT `scope_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `scope_authority_sid` FOREIGN KEY (`sid`) REFERENCES `scope_details` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -338,14 +337,14 @@ DROP TABLE IF EXISTS `scope_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scope_details` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint NOT NULL,
   `scope_name` varchar(32) NOT NULL,
   `description` varchar(512) DEFAULT NULL,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `scope_name_UNIQUE` (`scope_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -366,10 +365,12 @@ DROP TABLE IF EXISTS `sender_templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sender_templates` (
+  `id` bigint NOT NULL,
   `name` varchar(64) NOT NULL,
-  `text` text DEFAULT NULL,
-  PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='-';
+  `text` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='-';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -378,7 +379,7 @@ CREATE TABLE `sender_templates` (
 
 LOCK TABLES `sender_templates` WRITE;
 /*!40000 ALTER TABLE `sender_templates` DISABLE KEYS */;
-INSERT INTO `sender_templates` VALUES ('registerVerificationCode','\n\n<title>邮箱验证</title>\n\n\n<h4>邮箱验证</h4>\n<p>您的验证码是： <b th:text=\"${code}\"></b></p>\n\n'),('邮箱验证','<div><b>邮箱验证</b></div><div><br></div><div>您的邮箱验证码是：<b>${code}</b></div>');
+INSERT INTO `sender_templates` VALUES (5,'邮箱验证','您的邮箱验证码是：<b>${code}</b>'),(7963842828905869312,'密码验证','模板\"密码验证\"的内容'),(7963843925674422272,'测试模板123','此模板用于测试。<div>${text}</div><div>123</div><div>123</div>');
 /*!40000 ALTER TABLE `sender_templates` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -390,28 +391,28 @@ DROP TABLE IF EXISTS `user_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_details` (
-  `uid` bigint(20) NOT NULL,
+  `uid` bigint NOT NULL,
   `username` varchar(45) NOT NULL,
   `password` varchar(128) NOT NULL,
   `email` varchar(320) NOT NULL,
   `nickname` varchar(45) DEFAULT NULL,
   `phone` varchar(30) DEFAULT NULL,
-  `gender` int(2) unsigned zerofill DEFAULT 00,
-  `role` bigint(20) DEFAULT 3,
-  `enabled` int(1) DEFAULT 1,
-  `account_expired` int(1) DEFAULT 0,
-  `credentials_expired` int(1) DEFAULT 0,
-  `account_locked` int(1) DEFAULT 0,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `gender` int(2) unsigned zerofill DEFAULT '00',
+  `role` bigint DEFAULT '3',
+  `enabled` int DEFAULT '1',
+  `account_expired` int DEFAULT '0',
+  `credentials_expired` int DEFAULT '0',
+  `account_locked` int DEFAULT '0',
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uid`),
   UNIQUE KEY `uid_UNIQUE` (`uid`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `phone_UNIQUE` (`phone`),
   KEY `user_details_role_idx` (`role`),
-  CONSTRAINT `user_details_role` FOREIGN KEY (`role`) REFERENCES `role_details` (`id`) ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  CONSTRAINT `user_details_role` FOREIGN KEY (`role`) REFERENCES `role_details` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -420,7 +421,7 @@ CREATE TABLE `user_details` (
 
 LOCK TABLES `user_details` WRITE;
 /*!40000 ALTER TABLE `user_details` DISABLE KEYS */;
-INSERT INTO `user_details` VALUES (0,'hansin','$2a$10$1QW45Y2n8HB2B57Rqh.TC.qL5YbjOUixejBQKSSUeEr0HYs8lX.Wy','',NULL,NULL,00,0,1,0,0,0,'2020-05-16 17:26:58','2020-06-19 19:13:24'),(7962943190178328576,'hansin1997','$2a$10$kexcic1HeA3.ZuQcqkJOEOzpdItnTRy4H9nL7HeN0PA17XzNWTnJW','hansin@dustlight.cn','',NULL,00,3,1,0,0,0,'2020-06-21 07:16:55','2020-06-22 16:52:32');
+INSERT INTO `user_details` VALUES (7963536486284521472,'hansin','$2a$10$JlchpvIeNmBCcM21b5n3C.v5QJTLuMr0G9o.ESoqfiDKxqeMVT9N.','845612500@qq.com','',NULL,00,0,1,0,0,0,'2020-06-22 22:34:26','2020-06-22 22:36:32'),(7963848610667757568,'lbgzs2010','$2a$10$eo1WaKYlmSO0HDjpnXiF2u7cB32ipODwNMffrO0PHQP1I3p654dN6','lbgzs2010@live.cn','',NULL,00,3,1,0,0,0,'2020-06-23 19:14:43','2020-06-23 19:14:43'),(7967577771824656384,'hansin1997','$2a$10$Q0DDP1WQC1JD8Ooo/RUXV.OCKPu0jeLN7DRePEy4btgSRPz1IMOj6','hansin1997@outlook.com','',NULL,00,3,1,0,0,0,'2020-07-04 02:13:04','2020-07-04 02:13:04');
 /*!40000 ALTER TABLE `user_details` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -433,4 +434,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-23  0:59:21
+-- Dump completed on 2020-07-04 22:40:14

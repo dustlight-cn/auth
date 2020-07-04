@@ -28,7 +28,7 @@
             </q-item-section>
           </q-item>
 
-          <!--          <q-item-label caption>{{clientDescription}}</q-item-label>-->
+          <q-item-label caption>{{clientDescription}}</q-item-label>
         </q-list>
 
         <div style="min-height: 100px"/>

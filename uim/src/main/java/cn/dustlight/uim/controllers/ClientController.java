@@ -1,5 +1,6 @@
 package cn.dustlight.uim.controllers;
 
+import cn.dustlight.uim.RestfulConstants;
 import cn.dustlight.uim.RestfulResult;
 import cn.dustlight.uim.models.*;
 import cn.dustlight.uim.services.AuthorityDetailsMapper;
@@ -7,47 +8,54 @@ import cn.dustlight.uim.services.ClientDetailsMapper;
 import cn.dustlight.uim.services.IVerificationCodeGenerator;
 import cn.dustlight.uim.services.ScopeDetailsMapper;
 import cn.dustlight.uim.utils.Snowflake;
+import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.*;
-import java.util.logging.Logger;
 
 @RestController
 public class ClientController implements IClientController {
 
     @Autowired
-    ClientDetailsMapper clientMapper;
+    private ClientDetailsMapper clientMapper;
 
     @Autowired
-    ScopeDetailsMapper scopeDetailsMapper;
+    private ScopeDetailsMapper scopeDetailsMapper;
 
     @Autowired
-    AuthorityDetailsMapper authorityDetailsMapper;
-
-
-    @Autowired
-    Snowflake snowflake;
+    private AuthorityDetailsMapper authorityDetailsMapper;
 
     @Autowired
-    IVerificationCodeGenerator verificationCodeGenerator;
+    private Snowflake snowflake;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private IVerificationCodeGenerator verificationCodeGenerator;
 
     @Autowired
-    AuthorizationEndpoint authorizationEndpoint;
+    private PasswordEncoder passwordEncoder;
 
-    public RestfulResult createApp(String appName, Set<String> scope, Set<String> redirectUri, Authentication authentication) {
+    @Autowired
+    private AuthorizationEndpoint authorizationEndpoint;
+
+    private final static Base32 base32 = new Base32();
+
+    protected String sha1(String str) {
+        return DigestUtils.sha1Hex(str);
+    }
+
+    @Transactional
+    @Override
+    public RestfulResult createClient(String name, String redirectUri, String description, List<Long> scopes, List<Long> grantTypes, Authentication authentication) {
         IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Long id = snowflake.getNextId();
@@ -57,41 +65,34 @@ public class ClientController implements IClientController {
         } catch (IOException e) {
             return RestfulResult.error(e.getMessage());
         }
-        String appKey = Base64.getEncoder().encodeToString(out.toByteArray());
+        String appKey = base32.encodeToString(out.toByteArray());//Base64.getEncoder().encodeToString(out.toByteArray());
         String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generatorCode(128));
-//        if (!mapper.insertClient(appKey,
-//                userDetails.getUid(),
-//                appName,
-//                "",
-//                passwordEncoder.encode(appSecret),
-//                scope,
-//                "authorization_code,refresh_token,password,implicit",
-//                redirectUri,
-//                "",
-//                null,
-//                "1")) {
-//            return RestfulConstants.ERROR_UNKNOWN;
-//        }
+        boolean flag = clientMapper.insertClient(appKey, userDetails.getUid(), passwordEncoder.encode(appSecret), name, redirectUri,
+                null, null, null, true, description);
+        flag = flag & clientMapper.insertClientScopes(appKey, scopes);
+        flag = flag & clientMapper.insertClientGrantTypes(appKey, grantTypes);
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("appKey", appKey);
         data.put("appSecret", appSecret);
-        return RestfulResult.success(data);
+        return flag ? RestfulResult.success(data) : RestfulConstants.ERROR_UNKNOWN;
     }
 
-    protected String sha1(String str) {
-        return DigestUtils.sha1Hex(str);
+    @Override
+    public RestfulResult deleteClient(String appKey, Authentication authentication) {
+        boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("DELETE_CLIENT_ANY") ?
+                clientMapper.deleteClient(appKey) :
+                clientMapper.deleteClientWithUid(appKey, ((IUserDetails) authentication.getPrincipal()).getUid());
+        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
-    protected ClientDetails checkRole(String appKey, Authentication authentication) throws AccessDeniedException {
-        IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
-        Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-        ClientDetails client = clientMapper.loadClientByClientId(appKey);
-        if (client == null)
-            throw new NullPointerException("Client not found");
-        if (!(roles.contains("ROLE_ROOT") || roles.contains("ROLE_ADMIN")) &&
-                client.getUid() != userDetails.getUid())
-            throw new AccessDeniedException("Access Denied");
-        return client;
+    @Override
+    public RestfulResult<String> resetClientSecret(String appKey, Authentication authentication) {
+        Long id = snowflake.getNextId();
+        String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generatorCode(128));
+        boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("DELETE_CLIENT_ANY") ?
+                clientMapper.updateClientSecret(appKey, passwordEncoder.encode(appSecret)) :
+                clientMapper.updateClientSecretWithUid(appKey, passwordEncoder.encode(appSecret), ((IUserDetails) authentication.getPrincipal()).getUid());
+        return flag ? RestfulResult.success(appSecret) : RestfulConstants.ERROR_UNKNOWN;
     }
 
     @Override
@@ -106,11 +107,7 @@ public class ClientController implements IClientController {
 
     @Override
     public RestfulResult<List<ClientDetails>> getCurrentUserClientDetails(Authentication authentication) {
-
-        Logger.getLogger(getClass().getName()).info(authentication.getPrincipal().toString()
-        );
         IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
-        Logger.getLogger(getClass().getName()).info(userDetails.getUid() + "!!");
         return RestfulResult.success(clientMapper.loadClientsByUserId(userDetails.getUid()));
     }
 
