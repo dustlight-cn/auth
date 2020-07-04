@@ -70,7 +70,7 @@ public class ClientDetails implements IClientDetails {
     @Override
     public Set<String> getScope() {
         if (scope == null)
-            return null;
+            return new HashSet<>();
         Set<String> set = new HashSet<>();
         for (ClientScope s : scope) {
             set.add(s.getScopeName());
@@ -81,7 +81,7 @@ public class ClientDetails implements IClientDetails {
     @Override
     public Set<String> getAuthorizedGrantTypes() {
         if (authorizedGrantTypes == null)
-            return null;
+            return new HashSet<>();
         return new HashSet<>(authorizedGrantTypes);
     }
 

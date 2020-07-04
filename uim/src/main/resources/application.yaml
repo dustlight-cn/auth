@@ -1,12 +1,12 @@
 # Spring配置（Mail、MySQL、Redis）
 spring:
   redis:
-    host: dustlight.cn
-    port: 30010
+    host: ${REDIS_HOST:redis}
+    port: ${REDIS_PORT:6379}
   datasource:
-    url: jdbc:mysql://dustlight.cn:30020/oauth?characterEncoding=utf8&useSSL=false
-    username: hansin
-    password: 123456
+    url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/oauth?characterEncoding=utf8&useSSL=false
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASS}
     hikari:
       connection-timeout: 30000
       idle-timeout: 600000
@@ -17,9 +17,9 @@ spring:
   resources:
     add-mappings: false
   mail:
-    host: smtp.exmail.qq.com
-    username: noreply@dustlight.cn
-    password: Lb845612500
+    host: ${SMTP_HOST:smtp.exmail.qq.com}
+    username: ${SMTP_USER}
+    password: ${SMTP_PASS}
 # 日志输出
 logging:
   level:
@@ -42,6 +42,7 @@ dustlight:
     public-paths:
       - /api/user/**
       - /oauth/check_token
+      - /oauth/token
     resource-paths:
       - /oauth_info
       - /api/res/**

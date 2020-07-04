@@ -1,0 +1,1124 @@
+{
+	"info": {
+		"_postman_id": "3fc7bd4a-be9e-4525-a97d-148aab9cb53b",
+		"name": "UIM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "code_email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/code/email/register",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"code",
+								"email",
+								"register"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "gg@GG",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "code_email_resetPwd",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/code/email/register?email=gg@GG",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"code",
+								"email",
+								"register"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "gg@GG"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify_email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/verify/email/register?email=gg@GG&code=YuYFXO",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"verify",
+								"email",
+								"register"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "gg@GG"
+								},
+								{
+									"key": "code",
+									"value": "YuYFXO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify_email_resetPwd",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/verify/email/resetPwd?email=gg@GG&code=8KLMk514y0K5",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"verify",
+								"email",
+								"resetPwd"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "gg@GG"
+								},
+								{
+									"key": "code",
+									"value": "8KLMk514y0K5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/register?username=111111&password=111111",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"register"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "111111"
+								},
+								{
+									"key": "password",
+									"value": "111111"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/login?username=hansin&password=123456",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "hansin"
+								},
+								{
+									"key": "password",
+									"value": "123456"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/logout",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change_email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/reset/email?email=gg@GG",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"reset",
+								"email"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "gg@GG"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset_password_by_email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/reset/email/password?password=845612500",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"reset",
+								"email",
+								"password"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "845612500"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset_nickname",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/reset/nickname?nickname=gggg",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"reset",
+								"nickname"
+							],
+							"query": [
+								{
+									"key": "nickname",
+									"value": "gggg"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users_details",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"111111\",\"asd\",\"hansin\"]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/details",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "is_username_exists",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/reset/nickname?nickname=gggg",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"reset",
+								"nickname"
+							],
+							"query": [
+								{
+									"key": "nickname",
+									"value": "gggg"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/details/hansin",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"details",
+								"hansin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "current_user_details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/details",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"details"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "template",
+			"item": [
+				{
+					"name": "template_names",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/template/names",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"template",
+								"names"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_template",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/template/text/resetPasswordVerificationCode",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"template",
+								"text",
+								"resetPasswordVerificationCode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "set_template",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/template/text/test?text=<div th:text=\"'Your code is '+${code}\"></div>",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"template",
+								"text",
+								"test"
+							],
+							"query": [
+								{
+									"key": "text",
+									"value": "<div th:text=\"'Your code is '+${code}\"></div>"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_templates",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"test\"]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/template/delete",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"template",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list_templates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/template/text/resetPasswordVerificationCode",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"template",
+								"text",
+								"resetPasswordVerificationCode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_name",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/template/text/test?text=<div th:text=\"'Your code is '+${code}\"></div>",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"template",
+								"text",
+								"test"
+							],
+							"query": [
+								{
+									"key": "text",
+									"value": "<div th:text=\"'Your code is '+${code}\"></div>"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "resource",
+			"item": [
+				{
+					"name": "current_user_details",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "eeff1c5c-c9b6-4add-800d-b23b2a698f75",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "queryParams",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/res/details",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"res",
+								"details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oauth_info",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "eeff1c5c-c9b6-4add-800d-b23b2a698f75",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "queryParams",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/oauth_info",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"oauth_info"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "oauth",
+			"item": [
+				{
+					"name": "authorize",
+					"protocolProfileBehavior": {
+						"followRedirects": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/oauth/authorize?response_type=code&client_id=rO0ABXcJbn7Q7uQJ8AAA&redirect_uri=http://localhost:1234/&scope=&state=hello",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "rO0ABXcJbn7Q7uQJ8AAA"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:1234/"
+								},
+								{
+									"key": "scope",
+									"value": ""
+								},
+								{
+									"key": "state",
+									"value": "hello"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "authorize",
+					"protocolProfileBehavior": {
+						"followRedirects": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user_oauth_approval",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "scope.test",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "scope.userinfo",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/oauth/authorize?response_type=code&client_id=rO0ABXcJbn7Q7uQJ8AAA&redirect_uri=http://localhost:1234/&scope=&state=hello",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "rO0ABXcJbn7Q7uQJ8AAA"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:1234/"
+								},
+								{
+									"key": "scope",
+									"value": ""
+								},
+								{
+									"key": "state",
+									"value": "hello"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "token",
+					"protocolProfileBehavior": {
+						"followRedirects": false
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "order-client",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "order-secret-8888",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user_oauth_approval",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "scope.test",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "scope.userinfo",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/oauth/token?grant_type=authorization_code&code=ZomsMj",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code"
+								},
+								{
+									"key": "code",
+									"value": "ZomsMj"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "client",
+			"item": [
+				{
+					"name": "create_app",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "测试应用",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试啊啊a",
+									"type": "text"
+								},
+								{
+									"key": "redirectUri",
+									"value": "http://localhost",
+									"type": "text"
+								},
+								{
+									"key": "scopes",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "scopes",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "grantTypes",
+									"value": "0",
+									"type": "text"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_app",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app/VTWQABLXBFXJGI2XAVMDAAAA",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app",
+								"VTWQABLXBFXJGI2XAVMDAAAA"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset_secret",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "://{{Host}}:{{Port}}/api/client/app_secret/VTWQABLXBFXJGI2XAVMDAAAA",
+							"protocol": "",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app_secret",
+								"VTWQABLXBFXJGI2XAVMDAAAA"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all_scope_details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/scopes",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"scopes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all_authorities_details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authorities",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"authorities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_clients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/clients/7963536486284521472",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"clients",
+								"7963536486284521472"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "current_user_clients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/clients",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "role_authorities_details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authorities/role/3",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"authorities",
+								"role",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "scope_authorities_details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authorities/scope/1",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"authorities",
+								"scope",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "hello",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "3f7a448e-a464-42fd-8480-52a9370bd9e0",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "bearer",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "queryParams",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Protocol}}://{{Host}}:{{Port}}/hello",
+					"protocol": "{{Protocol}}",
+					"host": [
+						"{{Host}}"
+					],
+					"port": "{{Port}}",
+					"path": [
+						"hello"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -1,6 +1,7 @@
 package cn.dustlight.uim.services;
 
 import cn.dustlight.uim.models.ClientDetails;
+import cn.dustlight.uim.models.ClientDetails.ClientScope;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public interface ClientDetailsMapper {
             @Result(property = "autoApprove", column = "auto_approve"),
             @Result(property = "scopeDescription", column = "des")
     })
-    List<ClientDetails.ClientScope> getClientScopeByClientId(String clientId);
+    List<ClientScope> getClientScopeByClientId(String clientId);
 
     @Select("SELECT client_id,uid,client_secret,client_name,redirect_uri,access_token_validity,refresh_token_validity,additional_information,enabled,description,createdAt,updatedAt FROM oauth_client_details WHERE client_id=#{clientId}")
     @Results(id = "ClientDetails", value = {
@@ -26,7 +27,7 @@ public interface ClientDetailsMapper {
             @Result(property = "clientSecret", column = "client_secret"),
             @Result(property = "clientName", column = "client_name"),
             @Result(property = "resourceIds", column = "client_id", many = @Many(select = "cn.dustlight.uim.services.ResourceDetailsMapper.getClientResourceIdsByClientId")),
-            @Result(property = "scope", column = "client_id", many = @Many(select = "cn.dustlight.uim.services.ClientMapper.getClientScopeByClientId")),
+            @Result(property = "scope", column = "client_id", many = @Many(select = "cn.dustlight.uim.services.ClientDetailsMapper.getClientScopeByClientId")),
             @Result(property = "authorizedGrantTypes", column = "client_id", many = @Many(select = "cn.dustlight.uim.services.GrantTypeMapper.getClientGrantTypesByClientId")),
             @Result(property = "authorities", column = "client_id", many = @Many(select = "cn.dustlight.uim.services.AuthorityDetailsMapper.getAuthoritiesByClientId")),
             @Result(property = "redirectUri", column = "redirect_uri"),
@@ -47,5 +48,33 @@ public interface ClientDetailsMapper {
     @Select("SELECT client_id,uid,client_name,redirect_uri,access_token_validity,refresh_token_validity,additional_information,enabled,description,createdAt,updatedAt FROM oauth_client_details WHERE uid=#{uid}")
     @ResultMap("ClientDetails")
     List<ClientDetails> loadClientsByUserId(Long uid);
+
+    @Insert("INSERT INTO oauth_client_details(client_id,uid,client_secret,client_name,redirect_uri,access_token_validity,refresh_token_validity,additional_information,enabled,description) VALUES" +
+            "(#{clientId},#{uid},#{clientSecret},#{clientName},#{redirectUri},#{accessTokenValidity},#{refreshTokenValidity},#{additional},#{enabled},#{description})")
+    boolean insertClient(String clientId, Long uid, String clientSecret, String clientName, String redirectUri, Integer accessTokenValidity, Integer refreshTokenValidity, String additional, boolean enabled, String description);
+
+    @Delete("DELETE FROM oauth_client_details WHERE client_id=#{clientId}")
+    boolean deleteClient(String clientId);
+
+    @Delete("DELETE FROM oauth_client_details WHERE client_id=#{clientId} AND uid=#{uid}")
+    boolean deleteClientWithUid(String clientId, Long uid);
+
+    @Update("UPDATE oauth_client_details SET client_secret=#{clientSecret} WHERE client_id=#{clientId}")
+    boolean updateClientSecret(String clientId, String clientSecret);
+
+    @Update("UPDATE oauth_client_details SET client_secret=#{clientSecret} WHERE client_id=#{clientId} AND uid=#{uid}")
+    boolean updateClientSecretWithUid(String clientId, String clientSecret, Long uid);
+
+    @Insert("<script>INSERT IGNORE INTO client_scope(cid,sid) VALUES" +
+            "<foreach collection='scopes' item='scope' separator=','>" +
+            "(#{clientId},#{scope})" +
+            "</foreach></script>")
+    boolean insertClientScopes(@Param("clientId") String clientId, @Param("scopes") List<Long> Scopes);
+
+    @Insert("<script>INSERT IGNORE INTO client_grant_types(cid,tid) VALUES" +
+            "<foreach collection='types' item='type' separator=','>" +
+            "(#{clientId},#{type})" +
+            "</foreach></script>")
+    boolean insertClientGrantTypes(@Param("clientId") String clientId, @Param("types") List<Long> types);
 
 }
