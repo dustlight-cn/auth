@@ -19,7 +19,6 @@ public class OAuthUserDetailService implements UserDetailsService {
         cn.dustlight.uim.models.UserDetails u = userDetailsMapper.loadUserOAuth(username);
         if(u == null)
             throw new UsernameNotFoundException("Username or email: '" + username + "' not found!");
-        u.setUsername(username);
         return u;
     }
 }

@@ -41,7 +41,10 @@ dustlight:
   uim:
     csrf-enabled: false
     public-paths:
-      - /api/user/**
+      - /api/user/code/**
+      - /api/user/verify/**
+      - /api/user/login
+      - /api/user/register
       - /oauth/check_token
       - /oauth/token
     resource-paths:

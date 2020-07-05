@@ -1,15 +1,33 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/IndexLayout.vue'),
     children: [
       {path: '', component: () => import('pages/Index.vue')}
+    ]
+  }, {
+    path: '/manage/',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: 'info',
+        component: () => import('pages/UserInfo.vue')
+      }, {
+        path: 'templates',
+        component: () => import('pages/Templaets.vue')
+      }
     ]
   }, {
     path: '/login',
     component: () => import('layouts/ClearLayout.vue'),
     children: [
       {path: '', component: () => import('pages/Login')}
+    ]
+  }, {
+    path: '/password',
+    component: () => import('layouts/ClearLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/ResetPassword')}
     ]
   }, {
     path: '/register',
@@ -24,20 +42,8 @@ const routes = [
       {path: '', component: () => import('pages/Authorize')}
     ]
   }, {
-    path: '/templates/list',
-    component: () => import('layouts/ClearLayout.vue'),
-    children: [
-      {path: '', component: () => import('pages/Templaets.vue')}
-    ]
-  }, {
-    path: '/templates/edit',
-    component: () => import('layouts/ClearLayout.vue'),
-    children: [
-      {path: '', component: () => import('pages/EditTemplate.vue')}
-    ]
-  }, {
     path: '/client/authorities',
-    component: () => import('layouts/ClearLayout.vue'),
+    component: () => import('layouts/MainLayout.vue'),
     children: [
       {path: '', component: () => import('pages/EditAuthorities.vue')}
     ]

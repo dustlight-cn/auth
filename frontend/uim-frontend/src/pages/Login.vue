@@ -28,9 +28,13 @@
       />
 
       <div style="min-height: 100px"/>
+
       <div class="absolute-bottom-right">
-        <q-btn label="登录" type="submit" color="primary"/>
         <q-btn label="注册" @click="register" color="primary" flat class="q-ml-sm"/>
+        <q-btn label="登录" type="submit" color="primary"/>
+      </div>
+      <div class="absolute-bottom-left">
+        <q-btn label="忘记密码？" @click="forgot" color="primary" flat class="q-ml-sm"/>
       </div>
     </q-form>
 
@@ -70,6 +74,12 @@
       register() {
         this.$router.push({
           path: '/register',
+          query: {redirect_uri: location.href}
+        })
+      },
+      forgot() {
+        this.$router.push({
+          path: '/password',
           query: {redirect_uri: location.href}
         })
       }

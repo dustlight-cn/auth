@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public interface UserDetailsMapper {
 
-    @Select("SELECT uid,password,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username=#{uoe} OR email=#{uoe}")
+    @Select("SELECT username,email,uid,password,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username=#{uoe} OR email=#{uoe}")
     @ResultMap("UserDetails")
     UserDetails loadUserOAuth(String uoe);
 

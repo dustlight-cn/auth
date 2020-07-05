@@ -44,7 +44,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/code/email/register?email=gg@GG",
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/code/email/resetPwd?email=845612500@qq.com",
 							"protocol": "{{Protocol}}",
 							"host": [
 								"{{Host}}"
@@ -55,12 +55,12 @@
 								"user",
 								"code",
 								"email",
-								"register"
+								"resetPwd"
 							],
 							"query": [
 								{
 									"key": "email",
-									"value": "gg@GG"
+									"value": "845612500@qq.com"
 								}
 							]
 						}
@@ -106,7 +106,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/verify/email/resetPwd?email=gg@GG&code=8KLMk514y0K5",
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/verify/email/resetPwd?email=845612500@qq.com&code=1LJA5Ocvlh3i",
 							"protocol": "{{Protocol}}",
 							"host": [
 								"{{Host}}"
@@ -122,11 +122,11 @@
 							"query": [
 								{
 									"key": "email",
-									"value": "gg@GG"
+									"value": "845612500@qq.com"
 								},
 								{
 									"key": "code",
-									"value": "8KLMk514y0K5"
+									"value": "1LJA5Ocvlh3i"
 								}
 							]
 						}
@@ -250,7 +250,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/reset/email/password?password=845612500",
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/reset/email/password?password=123456&email=845612500@qq.com",
 							"protocol": "{{Protocol}}",
 							"host": [
 								"{{Host}}"
@@ -266,7 +266,11 @@
 							"query": [
 								{
 									"key": "password",
-									"value": "845612500"
+									"value": "123456"
+								},
+								{
+									"key": "email",
+									"value": "845612500@qq.com"
 								}
 							]
 						}
@@ -851,7 +855,7 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "测试应用",
+									"value": "测试应用2",
 									"type": "text"
 								},
 								{
