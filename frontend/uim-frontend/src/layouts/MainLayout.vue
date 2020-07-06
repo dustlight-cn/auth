@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
-    <q-header class="bg-blue-grey-6 text-white">
+    <q-header class="bg-primary">
       <q-toolbar>
         <q-btn
           flat
@@ -10,8 +10,9 @@
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
+        <q-btn to="/" flat round dense icon="home"/>
         <q-toolbar-title>
-          <q-btn @click="$router.push({path:'/'})" flat label="统一身份管理系统"/>
+          统一身份管理系统
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -35,18 +36,63 @@
 
 <script>
   import MainMenu from 'components/MainMenu'
+  import axios from "axios";
 
   export default {
     name: 'MainLayout',
-
     components: {
       MainMenu
     },
-
     data() {
       return {
         leftDrawerOpen: false,
+        user: {},
+        authorities: [],
+        loading: true
       }
+    },
+    provide() {
+      return {
+        hasAuthority: this.hasAuthority,
+        loading: this.isLoading,
+        nickname: this.getNickname,
+        email: this.getEmail,
+        user: this.getUser
+      }
+    },
+    methods: {
+      hasAuthority(authority) {
+        return this.authorities.indexOf(authority) >= 0;
+      },
+      isLoading() {
+        return this.loading
+      },
+      getNickname() {
+        return this.user.nickname ? this.user.nickname : this.user.username
+      },
+      getEmail() {
+        return this.user.email
+      },
+      getUser() {
+        return this.user
+      },
+      loadUserDetails() {
+        axios.get("/api/user/details")
+          .then(res => {
+            this.user = res;
+            if (res) {
+              this.authorities = [];
+              res.authorities.forEach(a => {
+                this.authorities.push(a.authority);
+              })
+            }
+          }).finally(() => {
+          this.loading = false
+        })
+      }
+    },
+    mounted() {
+      this.loadUserDetails()
     }
   }
 </script>

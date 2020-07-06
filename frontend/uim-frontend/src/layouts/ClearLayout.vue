@@ -1,8 +1,8 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header class="bg-blue-grey-6 text-white">
+    <q-header class="bg-primary">
       <q-toolbar>
-<!--        <q-btn flat round dense icon="assignment_ind"/>-->
+        <q-btn to="/" flat round dense icon="home"/>
         <q-toolbar-title>
           统一身份管理系统
         </q-toolbar-title>

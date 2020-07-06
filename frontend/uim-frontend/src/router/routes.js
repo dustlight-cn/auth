@@ -15,6 +15,9 @@ const routes = [
       }, {
         path: 'templates',
         component: () => import('pages/Templaets.vue')
+      }, {
+        path: 'clients',
+        component: () => import('pages/Clients.vue')
       }
     ]
   }, {

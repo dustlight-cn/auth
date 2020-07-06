@@ -1,9 +1,10 @@
 <template>
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
-    <q-header class="bg-blue-grey-6 text-white">
+    <q-header class="bg-primary">
       <q-toolbar>
+        <q-btn to="/" flat round dense icon="home"/>
         <q-toolbar-title>
-          <q-btn @click="$router.push({path:'/'})" flat label="统一身份管理系统"/>
+          统一身份管理系统
         </q-toolbar-title>
         <q-btn flat round>
           <q-avatar size="32px">
@@ -22,7 +23,7 @@
                 </q-item-section>
               </q-item>
               <q-separator/>
-              <q-item clickable v-close-popup @click="$router.push({path:'/manage'})">
+              <q-item to="/manage/info" clickable v-close-popup>
                 <q-item-section>管理</q-item-section>
               </q-item>
               <q-item @click="logout" clickable v-close-popup>

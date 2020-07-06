@@ -1,24 +1,23 @@
 <template>
   <div class="q-pa-md">
 
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn dense @click="addTemplate" color="primary" round icon="add"/>
+    </q-page-sticky>
     <q-table
+      flat
       :data="templates"
       :columns="columns"
-      title="模板编辑"
+      title=""
       :rows-per-page-options="[]"
       row-key="name"
       wrap-cells
     >
-      <template v-slot:top-right>
-        <q-btn @click="addTemplate" color="primary" round icon="add"/>
-      </template>
+      <!--      <template v-slot:bottom>-->
+
+      <!--      </template>-->
       <template v-slot:body="props">
         <q-tr :props="props">
-
-          <q-td key="id" :props="props">
-            <div>{{props.row.id}}</div>
-          </q-td>
-
           <q-td key="name" :props="props">
             <div v-html="props.row.name"></div>
             <q-popup-edit
@@ -47,7 +46,7 @@
           </q-td>
 
           <q-td key="opt" :props="props">
-            <q-btn @click="()=>deleteTemplate(props.row)" flat round color="red-5" icon="delete"/>
+            <q-btn @click="()=>deleteTemplate(props.row)" flat dense round color="red-4" icon="delete"/>
           </q-td>
         </q-tr>
       </template>
@@ -74,8 +73,7 @@
       return {
         templates: [],
         columns: [
-          {name: 'id', style: 'min-width: 200px; width: 200px', align: 'left', label: '模板ID', field: 'id'},
-          {name: 'name', style: 'min-width: 200px; width: 200px', align: 'left', label: '模板名', field: 'name'},
+          {name: 'name', style: 'min-width: 100px;', align: 'left', label: '模板名', field: 'name'},
           {name: 'text', align: 'left', label: '模板内容', field: 'text'},
           {name: 'opt', align: 'center', label: '操作'},
         ]
@@ -155,7 +153,9 @@
             model: '',
             type: 'text' // optional
           },
-          cancel: true
+          cancel: true,
+          ok: {label: "创建", flat: true},
+          cancel: {label: "取消", flat: true}
         }).onOk(data => {
           if (data == null || data.trim().length == 0)
             return
