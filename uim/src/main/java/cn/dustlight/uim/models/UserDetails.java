@@ -43,7 +43,7 @@ public class UserDetails implements IUserDetails {
 
     private String[] authorities;
 
-    private String roleName;
+    private RoleDetails roleDetails;
 
     public void setUid(long uid) {
         this.uid = uid;
@@ -109,10 +109,6 @@ public class UserDetails implements IUserDetails {
         this.authorities = authorities;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
     @Override
     public long getUid() {
         return this.uid;
@@ -138,8 +134,14 @@ public class UserDetails implements IUserDetails {
         return this.role;
     }
 
+    @Override
     public String getRoleName() {
-        return this.roleName;
+        return this.roleDetails != null ? this.roleDetails.getName() : null;
+    }
+
+    @Override
+    public String getRoleDescription() {
+        return this.roleDetails != null ? this.roleDetails.getDescription() : null;
     }
 
     @Override
@@ -157,8 +159,8 @@ public class UserDetails implements IUserDetails {
         if (this.authorities == null)
             return null;
         List<GrantedAuthority> result = AuthorityUtils.createAuthorityList(authorities);
-        if (roleName != null)
-            result.add(new SimpleGrantedAuthority(roleName));
+        if (getRoleName() != null)
+            result.add(new SimpleGrantedAuthority(getRoleName()));
         return result;
     }
 

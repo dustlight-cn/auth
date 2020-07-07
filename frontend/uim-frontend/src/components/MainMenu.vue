@@ -37,12 +37,14 @@
       <div class="absolute-bottom bg-transparent absolute-top">
         <q-avatar size="56px" class="q-mb-sm">
           <q-skeleton v-if="loading()" type="QAvatar"/>
-          <img v-else src="https://cdn.quasar.dev/img/boy-avatar.png">
+          <img v-else src="/statics/img/boy-avatar.jpg">
         </q-avatar>
         <q-skeleton v-if="loading()" type="text"/>
-        <div v-else class="text-weight-bold  text-black">{{nickname()}}</div>
+        <div v-else class="text-weight-bold  text-grey-8">{{nickname()}}</div>
         <q-skeleton v-if="loading()" type="text"/>
-        <div class=" text-black" v-else>{{email()}}</div>
+        <div class="text-black" v-else>{{email()}}</div>
+        <q-skeleton v-if="loading()" type="text"/>
+        <div class="text-italic text-grey-8" v-else>{{user().roleDescription}}</div>
       </div>
     </q-img>
     <div class="absolute-top" style="height: 150px">

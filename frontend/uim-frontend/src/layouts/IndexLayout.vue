@@ -8,7 +8,7 @@
         </q-toolbar-title>
         <q-btn flat round>
           <q-avatar size="32px">
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+            <img src="/statics/img/boy-avatar.jpg">
           </q-avatar>
           <q-menu>
             <q-list style="min-width: 100px">
@@ -16,7 +16,7 @@
                 <q-item-section>
                   <q-chip>
                     <q-avatar size="32px">
-                      <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+                      <img src="/statics/img/boy-avatar.jpg">
                     </q-avatar>
                     {{nickname}}
                   </q-chip>

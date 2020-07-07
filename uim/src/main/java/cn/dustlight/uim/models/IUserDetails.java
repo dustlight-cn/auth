@@ -39,6 +39,10 @@ public interface IUserDetails extends UserDetails {
      */
     Long getRole();
 
+    String getRoleName();
+
+    String getRoleDescription();
+
     /**
      * Get user details creation time
      * @return creation time

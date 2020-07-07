@@ -12,7 +12,7 @@
         />
         <q-btn to="/" flat round dense icon="home"/>
         <q-toolbar-title>
-          统一身份管理系统
+          管理
         </q-toolbar-title>
       </q-toolbar>
     </q-header>

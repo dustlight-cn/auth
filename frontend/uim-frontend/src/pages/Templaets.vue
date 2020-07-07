@@ -1,9 +1,5 @@
 <template>
   <div class="q-pa-md">
-
-    <q-page-sticky v-if="hasAuthority('WRITE_TEMPLATE')" position="bottom-right" :offset="[18, 18]">
-      <q-btn @click="addTemplate" color="primary" round icon="add"/>
-    </q-page-sticky>
     <q-table
       flat
       :data="templates"
@@ -62,7 +58,9 @@
         </div>
       </template>
     </q-table>
-
+    <q-page-sticky v-if="hasAuthority('WRITE_TEMPLATE')" position="bottom-right" :offset="[18, 18]">
+      <q-btn @click="addTemplate" color="primary" round icon="add"/>
+    </q-page-sticky>
   </div>
 </template>
 

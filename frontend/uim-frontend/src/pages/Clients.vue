@@ -7,8 +7,14 @@
           <q-item-label caption>{{client.description}}</q-item-label>
         </q-item-section>
       </q-item>
+      <q-item class="text-center" v-if="clients == null || clients.length == 0">
+        <q-item-section>
+          <q-item-label caption>空空如也</q-item-label>
+        </q-item-section>
+      </q-item>
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
         <q-btn to="./clients/create" v-if="hasAuthority('CREATE_CLIENT')" color="primary" icon="add" round/>
+        <q-btn v-else icon="laptop" flat color="primary" label="申请成为开发者"/>
       </q-page-sticky>
     </q-list>
 
@@ -74,6 +80,7 @@
         </q-card-section>
         <q-separator/>
         <q-card-actions align="right">
+          <q-btn @click="()=>{deleteClient(selectedClient)}" v-close-popup flat color="negative" label="删除"/>
           <q-btn v-close-popup flat color="primary" label="返回"/>
         </q-card-actions>
       </q-card>
@@ -112,7 +119,8 @@
       select(client) {
         this.selectedClient = client
         this.selected = true
-      }, resetSecret(client) {
+      },
+      resetSecret(client) {
         this.$q.dialog({
           title: '是否重置',
           icon: 'message',
@@ -127,9 +135,28 @@
         }).onOk(() => {
           this.$q.loading.show()
           axios.post("/api/client/app_secret/" + client.clientId).then(res => {
-            console.log(res)
             client.clientSecret = res
           }).finally(() => {
+            this.$q.loading.hide()
+          })
+        })
+      }, deleteClient(client) {
+        this.$q.dialog({
+          title: '是否删除应用',
+          icon: 'message',
+          message: '删除操作不可撤销，是否要删除应用"' + client.clientName + '"？',
+          cancel: true,
+          ok: {
+            label: "确定",
+            color: "negative",
+            flat: true
+          },
+          cancel: {label: "取消", color: "primary", flat: true}
+        }).onOk(() => {
+          this.$q.loading.show()
+          axios.delete("/api/client/app/" + client.clientId).then(res => {
+            this.load()
+          }).catch((e) => {
             this.$q.loading.hide()
           })
         })
