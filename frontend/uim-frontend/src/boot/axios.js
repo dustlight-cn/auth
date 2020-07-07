@@ -69,7 +69,7 @@ const errorHandler = (e, vm) => {
     message: (e.message || '异常') + (e.code ? ", 错误码：" + e.code : ""),
     caption: (e.data ? e.data : e),
     icon: 'warning',
-    color: 'red-5'
+    color: 'negative'
   })
 }
 Vue.config.errorHandler = errorHandler;

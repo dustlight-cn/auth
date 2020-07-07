@@ -1,9 +1,7 @@
 package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulResult;
-import cn.dustlight.uim.models.AuthorityDetails;
-import cn.dustlight.uim.models.ClientDetails;
-import cn.dustlight.uim.models.ScopeDetails;
+import cn.dustlight.uim.models.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -32,23 +30,26 @@ public interface IClientController {
     RestfulResult<String> resetClientSecret(@PathVariable String appKey, Authentication authentication);
 
     @GetMapping("/scopes")
-    RestfulResult<List<ScopeDetails>> getScopeDetails();
+    <T extends IScopeDetails> RestfulResult<List<T>> getScopeDetails();
 
     @GetMapping("/authorities")
-    RestfulResult<List<AuthorityDetails>> getAuthorityDetails();
+    <T extends IAuthorityDetails> RestfulResult<List<T>> getAuthorityDetails();
+
+    @GetMapping("/grant_types")
+    <T extends IGrantType> RestfulResult<List<T>> getGrantTypes();
 
     @GetMapping("/clients")
     @PreAuthorize("isAuthenticated()")
-    RestfulResult<List<ClientDetails>> getCurrentUserClientDetails(Authentication authentication);
+    <T extends IClientDetails> RestfulResult<List<T>> getCurrentUserClientDetails(Authentication authentication);
 
     @GetMapping("/clients/{userId}")
     @PreAuthorize("hasAuthority('QUERY_USER_CLIENT')")
-    RestfulResult<List<ClientDetails>> getUserClientDetails(@PathVariable Long userId);
+    <T extends IClientDetails> RestfulResult<List<T>> getUserClientDetails(@PathVariable Long userId);
 
     @GetMapping("/authorities/role/{roleId}")
-    RestfulResult<List<AuthorityDetails>> getRoleAuthorities(@PathVariable Long roleId);
+    <T extends IAuthorityDetails> RestfulResult<List<T>> getRoleAuthorities(@PathVariable Long roleId);
 
     @GetMapping("/authorities/scope/{scopeId}")
-    RestfulResult<List<AuthorityDetails>> getScopeAuthorities(@PathVariable Long scopeId);
+    <T extends IAuthorityDetails> RestfulResult<List<T>> getScopeAuthorities(@PathVariable Long scopeId);
 
 }

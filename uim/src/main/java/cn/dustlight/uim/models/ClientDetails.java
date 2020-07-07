@@ -133,6 +133,7 @@ public class ClientDetails implements IClientDetails {
         }
     }
 
+    @Override
     public Map<String, String> getScopeDescriptions() {
         Map<String, String> map = new LinkedHashMap<>();
         for (ClientScope s : scope) {
@@ -141,18 +142,22 @@ public class ClientDetails implements IClientDetails {
         return map;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public Date getCreatedAt() {
         return createdAt;
     }
 
+    @Override
     public Date getUpdatedAt() {
         return updatedAt;
     }

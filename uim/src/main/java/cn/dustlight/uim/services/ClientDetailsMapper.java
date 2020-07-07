@@ -1,7 +1,7 @@
 package cn.dustlight.uim.services;
 
-import cn.dustlight.uim.models.ClientDetails;
 import cn.dustlight.uim.models.ClientDetails.ClientScope;
+import cn.dustlight.uim.models.ClientDetails;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 

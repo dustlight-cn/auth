@@ -2,6 +2,7 @@ package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulResult;
 import cn.dustlight.uim.models.ClientDetails;
+import cn.dustlight.uim.models.IClientDetails;
 import cn.dustlight.uim.services.ClientDetailsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
@@ -43,7 +44,7 @@ public class OAuth2Controller {
         } else {
             AuthorizationRequest authorizationRequest = (AuthorizationRequest) model.get("authorizationRequest");
             String clientId = authorizationRequest.getClientId();
-            ClientDetails details = mapper.loadClientDescription(clientId);
+            IClientDetails details = mapper.loadClientDescription(clientId);
             String username = principal.getName();
 
             Set<String> requestScopes = authorizationRequest.getScope();

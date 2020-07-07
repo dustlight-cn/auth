@@ -1,8 +1,8 @@
 <template>
   <div class="q-pa-md">
 
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn dense @click="addTemplate" color="primary" round icon="add"/>
+    <q-page-sticky v-if="hasAuthority('WRITE_TEMPLATE')" position="bottom-right" :offset="[18, 18]">
+      <q-btn @click="addTemplate" color="primary" round icon="add"/>
     </q-page-sticky>
     <q-table
       flat
@@ -24,6 +24,8 @@
               @save="(val,initVal)=>updateName(props.row,initVal)"
               buttons
               v-model="props.row.name"
+              label-set="保存"
+              label-cancel="取消"
             >
               <q-input v-model="props.row.name"/>
             </q-popup-edit>
@@ -46,7 +48,8 @@
           </q-td>
 
           <q-td key="opt" :props="props">
-            <q-btn @click="()=>deleteTemplate(props.row)" flat dense round color="red-4" icon="delete"/>
+            <q-btn v-if="hasAuthority('DELETE_TEMPLATE')" @click="()=>deleteTemplate(props.row)" flat dense round
+                   color="red-4" icon="delete"/>
           </q-td>
         </q-tr>
       </template>
@@ -69,6 +72,7 @@
 
   export default {
     name: 'Templates',
+    inject: ["hasAuthority"],
     data() {
       return {
         templates: [],

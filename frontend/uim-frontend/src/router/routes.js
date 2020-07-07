@@ -10,6 +10,9 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
+        path: '',
+        redirect: "info"
+      }, {
         path: 'info',
         component: () => import('pages/UserInfo.vue')
       }, {
@@ -18,6 +21,12 @@ const routes = [
       }, {
         path: 'clients',
         component: () => import('pages/Clients.vue')
+      }, {
+        path: 'clients/create',
+        component: () => import('pages/CreateClient.vue')
+      }, {
+        path: 'clients/details',
+        component: () => import('pages/ClientDetails.vue')
       }
     ]
   }, {

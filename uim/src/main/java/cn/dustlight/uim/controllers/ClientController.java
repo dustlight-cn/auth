@@ -3,10 +3,7 @@ package cn.dustlight.uim.controllers;
 import cn.dustlight.uim.RestfulConstants;
 import cn.dustlight.uim.RestfulResult;
 import cn.dustlight.uim.models.*;
-import cn.dustlight.uim.services.AuthorityDetailsMapper;
-import cn.dustlight.uim.services.ClientDetailsMapper;
-import cn.dustlight.uim.services.IVerificationCodeGenerator;
-import cn.dustlight.uim.services.ScopeDetailsMapper;
+import cn.dustlight.uim.services.*;
 import cn.dustlight.uim.utils.Snowflake;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -34,6 +31,9 @@ public class ClientController implements IClientController {
 
     @Autowired
     private AuthorityDetailsMapper authorityDetailsMapper;
+
+    @Autowired
+    private GrantTypeMapper grantTypeMapper;
 
     @Autowired
     private Snowflake snowflake;
@@ -103,6 +103,11 @@ public class ClientController implements IClientController {
     @Override
     public RestfulResult<List<AuthorityDetails>> getAuthorityDetails() {
         return RestfulResult.success(authorityDetailsMapper.getAuthorities());
+    }
+
+    @Override
+    public RestfulResult<List<GrantType>> getGrantTypes() {
+        return RestfulResult.success(grantTypeMapper.getGrantTypes());
     }
 
     @Override

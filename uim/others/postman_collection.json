@@ -580,7 +580,7 @@
 							"oauth2": [
 								{
 									"key": "accessToken",
-									"value": "eeff1c5c-c9b6-4add-800d-b23b2a698f75",
+									"value": "67d1a9b4-ed00-4af9-8eef-4f211576761c",
 									"type": "string"
 								},
 								{
@@ -621,7 +621,7 @@
 							"oauth2": [
 								{
 									"key": "accessToken",
-									"value": "eeff1c5c-c9b6-4add-800d-b23b2a698f75",
+									"value": "67d1a9b4-ed00-4af9-8eef-4f211576761c",
 									"type": "string"
 								},
 								{
@@ -934,7 +934,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "://{{Host}}:{{Port}}/api/client/app_secret/VTWQABLXBFXJGI2XAVMDAAAA",
+							"raw": "://{{Host}}:{{Port}}/api/client/app_secret/VTWQABLXBFXJGJUIIBMDAAAA",
 							"protocol": "",
 							"host": [
 								"{{Host}}"
@@ -944,7 +944,7 @@
 								"api",
 								"client",
 								"app_secret",
-								"VTWQABLXBFXJGI2XAVMDAAAA"
+								"VTWQABLXBFXJGJUIIBMDAAAA"
 							]
 						}
 					},
@@ -987,6 +987,27 @@
 								"api",
 								"client",
 								"authorities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all_grant_types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/grant_types",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"grant_types"
 							]
 						}
 					},
@@ -1092,7 +1113,7 @@
 					"oauth2": [
 						{
 							"key": "accessToken",
-							"value": "3f7a448e-a464-42fd-8480-52a9370bd9e0",
+							"value": "67d1a9b4-ed00-4af9-8eef-4f211576761c",
 							"type": "string"
 						},
 						{
