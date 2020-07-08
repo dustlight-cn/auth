@@ -580,7 +580,7 @@
 							"oauth2": [
 								{
 									"key": "accessToken",
-									"value": "67d1a9b4-ed00-4af9-8eef-4f211576761c",
+									"value": "a7273e3e-5979-4b5a-8e96-347a125a694d",
 									"type": "string"
 								},
 								{
@@ -621,7 +621,7 @@
 							"oauth2": [
 								{
 									"key": "accessToken",
-									"value": "67d1a9b4-ed00-4af9-8eef-4f211576761c",
+									"value": "f1539c18-f050-4d7e-b83d-4123759d4094",
 									"type": "string"
 								},
 								{
@@ -993,6 +993,116 @@
 					"response": []
 				},
 				{
+					"name": "update_authority",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "TEST",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试权限",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authority/100",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"authority",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create_authority",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "TEST2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试权限",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authority",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"authority"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_authority",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "TEST2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试权限",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authority/7969226821202997248",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"authority",
+								"7969226821202997248"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "all_grant_types",
 					"request": {
 						"method": "GET",
@@ -1113,7 +1223,7 @@
 					"oauth2": [
 						{
 							"key": "accessToken",
-							"value": "67d1a9b4-ed00-4af9-8eef-4f211576761c",
+							"value": "f1539c18-f050-4d7e-b83d-4123759d4094",
 							"type": "string"
 						},
 						{

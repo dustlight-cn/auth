@@ -96,6 +96,21 @@ public class ClientController implements IClientController {
     }
 
     @Override
+    public RestfulResult updateAuthority(Long id, String name, String description) {
+        return authorityDetailsMapper.updateAuthority(id, name, description) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult deleteAuthority(Long id) {
+        return authorityDetailsMapper.deleteAuthority(id) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult insertAuthority(String name, String description) {
+        return authorityDetailsMapper.insertAuthority(snowflake.getNextId(), name, description) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
     public RestfulResult<List<ScopeDetails>> getScopeDetails() {
         return RestfulResult.success(scopeDetailsMapper.getScopes());
     }

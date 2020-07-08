@@ -25,12 +25,15 @@
         <q-item-section>
           <q-item-label>{{user().nickname}}</q-item-label>
         </q-item-section>
-
-        <q-popup-edit @save="resetNickname" v-model="user().nickname">
-          <q-input v-model="user().nickname" dense autofocus counter/>
+        <q-popup-edit @save="resetNickname" v-model="user().nickname" buttons label-set="保存" label-cancel="取消">
+          <q-input label="昵称" v-model="user().nickname" dense autofocus counter/>
         </q-popup-edit>
       </q-item>
     </q-list>
+
+    <q-inner-loading :showing="loading()">
+      <q-spinner-gears size="50px" color="primary"/>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -40,7 +43,7 @@
 
   export default {
     name: "UserInfo",
-    inject: ["user"],
+    inject: ["user", "loading"],
     data() {
       return {}
     },
@@ -49,7 +52,6 @@
         this.$q.loading.show()
         axios.post("/api/user/reset/nickname", qs.stringify({nickname: value}))
           .catch(e => {
-            console.log(e)
             this.user().nickname = initialValue
           }).finally(() => {
           this.$q.loading.hide()

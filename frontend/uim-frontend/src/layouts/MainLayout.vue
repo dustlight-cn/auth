@@ -82,8 +82,8 @@
             this.user = res;
             if (res) {
               this.authorities = [];
-              res.authorities.forEach(a => {
-                this.authorities.push(a.authority);
+              res.authoritiesString.forEach(a => {
+                this.authorities.push(a);
               })
             }
           }).finally(() => {

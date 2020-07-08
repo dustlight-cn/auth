@@ -1,6 +1,11 @@
 <template>
   <div class="q-pa-md">
     <q-list title="asd" separator>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline>应用列表 ({{clients.length}})</q-item-label>
+        </q-item-section>
+      </q-item>
       <q-item @click="select(client)" v-for="client in clients" clickable v-ripple>
         <q-item-section>
           <q-item-label>{{client.clientName}}</q-item-label>
@@ -14,7 +19,7 @@
       </q-item>
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
         <q-btn to="./clients/create" v-if="hasAuthority('CREATE_CLIENT')" color="primary" icon="add" round/>
-        <q-btn v-else icon="laptop" flat color="primary" label="申请成为开发者"/>
+        <q-btn v-else icon="security" flat color="primary" label="申请成为开发者"/>
       </q-page-sticky>
     </q-list>
 
@@ -85,6 +90,10 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-inner-loading :showing="loading">
+      <q-spinner-gears size="50px" color="primary"/>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -107,12 +116,10 @@
         if (this.loading)
           return
         this.loading = true
-        this.$q.loading.show()
         axios.get("/api/client/clients")
           .then(res => {
             this.clients = res
           }).finally(() => {
-          this.$q.loading.hide()
           this.loading = false
         })
       },
@@ -156,7 +163,7 @@
           this.$q.loading.show()
           axios.delete("/api/client/app/" + client.clientId).then(res => {
             this.load()
-          }).catch((e) => {
+          }).finally(() => {
             this.$q.loading.hide()
           })
         })

@@ -23,7 +23,7 @@
               label-set="保存"
               label-cancel="取消"
             >
-              <q-input v-model="props.row.name"/>
+              <q-input label="模板名" hint="模板名不可重复" v-model="props.row.name" counter/>
             </q-popup-edit>
           </q-td>
 
@@ -45,15 +45,15 @@
 
           <q-td key="opt" :props="props">
             <q-btn v-if="hasAuthority('DELETE_TEMPLATE')" @click="()=>deleteTemplate(props.row)" flat dense round
-                   color="red-4" icon="delete"/>
+                   color="negative" icon="delete"/>
           </q-td>
         </q-tr>
       </template>
       <template v-slot:no-data="{ icon, message, filter }">
         <div class="full-width row flex-center text-grey q-gutter-sm">
-          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon"/>
+          <!--          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon"/>-->
           <span>
-            似乎没有数据
+            空空如也
           </span>
         </div>
       </template>
@@ -61,6 +61,10 @@
     <q-page-sticky v-if="hasAuthority('WRITE_TEMPLATE')" position="bottom-right" :offset="[18, 18]">
       <q-btn @click="addTemplate" color="primary" round icon="add"/>
     </q-page-sticky>
+
+    <q-inner-loading :showing="loading">
+      <q-spinner-gears size="50px" color="primary"/>
+    </q-inner-loading>
   </div>
 </template>
 
@@ -78,7 +82,8 @@
           {name: 'name', style: 'min-width: 100px;', align: 'left', label: '模板名', field: 'name'},
           {name: 'text', align: 'left', label: '模板内容', field: 'text'},
           {name: 'opt', align: 'center', label: '操作'},
-        ]
+        ],
+        loading: false
       }
     },
     mounted() {
@@ -87,15 +92,16 @@
     ,
     methods: {
       updateList() {
-        this.$q.loading.show()
+        if (this.loading)
+          return
+        this.loading = true
         axios.get('/api/template/list')
           .then(res => {
             this.templates = res
           }).catch(e => {
           console.error(e);
         }).finally(() => {
-
-          this.$q.loading.hide()
+          this.loading = false
         })
       },
       updateName(obj, initVal) {
@@ -126,7 +132,7 @@
           cancel: true,
           ok: {
             label: "删除",
-            color: "red-5",
+            color: "negative",
             flat: true
           },
           cancel: {

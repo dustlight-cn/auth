@@ -18,6 +18,15 @@ public interface AuthorityDetailsMapper {
     })
     List<AuthorityDetails> getAuthorities();
 
+    @Update("UPDATE authority_details SET authority_name=#{name},description=#{description} WHERE id=#{id}")
+    boolean updateAuthority(Long id, String name, String description);
+
+    @Delete("DELETE FROM authority_details WHERE id=#{id}")
+    boolean deleteAuthority(Long id);
+
+    @Insert("INSERT INTO authority_details(id,authority_name,description) VALUES (#{id},#{name},#{description})")
+    boolean insertAuthority(Long id, String name, String description);
+
     @Select("SELECT authority_name FROM authority_details,client_authority WHERE client_authority.cid=#{clientId} AND authority_details.id=client_authority.aid")
     String[] getAuthoritiesByClientId(String clientId);
 

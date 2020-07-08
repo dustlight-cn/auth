@@ -1,5 +1,8 @@
 package cn.dustlight.uim.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.io.Serializable;
 
 public class TemplateNode implements Serializable {
@@ -33,12 +36,13 @@ public class TemplateNode implements Serializable {
         this.text = text;
     }
 
-    public String getId() {
-        return String.valueOf(id);
+    @JsonSerialize(using = ToStringSerializer.class)
+    public Long getId() {
+        return id;
     }
 
-    public void setId(String id) {
-        this.id = Long.valueOf(id);
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

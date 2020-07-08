@@ -2,6 +2,7 @@ package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulResult;
 import cn.dustlight.uim.models.*;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,18 @@ public interface IClientController {
 
     @GetMapping("/authorities")
     <T extends IAuthorityDetails> RestfulResult<List<T>> getAuthorityDetails();
+
+    @PostMapping("/authority/{id}")
+    @PreAuthorize("hasAuthority('MANAGE_AUTHORITY')")
+    RestfulResult updateAuthority(@PathVariable Long id, String name, String description);
+
+    @DeleteMapping("/authority/{id}")
+    @PreAuthorize("hasAuthority('MANAGE_AUTHORITY')")
+    RestfulResult deleteAuthority(@PathVariable Long id);
+
+    @PostMapping("/authority")
+    @PreAuthorize("hasAuthority('MANAGE_AUTHORITY')")
+    RestfulResult insertAuthority(String name, String description);
 
     @GetMapping("/grant_types")
     <T extends IGrantType> RestfulResult<List<T>> getGrantTypes();

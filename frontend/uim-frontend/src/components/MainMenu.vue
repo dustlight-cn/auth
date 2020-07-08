@@ -30,6 +30,15 @@
           </q-item-section>
         </q-item>
 
+        <q-item to="/manage/authorities" v-if="hasAuthority('MANAGE_AUTHORITY')" clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="security"/>
+          </q-item-section>
+          <q-item-section>
+            权限管理
+          </q-item-section>
+        </q-item>
+
       </q-list>
     </q-scroll-area>
 

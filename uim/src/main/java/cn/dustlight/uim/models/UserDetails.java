@@ -1,5 +1,6 @@
 package cn.dustlight.uim.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -7,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * User Details
@@ -154,6 +156,7 @@ public class UserDetails implements IUserDetails {
         return this.updatedAt;
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.authorities == null)
@@ -162,6 +165,14 @@ public class UserDetails implements IUserDetails {
         if (getRoleName() != null)
             result.add(new SimpleGrantedAuthority(getRoleName()));
         return result;
+    }
+
+    @Override
+    public Set<String> getAuthoritiesString() {
+        Collection<? extends GrantedAuthority> authorities = getAuthorities();
+        if (authorities == null)
+            return null;
+        return AuthorityUtils.authorityListToSet(authorities);
     }
 
     @Override
