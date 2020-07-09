@@ -95,24 +95,26 @@
         if (this.loading)
           return
         this.loading = true
-        axios.get('/api/template/list')
+        axios
+          .get('/api/template/list')
           .then(res => {
             this.templates = res
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.loading = false
-        })
+          })
+          .finally(() => {
+            this.loading = false
+          })
       },
       updateName(obj, initVal) {
         this.$q.loading.show()
         let data = {name: obj.name};
-        axios.post("/api/template/name/" + encodeURIComponent(obj.id), qs.stringify(data))
+        axios
+          .post("/api/template/name/" + encodeURIComponent(obj.id), qs.stringify(data))
           .catch(e => {
             obj.name = initVal;
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+          })
+          .finally(() => {
+            this.$q.loading.hide()
+          })
       }
       ,
       updateText(obj, initVal) {
@@ -121,9 +123,10 @@
         axios.post("/api/template/text/" + encodeURIComponent(obj.name), qs.stringify(data))
           .catch(e => {
             obj.text = initVal;
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+          })
+          .finally(() => {
+            this.$q.loading.hide()
+          })
       },
       deleteTemplate(obj) {
         this.$q.dialog({
@@ -141,14 +144,14 @@
           }
         }).onOk(() => {
           this.$q.loading.show()
-          axios.delete("/api/template/delete", {
-            data: [obj.name]
-          })
+          axios
+            .delete("/api/template/delete", {
+              data: [obj.name]
+            })
             .then(res => {
               this.updateList();
             })
-            .catch(e => {
-              obj.text = initVal;
+            .finally(() => {
               this.$q.loading.hide();
             })
         })
@@ -168,11 +171,12 @@
           if (data == null || data.trim().length == 0)
             return
           this.$q.loading.show()
-          axios.post("/api/template/text/" + encodeURIComponent(data), qs.stringify({text: "模板\"" + data + "\"的内容"}))
+          axios
+            .post("/api/template/text/" + encodeURIComponent(data), qs.stringify({text: "模板\"" + data + "\"的内容"}))
             .then(res => {
               this.updateList();
             })
-            .catch(e => {
+            .finally(() => {
               this.$q.loading.hide();
             })
         })
