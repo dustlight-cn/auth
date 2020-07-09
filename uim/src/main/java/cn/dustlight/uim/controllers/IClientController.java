@@ -52,6 +52,30 @@ public interface IClientController {
     @GetMapping("/authorities")
     <T extends IAuthorityDetails> RestfulResult<List<T>> getAuthorityDetails();
 
+    @GetMapping("/roles")
+    @PreAuthorize("hasAuthority('MANAGE_ROLE')")
+    <T extends IRoleDetails> RestfulResult<List<T>> getRoles();
+
+    @PostMapping("/role")
+    @PreAuthorize("hasAuthority('MANAGE_ROLE')")
+    RestfulResult insertRole(String name, String description);
+
+    @PostMapping("/role/{id}")
+    @PreAuthorize("hasAuthority('MANAGE_ROLE')")
+    RestfulResult updateRole(@PathVariable Long id, String name, String description);
+
+    @DeleteMapping("/role/{id}")
+    @PreAuthorize("hasAuthority('MANAGE_ROLE')")
+    RestfulResult deleteRole(@PathVariable Long id);
+
+    @DeleteMapping("/role_authority")
+    @PreAuthorize("hasAuthority('MANAGE_ROLE')")
+    RestfulResult removeRoleAuthority(Long roleId, Long authorityId);
+
+    @PostMapping("/role_authority")
+    @PreAuthorize("hasAuthority('MANAGE_ROLE')")
+    RestfulResult insertAuthority(Long roleId, Long authorityId);
+
     @PostMapping("/authority/{id}")
     @PreAuthorize("hasAuthority('MANAGE_AUTHORITY')")
     RestfulResult updateAuthority(@PathVariable Long id, String name, String description);

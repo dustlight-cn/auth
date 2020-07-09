@@ -39,6 +39,14 @@
           </q-item-section>
         </q-item>
 
+        <q-item to="/manage/roles" v-if="hasAuthority('MANAGE_ROLE')" clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="admin_panel_settings"/>
+          </q-item-section>
+          <q-item-section>
+            角色管理
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-scroll-area>
 
@@ -53,7 +61,7 @@
         <q-skeleton v-if="loading()" type="text"/>
         <div class="text-black" v-else>{{email()}}</div>
         <q-skeleton v-if="loading()" type="text"/>
-        <div class="text-italic text-grey-8" v-else>{{user().roleDescription}}</div>
+        <div class="text-caption text-grey-9 text-italic " v-else>{{user().roleDescription}}</div>
       </div>
     </q-img>
     <div class="absolute-top" style="height: 150px">

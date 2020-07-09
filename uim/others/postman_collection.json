@@ -846,6 +846,49 @@
 			"name": "client",
 			"item": [
 				{
+					"name": "user_clients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/clients/7963536486284521472",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"clients",
+								"7963536486284521472"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "current_user_clients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/clients",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "create_app",
 					"request": {
 						"method": "POST",
@@ -951,6 +994,228 @@
 					"response": []
 				},
 				{
+					"name": "update_app_name",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Dustlight Blog Update",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试啊啊a",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "redirectUri",
+									"value": "http://localhost",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "scopes",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "scopes",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "grantTypes",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app_name/VTWQABLXBFXJOJ6D76BQAAAA",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app_name",
+								"VTWQABLXBFXJOJ6D76BQAAAA"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "光尘博客",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_app_description",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "光尘博客Update",
+									"type": "text"
+								},
+								{
+									"key": "redirectUri",
+									"value": "http://localhost",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "scopes",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "scopes",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "grantTypes",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app_description/VTWQABLXBFXJOJ6D76BQAAAA",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app_description",
+								"VTWQABLXBFXJOJ6D76BQAAAA"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "光尘博客",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_app_redirect_uri",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "redirectUri",
+									"value": "http://localhost",
+									"type": "text"
+								},
+								{
+									"key": "scopes",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "scopes",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "grantTypes",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app_redirect_uri/VTWQABLXBFXJOJ6D76BQAAAA",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app_redirect_uri",
+								"VTWQABLXBFXJOJ6D76BQAAAA"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "光尘博客",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "all_scope_details",
 					"request": {
 						"method": "GET",
@@ -987,6 +1252,42 @@
 								"api",
 								"client",
 								"authorities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create_authority",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "TEST2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试权限",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authority",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"authority"
 							]
 						}
 					},
@@ -1030,42 +1331,6 @@
 					"response": []
 				},
 				{
-					"name": "create_authority",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "name",
-									"value": "TEST2",
-									"type": "text"
-								},
-								{
-									"key": "description",
-									"value": "测试权限",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authority",
-							"protocol": "{{Protocol}}",
-							"host": [
-								"{{Host}}"
-							],
-							"port": "{{Port}}",
-							"path": [
-								"api",
-								"client",
-								"authority"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "delete_authority",
 					"request": {
 						"method": "DELETE",
@@ -1103,6 +1368,209 @@
 					"response": []
 				},
 				{
+					"name": "all_role_details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/roles",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create_role",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "ROLE_TEST",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试用户",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/role",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_role",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "ROLE_T",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试用户T",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/role/7969489992956375040",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"role",
+								"7969489992956375040"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_role",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "TEST2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试权限",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/role/7969489992956375040",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"role",
+								"7969489992956375040"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add_role_authority",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "roleId",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "authorityId",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/role_authority",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"role_authority"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_role_authority",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "roleId",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "authorityId",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/role_authority",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"role_authority"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "all_grant_types",
 					"request": {
 						"method": "GET",
@@ -1124,55 +1592,12 @@
 					"response": []
 				},
 				{
-					"name": "user_clients",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/clients/7963536486284521472",
-							"protocol": "{{Protocol}}",
-							"host": [
-								"{{Host}}"
-							],
-							"port": "{{Port}}",
-							"path": [
-								"api",
-								"client",
-								"clients",
-								"7963536486284521472"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "current_user_clients",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/clients",
-							"protocol": "{{Protocol}}",
-							"host": [
-								"{{Host}}"
-							],
-							"port": "{{Port}}",
-							"path": [
-								"api",
-								"client",
-								"clients"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "role_authorities_details",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authorities/role/3",
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authorities/role/0",
 							"protocol": "{{Protocol}}",
 							"host": [
 								"{{Host}}"
@@ -1183,7 +1608,7 @@
 								"client",
 								"authorities",
 								"role",
-								"3"
+								"0"
 							]
 						}
 					},
@@ -1223,7 +1648,7 @@
 					"oauth2": [
 						{
 							"key": "accessToken",
-							"value": "f1539c18-f050-4d7e-b83d-4123759d4094",
+							"value": "69058b89-1233-48ac-a2ba-31b49d29791e",
 							"type": "string"
 						},
 						{

@@ -46,6 +46,11 @@ public interface AuthorityDetailsMapper {
     @ResultMap("AuthorityDetails")
     List<AuthorityDetails> getRoleAuthorities(Long roleId);
 
+    @Delete("DELETE FROM role_authority WHERE rid=#{roleId} AND aid=#{authorityId}")
+    boolean removeRoleAuthority(Long roleId, Long authorityId);
+
+    @Delete("INSERT INTO role_authority SET rid=#{roleId},aid=#{authorityId}")
+    boolean insertRoleAuthority(Long roleId, Long authorityId);
 
     @Select("SELECT authority_details.* FROM authority_details,scope_authority WHERE scope_authority.sid=#{scopeId} AND scope_authority.aid=authority_details.id")
     @ResultMap("AuthorityDetails")

@@ -33,6 +33,9 @@ public class ClientController implements IClientController {
     private AuthorityDetailsMapper authorityDetailsMapper;
 
     @Autowired
+    private RoleDetailsMapper roleDetailsMapper;
+
+    @Autowired
     private GrantTypeMapper grantTypeMapper;
 
     @Autowired
@@ -117,6 +120,38 @@ public class ClientController implements IClientController {
                 clientMapper.updateClientRedirectUri(appKey, redirectUri) :
                 clientMapper.updateClientRedirectUriWithUid(appKey, redirectUri, ((IUserDetails) authentication.getPrincipal()).getUid());
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult insertRole(String name, String description) {
+        return roleDetailsMapper.insertRoleDetails(snowflake.getNextId(), name, description) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult updateRole(Long id, String name, String description) {
+        return roleDetailsMapper.updateRoleDetails(id, name, description) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult deleteRole(Long id) {
+        return roleDetailsMapper.deleteRoleDetails(id) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult removeRoleAuthority(Long roleId, Long authorityId) {
+        return authorityDetailsMapper.removeRoleAuthority(roleId, authorityId) ?
+                RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult insertAuthority(Long roleId, Long authorityId) {
+        return authorityDetailsMapper.insertRoleAuthority(roleId, authorityId) ?
+                RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult<List<RoleDetails>> getRoles() {
+        return RestfulResult.success(roleDetailsMapper.getAllRoleDetails());
     }
 
     @Override

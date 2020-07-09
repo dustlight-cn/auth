@@ -30,6 +30,9 @@ const routes = [
       }, {
         path: 'authorities',
         component: () => import('pages/Authorities.vue')
+      }, {
+        path: 'roles',
+        component: () => import('pages/Roles.vue')
       }
     ]
   }, {

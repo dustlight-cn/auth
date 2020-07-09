@@ -47,7 +47,7 @@ CREATE TABLE `authority_details` (
 
 LOCK TABLES `authority_details` WRITE;
 /*!40000 ALTER TABLE `authority_details` DISABLE KEYS */;
-INSERT INTO `authority_details` VALUES (0,'READ_USERINFO','获取用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(1,'WRITE_USERINFO','修改用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(2,'READ_USERINFNO_ANY','获取任意用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(3,'WRITE_USERINFO_ANY','修改任意用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(4,'CREATE_CLIENT','创建应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(5,'DELETE_CLIENT','删除应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(6,'DELETE_CLIENT_ANY','删除任意应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(7,'UPDATE_CLIENT','修改应用信息','2020-06-19 18:57:02','2020-06-19 18:57:02'),(8,'UPDATE_CLIENT_ANY','修改任意应用信息','2020-06-19 18:57:02','2020-06-19 18:57:02'),(9,'READ_TEMPLATE','获取模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(10,'WRITE_TEMPLATE','修改模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(11,'DELETE_TEMPLATE','删除模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(12,'QUERY_USER_CLIENT','查询用户应用','2020-06-22 08:32:12','2020-06-22 08:32:12'),(13,'MANAGE_AUTHORITY','权限的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(14,'MANAGE_SCOPE','授权作用域（Scope）的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(15,'MANAGE_ROLE','角色的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(100,'TEST','测试权限','2020-06-20 22:27:19','2020-06-20 22:27:19');
+INSERT INTO `authority_details` VALUES (0,'READ_USERINFO','获取用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(1,'WRITE_USERINFO','修改用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(2,'READ_USERINFNO_ANY','获取任意用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(3,'WRITE_USERINFO_ANY','修改任意用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(4,'CREATE_CLIENT','创建应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(5,'DELETE_CLIENT','删除应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(6,'DELETE_CLIENT_ANY','删除任意应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(7,'UPDATE_CLIENT','修改应用信息','2020-06-19 18:57:02','2020-06-19 18:57:02'),(8,'UPDATE_CLIENT_ANY','修改任意应用信息','2020-06-19 18:57:02','2020-06-19 18:57:02'),(9,'READ_TEMPLATE','获取模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(10,'WRITE_TEMPLATE','修改模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(11,'DELETE_TEMPLATE','删除模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(12,'QUERY_USER_CLIENT','查询用户应用','2020-06-22 08:32:12','2020-06-22 08:32:12'),(13,'MANAGE_AUTHORITY','权限的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(14,'MANAGE_SCOPE','授权作用域（Scope）的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(15,'MANAGE_ROLE','角色的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(7969554498115989504,'TEST','测试权限','2020-07-09 13:07:53','2020-07-09 13:07:53');
 /*!40000 ALTER TABLE `authority_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,7 +216,7 @@ CREATE TABLE `oauth_client_details` (
 
 LOCK TABLES `oauth_client_details` WRITE;
 /*!40000 ALTER TABLE `oauth_client_details` DISABLE KEYS */;
-INSERT INTO `oauth_client_details` VALUES ('VTWQABLXBFXJOJ6D76BQAAAA',7963536486284521472,'$2a$10$3.IK5Dpp9FLPfLNAQ/U//.7u3Rt34AX.nmAgVsPRBNV5r.ORoo.sy','Dustlight Blog','https://blog.dustlight.cn/callback',NULL,NULL,NULL,1,'光尘博客','2020-07-07 16:34:46','2020-07-08 13:39:16');
+INSERT INTO `oauth_client_details` VALUES ('VTWQABLXBFXJOJ6D76BQAAAA',7963536486284521472,'$2a$10$iUMex/Tim4jt7ILrC2qNv.qO3gcTEeqTzKUP3737uceBSE2G2h3CC','Dustlight Blog','http://blog.dustlight.cn/callback',NULL,NULL,NULL,1,'光尘博客','2020-07-07 16:34:46','2020-07-09 08:00:30');
 /*!40000 ALTER TABLE `oauth_client_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -270,7 +270,7 @@ CREATE TABLE `role_authority` (
 
 LOCK TABLES `role_authority` WRITE;
 /*!40000 ALTER TABLE `role_authority` DISABLE KEYS */;
-INSERT INTO `role_authority` VALUES (0,0),(2,0),(3,0),(0,1),(2,1),(3,1),(0,2),(0,3),(0,4),(2,4),(0,5),(2,5),(0,6),(0,7),(2,7),(0,8),(0,9),(0,10),(0,11),(0,12),(0,13),(0,14),(0,15),(0,100);
+INSERT INTO `role_authority` VALUES (0,0),(1,0),(2,0),(3,0),(7969554307472289792,0),(0,1),(1,1),(2,1),(3,1),(7969554307472289792,1),(0,2),(1,2),(0,3),(1,3),(0,4),(1,4),(2,4),(0,5),(1,5),(2,5),(0,6),(1,6),(0,7),(1,7),(2,7),(0,8),(1,8),(0,9),(1,9),(0,10),(1,10),(0,11),(1,11),(0,12),(1,12),(0,13),(0,14),(0,15),(7969554307472289792,7969554498115989504);
 /*!40000 ALTER TABLE `role_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -298,7 +298,7 @@ CREATE TABLE `role_details` (
 
 LOCK TABLES `role_details` WRITE;
 /*!40000 ALTER TABLE `role_details` DISABLE KEYS */;
-INSERT INTO `role_details` VALUES (0,'ROLE_ROOT','根角色','2020-06-19 18:44:40','2020-06-19 18:44:40'),(1,'ROLE_ADMIN','管理员','2020-06-19 18:44:40','2020-06-19 18:44:40'),(2,'ROLE_DEV','开发者','2020-06-19 18:44:40','2020-06-19 18:44:40'),(3,'ROLE_USER','普通用户','2020-06-19 18:48:42','2020-06-19 18:48:42');
+INSERT INTO `role_details` VALUES (0,'ROLE_ROOT','超级管理员','2020-06-19 18:44:40','2020-07-09 13:03:10'),(1,'ROLE_ADMIN','管理员','2020-06-19 18:44:40','2020-07-09 09:10:58'),(2,'ROLE_DEV','开发者','2020-06-19 18:44:40','2020-07-09 09:10:18'),(3,'ROLE_USER','普通用户','2020-06-19 18:48:42','2020-07-09 09:10:13'),(7969554307472289792,'ROLE_TEST','测试者','2020-07-09 13:07:08','2020-07-09 13:07:23');
 /*!40000 ALTER TABLE `role_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -325,7 +325,7 @@ CREATE TABLE `scope_authority` (
 
 LOCK TABLES `scope_authority` WRITE;
 /*!40000 ALTER TABLE `scope_authority` DISABLE KEYS */;
-INSERT INTO `scope_authority` VALUES (0,0),(1,100);
+INSERT INTO `scope_authority` VALUES (0,0);
 /*!40000 ALTER TABLE `scope_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -379,7 +379,7 @@ CREATE TABLE `sender_templates` (
 
 LOCK TABLES `sender_templates` WRITE;
 /*!40000 ALTER TABLE `sender_templates` DISABLE KEYS */;
-INSERT INTO `sender_templates` VALUES (5,'邮箱验证','您的邮箱验证码是：<b>${code}</b>'),(7963842828905869312,'密码重置','您正在使用邮箱重置密码，验证码为：<b>${code}</b>');
+INSERT INTO `sender_templates` VALUES (5,'邮箱验证','<br><div><p style=\"margin-top: 20px; font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; text-align: center; height: 2px; background-color: rgb(0, 164, 255); border: 0px; font-size: 0px; padding: 0px; width: 713.021px;\"></p><div id=\"cTMail-inner\" style=\"font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; font-size: 12px; padding: 23px 0px 20px; box-shadow: rgba(122, 55, 55, 0.2) 0px 1px 1px 0px;\"><table style=\"width: 712.5px; margin-bottom: 10px; border-collapse: collapse;\"><tbody><tr><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td><td style=\"-webkit-font-smoothing: antialiased; max-width: 480px;\"><h1 id=\"cTMail-title\" style=\"font-size: 20px; font-weight: bold; line-height: 36px; margin: 0px 0px 16px;\">邮箱认证</h1><p id=\"cTMail-userName\" style=\"margin-bottom: 0px; font-size: 14px; color: rgb(51, 51, 51); line-height: 24px;\">尊敬的用户，您好！</p><p class=\"cTMail-content\" style=\"margin-top: 6px; margin-bottom: 0px; line-height: 24px; overflow-wrap: break-word; word-break: break-all;\"><span style=\"color: rgb(51, 51, 51); font-size: 14px;\">您正在注册<b>Dustlight</b>账户，您的邮箱验证码是：<b>${code}</b></span></p><p style=\"margin-top: 20px; margin-bottom: 20px; border-top: 1px solid rgb(234, 237, 240);\"></p><dl style=\"line-height: 18px;\"><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\"></dt><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\"></dt><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\">温馨提醒：</dt><dd style=\"margin: 0px 0px 6px; padding: 0px; line-height: 22px;\"><font color=\"#333333\">请在30分钟内完成注册，超过30分钟验证码将失效。</font></dd><dd style=\"color: rgb(51, 51, 51); margin: 0px 0px 6px; padding: 0px; line-height: 22px;\"><p id=\"cTMail-sender\" style=\"margin-top: 32px; font-size: 14px; line-height: 26px; overflow-wrap: break-word; word-break: break-all;\">此致<br><b>Dustlight团队</b></p></dd></dl></td><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td></tr></tbody></table></div><div id=\"cTMail-copy\" style=\"font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; font-size: 12px; text-align: center; line-height: 18px; color: rgb(153, 153, 153);\"><table style=\"width: 712.5px; margin-bottom: 10px; border-collapse: collapse;\"><tbody><tr><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td><td style=\"-webkit-font-smoothing: antialiased; max-width: 540px;\"><p style=\"margin: 20px auto 14px;\">此为系统邮件，请勿回复</p></td></tr></tbody></table></div></div>'),(7963842828905869312,'密码重置','<br><div><p style=\"margin-top: 20px; font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; text-align: center; height: 2px; background-color: rgb(0, 164, 255); border: 0px; font-size: 0px; padding: 0px; width: 713.021px;\"></p><div id=\"cTMail-inner\" style=\"font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; font-size: 12px; padding: 23px 0px 20px; box-shadow: rgba(122, 55, 55, 0.2) 0px 1px 1px 0px;\"><table style=\"width: 712.5px; margin-bottom: 10px; border-collapse: collapse;\"><tbody><tr><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td><td style=\"-webkit-font-smoothing: antialiased; max-width: 480px;\"><h1 id=\"cTMail-title\" style=\"font-size: 20px; font-weight: bold; line-height: 36px; margin: 0px 0px 16px;\">密码重置</h1><p id=\"cTMail-userName\" style=\"margin-bottom: 0px; font-size: 14px; color: rgb(51, 51, 51); line-height: 24px;\">尊敬的用户，您好！</p><p class=\"cTMail-content\" style=\"margin-top: 6px; margin-bottom: 0px; line-height: 24px; overflow-wrap: break-word; word-break: break-all;\"><span style=\"color: rgb(51, 51, 51); font-size: 14px;\">您正在重置<b>Dustlight</b>账户的密码，您的验证码是：<b>${code}</b></span></p><p style=\"margin-top: 20px; margin-bottom: 20px; border-top: 1px solid rgb(234, 237, 240);\"></p><dl style=\"line-height: 18px;\"><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\"></dt><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\"></dt><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\">温馨提醒：</dt><dd style=\"margin: 0px 0px 6px; padding: 0px; line-height: 22px;\"><font color=\"#333333\">请在30分钟内完成密码重置，超过30分钟验证码将失效。</font></dd><dd style=\"color: rgb(51, 51, 51); margin: 0px 0px 6px; padding: 0px; line-height: 22px;\"><p id=\"cTMail-sender\" style=\"margin-top: 32px; font-size: 14px; line-height: 26px; overflow-wrap: break-word; word-break: break-all;\">此致<br><b>Dustlight团队</b></p></dd></dl></td><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td></tr></tbody></table></div><div id=\"cTMail-copy\" style=\"font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; font-size: 12px; text-align: center; line-height: 18px; color: rgb(153, 153, 153);\"><table style=\"width: 712.5px; margin-bottom: 10px; border-collapse: collapse;\"><tbody><tr><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td><td style=\"-webkit-font-smoothing: antialiased; max-width: 540px;\"><p style=\"margin: 20px auto 14px;\">此为系统邮件，请勿回复</p></td></tr></tbody></table></div></div>');
 /*!40000 ALTER TABLE `sender_templates` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -421,7 +421,7 @@ CREATE TABLE `user_details` (
 
 LOCK TABLES `user_details` WRITE;
 /*!40000 ALTER TABLE `user_details` DISABLE KEYS */;
-INSERT INTO `user_details` VALUES (7963536486284521472,'hansin','$2a$10$2rEy9X3iDIHflp4b0B9kSOAB5MGYHu1S/rM24Mpw2m.Nti.Tb1xhm','hansin@dustlight.cn','Hansin1997😃',NULL,00,0,1,0,0,0,'2020-06-22 22:34:26','2020-07-08 03:57:32'),(7968878396921020416,'845612500','$2a$10$MqO/sAK2Pufhzo9FGyKooeCm9.Wy.xi9SF9aQgDww8K.y2t0byPgO','845612500@qq.com','老八',NULL,00,3,1,0,0,0,'2020-07-07 16:21:17','2020-07-07 16:30:27');
+INSERT INTO `user_details` VALUES (7963536486284521472,'hansin','$2a$10$2rEy9X3iDIHflp4b0B9kSOAB5MGYHu1S/rM24Mpw2m.Nti.Tb1xhm','hansin@dustlight.cn','Hansin1997😃',NULL,00,0,1,0,0,0,'2020-06-22 22:34:26','2020-07-08 03:57:32'),(7968878396921020416,'845612500','$2a$10$C99.mcT3.vPkww8DNTLbtOJeB60hvFv35PmYtBhsqKctqLwXgqB1O','845612500@qq.com','老八',NULL,00,2,1,0,0,0,'2020-07-07 16:21:17','2020-07-09 13:28:28');
 /*!40000 ALTER TABLE `user_details` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -434,4 +434,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-08 23:25:08
+-- Dump completed on 2020-07-09 21:38:22

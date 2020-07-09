@@ -57,12 +57,16 @@
         loading: this.isLoading,
         nickname: this.getNickname,
         email: this.getEmail,
-        user: this.getUser
+        user: this.getUser,
+        roleName: this.getRoleName
       }
     },
     methods: {
       hasAuthority(authority) {
         return this.authorities.indexOf(authority) >= 0;
+      },
+      getRoleName(){
+        return this.user.roleName
       },
       isLoading() {
         return this.loading
