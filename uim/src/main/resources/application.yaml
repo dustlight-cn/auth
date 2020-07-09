@@ -28,7 +28,7 @@ logging:
       dustlight:
         uim:
           services:
-            ClientMapper: debug
+            ClientDetailsMapper: debug
             TemplateManagerMapper: debug
             UserDetailsMapper: debug
 # Mybatis 缓存

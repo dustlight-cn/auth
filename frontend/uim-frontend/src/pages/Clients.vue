@@ -28,14 +28,38 @@
       <q-card class="my-card">
         <q-card-section>
           <div class="row no-wrap items-center">
-            <div class="col text-h6 ellipsis">
+            <!--            ellipsis-->
+            <div class="col text-h6">
               {{selectedClient.clientName}}
+              <q-btn flat round dense icon="edit">
+                <q-popup-edit
+                  @save="(val,initVal)=>updateClientName(val,initVal,selectedClient)"
+                  buttons
+                  v-model="selectedClient.clientName"
+                  label-set="保存"
+                  label-cancel="取消"
+                >
+                  <q-input label="应用名" hint="应用名不可重复" v-model="selectedClient.clientName" counter/>
+                </q-popup-edit>
+              </q-btn>
+
             </div>
           </div>
         </q-card-section>
         <q-card-section class="q-pt-none">
           <div class="text-subtitle1">
             描述
+            <q-btn flat round dense icon="edit">
+              <q-popup-edit
+                @save="(val,initVal)=>updateClientDescription(val,initVal,selectedClient)"
+                buttons
+                v-model="selectedClient.description"
+                label-set="保存"
+                label-cancel="取消"
+              >
+                <q-input label="应用描述" hint="应用名不可重复" v-model="selectedClient.description" counter/>
+              </q-popup-edit>
+            </q-btn>
           </div>
           <div class="text-caption text-grey">
             {{selectedClient.description}}
@@ -62,6 +86,31 @@
         <q-card-section class="q-pt-none">
           <div class="text-subtitle1">
             回调地址
+            <q-btn flat round dense icon="edit">
+              <q-popup-edit
+                @save="(val,initVal)=>updateRedirectUri(val,initVal,selectedClient)"
+                buttons
+                v-model="selectedClient.registeredRedirectUri"
+                label-set="保存"
+                label-cancel="取消"
+              >
+                <q-input
+                  v-for="(uri,i) in selectedClient.registeredRedirectUri"
+                  rounded bottom-slots dense
+                  v-model="selectedClient.registeredRedirectUri[i]" :label="'URL-' + (i + 1)" hint="" counter>
+                  <template v-slot:append>
+                    <q-btn round dense
+                           @click="()=>selectedClient.registeredRedirectUri.splice(i,1)"
+                           icon="delete"
+                           color="negative"
+                           flat/>
+                  </template>
+                </q-input>
+
+                <q-btn @click="()=>selectedClient.registeredRedirectUri.push('')" round dense icon="add" color="primary"
+                       flat/>
+              </q-popup-edit>
+            </q-btn>
           </div>
           <div v-for="(uri,i) in selectedClient.registeredRedirectUri" class="text-caption text-grey">
             {{uri}}
@@ -85,7 +134,8 @@
         </q-card-section>
         <q-separator/>
         <q-card-actions align="right">
-          <q-btn @click="()=>{deleteClient(selectedClient)}" v-close-popup flat color="negative" label="删除"/>
+          <q-btn icon="delete" @click="()=>{deleteClient(selectedClient)}" v-close-popup flat color="negative"
+                 label="删除"/>
           <q-btn v-close-popup flat color="primary" label="返回"/>
         </q-card-actions>
       </q-card>
@@ -99,6 +149,7 @@
 
 <script>
   import axios from 'axios'
+  import qs from 'qs'
 
   export default {
     name: "Clients",
@@ -125,6 +176,8 @@
       },
       select(client) {
         this.selectedClient = client
+        if (client.registeredRedirectUri == null)
+          client.registeredRedirectUri = []
         this.selected = true
       },
       resetSecret(client) {
@@ -147,7 +200,8 @@
             this.$q.loading.hide()
           })
         })
-      }, deleteClient(client) {
+      },
+      deleteClient(client) {
         this.$q.dialog({
           title: '是否删除应用',
           icon: 'message',
@@ -167,6 +221,53 @@
             this.$q.loading.hide()
           })
         })
+      },
+      updateRedirectUri(val, initVal, client) {
+        if (val == null)
+          return
+        this.$q.loading.show()
+        let data = ""
+        let i = 0
+        val.forEach((uri) => {
+          if (i > 0)
+            data += ","
+          data += encodeURI(uri)
+          i++
+        })
+        axios
+          .post("/api/client/app_redirect_uri/" + client.clientId, qs.stringify({redirectUri: data}))
+          .catch(e => {
+            client.registeredRedirectUri = initVal
+          })
+          .finally(() => {
+            this.$q.loading.hide()
+          })
+      },
+      updateClientName(val, initVal, client) {
+        if (val == null)
+          return
+        this.$q.loading.show()
+        axios
+          .post("/api/client/app_name/" + client.clientId, qs.stringify({name: val}))
+          .catch(e => {
+            client.name = initVal
+          })
+          .finally(() => {
+            this.$q.loading.hide()
+          })
+      },
+      updateClientDescription(val, initVal, client) {
+        if (val == null)
+          return
+        this.$q.loading.show()
+        axios
+          .post("/api/client/app_description/" + client.clientId, qs.stringify({description: val}))
+          .catch(e => {
+            client.description = initVal
+          })
+          .finally(() => {
+            this.$q.loading.hide()
+          })
       }
     },
     mounted() {

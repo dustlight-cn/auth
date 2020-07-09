@@ -89,7 +89,14 @@ public class ClientDetails implements IClientDetails {
     public Set<String> getRegisteredRedirectUri() {
         if (!StringUtils.hasText(redirectUri))
             return null;
-        return StringUtils.commaDelimitedListToSet(redirectUri);
+        Set<String> uriSet = StringUtils.commaDelimitedListToSet(redirectUri);
+        Set<String> trimSet = new LinkedHashSet<>();
+        for (String uri : uriSet) {
+            if (uri == null)
+                continue;
+            trimSet.add(uri.trim());
+        }
+        return trimSet;
     }
 
     @Override

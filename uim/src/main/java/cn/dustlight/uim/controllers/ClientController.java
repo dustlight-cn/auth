@@ -96,6 +96,30 @@ public class ClientController implements IClientController {
     }
 
     @Override
+    public RestfulResult updateClientName(String appKey, String name, Authentication authentication) {
+        boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY") ?
+                clientMapper.updateClientName(appKey, name) :
+                clientMapper.updateClientNameWithUid(appKey, name, ((IUserDetails) authentication.getPrincipal()).getUid());
+        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult updateClientDescription(String appKey, String description, Authentication authentication) {
+        boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY") ?
+                clientMapper.updateClientDescription(appKey, description) :
+                clientMapper.updateClientDescriptionWithUid(appKey, description, ((IUserDetails) authentication.getPrincipal()).getUid());
+        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult updateClientRedirectUri(String appKey, String redirectUri, Authentication authentication) {
+        boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY") ?
+                clientMapper.updateClientRedirectUri(appKey, redirectUri) :
+                clientMapper.updateClientRedirectUriWithUid(appKey, redirectUri, ((IUserDetails) authentication.getPrincipal()).getUid());
+        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
     public RestfulResult updateAuthority(Long id, String name, String description) {
         return authorityDetailsMapper.updateAuthority(id, name, description) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }

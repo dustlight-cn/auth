@@ -30,6 +30,22 @@ public interface IClientController {
     @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
     RestfulResult<String> resetClientSecret(@PathVariable String appKey, Authentication authentication);
 
+    @PostMapping("/app_name/{appKey}")
+    @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
+    RestfulResult updateClientName(@PathVariable String appKey, String name, Authentication authentication);
+
+    @PostMapping("/app_description/{appKey}")
+    @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
+    RestfulResult updateClientDescription(@PathVariable String appKey, String description, Authentication authentication);
+
+    @PostMapping("/app_redirect_uri/{appKey}")
+    @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
+    RestfulResult updateClientRedirectUri(@PathVariable String appKey, String redirectUri, Authentication authentication);
+
+//    @PostMapping("/app_scopes/{appKey}")
+//    @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
+//    RestfulResult updateClientScopes(@PathVariable String appKey, String redirectUri, Authentication authentication);
+
     @GetMapping("/scopes")
     <T extends IScopeDetails> RestfulResult<List<T>> getScopeDetails();
 

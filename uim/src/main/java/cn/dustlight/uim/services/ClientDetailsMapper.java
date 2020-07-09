@@ -65,6 +65,24 @@ public interface ClientDetailsMapper {
     @Update("UPDATE oauth_client_details SET client_secret=#{clientSecret} WHERE client_id=#{clientId} AND uid=#{uid}")
     boolean updateClientSecretWithUid(String clientId, String clientSecret, Long uid);
 
+    @Update("UPDATE oauth_client_details SET client_name=#{clientName} WHERE client_id=#{clientId}")
+    boolean updateClientName(String clientId, String clientName);
+
+    @Update("UPDATE oauth_client_details SET client_name=#{clientName} WHERE client_id=#{clientId} AND uid=#{uid}")
+    boolean updateClientNameWithUid(String clientId, String clientName, Long uid);
+
+    @Update("UPDATE oauth_client_details SET description=#{description} WHERE client_id=#{clientId}")
+    boolean updateClientDescription(String clientId, String description);
+
+    @Update("UPDATE oauth_client_details SET description=#{description} WHERE client_id=#{clientId} AND uid=#{uid}")
+    boolean updateClientDescriptionWithUid(String clientId, String description, Long uid);
+
+    @Update("UPDATE oauth_client_details SET redirect_uri=#{redirectUri} WHERE client_id=#{clientId}")
+    boolean updateClientRedirectUri(String clientId, String redirectUri);
+
+    @Update("UPDATE oauth_client_details SET redirect_uri=#{redirectUri} WHERE client_id=#{clientId} AND uid=#{uid}")
+    boolean updateClientRedirectUriWithUid(String clientId, String redirectUri, Long uid);
+
     @Insert("<script>INSERT IGNORE INTO client_scope(cid,sid) VALUES" +
             "<foreach collection='scopes' item='scope' separator=','>" +
             "(#{clientId},#{scope})" +
