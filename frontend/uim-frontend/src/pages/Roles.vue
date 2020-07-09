@@ -13,9 +13,9 @@
       </q-item>
       <q-item clickable v-ripple v-for="role in roles">
         <q-item-section>
-          <q-item-label v-if="roleName() == role.name" caption>{{role.name}}</q-item-label>
-          <q-item-label v-else>
-            {{role.name}}
+          <div>
+            <q-item-label v-if="roleName() == role.name" caption>{{role.name}}</q-item-label>
+            <q-item-label v-else> {{role.name}}</q-item-label>
             <q-popup-edit v-if="hasAuthority('MANAGE_ROLE')"
                           @save="(val,initVal) => updateRole(val,initVal,role,true)" v-model="role.name"
                           buttons
@@ -23,7 +23,7 @@
                           label-cancel="取消">
               <q-input label="权限名" hint="权限名不可重复" v-model="role.name" dense autofocus counter/>
             </q-popup-edit>
-          </q-item-label>
+          </div>
           <q-item-label caption>
             {{role.description}}
             <q-popup-edit v-if="hasAuthority('MANAGE_ROLE')"
