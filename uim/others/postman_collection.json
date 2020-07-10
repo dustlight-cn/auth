@@ -781,13 +781,13 @@
 							"type": "basic",
 							"basic": [
 								{
-									"key": "username",
-									"value": "order-client",
+									"key": "password",
+									"value": "5ff96c11335addf1753d98b80f3202ab9bf2282b",
 									"type": "string"
 								},
 								{
-									"key": "password",
-									"value": "order-secret-8888",
+									"key": "username",
+									"value": "VTWQABLXBFXJOJ6D76BQAAAA",
 									"type": "string"
 								}
 							]
@@ -815,7 +815,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{Protocol}}://{{Host}}:{{Port}}/oauth/token?grant_type=authorization_code&code=ZomsMj",
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/oauth/token?grant_type=authorization_code&code=T0MGOM&redirect_uri=http://localhost:1234/",
 							"protocol": "{{Protocol}}",
 							"host": [
 								"{{Host}}"
@@ -832,7 +832,11 @@
 								},
 								{
 									"key": "code",
-									"value": "ZomsMj"
+									"value": "T0MGOM"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:1234/"
 								}
 							]
 						}
@@ -1648,7 +1652,7 @@
 					"oauth2": [
 						{
 							"key": "accessToken",
-							"value": "69058b89-1233-48ac-a2ba-31b49d29791e",
+							"value": "4c1f4d37-999e-458a-95bd-393a7adcd53d",
 							"type": "string"
 						},
 						{

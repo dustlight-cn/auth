@@ -1,7 +1,6 @@
 package cn.dustlight.uim.configurations;
 
 import cn.dustlight.uim.services.AuthorityDetailsMapper;
-import cn.dustlight.uim.services.ClientDetailsMapper;
 import cn.dustlight.uim.services.OAuthClientDetailsService;
 import cn.dustlight.uim.services.OAuthUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
@@ -42,9 +42,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     private UserApproveHandler userApproveHandler = new UserApproveHandler();
 
-    @Autowired
-    private ClientDetailsMapper clientDetailsMapper;
-
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
@@ -62,5 +59,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.withClientDetails(clientDetailsService);
+    }
+
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        security.checkTokenAccess("isAuthenticated()");
     }
 }
