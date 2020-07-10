@@ -40,12 +40,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private ApprovalStore approvalStore;
 
+    @Autowired
+    private AccessTokenConverter accessTokenConverter;
+
     private UserApproveHandler userApproveHandler = new UserApproveHandler();
 
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
+                .accessTokenConverter(accessTokenConverter)
                 .tokenStore(redisTokenStore);
 
         userApproveHandler.setApprovalStore(approvalStore);
