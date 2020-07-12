@@ -49,6 +49,26 @@ public interface IClientController {
     @GetMapping("/scopes")
     <T extends IScopeDetails> RestfulResult<List<T>> getScopeDetails();
 
+    @PostMapping("/scope")
+    @PreAuthorize("hasAuthority('MANAGE_SCOPE')")
+    RestfulResult insertScopeDetail(String name, String description);
+
+    @DeleteMapping("/scope/{id}")
+    @PreAuthorize("hasAuthority('MANAGE_SCOPE')")
+    RestfulResult deleteScopeDetail(@PathVariable Long id);
+
+    @PostMapping("/scope/{id}")
+    @PreAuthorize("hasAuthority('MANAGE_SCOPE')")
+    RestfulResult updateScopeDetail(@PathVariable Long id, String name, String description);
+
+    @DeleteMapping("/scope_authority")
+    @PreAuthorize("hasAuthority('MANAGE_SCOPE')")
+    RestfulResult removeScopeAuthority(Long scopeId, Long authorityId);
+
+    @PostMapping("/scope_authority")
+    @PreAuthorize("hasAuthority('MANAGE_SCOPE')")
+    RestfulResult insertScopeAuthority(Long scopeId, Long authorityId);
+
     @GetMapping("/authorities")
     <T extends IAuthorityDetails> RestfulResult<List<T>> getAuthorityDetails();
 
@@ -74,7 +94,7 @@ public interface IClientController {
 
     @PostMapping("/role_authority")
     @PreAuthorize("hasAuthority('MANAGE_ROLE')")
-    RestfulResult insertAuthority(Long roleId, Long authorityId);
+    RestfulResult insertRoleAuthority(Long roleId, Long authorityId);
 
     @PostMapping("/authority/{id}")
     @PreAuthorize("hasAuthority('MANAGE_AUTHORITY')")
@@ -86,7 +106,7 @@ public interface IClientController {
 
     @PostMapping("/authority")
     @PreAuthorize("hasAuthority('MANAGE_AUTHORITY')")
-    RestfulResult insertAuthority(String name, String description);
+    RestfulResult insertRoleAuthority(String name, String description);
 
     @GetMapping("/grant_types")
     <T extends IGrantType> RestfulResult<List<T>> getGrantTypes();

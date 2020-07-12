@@ -66,7 +66,7 @@
       return {
         loading: false,
         authorities: [],
-        protectedAuthority: ["MANAGE_AUTHORITY"]
+        protectedAuthority: ["MANAGE_AUTHORITY", "MANAGE_SCOPE", "MANAGE_ROLE"]
       }
     }, methods: {
       load() {

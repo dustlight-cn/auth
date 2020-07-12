@@ -47,6 +47,15 @@
             角色管理
           </q-item-section>
         </q-item>
+
+        <q-item to="/manage/scopes" v-if="hasAuthority('MANAGE_SCOPE')" clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="app_settings_alt"/>
+          </q-item-section>
+          <q-item-section>
+            授权作用域管理
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-scroll-area>
 

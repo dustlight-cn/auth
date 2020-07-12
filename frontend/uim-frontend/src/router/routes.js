@@ -33,6 +33,9 @@ const routes = [
       }, {
         path: 'roles',
         component: () => import('pages/Roles.vue')
+      }, {
+        path: 'scopes',
+        component: () => import('pages/Scopes.vue')
       }
     ]
   }, {

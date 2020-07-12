@@ -3,53 +3,52 @@
     <q-list separator>
       <q-item>
         <q-item-section>
-          <q-item-label overline>角色列表 ({{roles.length}})</q-item-label>
+          <q-item-label overline>授权作用域 ({{scopes.length}})</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item v-if="roles == null || roles.length == 0" class="text-center">
+      <q-item v-if="scopes == null || scopes.length == 0" class="text-center">
         <q-item-section>
           <q-item-label overline>空空如也</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item clickable v-ripple v-for="role in roles">
+      <q-item clickable v-ripple v-for="scope in scopes">
         <q-item-section>
           <div>
-            <q-item-label v-if="roleName() == role.name" caption>{{role.name}}</q-item-label>
-            <q-item-label v-else> {{role.name}}</q-item-label>
-            <q-popup-edit v-if="hasAuthority('MANAGE_ROLE')"
-                          @save="(val,initVal) => updateRole(val,initVal,role,true)" v-model="role.name"
+            <q-item-label> {{scope.name}}</q-item-label>
+            <q-popup-edit v-if="hasAuthority('MANAGE_SCOPE')"
+                          @save="(val,initVal) => updateScope(val,initVal,scope,true)" v-model="scope.name"
                           buttons
                           label-set="保存"
                           label-cancel="取消">
-              <q-input label="角色名" hint="角色名不可重复" v-model="role.name" dense autofocus counter/>
+              <q-input label="授权作用域名" hint="作用域名不可重复" v-model="scope.name" dense autofocus counter/>
             </q-popup-edit>
           </div>
           <q-item-label caption>
-            {{role.description}}
-            <q-popup-edit v-if="hasAuthority('MANAGE_ROLE')"
-                          @save="(val,initVal) => updateRole(val,initVal,role,false)"
-                          v-model="role.description"
+            {{scope.description}}
+            <q-popup-edit v-if="hasAuthority('MANAGE_SCOPE')"
+                          @save="(val,initVal) => updateScope(val,initVal,scope,false)"
+                          v-model="scope.description"
                           buttons label-set="保存"
                           label-cancel="取消">
-              <q-input label="角色描述" v-model="role.description" dense autofocus counter/>
+              <q-input label="授权作用域描述" v-model="scope.description" dense autofocus counter/>
             </q-popup-edit>
           </q-item-label>
         </q-item-section>
         <q-item-section>
-          <q-item-label v-if="hasAuthority('MANAGE_ROLE')" class="text-center">
+          <q-item-label v-if="hasAuthority('MANAGE_SCOPE')" class="text-center">
             <q-btn
-              @click="()=>editRole(role)" flat round dense
+              @click="()=>editScope(scope)" flat round dense
               icon="edit"/>
-            <q-btn v-if="roleName() != role.name"
-                   @click="()=>deleteRole(role)" flat round dense
-                   icon="delete" color="negative"/>
+            <q-btn
+              @click="()=>deleteScope(scope)" flat round dense
+              icon="delete" color="negative"/>
           </q-item-label>
         </q-item-section>
       </q-item>
 
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
-        <div v-if="hasAuthority('MANAGE_ROLE')">
-          <q-btn @click="createRole" color="primary" icon="add" round/>
+        <div v-if="hasAuthority('MANAGE_SCOPE')">
+          <q-btn @click="createScope" color="primary" icon="add" round/>
         </div>
         <q-btn v-else icon="security" flat color="primary" label="需要权限"/>
       </q-page-sticky>
@@ -61,12 +60,12 @@
           <div class=" no-wrap items-center">
             <!--            ellipsis-->
             <div class="col text-h6">
-              {{selectedRole.name}}
+              {{selectedScope.name}}
             </div>
           </div>
 
           <div class="text-subtitle1 text-caption text-grey">
-            {{selectedRole.description}}
+            {{selectedScope.description}}
           </div>
         </q-card-section>
         <q-card-section class="q-pt-none">
@@ -74,7 +73,7 @@
             <q-item>
               <q-item-section style="min-width: 100px">
                 <q-item-label overline>
-                  权限列表 ({{selectedRoleAuthorities.length}})
+                  权限列表 ({{selectedScopeAuthorities.length}})
                 </q-item-label>
               </q-item-section>
               <q-item-section class="text-right">
@@ -84,21 +83,18 @@
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-item dense v-for="authority in selectedRoleAuthorities">
+            <q-item dense v-for="authority in selectedScopeAuthorities">
               <q-item-section>
                 <q-item-label>
-                  <q-chip v-if="roleName() == selectedRole.name && authority.name=='MANAGE_ROLE'"
+                  <q-chip removable
+                          @remove="removeAuthority(authority,selectedScope)"
                           icon="security"
-                          :label="authority.name + '(' +authority.description + ')'"/>
-                  <q-chip v-else removable
-                          @remove="removeAuthority(authority,selectedRole)"
-                          icon="security"
-                          :label="authority.name + '(' +authority.description + ')'"/>
+                          :label="authority.name + '(' + authority.description + ')'"/>
                 </q-item-label>
               </q-item-section>
             </q-item>
             <q-item class="text-center"
-                    v-if="selectedRoleAuthorities == null || selectedRoleAuthorities.length == 0">
+                    v-if="selectedScopeAuthorities == null || selectedScopeAuthorities.length == 0">
               <q-item-section>
                 <q-item-label caption>
                   无任何权限
@@ -110,7 +106,7 @@
 
         </q-card-section>
 
-        <q-inner-loading :showing="loadingRoleAuthorities">
+        <q-inner-loading :showing="loadingScopeAuthorities">
           <q-spinner-gears size="50px" color="primary"/>
         </q-inner-loading>
         <q-separator/>
@@ -126,7 +122,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label overline>
-                    选择权限 {{selectedRoleAuthorities.length}}/{{authorities.length}}
+                    选择权限 {{selectedScopeAuthorities.length}}/{{authorities.length}}
                   </q-item-label>
                 </q-item-section>
               </q-item>
@@ -139,7 +135,7 @@
                 <q-item-section class="text-right">
                   <q-item-label>
                     <q-icon v-if="authority.flag" name="check"/>
-                    <q-btn @click="()=>addAuthority(authority,selectedRole)" v-else flat round dense icon="add"/>
+                    <q-btn @click="()=>addAuthority(authority,selectedScope)" v-else flat round dense icon="add"/>
                   </q-item-label>
                 </q-item-section>
               </q-item>
@@ -169,16 +165,16 @@
   import qs from 'qs'
 
   export default {
-    name: "Roles",
+    name: "Scopes",
     inject: ["hasAuthority", "roleName"],
     data() {
       return {
         loading: false,
-        roles: [],
+        scopes: [],
         editting: false,
-        selectedRole: {},
-        selectedRoleAuthorities: [],
-        loadingRoleAuthorities: false,
+        selectedScope: {},
+        selectedScopeAuthorities: [],
+        loadingScopeAuthorities: false,
         selectingAuthority: false,
         authorities: [],
         loadingAuthorities: false
@@ -189,33 +185,33 @@
         if (this.loading)
           return
         this.loading = true
-        axios.get("/api/client/roles")
+        axios.get("/api/client/scopes")
           .then((res) => {
-            this.roles = res
+            this.scopes = res
           })
           .finally(() => {
             this.loading = false
           })
       },
-      updateRole(val, initVal, role, flag) {
+      updateScope(val, initVal, scope, flag) {
         this.$q.loading.show()
-        axios.post("/api/client/role/" + role.id, qs.stringify({
-          name: role.name,
-          description: role.description
+        axios.post("/api/client/scope/" + scope.id, qs.stringify({
+          name: scope.name,
+          description: scope.description
         })).catch(e => {
           if (flag)
-            role.name = initVal
+            scope.name = initVal
           else
-            role.description = initVal
+            scope.description = initVal
         }).finally(() => {
           this.$q.loading.hide()
         })
 
       },
-      createRole() {
+      createScope() {
         this.$q.dialog({
-          title: '创建角色',
-          message: '请输入角色名',
+          title: '创建授权作用域',
+          message: '请输入作用域名',
           prompt: {
             model: '',
             type: 'text' // optional
@@ -227,7 +223,7 @@
           if (data == null || data.trim().length == 0)
             return
           this.$q.loading.show()
-          axios.post("/api/client/role", qs.stringify({name: data, description: data}))
+          axios.post("/api/client/scope", qs.stringify({name: data, description: data}))
             .then(res => {
               this.load();
             })
@@ -236,10 +232,10 @@
             })
         })
       },
-      deleteRole(role) {
+      deleteScope(scope) {
         this.$q.dialog({
-          title: '是否删除角色',
-          message: '删除操作不可撤销，是否要删除角色"' + role.name + '"？',
+          title: '是否删除授权作用域',
+          message: '删除操作不可撤销，是否要删除作用域"' + scope.name + '"？',
           cancel: true,
           ok: {
             label: "确定",
@@ -249,33 +245,33 @@
           cancel: {label: "取消", color: "primary", flat: true}
         }).onOk(() => {
           this.$q.loading.show()
-          axios.delete("/api/client/role/" + role.id).then(res => {
+          axios.delete("/api/client/scope/" + scope.id).then(res => {
             this.load()
           }).finally(() => {
             this.$q.loading.hide()
           })
         })
       },
-      editRole(role) {
-        this.selectedRole = role
+      editScope(scope) {
+        this.selectedScope = scope
         this.editting = true
-        this.loadingRoleAuthorities = true
-        axios.get("/api/client/authorities/role/" + role.id)
+        this.loadingScopeAuthorities = true
+        axios.get("/api/client/authorities/scope/" + scope.id)
           .then(res => {
-            this.selectedRoleAuthorities = res
+            this.selectedScopeAuthorities = res
           }).finally(() => {
-          this.loadingRoleAuthorities = false
+          this.loadingScopeAuthorities = false
         })
       },
-      removeAuthority(authority, role) {
+      removeAuthority(authority, scope) {
         this.$q.loading.show()
         let data = {
-          roleId: role.id,
+          scopeId: scope.id,
           authorityId: authority.id
         }
-        axios.delete("/api/client/role_authority?" + qs.stringify(data))
+        axios.delete("/api/client/scope_authority?" + qs.stringify(data))
           .then((res) => {
-            this.editRole(role)
+            this.editScope(scope)
           }).finally(() => {
           this.$q.loading.hide()
         })
@@ -287,7 +283,7 @@
           .then((res) => {
             this.authorities = res
             let arr = []
-            this.selectedRoleAuthorities.forEach(a => {
+            this.selectedScopeAuthorities.forEach(a => {
               arr.push(a.id)
             })
             this.authorities.forEach(a => {
@@ -299,16 +295,16 @@
           }).finally(() => {
           this.loadingAuthorities = false
         })
-      }, addAuthority(authority, role) {
+      }, addAuthority(authority, scope) {
         this.$q.loading.show()
         let data = {
-          roleId: role.id,
+          scopeId: scope.id,
           authorityId: authority.id
         }
-        axios.post("/api/client/role_authority?" + qs.stringify(data))
+        axios.post("/api/client/scope_authority?" + qs.stringify(data))
           .then(res => {
             authority.flag = true
-            this.selectedRoleAuthorities.push(authority)
+            this.selectedScopeAuthorities.push(authority)
           }).finally(() => {
           this.$q.loading.hide()
         })

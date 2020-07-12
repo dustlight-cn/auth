@@ -17,4 +17,13 @@ public interface ScopeDetailsMapper {
             @Result(property = "name", column = "scope_name")
     })
     List<ScopeDetails> getScopes();
+
+    @Insert("INSERT INTO scope_details(id,scope_name,description) VALUES(#{id},#{scopeName},#{description})")
+    boolean insertScope(Long id, String scopeName, String description);
+
+    @Delete("DELETE FROM scope_details WHERE id=#{id}")
+    boolean removeScope(Long id);
+
+    @Update("UPDATE scope_details SET id=#{id},scope_name=#{name},description=#{description} WHERE id=#{id}")
+    boolean updateScope(Long id, String name, String description);
 }
