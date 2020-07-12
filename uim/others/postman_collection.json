@@ -1241,6 +1241,151 @@
 					"response": []
 				},
 				{
+					"name": "create_scope",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "TEST2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试2222",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/scope",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"scope"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_scope",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "TEST2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "测试权限",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/scope/7970568715107954688",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"scope",
+								"7970568715107954688"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add_scope_authority",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "scopeId",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "authorityId",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/scope_authority",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"scope_authority"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_scope_authority",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "scopeId",
+									"value": "7970600755226341376",
+									"type": "text"
+								},
+								{
+									"key": "authorityId",
+									"value": "0",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/scope_authority",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"scope_authority"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "all_authorities_details",
 					"request": {
 						"method": "GET",
@@ -1624,7 +1769,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authorities/scope/1",
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/authorities/scope/7970600755226341376",
 							"protocol": "{{Protocol}}",
 							"host": [
 								"{{Host}}"
@@ -1635,7 +1780,7 @@
 								"client",
 								"authorities",
 								"scope",
-								"1"
+								"7970600755226341376"
 							]
 						}
 					},
