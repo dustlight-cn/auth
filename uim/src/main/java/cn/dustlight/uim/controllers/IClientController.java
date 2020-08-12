@@ -42,9 +42,13 @@ public interface IClientController {
     @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
     RestfulResult updateClientRedirectUri(@PathVariable String appKey, String redirectUri, Authentication authentication);
 
-//    @PostMapping("/app_scopes/{appKey}")
-//    @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
-//    RestfulResult updateClientScopes(@PathVariable String appKey, String redirectUri, Authentication authentication);
+    @PostMapping("/app_scopes/{appKey}")
+    @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
+    RestfulResult addClientScopes(@PathVariable String appKey,@RequestParam(value = "scopes") List<Long> scopes, Authentication authentication);
+
+    @DeleteMapping("/app_scopes/{appKey}")
+    @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
+    RestfulResult removeClientScopes(@PathVariable String appKey,@RequestParam(value = "scopes") List<Long> scopes, Authentication authentication);
 
     @GetMapping("/scopes")
     <T extends IScopeDetails> RestfulResult<List<T>> getScopeDetails();

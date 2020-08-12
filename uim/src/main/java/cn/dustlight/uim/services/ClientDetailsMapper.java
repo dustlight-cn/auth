@@ -89,6 +89,13 @@ public interface ClientDetailsMapper {
             "</foreach></script>")
     boolean insertClientScopes(@Param("clientId") String clientId, @Param("scopes") List<Long> Scopes);
 
+    @Delete("<script>DELETE FROM client_scope " +
+            "WHERE cid=#{clientId} AND sid IN (" +
+            "<foreach collection='scopes' item='scope' separator=','>" +
+            "#{scope}" +
+            "</foreach>)</script>")
+    boolean deleteClientScopes(@Param("clientId") String clientId, @Param("scopes") List<Long> Scopes);
+
     @Insert("<script>INSERT IGNORE INTO client_grant_types(cid,tid) VALUES" +
             "<foreach collection='types' item='type' separator=','>" +
             "(#{clientId},#{type})" +

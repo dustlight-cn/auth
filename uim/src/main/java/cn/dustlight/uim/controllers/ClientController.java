@@ -123,6 +123,30 @@ public class ClientController implements IClientController {
     }
 
     @Override
+    public RestfulResult addClientScopes(String appKey, List<Long> scopes, Authentication authentication) {
+        boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY");
+        if (!flag) {
+            ClientDetails client = clientMapper.loadClientByClientId(appKey);
+            if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
+                return RestfulConstants.ERROR_UNKNOWN;
+        }
+        flag = clientMapper.insertClientScopes(appKey, scopes);
+        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult removeClientScopes(String appKey, List<Long> scopes, Authentication authentication) {
+        boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY");
+        if (!flag) {
+            ClientDetails client = clientMapper.loadClientByClientId(appKey);
+            if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
+                return RestfulConstants.ERROR_UNKNOWN;
+        }
+        flag = clientMapper.deleteClientScopes(appKey, scopes);
+        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
     public RestfulResult insertScopeDetail(String name, String description) {
         return scopeDetailsMapper.insertScope(snowflake.getNextId(), name, description) ?
                 RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
