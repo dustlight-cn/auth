@@ -44,11 +44,19 @@ public interface IClientController {
 
     @PostMapping("/app_scopes/{appKey}")
     @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
-    RestfulResult addClientScopes(@PathVariable String appKey,@RequestParam(value = "scopes") List<Long> scopes, Authentication authentication);
+    RestfulResult addClientScopes(@PathVariable String appKey, @RequestParam(value = "scopes") List<Long> scopes, Authentication authentication);
 
     @DeleteMapping("/app_scopes/{appKey}")
     @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
-    RestfulResult removeClientScopes(@PathVariable String appKey,@RequestParam(value = "scopes") List<Long> scopes, Authentication authentication);
+    RestfulResult removeClientScopes(@PathVariable String appKey, @RequestParam(value = "scopes") List<Long> scopes, Authentication authentication);
+
+    @PostMapping("/app_grant_types/{appKey}")
+    @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
+    RestfulResult addClientGrantTypes(@PathVariable String appKey, @RequestParam(value = "types") List<Long> types, Authentication authentication);
+
+    @DeleteMapping("/app_grant_types/{appKey}")
+    @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
+    RestfulResult removeClientGrantTypes(@PathVariable String appKey, @RequestParam(value = "types") List<Long> types, Authentication authentication);
 
     @GetMapping("/scopes")
     <T extends IScopeDetails> RestfulResult<List<T>> getScopeDetails();

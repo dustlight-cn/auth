@@ -82,24 +82,4 @@ public interface ClientDetailsMapper {
 
     @Update("UPDATE oauth_client_details SET redirect_uri=#{redirectUri} WHERE client_id=#{clientId} AND uid=#{uid}")
     boolean updateClientRedirectUriWithUid(String clientId, String redirectUri, Long uid);
-
-    @Insert("<script>INSERT IGNORE INTO client_scope(cid,sid) VALUES" +
-            "<foreach collection='scopes' item='scope' separator=','>" +
-            "(#{clientId},#{scope})" +
-            "</foreach></script>")
-    boolean insertClientScopes(@Param("clientId") String clientId, @Param("scopes") List<Long> Scopes);
-
-    @Delete("<script>DELETE FROM client_scope " +
-            "WHERE cid=#{clientId} AND sid IN (" +
-            "<foreach collection='scopes' item='scope' separator=','>" +
-            "#{scope}" +
-            "</foreach>)</script>")
-    boolean deleteClientScopes(@Param("clientId") String clientId, @Param("scopes") List<Long> Scopes);
-
-    @Insert("<script>INSERT IGNORE INTO client_grant_types(cid,tid) VALUES" +
-            "<foreach collection='types' item='type' separator=','>" +
-            "(#{clientId},#{type})" +
-            "</foreach></script>")
-    boolean insertClientGrantTypes(@Param("clientId") String clientId, @Param("types") List<Long> types);
-
 }

@@ -1220,6 +1220,298 @@
 					"response": []
 				},
 				{
+					"name": "add_app_scopes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "redirectUri",
+									"value": "http://localhost",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "scopes",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "scopes",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "grantTypes",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app_scopes/VTWQABLXBFXJOJ6D76BQAAAA",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app_scopes",
+								"VTWQABLXBFXJOJ6D76BQAAAA"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "光尘博客",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_app_scopes",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "redirectUri",
+									"value": "http://localhost",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "scopes",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "scopes",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "grantTypes",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app_scopes/VTWQABLXBFXJOJ6D76BQAAAA",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app_scopes",
+								"VTWQABLXBFXJOJ6D76BQAAAA"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "光尘博客",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add_app_grant_types",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "redirectUri",
+									"value": "http://localhost",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "types",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "types",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "grantTypes",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app_grant_types/VTWQABLXBFXJOJ6D76BQAAAA",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app_grant_types",
+								"VTWQABLXBFXJOJ6D76BQAAAA"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "光尘博客",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_app_grant_types",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "光尘博客Update",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "redirectUri",
+									"value": "http://localhost",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "types",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "types",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "grantTypes",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app_grant_types/VTWQABLXBFXJOJ6D76BQAAAA",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app_grant_types",
+								"VTWQABLXBFXJOJ6D76BQAAAA"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "光尘博客",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "all_scope_details",
 					"request": {
 						"method": "GET",

@@ -72,8 +72,8 @@ public class ClientController implements IClientController {
         String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generatorCode(128));
         boolean flag = clientMapper.insertClient(appKey, userDetails.getUid(), passwordEncoder.encode(appSecret), name, redirectUri,
                 null, null, null, true, description);
-        flag = flag & clientMapper.insertClientScopes(appKey, scopes);
-        flag = flag & clientMapper.insertClientGrantTypes(appKey, grantTypes);
+        flag = flag & scopeDetailsMapper.insertClientScopes(appKey, scopes);
+        flag = flag & grantTypeMapper.insertClientGrantTypes(appKey, grantTypes);
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("appKey", appKey);
         data.put("appSecret", appSecret);
@@ -130,7 +130,7 @@ public class ClientController implements IClientController {
             if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
                 return RestfulConstants.ERROR_UNKNOWN;
         }
-        flag = clientMapper.insertClientScopes(appKey, scopes);
+        flag = scopeDetailsMapper.insertClientScopes(appKey, scopes);
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
@@ -142,7 +142,31 @@ public class ClientController implements IClientController {
             if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
                 return RestfulConstants.ERROR_UNKNOWN;
         }
-        flag = clientMapper.deleteClientScopes(appKey, scopes);
+        flag = scopeDetailsMapper.deleteClientScopes(appKey, scopes);
+        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult addClientGrantTypes(String appKey, List<Long> types, Authentication authentication) {
+        boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY");
+        if (!flag) {
+            ClientDetails client = clientMapper.loadClientByClientId(appKey);
+            if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
+                return RestfulConstants.ERROR_UNKNOWN;
+        }
+        flag = grantTypeMapper.insertClientGrantTypes(appKey, types);
+        return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult removeClientGrantTypes(String appKey, List<Long> types, Authentication authentication) {
+        boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY");
+        if (!flag) {
+            ClientDetails client = clientMapper.loadClientByClientId(appKey);
+            if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
+                return RestfulConstants.ERROR_UNKNOWN;
+        }
+        flag = grantTypeMapper.deleteClientGrantTypes(appKey, types);
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
