@@ -72,8 +72,8 @@ public class ClientController implements IClientController {
         String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generatorCode(128));
         boolean flag = clientMapper.insertClient(appKey, userDetails.getUid(), passwordEncoder.encode(appSecret), name, redirectUri,
                 null, null, null, true, description);
-        flag = flag & scopeDetailsMapper.insertClientScopes(appKey, scopes);
-        flag = flag & grantTypeMapper.insertClientGrantTypes(appKey, grantTypes);
+        flag = flag & clientMapper.insertClientScopes(appKey, scopes);
+        flag = flag & clientMapper.insertClientGrantTypes(appKey, grantTypes);
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("appKey", appKey);
         data.put("appSecret", appSecret);
@@ -130,7 +130,7 @@ public class ClientController implements IClientController {
             if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
                 return RestfulConstants.ERROR_UNKNOWN;
         }
-        flag = scopeDetailsMapper.insertClientScopes(appKey, scopes);
+        flag = clientMapper.insertClientScopes(appKey, scopes);
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
@@ -142,7 +142,7 @@ public class ClientController implements IClientController {
             if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
                 return RestfulConstants.ERROR_UNKNOWN;
         }
-        flag = scopeDetailsMapper.deleteClientScopes(appKey, scopes);
+        flag = clientMapper.deleteClientScopes(appKey, scopes);
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
@@ -154,7 +154,7 @@ public class ClientController implements IClientController {
             if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
                 return RestfulConstants.ERROR_UNKNOWN;
         }
-        flag = grantTypeMapper.insertClientGrantTypes(appKey, types);
+        flag = clientMapper.insertClientGrantTypes(appKey, types);
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
@@ -166,7 +166,7 @@ public class ClientController implements IClientController {
             if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
                 return RestfulConstants.ERROR_UNKNOWN;
         }
-        flag = grantTypeMapper.deleteClientGrantTypes(appKey, types);
+        flag = clientMapper.deleteClientGrantTypes(appKey, types);
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 

@@ -2,6 +2,7 @@ package cn.dustlight.uim.services;
 
 import cn.dustlight.uim.models.ClientDetails.ClientScope;
 import cn.dustlight.uim.models.ClientDetails;
+import cn.dustlight.uim.models.GrantType;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +13,9 @@ import java.util.List;
 @Mapper
 public interface ClientDetailsMapper {
 
-    @Select("SELECT scope_name,auto_approve,scope_details.description as des FROM scope_details,client_scope WHERE client_scope.cid=#{clientId} AND scope_details.id=client_scope.sid")
+    @Select("SELECT sid,scope_name,auto_approve,scope_details.description as des FROM scope_details,client_scope WHERE client_scope.cid=#{clientId} AND scope_details.id=client_scope.sid")
     @Results(id = "ClientScope", value = {
+            @Result(property = "id", column = "sid"),
             @Result(property = "scopeName", column = "scope_name"),
             @Result(property = "autoApprove", column = "auto_approve"),
             @Result(property = "scopeDescription", column = "des")
@@ -28,7 +30,7 @@ public interface ClientDetailsMapper {
             @Result(property = "clientName", column = "client_name"),
             @Result(property = "resourceIds", column = "client_id", many = @Many(select = "cn.dustlight.uim.services.ResourceDetailsMapper.getClientResourceIdsByClientId")),
             @Result(property = "scope", column = "client_id", many = @Many(select = "cn.dustlight.uim.services.ClientDetailsMapper.getClientScopeByClientId")),
-            @Result(property = "authorizedGrantTypes", column = "client_id", many = @Many(select = "cn.dustlight.uim.services.GrantTypeMapper.getClientGrantTypesByClientId")),
+            @Result(property = "authorizedGrantTypes", column = "client_id", many = @Many(select = "cn.dustlight.uim.services.ClientDetailsMapper.getClientGrantTypesByClientId")),
             @Result(property = "authorities", column = "client_id", many = @Many(select = "cn.dustlight.uim.services.AuthorityDetailsMapper.getAuthoritiesByClientId")),
             @Result(property = "redirectUri", column = "redirect_uri"),
             @Result(property = "accessTokenValidity", column = "access_token_validity"),
@@ -82,4 +84,39 @@ public interface ClientDetailsMapper {
 
     @Update("UPDATE oauth_client_details SET redirect_uri=#{redirectUri} WHERE client_id=#{clientId} AND uid=#{uid}")
     boolean updateClientRedirectUriWithUid(String clientId, String redirectUri, Long uid);
+
+
+    @Insert("<script>INSERT IGNORE INTO client_scope(cid,sid) VALUES" +
+            "<foreach collection='scopes' item='scope' separator=','>" +
+            "(#{clientId},#{scope})" +
+            "</foreach></script>")
+    boolean insertClientScopes(@Param("clientId") String clientId, @Param("scopes") List<Long> Scopes);
+
+    @Delete("<script>DELETE FROM client_scope " +
+            "WHERE cid=#{clientId} AND sid IN (" +
+            "<foreach collection='scopes' item='scope' separator=','>" +
+            "#{scope}" +
+            "</foreach>)</script>")
+    boolean deleteClientScopes(@Param("clientId") String clientId, @Param("scopes") List<Long> Scopes);
+
+    @Select("SELECT grant_types.id as id,grant_types.grant_type as grant_type FROM client_grant_types,grant_types WHERE client_grant_types.cid=#{clientId} AND grant_types.id=client_grant_types.tid")
+    @Results(id = "GrantType", value = {
+            @Result(property = "id", column = "id"),
+            @Result(property = "name", column = "grant_type")
+    })
+    List<GrantType> getClientGrantTypesByClientId(String clientId);
+
+    @Insert("<script>INSERT IGNORE INTO client_grant_types(cid,tid) VALUES" +
+            "<foreach collection='types' item='type' separator=','>" +
+            "(#{clientId},#{type})" +
+            "</foreach></script>")
+    boolean insertClientGrantTypes(@Param("clientId") String clientId, @Param("types") List<Long> types);
+
+    @Delete("<script>DELETE FROM client_grant_types " +
+            "WHERE cid=#{clientId} AND tid IN (" +
+            "<foreach collection='types' item='type' separator=','>" +
+            "#{type}" +
+            "</foreach>)</script>")
+    boolean deleteClientGrantTypes(@Param("clientId") String clientId, @Param("types") List<Long> types);
+
 }

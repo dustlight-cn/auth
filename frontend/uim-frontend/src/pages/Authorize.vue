@@ -23,7 +23,7 @@
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>{{scope.description || scope.scope}}</q-item-label>
+              <q-item-label>{{scope.details.description}}</q-item-label>
               <q-item-label v-if="scope.approved" caption>已授权</q-item-label>
             </q-item-section>
           </q-item>
@@ -94,7 +94,7 @@
               this.scopes.push({
                 scope: i,
                 approved: res.scopes[i].approved,
-                description: res.scopes[i].description,
+                details: res.scopes[i].details,
                 value: true
               })
           }

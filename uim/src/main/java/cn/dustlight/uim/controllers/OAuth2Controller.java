@@ -1,8 +1,8 @@
 package cn.dustlight.uim.controllers;
 
 import cn.dustlight.uim.RestfulResult;
-import cn.dustlight.uim.models.ClientDetails;
 import cn.dustlight.uim.models.IClientDetails;
+import cn.dustlight.uim.models.IScopeDetails;
 import cn.dustlight.uim.services.ClientDetailsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
@@ -52,13 +52,13 @@ public class OAuth2Controller {
             Collection<Approval> approvals = approvalStore.getApprovals(username, clientId);
 
 
-            Map<String, String> scopeDes = details.getScopeDescriptions();
+            Map<String, IScopeDetails> scopeDes = details.getScopeDetails();
 
             Map<String, Map<String, Object>> scopes = new LinkedHashMap<>();
             for (String s : requestScopes) {
                 Map<String, Object> m = new LinkedHashMap<>();
                 scopes.put(s, m);
-                m.put("description", scopeDes.get(s));
+                m.put("details", scopeDes.get(s));
             }
             for (Approval approval : approvals) {
                 if (approval.isApproved() && scopes.containsKey(approval.getScope()))

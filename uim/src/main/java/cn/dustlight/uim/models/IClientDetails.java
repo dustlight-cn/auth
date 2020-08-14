@@ -14,7 +14,9 @@ public interface IClientDetails extends ClientDetails {
 
     String getClientName();
 
-    Map<String, String> getScopeDescriptions();
+    Map<String, IScopeDetails> getScopeDetails();
+
+    Map<String, IGrantType> getGrantTypeDetails();
 
     boolean isEnabled();
 

@@ -19,7 +19,7 @@ public class ClientDetails implements IClientDetails {
     private String clientSecret;
     private List<String> resourceIds;
     private List<ClientScope> scope;
-    private List<String> authorizedGrantTypes;
+    private List<IGrantType> authorizedGrantTypes;
     private String redirectUri;
     private String[] authorities;
     private Integer accessTokenValidity;
@@ -80,9 +80,12 @@ public class ClientDetails implements IClientDetails {
 
     @Override
     public Set<String> getAuthorizedGrantTypes() {
+        HashSet<String> tmp = new HashSet<>();
         if (authorizedGrantTypes == null)
-            return new HashSet<>();
-        return new HashSet<>(authorizedGrantTypes);
+            return tmp;
+        for (IGrantType t : authorizedGrantTypes)
+            tmp.add(t.getName());
+        return tmp;
     }
 
     @Override
@@ -141,12 +144,26 @@ public class ClientDetails implements IClientDetails {
     }
 
     @Override
-    public Map<String, String> getScopeDescriptions() {
-        Map<String, String> map = new LinkedHashMap<>();
+    public Map<String, IScopeDetails> getScopeDetails() {
+        Map<String, IScopeDetails> map = new LinkedHashMap<>();
         for (ClientScope s : scope) {
-            map.put(s.getScopeName(), s.getScopeDescription());
+            ScopeDetails details = new ScopeDetails();
+            details.setDescription(s.getScopeDescription());
+            details.setName(s.getScopeName());
+            details.setId(s.getId());
+            map.put(s.getScopeName(), details);
         }
         return map;
+    }
+
+    @Override
+    public Map<String, IGrantType> getGrantTypeDetails() {
+        LinkedHashMap result = new LinkedHashMap();
+        if (authorizedGrantTypes == null)
+            return result;
+        for (IGrantType t : authorizedGrantTypes)
+            result.put(t.getName(), t);
+        return result;
     }
 
     @Override
@@ -171,9 +188,14 @@ public class ClientDetails implements IClientDetails {
 
     public static class ClientScope implements Serializable {
 
+        private Long id;
         private String scopeName;
         private String scopeDescription;
         private boolean autoApprove;
+
+        public Long getId() {
+            return id;
+        }
 
         public String getScopeName() {
             return scopeName;

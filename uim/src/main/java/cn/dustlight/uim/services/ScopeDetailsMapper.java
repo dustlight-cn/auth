@@ -26,18 +26,4 @@ public interface ScopeDetailsMapper {
 
     @Update("UPDATE scope_details SET id=#{id},scope_name=#{name},description=#{description} WHERE id=#{id}")
     boolean updateScope(Long id, String name, String description);
-
-
-    @Insert("<script>INSERT IGNORE INTO client_scope(cid,sid) VALUES" +
-            "<foreach collection='scopes' item='scope' separator=','>" +
-            "(#{clientId},#{scope})" +
-            "</foreach></script>")
-    boolean insertClientScopes(@Param("clientId") String clientId, @Param("scopes") List<Long> Scopes);
-
-    @Delete("<script>DELETE FROM client_scope " +
-            "WHERE cid=#{clientId} AND sid IN (" +
-            "<foreach collection='scopes' item='scope' separator=','>" +
-            "#{scope}" +
-            "</foreach>)</script>")
-    boolean deleteClientScopes(@Param("clientId") String clientId, @Param("scopes") List<Long> Scopes);
 }
