@@ -408,6 +408,27 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "applyForDeveloper",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/applyForDeveloper",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"applyForDeveloper"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -1393,12 +1414,12 @@
 								},
 								{
 									"key": "types",
-									"value": "3",
+									"value": "0",
 									"type": "text"
 								},
 								{
 									"key": "types",
-									"value": "4",
+									"value": "1",
 									"type": "text"
 								},
 								{

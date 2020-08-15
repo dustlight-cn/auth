@@ -58,6 +58,12 @@ public interface UserDetailsMapper {
     @Update("UPDATE user_details SET email=#{email} WHERE username=#{username}")
     boolean changeEmail(String username, String email);
 
+    @Update("UPDATE user_details SET role=#{roleId} WHERE uid=#{uid}")
+    boolean changeRole(Long uid, Long roleId);
+
+    @Update("UPDATE user_details,role_details SET user_details.role=role_details.id WHERE user_details.uid=#{uid} AND role_details.role_name=#{roleName}")
+    boolean changeRoleByRoleName(Long uid, String roleName);
+
     @Update("UPDATE user_details SET password=#{password} WHERE email=#{email}")
     boolean changePasswordByEmail(String email, String password);
 

@@ -100,7 +100,7 @@ CREATE TABLE `client_grant_types` (
 
 LOCK TABLES `client_grant_types` WRITE;
 /*!40000 ALTER TABLE `client_grant_types` DISABLE KEYS */;
-INSERT INTO `client_grant_types` VALUES ('VTWQABLXBFXJOJ6D76BQAAAA',4);
+INSERT INTO `client_grant_types` VALUES ('VTWQABLXBFXJOJ6D76BQAAAA',0),('VTWQABLXBFXJOJ6D76BQAAAA',3),('VTWQABLXBFXJOJ6D76BQAAAA',4);
 /*!40000 ALTER TABLE `client_grant_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,7 +216,7 @@ CREATE TABLE `oauth_client_details` (
 
 LOCK TABLES `oauth_client_details` WRITE;
 /*!40000 ALTER TABLE `oauth_client_details` DISABLE KEYS */;
-INSERT INTO `oauth_client_details` VALUES ('VTWQABLXBFXJOJ6D76BQAAAA',7963536486284521472,'$2a$10$HXwFla45fkBJLPqRDAeurO.E/3W.77T1cXGokBCXyEgCbGhVf32yK','Dustlight Blog','http://blog.dustlight.cn/callback,http://localhost:1234/',NULL,NULL,NULL,1,'光尘博客','2020-07-07 16:34:46','2020-08-12 10:30:31');
+INSERT INTO `oauth_client_details` VALUES ('VTWQABLXBFXJOJ6D76BQAAAA',7963536486284521472,'$2a$10$zpju1G689Npf9itAKgE2zuB5BMcmGTExfy38AwIMuw/yXjLvSw.lm','Dustlight Blog','http://blog.dustlight.cn/callback,https://baidu.com',NULL,NULL,NULL,1,'光尘博客','2020-07-07 16:34:46','2020-08-14 19:16:44');
 /*!40000 ALTER TABLE `oauth_client_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -353,7 +353,7 @@ CREATE TABLE `scope_details` (
 
 LOCK TABLES `scope_details` WRITE;
 /*!40000 ALTER TABLE `scope_details` DISABLE KEYS */;
-INSERT INTO `scope_details` VALUES (0,'userinfo','获取用户信息','2020-06-19 19:29:57','2020-06-19 19:29:57'),(1,'test','测试功能','2020-06-20 22:26:58','2020-07-12 10:47:38');
+INSERT INTO `scope_details` VALUES (0,'userinfo','获取用户信息','2020-06-19 19:29:57','2020-06-19 19:29:57'),(1,'test','测试功能','2020-06-20 22:26:58','2020-08-14 13:31:36');
 /*!40000 ALTER TABLE `scope_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -421,7 +421,7 @@ CREATE TABLE `user_details` (
 
 LOCK TABLES `user_details` WRITE;
 /*!40000 ALTER TABLE `user_details` DISABLE KEYS */;
-INSERT INTO `user_details` VALUES (7963536486284521472,'hansin','$2a$10$2rEy9X3iDIHflp4b0B9kSOAB5MGYHu1S/rM24Mpw2m.Nti.Tb1xhm','hansin@dustlight.cn','Hansin1997😃',NULL,00,0,1,0,0,0,'2020-06-22 22:34:26','2020-07-08 03:57:32'),(7968878396921020416,'845612500','$2a$10$C99.mcT3.vPkww8DNTLbtOJeB60hvFv35PmYtBhsqKctqLwXgqB1O','845612500@qq.com','老八',NULL,00,2,1,0,0,0,'2020-07-07 16:21:17','2020-07-09 13:28:28'),(7976802213798543360,'aaaaaa','$2a$10$.ChatRw6GtuHY9JZAaqJuOdBorWko4b3luUcLd.JF1QmlHuUvX5yG','hansin1997@outlook.com','None',NULL,00,3,1,0,0,0,'2020-07-29 13:07:42','2020-07-29 13:07:54');
+INSERT INTO `user_details` VALUES (7963536486284521472,'hansin','$2a$10$2rEy9X3iDIHflp4b0B9kSOAB5MGYHu1S/rM24Mpw2m.Nti.Tb1xhm','hansin@dustlight.cn','Hansin1997😃',NULL,00,0,1,0,0,0,'2020-06-22 22:34:26','2020-08-15 09:28:45'),(7968878396921020416,'845612500','$2a$10$C99.mcT3.vPkww8DNTLbtOJeB60hvFv35PmYtBhsqKctqLwXgqB1O','845612500@qq.com','老八',NULL,00,2,1,0,0,0,'2020-07-07 16:21:17','2020-07-09 13:28:28'),(7976802213798543360,'aaaaaa','$2a$10$.ChatRw6GtuHY9JZAaqJuOdBorWko4b3luUcLd.JF1QmlHuUvX5yG','hansin1997@outlook.com','None',NULL,00,2,1,0,0,0,'2020-07-29 13:07:42','2020-08-15 09:59:27');
 /*!40000 ALTER TABLE `user_details` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -434,4 +434,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-13 20:56:44
+-- Dump completed on 2020-08-15 18:03:49

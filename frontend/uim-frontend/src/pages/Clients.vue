@@ -19,7 +19,7 @@
       </q-item>
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
         <q-btn to="./clients/create" v-if="hasAuthority('CREATE_CLIENT')" color="primary" icon="add" round/>
-        <q-btn v-else icon="security" flat color="primary" label="申请成为开发者"/>
+        <q-btn @click="applyForDeveloper" v-else icon="security" flat color="primary" label="申请成为开发者"/>
       </q-page-sticky>
     </q-list>
 
@@ -356,6 +356,18 @@
             this.clients = res
           }).finally(() => {
           this.loading = false
+        })
+      },
+      applyForDeveloper() {
+        this.$q.loading.show()
+        axios.post("/api/user/applyForDeveloper")
+          .then(r => {
+            axios.get("/api/user/logout")
+              .finally(() => {
+                location.reload()
+              })
+          }).catch(e => {
+          this.$q.loading.hide()
         })
       },
       select(client) {

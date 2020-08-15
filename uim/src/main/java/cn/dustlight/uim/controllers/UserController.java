@@ -3,12 +3,15 @@ package cn.dustlight.uim.controllers;
 import cn.dustlight.uim.RestfulConstants;
 import cn.dustlight.uim.RestfulResult;
 import cn.dustlight.uim.configurations.UimProperties;
+import cn.dustlight.uim.models.IUserDetails;
 import cn.dustlight.uim.models.UserDetails;
 import cn.dustlight.uim.services.IEmailSender;
 import cn.dustlight.uim.services.IVerificationCodeGenerator;
 import cn.dustlight.uim.services.UserDetailsMapper;
 import cn.dustlight.uim.utils.Snowflake;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 public class UserController implements IUserController {
@@ -232,5 +236,17 @@ public class UserController implements IUserController {
     @Override
     public RestfulResult<List<UserDetails>> getUsersDetails(List<String> usernameArray) {
         return RestfulResult.success(userDetailsMapper.loadUsers(usernameArray));
+    }
+
+    @Override
+    public RestfulResult applyForDeveloper(Authentication authentication) {
+        if (AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("CREATE_CLIENT"))
+            return RestfulConstants.SUCCESS;
+        if (authentication.getPrincipal() instanceof IUserDetails) {
+            IUserDetails user = (IUserDetails) authentication.getPrincipal();
+            if (userDetailsMapper.changeRoleByRoleName(user.getUid(), "ROLE_DEV"))
+                return RestfulConstants.SUCCESS;
+        }
+        return RestfulConstants.ERROR_UNKNOWN;
     }
 }
