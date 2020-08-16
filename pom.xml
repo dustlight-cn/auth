@@ -10,6 +10,7 @@
 
     <modules>
         <module>sender</module>
+        <module>storage</module>
         <module>uim</module>
     </modules>
 </project>
