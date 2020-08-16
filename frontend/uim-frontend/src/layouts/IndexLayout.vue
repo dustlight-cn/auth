@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
-    <q-header class="bg-primary">
+  <q-layout view="hHh Lpr lff" class="">
+    <q-header class="bg-dark text-white shadow-2">
       <q-toolbar>
         <q-btn to="/" flat round dense icon="home"/>
         <q-toolbar-title>

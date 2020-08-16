@@ -43,6 +43,10 @@
             <q-btn v-if="roleName() != role.name"
                    @click="()=>deleteRole(role)" flat round dense
                    icon="delete" color="negative"/>
+            <q-btn v-else
+                   disable
+                   @click="()=>deleteRole(role)" flat round dense
+                   icon="delete" color="grey"/>
           </q-item-label>
         </q-item-section>
       </q-item>

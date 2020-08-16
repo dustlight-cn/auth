@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
-    <q-header class="bg-primary">
+  <q-layout view="hHh Lpr lff" class="bg-white text-black">
+    <q-header class="bg-dark shadow-2">
       <q-toolbar>
         <q-btn
           flat
@@ -11,6 +11,7 @@
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
         <q-btn to="/" flat round dense icon="home"/>
+        <q-separator dark vertical inset />
         <q-toolbar-title>
           管理
         </q-toolbar-title>

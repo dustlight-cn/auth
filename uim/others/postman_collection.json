@@ -306,6 +306,34 @@
 					"response": []
 				},
 				{
+					"name": "reset_gender",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/reset/gender?gender=0",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"reset",
+								"gender"
+							],
+							"query": [
+								{
+									"key": "gender",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "users_details",
 					"request": {
 						"auth": {

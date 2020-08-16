@@ -12,10 +12,18 @@
       </q-item>
       <q-item>
         <q-item-section>
+          <q-item-label overline>角色</q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label caption>{{user().roleDescription}}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item clickable v-ripple to="info/change_email">
+        <q-item-section>
           <q-item-label overline>邮箱</q-item-label>
         </q-item-section>
         <q-item-section>
-          <q-item-label caption>{{user().email}}</q-item-label>
+          <q-item-label>{{user().email}}</q-item-label>
         </q-item-section>
       </q-item>
       <q-item clickable v-ripple>

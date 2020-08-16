@@ -1,8 +1,8 @@
 {
   "name": "uim-frontend",
   "version": "0.0.1",
-  "description": "uim",
-  "productName": "uim",
+  "description": "统一身份管理系统",
+  "productName": "统一身份管理系统",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",
   "author": "Hansin1997 <845612500@qq.com>",

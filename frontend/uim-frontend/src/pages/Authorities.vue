@@ -40,6 +40,10 @@
             <q-btn v-if="hasAuthority('MANAGE_AUTHORITY') && !isProtectedAuthority(authority.name)"
                    @click="()=>deleteAuthority(authority)" flat round dense
                    icon="delete" color="negative"/>
+            <q-btn v-else
+                   disable
+                   @click="()=>deleteAuthority(authority)" flat round dense
+                   icon="delete" color="grey"/>
           </q-item-label>
         </q-item-section>
       </q-item>

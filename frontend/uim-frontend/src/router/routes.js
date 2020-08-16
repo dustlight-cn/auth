@@ -16,6 +16,9 @@ const routes = [
         path: 'info',
         component: () => import('pages/UserInfo.vue')
       }, {
+        path: 'info/change_email',
+        component: () => import('pages/ChangeEmail.vue')
+      }, {
         path: 'templates',
         component: () => import('pages/Templaets.vue')
       }, {
