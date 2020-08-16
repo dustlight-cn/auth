@@ -1,12 +1,13 @@
 <template>
   <q-layout view="hHh Lpr lff" class="">
-    <q-header class="bg-dark text-white shadow-2">
+    <q-header class="bg-white text-black text-white shadow-2">
       <q-toolbar>
         <q-btn to="/" flat round dense icon="home"/>
         <q-toolbar-title>
           统一身份管理系统
         </q-toolbar-title>
-        <q-btn flat round>
+        <q-skeleton v-if="user.username == null" size="32px" type="QAvatar"/>
+        <q-btn v-else flat round>
           <q-avatar size="32px">
             <img src="/statics/img/boy-avatar.jpg">
           </q-avatar>

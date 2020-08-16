@@ -42,8 +42,7 @@
           <q-item-label overline>性别</q-item-label>
         </q-item-section>
         <q-item-section>
-          <q-item-label v-if="(user().gender != null) && gender[user().gender]"
-                        :class="'text-'+gender[user().gender].color">
+          <q-item-label v-if="(user().gender != null) && gender[user().gender]">
             <q-icon :name="gender[user().gender].icon"/>
             {{gender[user().gender].name}}
           </q-item-label>

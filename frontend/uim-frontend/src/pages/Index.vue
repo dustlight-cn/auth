@@ -44,9 +44,10 @@
     </div>
     <div class="text-center text-caption q-pa-lg">
       <div style="height: 25px"></div>
-      <span>© Dustlight</span>
-      <q-separator/>
-      <span>粤ICP备17010183号</span>
+      <div class="">
+        <div class="">© Dustlight</div>
+      </div>
+      <div class="">粤ICP备17010183号-1</div>
     </div>
   </div>
 </template>
