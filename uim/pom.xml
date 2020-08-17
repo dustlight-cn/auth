@@ -75,7 +75,7 @@
 
         <dependency>
             <groupId>cn.dustlight.storage</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>tencent-cloud-object-storage</artifactId>
             <version>0.0.1</version>
         </dependency>
 

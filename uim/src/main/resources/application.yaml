@@ -59,3 +59,11 @@ dustlight:
         - SESSION
     register-email: 邮箱验证
     reset-password-email: 密码重置
+  storage:
+    tencent:
+      cos:
+        enabled: true
+        secret-id: ${TENCENT_COS_SECRET_ID}
+        secret-key: ${TENCENT_COS_SECRET_KEY}
+        bucket: ${TENCENT_COS_BUCKET}
+        region: ${TENCENT_COS_REGION}

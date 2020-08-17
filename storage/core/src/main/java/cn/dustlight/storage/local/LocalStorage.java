@@ -2,6 +2,7 @@ package cn.dustlight.storage.local;
 
 import cn.dustlight.storage.core.IStorableObject;
 import cn.dustlight.storage.core.IStorage;
+import cn.dustlight.storage.core.Permission;
 
 import java.io.*;
 
@@ -24,9 +25,11 @@ public class LocalStorage implements IStorage {
     }
 
     @Override
-    public IStorableObject create(String key) throws IOException {
+    public LocalStorableObject create(String key, int permission) throws IOException {
         LocalStorableObject result = new LocalStorableObject(root, key);
         File file = result.getFile(), parent = file.getParentFile();
+        file.setReadable(Permission.isReadable(permission));
+        file.setWritable(Permission.isWritable(permission));
         if (!parent.exists())
             parent.mkdirs();
         result.getFile().createNewFile();
@@ -34,7 +37,7 @@ public class LocalStorage implements IStorage {
     }
 
     @Override
-    public IStorableObject get(String key) throws IOException {
+    public LocalStorableObject get(String key) throws IOException {
         LocalStorableObject result = new LocalStorableObject(root, key);
         if (!(result.getFile().exists() && result.getFile().isFile()))
             throw new FileNotFoundException();
@@ -42,8 +45,13 @@ public class LocalStorage implements IStorage {
     }
 
     @Override
-    public IStorableObject put(String key, IStorableObject source) throws IOException {
-        IStorableObject target = new LocalStorableObject(root, key);
+    public LocalStorableObject put(String key, IStorableObject source) throws IOException {
+        return put(key, source, source.getPermission());
+    }
+
+    @Override
+    public LocalStorableObject put(String key, IStorableObject source, int permission) throws IOException {
+        LocalStorableObject target = new LocalStorableObject(root, key, permission);
         BufferedInputStream in = new BufferedInputStream(source.getInputStream());
         BufferedOutputStream out = new BufferedOutputStream(target.getOutputStream());
         byte[] buff = new byte[1024];
@@ -65,12 +73,12 @@ public class LocalStorage implements IStorage {
     }
 
     @Override
-    public String generateGetUrl(String key, Long expiration) throws IOException {
-        throw new IOException("LocalStorage can not generate url.");
+    public void setPermission(String key, int permission) throws IOException {
+        File file = new File(root, key);
+        if (!(file.exists() && file.isFile()))
+            throw new FileNotFoundException();
+        file.setReadable(Permission.isReadable(permission));
+        file.setWritable(Permission.isWritable(permission));
     }
 
-    @Override
-    public String generatePutUrl(String key, Long expiration) throws IOException {
-        throw new IOException("LocalStorage can not generate url.");
-    }
 }

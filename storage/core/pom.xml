@@ -10,8 +10,8 @@
     </parent>
 
     <groupId>cn.dustlight.storage</groupId>
-    <artifactId>core</artifactId>
-    <name>core</name>
+    <artifactId>storage-core</artifactId>
+    <name>storage-core</name>
     <version>0.0.1</version>
 
 </project>

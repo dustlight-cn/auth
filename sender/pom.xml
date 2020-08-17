@@ -39,7 +39,7 @@
             </dependency>
             <dependency>
                 <groupId>cn.dustlight.sender</groupId>
-                <artifactId>core</artifactId>
+                <artifactId>sender-core</artifactId>
                 <version>${sender-core.version}</version>
             </dependency>
             <dependency>

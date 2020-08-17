@@ -17,13 +17,14 @@
 
     <modules>
         <module>core</module>
+        <module>TencentCloudObjectStorage</module>
     </modules>
 
     <properties>
         <java.version>1.8</java.version>
         <spring-boot.version>2.2.7.RELEASE</spring-boot.version>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
-        <sender-core.version>0.0.1</sender-core.version>
+        <storage-core.version>0.0.1</storage-core.version>
     </properties>
 
     <dependencyManagement>
@@ -36,9 +37,9 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>cn.dustlight.sender</groupId>
-                <artifactId>core</artifactId>
-                <version>${sender-core.version}</version>
+                <groupId>cn.dustlight.storage</groupId>
+                <artifactId>storage-core</artifactId>
+                <version>${storage-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>

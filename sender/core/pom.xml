@@ -10,8 +10,8 @@
     </parent>
 
     <groupId>cn.dustlight.sender</groupId>
-    <artifactId>core</artifactId>
-    <name>core</name>
+    <artifactId>sender-core</artifactId>
+    <name>sender-core</name>
     <version>0.0.1</version>
 
 </project>

@@ -11,4 +11,8 @@ public interface IStorableObject {
     OutputStream getOutputStream() throws IOException;
 
     String getKey();
+
+    int getPermission();
+
+//    Long getContentLength();
 }
