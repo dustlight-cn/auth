@@ -6,7 +6,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -42,6 +45,13 @@ public interface IUserController {
     @PostMapping("/reset/gender")
     @PreAuthorize("hasAuthority('WRITE_USERINFO')")
     RestfulResult resetGender(@RequestParam(required = false) int gender, Principal principal);
+
+    @PostMapping("/reset/avatar")
+    @PreAuthorize("hasAuthority('WRITE_USERINFO')")
+    RestfulResult<String> uploadAvatar(Authentication authentication) throws IOException;
+
+    @GetMapping("/avatar/{uid}")
+    void getAvatar(@PathVariable Long uid, @RequestParam(required = false) Integer size, HttpServletResponse response, HttpServletRequest request) throws IOException;
 
     @GetMapping("/exists/username")
     RestfulResult<Boolean> isUsernameExists(@RequestParam(required = false) String username);

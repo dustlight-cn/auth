@@ -23,6 +23,17 @@ public class UimProperties {
     private String registerEmail = "Register";
     private String resetPasswordEmail = "Password Reset";
 
+    @Autowired
+    private Storage storage;
+
+    public Storage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(Storage storage) {
+        this.storage = storage;
+    }
+
     public String getRegisterEmail() {
         return registerEmail;
     }
@@ -119,7 +130,6 @@ public class UimProperties {
         this.logout = logout;
     }
 
-
     @Component
     @ConfigurationProperties(prefix = "dustlight.uim.form-login")
     public static class FormLogin {
@@ -163,7 +173,7 @@ public class UimProperties {
     }
 
     @Component
-    @ConfigurationProperties(prefix = "uim.logout")
+    @ConfigurationProperties(prefix = "dustlight.uim.logout")
     public static class Logout {
 
         private String logoutUrl = "/logout";
@@ -183,6 +193,30 @@ public class UimProperties {
 
         public void setDeleteCookies(String[] deleteCookies) {
             this.deleteCookies = deleteCookies;
+        }
+    }
+
+    @Component
+    @ConfigurationProperties(prefix = "dustlight.uim.storage")
+    public static class Storage {
+
+        private String storagePath = "dustlight/uim/upload/";
+        private Long defaultExpiration = 1000L * 60 * 15L;
+
+        public String getStoragePath() {
+            return storagePath;
+        }
+
+        public void setStoragePath(String storagePath) {
+            this.storagePath = storagePath;
+        }
+
+        public Long getDefaultExpiration() {
+            return defaultExpiration;
+        }
+
+        public void setDefaultExpiration(Long defaultExpiration) {
+            this.defaultExpiration = defaultExpiration;
         }
     }
 }

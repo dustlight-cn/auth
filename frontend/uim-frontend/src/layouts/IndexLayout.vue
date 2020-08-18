@@ -9,7 +9,7 @@
         <q-skeleton v-if="user.username == null" size="32px" type="QAvatar"/>
         <q-btn v-else flat round>
           <q-avatar size="32px">
-            <img src="/statics/img/boy-avatar.jpg">
+            <img :src="user.avatar(32)"  onerror="javascript:this.src='/statics/img/avatar.jpg'">
           </q-avatar>
           <q-menu>
             <q-list style="min-width: 100px">
@@ -17,7 +17,7 @@
                 <q-item-section>
                   <q-chip>
                     <q-avatar size="32px">
-                      <img src="/statics/img/boy-avatar.jpg">
+                      <img :src="user.avatar(32)"  onerror="javascript:this.src='/statics/img/avatar.jpg'">
                     </q-avatar>
                     {{nickname}}
                   </q-chip>
@@ -67,6 +67,9 @@
       axios.get("/api/user/details")
         .then(res => {
           this.user = res;
+          this.user.avatar = (size) => {
+            return "/api/user/avatar/" + res.uid + (size == null ? "" : "?size=" + size)
+          }
         }).finally(() => {
         this.loading = false
       })

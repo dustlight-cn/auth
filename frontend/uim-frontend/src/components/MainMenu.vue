@@ -63,7 +63,7 @@
       <div class="absolute-bottom bg-transparent absolute-top">
         <q-avatar size="56px" class="q-mb-sm">
           <q-skeleton v-if="loading()" type="QAvatar"/>
-          <img v-else src="/statics/img/boy-avatar.jpg">
+          <img v-else :src="user().avatar(56)"  onerror="javascript:this.src='/statics/img/avatar.jpg'">
         </q-avatar>
         <q-skeleton v-if="loading()" type="text"/>
         <div v-else class="text-weight-bold  text-grey-8">{{nickname()}}</div>

@@ -1,5 +1,7 @@
 package cn.dustlight.uim.controllers;
 
+import cn.dustlight.storage.core.Permission;
+import cn.dustlight.storage.tencent.cos.TencentCloudObjectStorage;
 import cn.dustlight.uim.RestfulConstants;
 import cn.dustlight.uim.RestfulResult;
 import cn.dustlight.uim.configurations.UimProperties;
@@ -15,12 +17,15 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 
 @RestController
 public class UserController implements IUserController {
@@ -42,6 +47,9 @@ public class UserController implements IUserController {
 
     @Autowired
     private UimProperties uimProperties;
+
+    @Autowired
+    private TencentCloudObjectStorage storage;
 
     @Override
     public RestfulResult sendEmailCodeRegister(String email, HttpSession session) {
@@ -191,6 +199,31 @@ public class UserController implements IUserController {
             return RestfulConstants.ERROR_UNAUTHORIZED;
         boolean result = userDetailsMapper.changeGender(principal.getName(), gender);
         return result ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult<String> uploadAvatar(Authentication authentication) throws IOException {
+        if (authentication.getPrincipal() instanceof IUserDetails) {
+            IUserDetails user = (IUserDetails) authentication.getPrincipal();
+            String url = storage.generatePutUrl(uimProperties.getStorage().getStoragePath() + "avatar/" + user.getUid(),
+                    Permission.READABLE,
+                    uimProperties.getStorage().getDefaultExpiration());
+            return RestfulResult.success(url);
+        }
+        return RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public void getAvatar(Long uid, Integer size, HttpServletResponse response, HttpServletRequest request) throws IOException {
+        String key = uimProperties.getStorage().getStoragePath() + "avatar/" + uid;
+        if (!storage.isExist(key)) {
+            response.sendError(404); // 头像不存在
+            return;
+        }
+        String urlString = storage.generateGetUrl(key, 1000L * 60L * 60 * 24L);
+        if (size != null)
+            urlString += "&imageMogr2/thumbnail/" + size + "x" + size;
+        response.sendRedirect(urlString);
     }
 
     @Override

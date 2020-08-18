@@ -11,7 +11,7 @@
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
         <q-btn to="/" flat round dense icon="home"/>
-        <q-separator dark vertical inset />
+        <q-separator dark vertical inset/>
         <q-toolbar-title>
           管理
         </q-toolbar-title>
@@ -66,7 +66,7 @@
       hasAuthority(authority) {
         return this.authorities.indexOf(authority) >= 0;
       },
-      getRoleName(){
+      getRoleName() {
         return this.user.roleName
       },
       isLoading() {
@@ -90,6 +90,9 @@
               res.authoritiesString.forEach(a => {
                 this.authorities.push(a);
               })
+              this.user.avatar = (size) => {
+                return "/api/user/avatar/" + res.uid + (size == null ? "" : "?size=" + size)
+              }
             }
           }).finally(() => {
           this.loading = false
