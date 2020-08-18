@@ -15,4 +15,6 @@ public interface IStorage {
     void remove(String key) throws IOException;
 
     void setPermission(String key, int permission) throws IOException;
+
+    boolean isExist(String key) throws IOException;
 }

@@ -92,6 +92,11 @@ public class TencentCloudObjectStorage implements IStorage, IRestfulStorage {
         cosClient.setObjectAcl(bucket, key, getACL(permission));
     }
 
+    @Override
+    public boolean isExist(String key) throws IOException {
+        return cosClient.doesObjectExist(bucket, key);
+    }
+
     protected static CannedAccessControlList getACL(int permission) {
         switch (permission) {
             case Permission.PUBLIC:

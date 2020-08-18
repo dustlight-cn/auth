@@ -81,4 +81,10 @@ public class LocalStorage implements IStorage {
         file.setWritable(Permission.isWritable(permission));
     }
 
+    @Override
+    public boolean isExist(String key) throws IOException {
+        File file = new File(root, key);
+        return file.exists() && file.isFile();
+    }
+
 }
