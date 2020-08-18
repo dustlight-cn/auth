@@ -5,7 +5,7 @@
         <img src="/statics/img/parallax1.jpg">
       </template>
       <div class="absolute-bottom custom-caption">
-        <div class="text-h2">统一身份管理系统</div>
+        <div class="text-h4">统一身份管理系统</div>
         <div class="text-subtitle1">OAuth2脚手架</div>
       </div>
     </q-parallax>
@@ -32,7 +32,7 @@
       </q-carousel-slide>
     </q-carousel>
 
-    <div class="bg-light-blue-7" style="height: 300px;padding-top: 50px;">
+    <div class="bg-light-blue-7 text-white" style="height: 300px;padding-top: 50px;">
       <div class="text-h4 text-center">
         <q-icon size="100px" name="ion-logo-github"/>
         开放源代码
@@ -42,13 +42,7 @@
                color="light-blue-9" label="Github Page"/>
       </div>
     </div>
-    <div class="text-center text-caption q-pa-lg">
-      <div style="height: 25px"></div>
-      <div class="">
-        <div class="">© Dustlight</div>
-      </div>
-      <div class="">粤ICP备17010183号-1</div>
-    </div>
+
   </div>
 </template>
 

@@ -1,17 +1,11 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/IndexLayout.vue'),
-    children: [
-      {path: '', component: () => import('pages/Index.vue')}
-    ]
-  }, {
-    path: '/manage/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/Manager.vue'),
     children: [
       {
         path: '',
-        redirect: "info"
+        component: () => import('pages/Index.vue')
       }, {
         path: 'info',
         component: () => import('pages/UserInfo.vue')
@@ -27,9 +21,6 @@ const routes = [
       }, {
         path: 'clients/create',
         component: () => import('pages/CreateClient.vue')
-      }, {
-        path: 'clients/details',
-        component: () => import('pages/ClientDetails.vue')
       }, {
         path: 'authorities',
         component: () => import('pages/Authorities.vue')
@@ -64,12 +55,6 @@ const routes = [
     component: () => import('layouts/ClearLayout.vue'),
     children: [
       {path: '', component: () => import('pages/Authorize')}
-    ]
-  }, {
-    path: '/client/authorities',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      {path: '', component: () => import('pages/EditAuthorities.vue')}
     ]
   }, {
     path: '/error/403',
