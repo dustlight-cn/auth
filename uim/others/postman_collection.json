@@ -334,6 +334,28 @@
 					"response": []
 				},
 				{
+					"name": "reset_avatar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/reset/avatar",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"reset",
+								"avatar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "users_details",
 					"request": {
 						"auth": {
@@ -411,6 +433,38 @@
 								"user",
 								"details",
 								"hansin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_avatar",
+					"protocolProfileBehavior": {
+						"strictSSL": true,
+						"followRedirects": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/avatar/7963536486284521472?size=32",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"avatar",
+								"7963536486284521472"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "32"
+								}
 							]
 						}
 					},
