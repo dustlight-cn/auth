@@ -17,12 +17,13 @@
     data() {
       return {
         error: false,
-        loading: true
+        loading: true,
+        avatar_timestamp: 0
       }
     },
     computed: {
       url() {
-        return this.user.avatar(this.size)
+        return this.user.avatar(this.size, {t: this.avatar_timestamp})
       }
     },
     methods: {
@@ -40,6 +41,7 @@
       this.$root.$on('avatar_update', () => {
         this.error = false
         this.loading = true
+        this.avatar_timestamp = new Date().getTime()
       })
     }
   }

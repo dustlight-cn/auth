@@ -43,6 +43,7 @@ dustlight:
     public-paths:
       - /api/user/code/**
       - /api/user/verify/**
+      - /api/user/exists/**
       - /api/user/login
       - /api/user/register
       - /oauth/check_token

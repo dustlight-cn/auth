@@ -131,6 +131,7 @@
   import axios from "axios"
   import MenuConfig from 'components/MenuConfig'
   import Config from 'components/Config'
+  import UimSdk from "components/UimSdk";
   import qs from 'qs'
 
   import Avatar from "components/Avatar";
@@ -143,24 +144,23 @@
     data() {
       return {
         leftDrawerOpen: false,
-        user: {},
-        authorities: [],
         loading: true,
+        user: {
+          authoritiesString: []
+        },
         tab: "",
         menus: MenuConfig,
-        config: Config,
-        splitterModel: 20,
-        avatar_updatedAt: 0
+        config: Config
       }
     },
     provide() {
       return {
         hasAuthority: this.hasAuthority,
-        loading: this.isLoading,
-        nickname: this.getNickname,
-        email: this.getEmail,
-        user: this.getUser,
-        roleName: this.getRoleName
+        hasAuthorities: this.hasAuthorities,
+        loading: () => this.loading,
+        email: () => this.user.email,
+        user: () => this.user,
+        roleName: () => this.user.roleName
       }
     },
     methods: {
@@ -185,55 +185,18 @@
        * @returns {boolean}
        */
       hasAuthority(authority) {
-        return this.authorities.indexOf(authority) >= 0;
-      },
-      getRoleName() {
-        return this.user.roleName
-      },
-      isLoading() {
-        return this.loading
-      },
-      getNickname() {
-        return this.user.nickname ? this.user.nickname : this.user.username
-      },
-      getEmail() {
-        return this.user.email
-      },
-      getUser() {
-        return this.user
+        return this.user.authoritiesString.indexOf(authority) >= 0;
       },
       loadUserDetails() {
-        axios.get("/api/user/details")
-          .then(res => {
-            this.user = res;
-            if (res) { // 处理用户数据
-              this.authorities = [];
-              res.authoritiesString.forEach(a => {
-                this.authorities.push(a);
-              })
-              this.user.avatar = (size) => {
-                let p = {
-                  size: size,
-                  t: this.avatar_updatedAt
-                }
-                return "/api/user/avatar/" + res.uid + "?" + qs.stringify(p)
-              }
-              if (this.user.nickname == null || this.user.nickname.length == 0)
-                this.user.nickname = this.user.username
-              this.user.logout = () => {
-                axios.get("/api/user/logout").finally(() => {
-                  this.$router.go(0);
-                })
-              }
-            }
-          }).finally(() => {
-          this.loading = false
-        })
+        this.loading = true
+        UimSdk.user.getCurrentUserDetails()
+          .then((res => this.user = res))
+          .finally(() => this.loading = false)
       }
     },
     mounted() {
       this.$root.$on('avatar_update', () => {
-        this.avatar_updatedAt = new Date().getTime()
+        UimSdk.user.notifyAvatarUpdate()
       })
       this.loadUserDetails()
     }
