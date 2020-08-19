@@ -1,5 +1,6 @@
 package cn.dustlight.storage.tencent.cos;
 
+import com.qcloud.cos.http.HttpProtocol;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "dustlight.storage.tencent.cos")
@@ -10,6 +11,15 @@ public class TencentCosProperties {
     private String secretKey;
     private String bucket;
     private String region;
+    private HttpProtocol httpProtocol = HttpProtocol.https;
+
+    public HttpProtocol getHttpProtocol() {
+        return httpProtocol;
+    }
+
+    public void setHttpProtocol(HttpProtocol httpProtocol) {
+        this.httpProtocol = httpProtocol;
+    }
 
     public String getSecretId() {
         return secretId;

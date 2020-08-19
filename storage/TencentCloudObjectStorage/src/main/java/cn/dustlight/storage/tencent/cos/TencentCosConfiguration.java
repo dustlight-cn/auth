@@ -19,6 +19,7 @@ public class TencentCosConfiguration {
         COSCredentials cred = new BasicCOSCredentials(properties.getSecretId(), properties.getSecretKey());
         Region region = new Region(properties.getRegion());
         ClientConfig clientConfig = new ClientConfig(region);
+        clientConfig.setHttpProtocol(properties.getHttpProtocol());
         COSClient cosClient = new COSClient(cred, clientConfig);
         TencentCloudObjectStorage tencentCloudObjectStorage = new TencentCloudObjectStorage(cosClient, properties.getBucket());
         return tencentCloudObjectStorage;

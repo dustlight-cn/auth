@@ -67,3 +67,4 @@ dustlight:
         secret-key: ${TENCENT_COS_SECRET_KEY}
         bucket: ${TENCENT_COS_BUCKET}
         region: ${TENCENT_COS_REGION}
+        http-protocol: https
