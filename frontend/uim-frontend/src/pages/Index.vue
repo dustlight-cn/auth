@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <q-page>
     <q-parallax :height="300" :speed="0.5">
       <template v-slot:media>
         <img src="/statics/img/parallax1.jpg">
@@ -43,7 +43,7 @@
       </div>
     </div>
 
-  </div>
+  </q-page>
 </template>
 
 <script>

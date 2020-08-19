@@ -5,7 +5,7 @@
     </q-avatar>
     <q-avatar v-else :size="size + 'px'">
       <q-skeleton type="QAvatar" :size="size + 'px'" v-if="isLoading()"/>
-      <q-img v-if="user.avatar" :src="user.avatar(size)" @load="onLoad" @error="onError"/>
+      <q-img v-if="user.avatar" :src="url" @load="onLoad" @error="onError"/>
     </q-avatar>
   </div>
 </template>
@@ -20,6 +20,11 @@
         loading: true
       }
     },
+    computed: {
+      url() {
+        return this.user.avatar(this.size)
+      }
+    },
     methods: {
       isLoading() {
         return this.user == null || this.loading
@@ -28,9 +33,14 @@
         this.error = true
       },
       onLoad() {
-        console.log("loaded")
         this.loading = false
       }
+    },
+    mounted() {
+      this.$root.$on('avatar_update', () => {
+        this.error = false
+        this.loading = true
+      })
     }
   }
 </script>
