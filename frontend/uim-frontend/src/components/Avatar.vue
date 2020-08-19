@@ -11,6 +11,8 @@
 </template>
 
 <script>
+  import UimSdk from "components/UimSdk";
+
   export default {
     name: 'Avatar',
     props: ['user', 'size'],
@@ -18,7 +20,7 @@
       return {
         error: false,
         loading: true,
-        avatar_timestamp: 0
+        avatar_timestamp: UimSdk.avatar_updatedAt
       }
     },
     computed: {
@@ -38,10 +40,10 @@
       }
     },
     mounted() {
-      this.$root.$on('avatar_update', () => {
+      this.$root.$on('avatar_update', (t) => {
         this.error = false
         this.loading = true
-        this.avatar_timestamp = new Date().getTime()
+        this.avatar_timestamp = t
       })
     }
   }

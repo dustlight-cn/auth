@@ -195,9 +195,6 @@
       }
     },
     mounted() {
-      this.$root.$on('avatar_update', () => {
-        UimSdk.user.notifyAvatarUpdate()
-      })
       this.loadUserDetails()
     }
   }

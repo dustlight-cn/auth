@@ -138,6 +138,7 @@
   import axios from 'axios'
   import qs from 'qs'
   import Avatar from "components/Avatar";
+  import UimSdk from "components/UimSdk";
 
   export default {
     name: "UserInfo",
@@ -202,7 +203,9 @@
           })
       },
       uploadAvatarSuccess() {
-        this.$root.$emit("avatar_update")
+        let t = new Date().getTime()
+        UimSdk.user.notifyAvatarUpdate(t)
+        this.$root.$emit("avatar_update", t)
         this.uploadAvatarFlag = false
       }
     }

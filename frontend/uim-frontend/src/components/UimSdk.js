@@ -34,8 +34,10 @@ class UimSdk {
     /**
      * 更新头像时间戳
      */
-    notifyAvatarUpdate() {
-      this.avatar_updatedAt = new Date().getTime()
+    notifyAvatarUpdate(timestamp) {
+      if (timestamp == null)
+        timestamp = new Date().getTime()
+      this.avatar_updatedAt = timestamp
     }
   }
 }
