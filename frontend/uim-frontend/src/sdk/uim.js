@@ -1,6 +1,7 @@
 import config from "./config"
 import axios, {AxiosInstance} from 'axios'
 import qs from "qs";
+import de from "quasar/lang/de";
 
 /**
  * API异常
@@ -106,8 +107,52 @@ class ClientApi {
     this.ax = axiosInstance
   }
 
-  currentUserClients() {
+  getCurrentUserClients() {
     return this.ax.get(config.api.client.currentUserClients)
+  }
+
+  getAllScopes() {
+    return this.ax.get(config.api.client.allScopes)
+  }
+
+  getAllGrantTypes() {
+    return this.ax.get(config.api.client.allGrantTypes)
+  }
+
+  resetClientSecret(clientId) {
+    return this.ax.post(config.api.client.resetClientSecret + encodeURIComponent(clientId))
+  }
+
+  deleteClient(clientId) {
+    return this.ax.delete(config.api.client.deleteClient + encodeURIComponent(clientId))
+  }
+
+  updateClientRedirectUri(clientId, redirectUri) {
+    return this.ax.post(config.api.client.updateClientRedirectUri + encodeURIComponent(clientId), qs.stringify({redirectUri: redirectUri}))
+  }
+
+  updateClientName(clientId, name) {
+    return this.ax.post(config.api.client.updateClientName + encodeURIComponent(clientId), qs.stringify({name: name}))
+  }
+
+  updateClientDescription(clientId, description) {
+    return this.ax.post(config.api.client.updateClientDescription + encodeURIComponent(clientId), qs.stringify({description: description}))
+  }
+
+  addClientScopes(clientId, scopes) {
+    return this.ax.post(config.api.client.addClientScopes + encodeURIComponent(clientId) + "?" + qs.stringify({scopes: scopes}, {indices: false}))
+  }
+
+  deleteClientScopes(clientId, scopes) {
+    return this.ax.delete(config.api.client.removeClientScopes + encodeURIComponent(clientId) + "?" + qs.stringify({scopes: scopes}, {indices: false}))
+  }
+
+  addClientGrantTypes(clientId, types) {
+    return this.ax.post(config.api.client.addClientGrantTypes + encodeURIComponent(clientId) + "?" + qs.stringify({types: types}, {indices: false}))
+  }
+
+  deleteClientGrantTypes(clientId, types) {
+    return this.ax.delete(config.api.client.removeClientGrantTypes + encodeURIComponent(clientId) + "?" + qs.stringify({types: types}, {indices: false}))
   }
 }
 

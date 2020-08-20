@@ -326,8 +326,6 @@
 </template>
 
 <script>
-  import qs from 'qs'
-
   export default {
     name: "Clients",
     inject: ["hasAuthority", "user"],
@@ -350,7 +348,7 @@
         if (this.loading)
           return
         this.loading = true
-        this.$uim.client.currentUserClients()
+        this.$uim.client.getCurrentUserClients()
           .then(res => this.clients = res)
           .finally(() => this.loading = false)
       },
@@ -380,11 +378,9 @@
           cancel: {label: "取消", color: "primary", flat: true}
         }).onOk(() => {
           this.$q.loading.show()
-          this.$uim.ax.post("api/client/app_secret/" + client.clientId).then(res => {
-            client.clientSecret = res
-          }).finally(() => {
-            this.$q.loading.hide()
-          })
+          this.$uim.client.resetClientSecret(client.clientId)
+            .then(res => client.clientSecret = res)
+            .finally(() => this.$q.loading.hide())
         })
       },
       deleteClient(client) {
@@ -401,11 +397,9 @@
           cancel: {label: "取消", color: "primary", flat: true}
         }).onOk(() => {
           this.$q.loading.show()
-          this.$uim.ax.delete("api/client/app/" + client.clientId).then(res => {
-            this.load()
-          }).finally(() => {
-            this.$q.loading.hide()
-          })
+          this.$uim.client.deleteClient(client.clientId)
+            .then(res => this.load())
+            .finally(() => this.$q.loading.hide())
         })
       },
       updateRedirectUri(val, initVal, client) {
@@ -420,112 +414,89 @@
           data += encodeURI(uri)
           i++
         })
-        this.$uim.ax
-          .post("api/client/app_redirect_uri/" + client.clientId, qs.stringify({redirectUri: data}))
-          .catch(e => {
-            client.registeredRedirectUri = initVal
-          })
-          .finally(() => {
-            this.$q.loading.hide()
-          })
+        this.$uim.client.updateClientRedirectUri(client.clientId, data)
+          .catch(e => client.registeredRedirectUri = initVal)
+          .finally(() => this.$q.loading.hide())
       },
       updateClientName(val, initVal, client) {
         if (val == null)
           return
         this.$q.loading.show()
-        this.$uim.ax
-          .post("api/client/app_name/" + client.clientId, qs.stringify({name: val}))
-          .catch(e => {
-            client.name = initVal
-          })
-          .finally(() => {
-            this.$q.loading.hide()
-          })
+        this.$uim.client.updateClientName(client.clientId, val)
+          .catch(e => client.name = initVal)
+          .finally(() => this.$q.loading.hide())
       },
       updateClientDescription(val, initVal, client) {
         if (val == null)
           return
         this.$q.loading.show()
-        this.$uim.ax
-          .post("api/client/app_description/" + client.clientId, qs.stringify({description: val}))
-          .catch(e => {
-            client.description = initVal
-          })
-          .finally(() => {
-            this.$q.loading.hide()
-          })
+        this.$uim.client.updateClientDescription(client.clientId, val)
+          .catch(e => client.description = initVal)
+          .finally(() => this.$q.loading.hide())
       },
       showScopeDialog() {
         this.selectingScope = true
         this.loadingScopes = true
-        this.$uim.ax
-          .get("api/client/scopes")
+        this.$uim.client.getAllScopes()
           .then(res => {
             this.scopes = []
             res.forEach(val => {
               val.flag = this.selectedClient.scope.indexOf(val.name) >= 0
               this.scopes.push(val)
             })
-          }).finally(() => {
-          this.loadingScopes = false
-        })
+          })
+          .finally(() => this.loadingScopes = false)
       },
       removeClientScope(client, scope) {
         this.$q.loading.show()
-        this.$uim.ax.delete("api/client/app_scopes/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({scopes: [scope.id]}, {indices: false}))
+        this.$uim.client.deleteClientScopes(client.clientId, [scope.id])
           .then(r => {
             client.scope.splice(client.scope.indexOf(scope.name), 1)
             delete client.scopeDetails[scope.name]
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+          })
+          .finally(() => this.$q.loading.hide())
       },
       addScope(scope, client) {
         this.$q.loading.show()
-        this.$uim.ax.post("api/client/app_scopes/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({scopes: [scope.id]}, {indices: false}))
+        this.$uim.client.addClientScopes(client.clientId, [scope.id])
           .then(r => {
             client.scope.push(scope.name)
             client.scopeDetails[scope.name] = scope
             scope.flag = true
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+          })
+          .finally(() => this.$q.loading.hide())
       },
       showGrantTypeDialog() {
         this.selectingGrantTypes = true
         this.loadingGrantTypes = true
-        this.$uim.ax
-          .get("api/client/grant_types")
+        this.$uim.client.getAllGrantTypes()
           .then(res => {
             this.grantTypes = []
             res.forEach(val => {
               val.flag = this.selectedClient.authorizedGrantTypes.indexOf(val.name) >= 0
               this.grantTypes.push(val)
             })
-          }).finally(() => {
-          this.loadingGrantTypes = false
-        })
+          })
+          .finally(() => this.loadingGrantTypes = false)
       },
       removeClientGrantType(client, type) {
         this.$q.loading.show()
-        this.$uim.ax.delete("api/client/app_grant_types/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({types: [type.id]}, {indices: false}))
+        this.$uim.client.deleteClientGrantTypes(client.clientId, [type.id])
           .then(r => {
             client.authorizedGrantTypes.splice(client.authorizedGrantTypes.indexOf(type.name), 1)
             delete client.grantTypeDetails[type.name]
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+          })
+          .finally(() => this.$q.loading.hide())
       },
       addGrantType(type, client) {
         this.$q.loading.show()
-        this.$uim.ax.post("api/client/app_grant_types/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({types: [type.id]}, {indices: false}))
+        this.$uim.client.addClientGrantTypes(client.clientId, [type.id])
           .then(r => {
             client.authorizedGrantTypes.push(type.name)
             client.grantTypeDetails[type.name] = type
             type.flag = true
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+          })
+          .finally(() => this.$q.loading.hide())
       }
     },
     mounted() {

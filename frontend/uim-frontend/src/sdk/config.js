@@ -32,8 +32,19 @@ const config = {
       currentUserDetails: 'api/user/details',
       applyForDeveloper: 'api/user/applyForDeveloper'
     },
-    client:{
-      currentUserClients: 'api/client/clients'
+    client: {
+      allScopes: 'api/client/scopes',
+      allGrantTypes: 'api/client/grant_types',
+      currentUserClients: 'api/client/clients',
+      resetClientSecret: 'api/client/app_secret/',
+      deleteClient: 'api/client/app/',
+      updateClientRedirectUri: 'api/client/app_redirect_uri/',
+      updateClientName: 'api/client/app_name/',
+      updateClientDescription: 'api/client/app_description/',
+      addClientScopes: 'api/client/app_scopes/',
+      removeClientScopes: 'api/client/app_scopes/',
+      addClientGrantTypes: 'api/client/app_grant_types/',
+      removeClientGrantTypes: 'api/client/app_grant_types/'
     }
   }
 }
