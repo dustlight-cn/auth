@@ -1,20 +1,17 @@
 <template>
   <div class="fixed-center text-center">
-    <p>
+    <div>
       <img
         src="~assets/sad.svg"
         style="width:30vw;max-width:150px;"
       >
-    </p>
-    <p class="text-faded">
-      页面未找到<strong>(404)</strong>
-    </p>
-    <q-btn
-      color="secondary"
-      style="width:200px;"
-      to="/"
-      label="主页"
-    />
+    </div>
+    <div class="text-h5">
+      空空如也
+    </div>
+    <div class="text-caption">
+      404 Not Found
+    </div>
   </div>
 </template>
 

@@ -1,17 +1,20 @@
 <template>
   <div class="fixed-center text-center">
-    <p>
+    <div>
       <img
         src="~assets/sad.svg"
         style="width:30vw;max-width:150px;"
       >
-    </p>
-    <p class="text-faded">
-      没有访问权限<strong>(403)</strong>
-    </p>
+    </div>
+    <div class="text-h5">
+      没有访问权限
+    </div>
+    <div class="text-caption">
+      403 Forbidden
+    </div>
     <q-btn
-      color="secondary"
-      style="width:200px;"
+      color="primary"
+      flat
       @click="login"
       label="登录或切换账号"
     />

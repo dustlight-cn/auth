@@ -103,7 +103,7 @@
         // return;
         let data = {email: this.email}
         this.$q.loading.show()
-        this.$uim.ax.post("user/code/email/register", qs.stringify(data))
+        this.$uim.ax.post("api/user/code/email/register", qs.stringify(data))
           .then(res => {
             this.step = 2;
           }).catch(e => {
@@ -117,7 +117,7 @@
         // return;
         let data = {email: this.email, code: this.code}
         this.$q.loading.show()
-        this.$uim.ax.post("user/verify/email/register", qs.stringify(data))
+        this.$uim.ax.post("api/user/verify/email/register", qs.stringify(data))
           .then(res => {
             this.step = 3;
           }).catch(e => {
@@ -129,7 +129,7 @@
       changeEmail() {
         let data = {email: this.email}
         this.$q.loading.show()
-        this.$uim.ax.post("user/reset/email", qs.stringify(data))
+        this.$uim.ax.post("api/user/reset/email", qs.stringify(data))
           .then(res => {
             if (this.$route.query.redirect_uri)
               location.href = this.$route.query.redirect_uri

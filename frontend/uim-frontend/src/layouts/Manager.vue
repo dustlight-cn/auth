@@ -1,24 +1,20 @@
 <template>
   <q-layout view="hHh Lpr lff" class="bg-white text-black">
     <!-- 头部 -->
-    <q-header class="header text-black shadow-2">
-
+    <q-header class="bg-1 text-black shadow-2">
       <!-- 工具栏 -->
       <q-toolbar>
-
         <q-btn
           flat
           dense
           round
           :icon="'ion-logo-google'"
-          :color="'primary'"
+          :color="'blue'"
           aria-label="Home Page"
           to="/"
         />
-        <q-separator dark vertical inset/>
         <q-toolbar-title>账号</q-toolbar-title>
         <q-space/>
-
         <!-- 其他菜单 -->
         <q-btn flat round dense icon="more_vert">
           <q-menu>
@@ -91,7 +87,7 @@
       no-swipe-backdrop
       persistent
       :breakpoint="1023"
-      :width="250"
+      :width="200"
     >
       <q-scroll-area class="fit">
         <q-tabs
@@ -117,10 +113,7 @@
 
     <!-- 尾部 -->
     <q-footer>
-      <div class="bg-white text-caption text-grey q-pa-sm">
-        <span class="q-pa-sm">粤ICP备17010183号-1</span>
-        <span class="q-pa-sm">© Dustlight</span>
-      </div>
+      <CommonFooter/>
     </q-footer>
 
   </q-layout>
@@ -131,10 +124,14 @@
   import Avatar from "components/Avatar"
 
   import MenuConfig from 'components/MenuConfig'
+  import SearchBox from "components/SearchBox";
+  import CommonFooter from "components/CommonFooter";
 
   export default {
     name: 'MainLayout',
     components: {
+      CommonFooter,
+      SearchBox,
       MainMenu, Avatar
     },
     data() {

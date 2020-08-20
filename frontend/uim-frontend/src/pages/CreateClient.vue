@@ -137,7 +137,7 @@
     methods: {
       loadGrantTypes() {
         this.grantTypesLoading = true
-        this.$uim.ax.get("client/grant_types").then(res => {
+        this.$uim.ax.get("api/client/grant_types").then(res => {
           this.grantTypes = []
           res.forEach(s => {
             this.grantTypeOptions.push({
@@ -151,7 +151,7 @@
       },
       loadScopes() {
         this.scopesLoading = true
-        this.$uim.ax.get("client/scopes").then(res => {
+        this.$uim.ax.get("api/client/scopes").then(res => {
           this.scopeOptions = []
           res.forEach(s => {
             this.scopeOptions.push({
@@ -172,7 +172,7 @@
           grantTypes: this.grantTypes
         }
         this.$q.loading.show()
-        this.$uim.ax.post("client/app", qs.stringify(data, {indices: false})).then(res => {
+        this.$uim.ax.post("api/client/app", qs.stringify(data, {indices: false})).then(res => {
           this.appKey = res.appKey
           this.appSecret = res.appSecret
           this.showAppCard = true

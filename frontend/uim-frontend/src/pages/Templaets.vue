@@ -95,7 +95,7 @@
           return
         this.loading = true
         this.$uim.ax
-          .get('/template/list')
+          .get("api/template/list")
           .then(res => {
             this.templates = res
           })
@@ -107,7 +107,7 @@
         this.$q.loading.show()
         let data = {name: obj.name};
         this.$uim.ax
-          .post("template/name/" + encodeURIComponent(obj.id), qs.stringify(data))
+          .post("api/template/name/" + encodeURIComponent(obj.id), qs.stringify(data))
           .catch(e => {
             obj.name = initVal;
           })
@@ -119,7 +119,7 @@
       updateText(obj, initVal) {
         this.$q.loading.show()
         let data = {text: obj.text};
-        this.$uim.ax.post("template/text/" + encodeURIComponent(obj.name), qs.stringify(data))
+        this.$uim.ax.post("api/template/text/" + encodeURIComponent(obj.name), qs.stringify(data))
           .catch(e => {
             obj.text = initVal;
           })
@@ -144,7 +144,7 @@
         }).onOk(() => {
           this.$q.loading.show()
           this.$uim.ax
-            .delete("template/delete", {
+            .delete("api/template/delete", {
               data: [obj.name]
             })
             .then(res => {
@@ -171,7 +171,7 @@
             return
           this.$q.loading.show()
           this.$uim.ax
-            .post("template/text/" + encodeURIComponent(data), qs.stringify({text: "模板\"" + data + "\"的内容"}))
+            .post("api/template/text/" + encodeURIComponent(data), qs.stringify({text: "模板\"" + data + "\"的内容"}))
             .then(res => {
               this.updateList();
             })

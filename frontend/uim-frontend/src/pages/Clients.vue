@@ -350,7 +350,7 @@
         if (this.loading)
           return
         this.loading = true
-        this.$uim.ax.get("client/clients")
+        this.$uim.ax.get("api/client/clients")
           .then(res => {
             this.clients = res
           }).finally(() => {
@@ -359,9 +359,9 @@
       },
       applyForDeveloper() {
         this.$q.loading.show()
-        this.$uim.ax.post("user/applyForDeveloper")
+        this.$uim.ax.post("api/user/applyForDeveloper")
           .then(r => {
-            this.$uim.ax.get("user/logout")
+            this.$uim.ax.get("api/user/logout")
               .finally(() => {
                 location.reload()
               })
@@ -389,7 +389,7 @@
           cancel: {label: "取消", color: "primary", flat: true}
         }).onOk(() => {
           this.$q.loading.show()
-          this.$uim.ax.post("client/app_secret/" + client.clientId).then(res => {
+          this.$uim.ax.post("api/client/app_secret/" + client.clientId).then(res => {
             client.clientSecret = res
           }).finally(() => {
             this.$q.loading.hide()
@@ -410,7 +410,7 @@
           cancel: {label: "取消", color: "primary", flat: true}
         }).onOk(() => {
           this.$q.loading.show()
-          this.$uim.ax.delete("client/app/" + client.clientId).then(res => {
+          this.$uim.ax.delete("api/client/app/" + client.clientId).then(res => {
             this.load()
           }).finally(() => {
             this.$q.loading.hide()
@@ -430,7 +430,7 @@
           i++
         })
         this.$uim.ax
-          .post("client/app_redirect_uri/" + client.clientId, qs.stringify({redirectUri: data}))
+          .post("api/client/app_redirect_uri/" + client.clientId, qs.stringify({redirectUri: data}))
           .catch(e => {
             client.registeredRedirectUri = initVal
           })
@@ -443,7 +443,7 @@
           return
         this.$q.loading.show()
         this.$uim.ax
-          .post("client/app_name/" + client.clientId, qs.stringify({name: val}))
+          .post("api/client/app_name/" + client.clientId, qs.stringify({name: val}))
           .catch(e => {
             client.name = initVal
           })
@@ -456,7 +456,7 @@
           return
         this.$q.loading.show()
         this.$uim.ax
-          .post("client/app_description/" + client.clientId, qs.stringify({description: val}))
+          .post("api/client/app_description/" + client.clientId, qs.stringify({description: val}))
           .catch(e => {
             client.description = initVal
           })
@@ -468,7 +468,7 @@
         this.selectingScope = true
         this.loadingScopes = true
         this.$uim.ax
-          .get("client/scopes")
+          .get("api/client/scopes")
           .then(res => {
             this.scopes = []
             res.forEach(val => {
@@ -481,7 +481,7 @@
       },
       removeClientScope(client, scope) {
         this.$q.loading.show()
-        this.$uim.ax.delete("client/app_scopes/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({scopes: [scope.id]}, {indices: false}))
+        this.$uim.ax.delete("api/client/app_scopes/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({scopes: [scope.id]}, {indices: false}))
           .then(r => {
             client.scope.splice(client.scope.indexOf(scope.name), 1)
             delete client.scopeDetails[scope.name]
@@ -491,7 +491,7 @@
       },
       addScope(scope, client) {
         this.$q.loading.show()
-        this.$uim.ax.post("client/app_scopes/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({scopes: [scope.id]}, {indices: false}))
+        this.$uim.ax.post("api/client/app_scopes/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({scopes: [scope.id]}, {indices: false}))
           .then(r => {
             client.scope.push(scope.name)
             client.scopeDetails[scope.name] = scope
@@ -504,7 +504,7 @@
         this.selectingGrantTypes = true
         this.loadingGrantTypes = true
         this.$uim.ax
-          .get("client/grant_types")
+          .get("api/client/grant_types")
           .then(res => {
             this.grantTypes = []
             res.forEach(val => {
@@ -517,7 +517,7 @@
       },
       removeClientGrantType(client, type) {
         this.$q.loading.show()
-        this.$uim.ax.delete("client/app_grant_types/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({types: [type.id]}, {indices: false}))
+        this.$uim.ax.delete("api/client/app_grant_types/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({types: [type.id]}, {indices: false}))
           .then(r => {
             client.authorizedGrantTypes.splice(client.authorizedGrantTypes.indexOf(type.name), 1)
             delete client.grantTypeDetails[type.name]
@@ -527,7 +527,7 @@
       },
       addGrantType(type, client) {
         this.$q.loading.show()
-        this.$uim.ax.post("client/app_grant_types/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({types: [type.id]}, {indices: false}))
+        this.$uim.ax.post("api/client/app_grant_types/" + encodeURIComponent(client.clientId) + "?" + qs.stringify({types: [type.id]}, {indices: false}))
           .then(r => {
             client.authorizedGrantTypes.push(type.name)
             client.grantTypeDetails[type.name] = type

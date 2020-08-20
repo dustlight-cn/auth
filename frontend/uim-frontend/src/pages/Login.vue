@@ -1,10 +1,10 @@
 <template>
-  <div class="q-pa-md vertical-middle" style="margin: 0 auto;max-width: 400px">
-
-    <h4>登录</h4>
+  <q-page style="margin: 0 auto;max-width: 400px">
+    <div class="q-pa-lg text-h4">登录</div>
     <q-form
       @submit="onSubmit"
-      class="q-gutter-md"
+
+      class="q-gutter-md q-pa-lg"
     >
       <q-input
         filled
@@ -38,7 +38,7 @@
       </div>
     </q-form>
 
-  </div>
+  </q-page>
 </template>
 
 <script>
@@ -58,7 +58,7 @@
         let userdata = {username: this.account, password: this.password};
 
         this.$q.loading.show()
-        this.$uim.ax.post("user/login", qs.stringify(userdata))
+        this.$uim.ax.post("api/user/login", qs.stringify(userdata))
           .then(res => {
             if (this.$route.query.redirect_uri)
               location.href = this.$route.query.redirect_uri

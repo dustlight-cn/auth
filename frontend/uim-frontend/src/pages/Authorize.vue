@@ -1,13 +1,13 @@
 <template>
-  <div class="q-pa-md vertical-middle" style="margin: 0 auto;max-width: 400px">
-    <h4>授权</h4>
+  <div style="margin: 0 auto;max-width: 600px">
+    <div class="q-pa-lg text-h4">授权</div>
     <transition
       appear
       enter-active-class="animated fadeIn"
       leave-active-class="animated fadeOut"
     >
       <q-form
-        class="q-gutter-md"
+        class="q-gutter-md q-ma-sm"
         @submit="onSubmit"
         v-show="!loading"
       >

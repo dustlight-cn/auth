@@ -58,7 +58,10 @@ const routes = [
     ]
   }, {
     path: '/error/403',
-    component: () => import('pages/Error403.vue')
+    component: () => import('layouts/ClearLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/Error403.vue')}
+    ]
   }
 ]
 
@@ -66,7 +69,10 @@ const routes = [
 if (process.env.MODE !== 'ssr') {
   routes.push({
     path: '*',
-    component: () => import('pages/Error404.vue')
+    component: () => import('layouts/ClearLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/Error404.vue')}
+    ]
   })
 }
 

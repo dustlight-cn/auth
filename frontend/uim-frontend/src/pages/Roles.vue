@@ -192,7 +192,7 @@
         if (this.loading)
           return
         this.loading = true
-        this.$uim.ax.get("client/roles")
+        this.$uim.ax.get("api/client/roles")
           .then((res) => {
             this.roles = res
           })
@@ -202,7 +202,7 @@
       },
       updateRole(val, initVal, role, flag) {
         this.$q.loading.show()
-        this.$uim.ax.post("client/role/" + role.id, qs.stringify({
+        this.$uim.ax.post("api/client/role/" + role.id, qs.stringify({
           name: role.name,
           description: role.description
         })).catch(e => {
@@ -230,7 +230,7 @@
           if (data == null || data.trim().length == 0)
             return
           this.$q.loading.show()
-          this.$uim.ax.post("client/role", qs.stringify({name: data, description: data}))
+          this.$uim.ax.post("api/client/role", qs.stringify({name: data, description: data}))
             .then(res => {
               this.load();
             })
@@ -252,7 +252,7 @@
           cancel: {label: "取消", color: "primary", flat: true}
         }).onOk(() => {
           this.$q.loading.show()
-          this.$uim.ax.delete("client/role/" + role.id).then(res => {
+          this.$uim.ax.delete("api/client/role/" + role.id).then(res => {
             this.load()
           }).finally(() => {
             this.$q.loading.hide()
@@ -263,7 +263,7 @@
         this.selectedRole = role
         this.editting = true
         this.loadingRoleAuthorities = true
-        this.$uim.ax.get("client/authorities/role/" + role.id)
+        this.$uim.ax.get("api/client/authorities/role/" + role.id)
           .then(res => {
             this.selectedRoleAuthorities = res
           }).finally(() => {
@@ -276,7 +276,7 @@
           roleId: role.id,
           authorityId: authority.id
         }
-        this.$uim.ax.delete("client/role_authority?" + qs.stringify(data))
+        this.$uim.ax.delete("api/client/role_authority?" + qs.stringify(data))
           .then((res) => {
             this.editRole(role)
           }).finally(() => {
@@ -286,7 +286,7 @@
       selectAuthority() {
         this.loadingAuthorities = true
         this.selectingAuthority = true
-        this.$uim.ax.get("client/authorities")
+        this.$uim.ax.get("api/client/authorities")
           .then((res) => {
             this.authorities = res
             let arr = []
@@ -308,7 +308,7 @@
           roleId: role.id,
           authorityId: authority.id
         }
-        this.$uim.ax.post("client/role_authority?" + qs.stringify(data))
+        this.$uim.ax.post("api/client/role_authority?" + qs.stringify(data))
           .then(res => {
             authority.flag = true
             this.selectedRoleAuthorities.push(authority)

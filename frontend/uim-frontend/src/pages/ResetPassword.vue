@@ -118,7 +118,7 @@
       sendEmailCode() {
         let data = {email: this.email}
         this.$q.loading.show()
-        this.$uim.ax.post("user/code/email/resetPwd", qs.stringify(data))
+        this.$uim.ax.post("api/user/code/email/resetPwd", qs.stringify(data))
           .then(res => {
             this.step = 2;
           }).catch(e => {
@@ -130,7 +130,7 @@
       verifyEmail() {
         let data = {email: this.email, code: this.code}
         this.$q.loading.show()
-        this.$uim.ax.post("user/verify/email/resetPwd", qs.stringify(data))
+        this.$uim.ax.post("api/user/verify/email/resetPwd", qs.stringify(data))
           .then(res => {
             this.step = 3;
           }).catch(e => {
@@ -146,7 +146,7 @@
         }
         let data = {email: this.email, password: this.password}
         this.$q.loading.show()
-        this.$uim.ax.post("user/reset/email/password", qs.stringify(data))
+        this.$uim.ax.post("api/user/reset/email/password", qs.stringify(data))
           .then(res => {
             if (this.$route.query.redirect_uri)
               location.href = this.$route.query.redirect_uri
