@@ -44,7 +44,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import qs from 'qs'
 
   export default {
@@ -66,7 +65,7 @@
           data['scope.' + scope.scope] = scope.value;
         })
         this.$q.loading.show()
-        axios.post('/oauth/authorize?' + qs.stringify(this.$route.query), qs.stringify(data))
+        this.$uim.ax.post('/oauth/authorize?' + qs.stringify(this.$route.query), qs.stringify(data))
           .then(res => {
 
             location.href = res;
@@ -85,7 +84,7 @@
         scope: this.$route.query.scope,
         state: this.$route.query.state
       }
-      axios.get('/oauth/authorize?' + qs.stringify(data))
+      this.$uim.ax.get('/oauth/authorize?' + qs.stringify(data))
         .then(res => {
           this.clientName = res.clientName;
           this.clientDescription = res.description;

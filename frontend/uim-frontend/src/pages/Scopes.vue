@@ -161,7 +161,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import qs from 'qs'
 
   export default {
@@ -185,7 +184,7 @@
         if (this.loading)
           return
         this.loading = true
-        axios.get("/api/client/scopes")
+        this.$uim.ax.get("client/scopes")
           .then((res) => {
             this.scopes = res
           })
@@ -195,7 +194,7 @@
       },
       updateScope(val, initVal, scope, flag) {
         this.$q.loading.show()
-        axios.post("/api/client/scope/" + scope.id, qs.stringify({
+        this.$uim.ax.post("client/scope/" + scope.id, qs.stringify({
           name: scope.name,
           description: scope.description
         })).catch(e => {
@@ -223,7 +222,7 @@
           if (data == null || data.trim().length == 0)
             return
           this.$q.loading.show()
-          axios.post("/api/client/scope", qs.stringify({name: data, description: data}))
+          this.$uim.ax.post("client/scope", qs.stringify({name: data, description: data}))
             .then(res => {
               this.load();
             })
@@ -245,7 +244,7 @@
           cancel: {label: "取消", color: "primary", flat: true}
         }).onOk(() => {
           this.$q.loading.show()
-          axios.delete("/api/client/scope/" + scope.id).then(res => {
+          this.$uim.ax.delete("client/scope/" + scope.id).then(res => {
             this.load()
           }).finally(() => {
             this.$q.loading.hide()
@@ -256,7 +255,7 @@
         this.selectedScope = scope
         this.editting = true
         this.loadingScopeAuthorities = true
-        axios.get("/api/client/authorities/scope/" + scope.id)
+        this.$uim.ax.get("client/authorities/scope/" + scope.id)
           .then(res => {
             this.selectedScopeAuthorities = res
           }).finally(() => {
@@ -269,7 +268,7 @@
           scopeId: scope.id,
           authorityId: authority.id
         }
-        axios.delete("/api/client/scope_authority?" + qs.stringify(data))
+        this.$uim.ax.delete("client/scope_authority?" + qs.stringify(data))
           .then((res) => {
             this.editScope(scope)
           }).finally(() => {
@@ -279,7 +278,7 @@
       selectAuthority() {
         this.loadingAuthorities = true
         this.selectingAuthority = true
-        axios.get("/api/client/authorities")
+        this.$uim.ax.get("client/authorities")
           .then((res) => {
             this.authorities = res
             let arr = []
@@ -301,7 +300,7 @@
           scopeId: scope.id,
           authorityId: authority.id
         }
-        axios.post("/api/client/scope_authority?" + qs.stringify(data))
+        this.$uim.ax.post("client/scope_authority?" + qs.stringify(data))
           .then(res => {
             authority.flag = true
             this.selectedScopeAuthorities.push(authority)

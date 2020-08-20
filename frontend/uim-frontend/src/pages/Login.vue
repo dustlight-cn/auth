@@ -42,7 +42,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import qs from 'qs'
 
   export default {
@@ -59,7 +58,7 @@
         let userdata = {username: this.account, password: this.password};
 
         this.$q.loading.show()
-        axios.post("/api/user/login", qs.stringify(userdata))
+        this.$uim.ax.post("user/login", qs.stringify(userdata))
           .then(res => {
             if (this.$route.query.redirect_uri)
               location.href = this.$route.query.redirect_uri

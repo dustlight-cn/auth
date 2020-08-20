@@ -1,17 +1,17 @@
 <template>
   <q-layout view="hHh Lpr lff" class="bg-white text-black">
-
     <!-- 头部 -->
     <q-header class="header text-black shadow-2">
 
       <!-- 工具栏 -->
       <q-toolbar>
+
         <q-btn
           flat
           dense
           round
-          icon="ion-logo-google"
-          color="primary"
+          :icon="'ion-logo-google'"
+          :color="'primary'"
           aria-label="Home Page"
           to="/"
         />
@@ -128,13 +128,9 @@
 
 <script>
   import MainMenu from 'components/MainMenu'
-  import axios from "axios"
-  import MenuConfig from 'components/MenuConfig'
-  import Config from 'components/Config'
-  import UimSdk from "components/UimSdk";
-  import qs from 'qs'
+  import Avatar from "components/Avatar"
 
-  import Avatar from "components/Avatar";
+  import MenuConfig from 'components/MenuConfig'
 
   export default {
     name: 'MainLayout',
@@ -149,8 +145,7 @@
           authoritiesString: []
         },
         tab: "",
-        menus: MenuConfig,
-        config: Config
+        menus: MenuConfig
       }
     },
     provide() {
@@ -189,7 +184,7 @@
       },
       loadUserDetails() {
         this.loading = true
-        UimSdk.user.getCurrentUserDetails()
+        this.$uim.user.getCurrentUserDetails()
           .then((res => this.user = res))
           .finally(() => this.loading = false)
       }

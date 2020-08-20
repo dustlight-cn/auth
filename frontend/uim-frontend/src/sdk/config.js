@@ -1,6 +1,5 @@
 const config = {
-  apiRoot: '/api/',
-  apiUrl: {
+  api: {
     user: {
       sendCode: {
         email: {

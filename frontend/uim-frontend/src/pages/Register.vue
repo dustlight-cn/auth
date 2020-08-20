@@ -1,16 +1,16 @@
 <template>
-  <div
-    style="margin:0 auto;max-width: 800px"
-    class="q-pa-md">
-    <h4>注册</h4>
+  <q-page
+    class="q-pa-sm">
     <q-stepper
       v-model="step"
       ref="stepper"
       color="primary"
+      style="margin:0 auto;max-width: 800px"
       flat
       vertical
       animated
     >
+      <div class="text-h6">注册</div>
       <q-step
         :name="1"
         title="电子邮箱"
@@ -104,7 +104,7 @@
       </q-step>
 
     </q-stepper>
-  </div>
+  </q-page>
 </template>
 
 <script>

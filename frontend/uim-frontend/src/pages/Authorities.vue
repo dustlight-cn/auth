@@ -60,7 +60,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import qs from 'qs'
 
   export default {
@@ -77,7 +76,7 @@
         if (this.loading)
           return
         this.loading = true
-        axios.get("/api/client/authorities")
+        this.$uim.ax.get("client/authorities")
           .then((res) => {
             this.authorities = res
           })
@@ -90,7 +89,7 @@
       },
       updateAuthority(val, initVal, authority, flag) {
         this.$q.loading.show()
-        axios.post("/api/client/authority/" + authority.id, qs.stringify({
+        this.$uim.ax.post("client/authority/" + authority.id, qs.stringify({
           name: authority.name,
           description: authority.description
         })).catch(e => {
@@ -118,7 +117,7 @@
           if (data == null || data.trim().length == 0)
             return
           this.$q.loading.show()
-          axios.post("/api/client/authority", qs.stringify({name: data, description: data}))
+          this.$uim.ax.post("client/authority", qs.stringify({name: data, description: data}))
             .then(res => {
               this.load();
             })
@@ -140,7 +139,7 @@
           cancel: {label: "取消", color: "primary", flat: true}
         }).onOk(() => {
           this.$q.loading.show()
-          axios.delete("/api/client/authority/" + authority.id).then(res => {
+          this.$uim.ax.delete("client/authority/" + authority.id).then(res => {
             this.load()
           }).finally(() => {
             this.$q.loading.hide()

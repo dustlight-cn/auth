@@ -69,7 +69,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import qs from 'qs'
 
   export default {
@@ -95,8 +94,8 @@
         if (this.loading)
           return
         this.loading = true
-        axios
-          .get('/api/template/list')
+        this.$uim.ax
+          .get('/template/list')
           .then(res => {
             this.templates = res
           })
@@ -107,8 +106,8 @@
       updateName(obj, initVal) {
         this.$q.loading.show()
         let data = {name: obj.name};
-        axios
-          .post("/api/template/name/" + encodeURIComponent(obj.id), qs.stringify(data))
+        this.$uim.ax
+          .post("template/name/" + encodeURIComponent(obj.id), qs.stringify(data))
           .catch(e => {
             obj.name = initVal;
           })
@@ -120,7 +119,7 @@
       updateText(obj, initVal) {
         this.$q.loading.show()
         let data = {text: obj.text};
-        axios.post("/api/template/text/" + encodeURIComponent(obj.name), qs.stringify(data))
+        this.$uim.ax.post("template/text/" + encodeURIComponent(obj.name), qs.stringify(data))
           .catch(e => {
             obj.text = initVal;
           })
@@ -144,8 +143,8 @@
           }
         }).onOk(() => {
           this.$q.loading.show()
-          axios
-            .delete("/api/template/delete", {
+          this.$uim.ax
+            .delete("template/delete", {
               data: [obj.name]
             })
             .then(res => {
@@ -171,8 +170,8 @@
           if (data == null || data.trim().length == 0)
             return
           this.$q.loading.show()
-          axios
-            .post("/api/template/text/" + encodeURIComponent(data), qs.stringify({text: "模板\"" + data + "\"的内容"}))
+          this.$uim.ax
+            .post("template/text/" + encodeURIComponent(data), qs.stringify({text: "模板\"" + data + "\"的内容"}))
             .then(res => {
               this.updateList();
             })

@@ -38,7 +38,7 @@
             <q-item-label>
               <q-btn dense rounded flat icon="keyboard_arrow_right"/>
             </q-item-label>
-            <q-popup-edit @save="resetGedner" v-model="user().gender" buttons label-set="保存" label-cancel="取消">
+            <q-popup-edit @save="resetGender" v-model="user().gender" buttons label-set="保存" label-cancel="取消">
               <q-select emit-value map-options option-label="name" option-value="id" v-model="user().gender"
                         :options="gender" label="性别">
                 <template v-slot:option="scope">
@@ -135,10 +135,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
-  import qs from 'qs'
   import Avatar from "components/Avatar";
-  import UimSdk from "components/UimSdk";
 
   export default {
     name: "UserInfo",
@@ -172,39 +169,27 @@
     methods: {
       resetNickname(value, initialValue) {
         this.$q.loading.show()
-        axios.post("/api/user/reset/nickname", qs.stringify({nickname: value}))
-          .catch(e => {
-            this.user().nickname = initialValue
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.user.updateNickname(value)
+          .catch(e => this.user().nickname = initialValue)
+          .finally(() => this.$q.loading.hide())
       },
-      resetGedner(value, initValue) {
+      resetGender(value, initValue) {
         this.$q.loading.show()
-        axios.post("/api/user/reset/gender", qs.stringify({gender: value}))
-          .catch(e => {
-            this.user().gender = initialValue
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.user.updateGender(value)
+          .catch(e => this.user().gender = initValue)
+          .finally(() => this.$q.loading.hide())
       },
       uploadAvatar() {
         this.uploadAvatarWaiting = true
         this.uploadAvatarFlag = true
-        axios.post("/api/user/reset/avatar")
-          .then(res => {
-            this.uploadAvatarURL = res
-          })
-          .catch(e => {
-            this.uploadAvatarFlag = false
-          })
-          .finally(() => {
-            this.uploadAvatarWaiting = false
-          })
+        this.$uim.user.generateUploadAvatarUrl()
+          .then(res => this.uploadAvatarURL = res)
+          .catch(e => this.uploadAvatarFlag = false)
+          .finally(() => this.uploadAvatarWaiting = false)
       },
       uploadAvatarSuccess() {
         let t = new Date().getTime()
-        UimSdk.user.notifyAvatarUpdate(t)
+        this.$uim.user.notifyAvatarUpdate(t)
         this.$root.$emit("avatar_update", t)
         this.uploadAvatarFlag = false
       }
