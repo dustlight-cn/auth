@@ -106,9 +106,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
-  import qs from 'qs'
-
   export default {
     name: 'Register',
     data() {
@@ -123,52 +120,26 @@
     },
     methods: {
       sendEmailCode() {
-        // this.step = 2;
-        // return;
-        let data = {email: this.email}
         this.$q.loading.show()
-        axios.post("/api/user/code/email/register", qs.stringify(data))
-          .then(res => {
-            this.step = 2;
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.user.sendEmailRegisterCode(this.email)
+          .then(res => this.step = 2)
+          .finally(() => this.$q.loading.hide())
       },
       verifyEmail() {
-        // this.step = 3;
-        // return;
-        let data = {email: this.email, code: this.code}
         this.$q.loading.show()
-        axios.post("/api/user/verify/email/register", qs.stringify(data))
-          .then(res => {
-            this.step = 3;
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.user.verifyEmailCode(this.email, this.code)
+          .then(res => this.step = 3)
+          .finally(() => this.$q.loading.hide())
       },
       register() {
         if (this.rePassword != this.password) {
           console.error("password error");
           return;
         }
-        let data = {username: this.username, password: this.password}
-
         this.$q.loading.show()
-        axios.post("/api/user/register", qs.stringify(data))
-          .then(res => {
-            if (this.$route.query.redirect_uri)
-              location.href = this.$route.query.redirect_uri
-            else
-              location.href = '/Login'
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.user.register(this.username, this.password)
+          .then(res => location.href = this.$route.query.redirect_uri ? this.$route.query.redirect_uri : "login")
+          .finally(() => this.$q.loading.hide())
       }
     }
   }

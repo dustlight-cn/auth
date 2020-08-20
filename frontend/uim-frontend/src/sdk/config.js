@@ -31,6 +31,9 @@ const config = {
       userAvatar: 'api/user/avatar/',
       currentUserDetails: 'api/user/details',
       applyForDeveloper: 'api/user/applyForDeveloper'
+    },
+    client:{
+      currentUserClients: 'api/client/clients'
     }
   }
 }

@@ -330,7 +330,7 @@
 
   export default {
     name: "Clients",
-    inject: ["hasAuthority"],
+    inject: ["hasAuthority", "user"],
     data() {
       return {
         loading: false,
@@ -350,24 +350,15 @@
         if (this.loading)
           return
         this.loading = true
-        this.$uim.ax.get("api/client/clients")
-          .then(res => {
-            this.clients = res
-          }).finally(() => {
-          this.loading = false
-        })
+        this.$uim.client.currentUserClients()
+          .then(res => this.clients = res)
+          .finally(() => this.loading = false)
       },
       applyForDeveloper() {
         this.$q.loading.show()
-        this.$uim.ax.post("api/user/applyForDeveloper")
-          .then(r => {
-            this.$uim.ax.get("api/user/logout")
-              .finally(() => {
-                location.reload()
-              })
-          }).catch(e => {
-          this.$q.loading.hide()
-        })
+        this.$uim.user.applyForDeveloper()
+          .then(() => this.user().logout())
+          .catch((e) => this.$q.loading.hide())
       },
       select(client) {
         this.selectedClient = client

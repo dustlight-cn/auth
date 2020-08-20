@@ -3,7 +3,6 @@
     <div class="q-pa-lg text-h4">登录</div>
     <q-form
       @submit="onSubmit"
-
       class="q-gutter-md q-pa-lg"
     >
       <q-input
@@ -29,12 +28,14 @@
 
       <div style="min-height: 100px"/>
 
-      <div class="absolute-bottom-right">
-        <q-btn label="注册" @click="register" color="primary" flat class="q-ml-sm"/>
+      <div class="absolute-bottom-right q-mr-lg">
+        <q-btn label="注册" color="primary" flat class="q-ml-sm"
+               :to="{path:'register',query: {redirect_uri: $route.fullPath}}"/>
         <q-btn label="登录" type="submit" color="primary"/>
       </div>
       <div class="absolute-bottom-left">
-        <q-btn label="忘记密码？" @click="forgot" color="primary" flat class="q-ml-sm"/>
+        <q-btn label="忘记密码？" color="primary" flat class="q-ml-sm"
+               :to="{path: 'password',query:{redirect_uri: $route.fullPath}}"/>
       </div>
     </q-form>
 
@@ -42,8 +43,6 @@
 </template>
 
 <script>
-  import qs from 'qs'
-
   export default {
     name: 'Login',
     data() {
@@ -53,34 +52,11 @@
       }
     },
     methods: {
-
       onSubmit() {
-        let userdata = {username: this.account, password: this.password};
-
         this.$q.loading.show()
-        this.$uim.ax.post("api/user/login", qs.stringify(userdata))
-          .then(res => {
-            if (this.$route.query.redirect_uri)
-              location.href = this.$route.query.redirect_uri
-            else
-              location.href = '/'
-          }).catch(e => {
-          console.log(e);
-        }).finally(() => {
-          this.$q.loading.hide();
-        })
-      },
-      register() {
-        this.$router.push({
-          path: '/register',
-          query: {redirect_uri: location.href}
-        })
-      },
-      forgot() {
-        this.$router.push({
-          path: '/password',
-          query: {redirect_uri: location.href}
-        })
+        this.$uim.user.login(this.account, this.password)
+          .then(res => location.href = this.$route.query.redirect_uri ? this.$route.query.redirect_uri : ocation.href = '/')
+          .finally(() => this.$q.loading.hide())
       }
     }
   }

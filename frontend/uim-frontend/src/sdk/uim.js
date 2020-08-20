@@ -1,5 +1,5 @@
 import config from "./config"
-import axios from 'axios'
+import axios, {AxiosInstance} from 'axios'
 import qs from "qs";
 
 /**
@@ -37,18 +37,30 @@ class AccessDenied extends ApiError {
  * 用户相关API
  */
 class UserApi {
-
   constructor(axiosInstance) {
     this.ax = axiosInstance
+    this.avatar_updatedAt = new Date().getTime()
   }
 
-  /**
-   * 获取当前登录用户信息
-   * @returns {Promise<AxiosResponse<any>>}
-   */
+  login(account, password) {
+    return this.ax.post(config.api.user.login, qs.stringify({username: account, password: password}))
+  }
+
+  register(username, password) {
+    return this.ax.post(config.api.user.register, qs.stringify({username: username, password: password}))
+  }
+
+  sendEmailRegisterCode(email) {
+    return this.ax.post(config.api.user.sendCode.email.register, qs.stringify({email: email}))
+  }
+
+  verifyEmailCode(email, code) {
+    return this.ax.post(config.api.user.verify.email.register, qs.stringify({email: email, code: code}))
+  }
+
   getCurrentUserDetails() {
     return this.ax.get(config.api.user.currentUserDetails)
-      .then(res => {
+      .then((res) => {
         if (res == null)
           return
         // 处理用户数据
@@ -63,39 +75,39 @@ class UserApi {
       })
   }
 
-  /**
-   * 生成上传头像URL
-   * @returns {AxiosPromise<any>}
-   */
   generateUploadAvatarUrl() {
     return this.ax.post(config.api.user.resetAvatar)
   }
 
-  /**
-   * 更新性别
-   * @param gender 性别
-   * @returns {AxiosPromise<any>}
-   */
   updateGender(gender) {
     return this.ax.post(config.api.user.resetGender, qs.stringify({gender: gender}))
   }
 
-  /**
-   * 更新昵称
-   * @param nickname 昵称
-   * @returns {AxiosPromise<any>}
-   */
   updateNickname(nickname) {
     return this.ax.post(config.api.user.resetNickname, qs.stringify({nickname: nickname}))
   }
 
-  /**
-   * 更新头像时间戳
-   */
+  applyForDeveloper() {
+    return this.ax.post(config.api.user.applyForDeveloper)
+  }
+
   notifyAvatarUpdate(timestamp) {
     if (timestamp == null)
       timestamp = new Date().getTime()
     this.avatar_updatedAt = timestamp
+  }
+}
+
+/**
+ * 管理相关API
+ */
+class ClientApi {
+  constructor(axiosInstance) {
+    this.ax = axiosInstance
+  }
+
+  currentUserClients() {
+    return this.ax.get(config.api.client.currentUserClients)
   }
 }
 
@@ -106,7 +118,6 @@ class Uim {
   constructor(baseURL, exceptionHandler) {
     this.onException = (e) => exceptionHandler == null || exceptionHandler == null ? console.log(e) : exceptionHandler(e)
     this.baseURL = baseURL
-    this.avatar_updatedAt = new Date().getTime()
     this.ax = axios.create({
       baseURL: this.baseURL
     })
@@ -141,6 +152,7 @@ class Uim {
       return Promise.reject(error.response.status)
     })
     this.user = new UserApi(this.ax)
+    this.client = new ClientApi(this.ax)
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="text-transform：uppercase">
     <q-avatar v-if="error" color="grey" text-color="white" :size="size + 'px'">
-      {{user.nickname[0]}}
+      {{firstChar}}
     </q-avatar>
     <q-avatar v-else :size="size + 'px'">
       <q-skeleton type="QAvatar" :size="size + 'px'" v-if="isLoading()"/>
@@ -24,6 +24,9 @@
     computed: {
       url() {
         return this.user.avatar(this.size, {t: this.avatar_timestamp})
+      },
+      firstChar() {
+        return this.user.nickname ? this.user.nickname.toUpperCase()[0] : this.user.username.toUpperCase()[0]
       }
     },
     methods: {

@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-sm">
-    <q-card bordered>
+    <q-card>
       <q-card-section>
         <div class="text-h6">个人资料</div>
         <div class="text-caption">您的基本信息</div>
@@ -70,7 +70,7 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="q-mt-sm" bordered>
+    <q-card class="q-mt-sm">
       <q-card-section>
         <div class="text-h6">联系方式</div>
         <div class="text-caption">您的联系方式</div>
@@ -90,7 +90,7 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="q-mt-sm" bordered>
+    <q-card class="q-mt-sm">
       <q-card-section>
         <div class="text-h6">其他</div>
         <div class="text-caption"></div>
