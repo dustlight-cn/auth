@@ -119,8 +119,22 @@ class ClientApi {
     return this.ax.get(config.api.client.allGrantTypes)
   }
 
+  getAllAuthorities() {
+    return this.ax.get(config.api.client.allAuthorities)
+  }
+
+  getAllRoles() {
+    return this.ax.get(config.api.client.allRoles)
+  }
+
   resetClientSecret(clientId) {
     return this.ax.post(config.api.client.resetClientSecret + encodeURIComponent(clientId))
+  }
+
+  createClient(name, description, redirectUri, scopes, grantTypes) {
+    return this.ax.post(config.api.client.createClient, qs.stringify({
+      name: name, description: description, redirectUri: redirectUri, scopes: scopes, grantTypes: grantTypes
+    }, {indices: false}))
   }
 
   deleteClient(clientId) {
@@ -153,6 +167,42 @@ class ClientApi {
 
   deleteClientGrantTypes(clientId, types) {
     return this.ax.delete(config.api.client.removeClientGrantTypes + encodeURIComponent(clientId) + "?" + qs.stringify({types: types}, {indices: false}))
+  }
+
+  getAllTemplates() {
+    return this.ax.get(config.api.client.allTemplates)
+  }
+
+  getTemplateText(name) {
+    return this.ax.get(config.api.client.getTemplateText + encodeURIComponent(name))
+  }
+
+  setTemplateText(name, text) {
+    return this.ax.post(config.api.client.updateTemplateText + encodeURIComponent(name), qs.stringify({text: text}))
+  }
+
+  setTemplateName(id, newName) {
+    return this.ax.post(config.api.client.updateClientName + encodeURIComponent(id), qs.stringify({name: name}))
+  }
+
+  deleteTemplates(names) {
+    return this.ax.delete(config.api.client.deleteTemplate, {data: names})
+  }
+
+
+  updateAuthority(id, name, description) {
+    return this.ax.post(config.api.client.updateAuthority + encodeURIComponent(id), qs.stringify({
+      name: name,
+      description: description
+    }))
+  }
+
+  createAuthority(name, description) {
+    return this.ax.post(config.api.client.createAuthority, qs.stringify({name: name, description: description}))
+  }
+
+  deleteAuthority(id) {
+    return this.ax.delete(config.api.client.deleteAuthority + encodeURIComponent(id))
   }
 }
 

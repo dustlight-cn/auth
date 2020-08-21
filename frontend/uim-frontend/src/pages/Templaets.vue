@@ -69,8 +69,6 @@
 </template>
 
 <script>
-  import qs from 'qs'
-
   export default {
     name: 'Templates',
     inject: ["hasAuthority"],
@@ -94,38 +92,22 @@
         if (this.loading)
           return
         this.loading = true
-        this.$uim.ax
-          .get("api/template/list")
-          .then(res => {
-            this.templates = res
-          })
-          .finally(() => {
-            this.loading = false
-          })
+        this.$uim.client.getAllTemplates()
+          .then(res => this.templates = res)
+          .finally(() => this.loading = false)
       },
       updateName(obj, initVal) {
         this.$q.loading.show()
-        let data = {name: obj.name};
-        this.$uim.ax
-          .post("api/template/name/" + encodeURIComponent(obj.id), qs.stringify(data))
-          .catch(e => {
-            obj.name = initVal;
-          })
-          .finally(() => {
-            this.$q.loading.hide()
-          })
+        this.$uim.client.setTemplateName(obj.id, obj.name)
+          .catch(e => obj.name = initVal)
+          .finally(() => this.$q.loading.hide())
       }
       ,
       updateText(obj, initVal) {
         this.$q.loading.show()
-        let data = {text: obj.text};
-        this.$uim.ax.post("api/template/text/" + encodeURIComponent(obj.name), qs.stringify(data))
-          .catch(e => {
-            obj.text = initVal;
-          })
-          .finally(() => {
-            this.$q.loading.hide()
-          })
+        this.$uim.client.setTemplateText(obj.name, obj.text)
+          .catch(e => obj.text = initVal)
+          .finally(() => this.$q.loading.hide())
       },
       deleteTemplate(obj) {
         this.$q.dialog({
@@ -143,16 +125,9 @@
           }
         }).onOk(() => {
           this.$q.loading.show()
-          this.$uim.ax
-            .delete("api/template/delete", {
-              data: [obj.name]
-            })
-            .then(res => {
-              this.updateList();
-            })
-            .finally(() => {
-              this.$q.loading.hide();
-            })
+          this.$uim.client.deleteTemplates([obj.name])
+            .then(res => this.updateList())
+            .finally(() => this.$q.loading.hide())
         })
       },
       addTemplate() {
@@ -170,14 +145,9 @@
           if (data == null || data.trim().length == 0)
             return
           this.$q.loading.show()
-          this.$uim.ax
-            .post("api/template/text/" + encodeURIComponent(data), qs.stringify({text: "模板\"" + data + "\"的内容"}))
-            .then(res => {
-              this.updateList();
-            })
-            .finally(() => {
-              this.$q.loading.hide();
-            })
+          this.$uim.client.setTemplateText(data, "模板\"" + data + "\"的内容")
+            .then(res => this.updateList())
+            .finally(() => this.$q.loading.hide())
         })
       }
     }

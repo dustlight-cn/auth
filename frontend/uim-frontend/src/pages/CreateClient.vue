@@ -112,8 +112,6 @@
 </template>
 
 <script>
-  import qs from 'qs'
-
   export default {
     name: "CreateClient",
     data() {
@@ -137,48 +135,41 @@
     methods: {
       loadGrantTypes() {
         this.grantTypesLoading = true
-        this.$uim.ax.get("api/client/grant_types").then(res => {
-          this.grantTypes = []
-          res.forEach(s => {
-            this.grantTypeOptions.push({
-              label: s.name,
-              value: s.id
+        this.$uim.client.getAllGrantTypes()
+          .then(res => {
+            this.grantTypes = []
+            res.forEach(s => {
+              this.grantTypeOptions.push({
+                label: s.name,
+                value: s.id
+              })
             })
           })
-        }).finally(() => {
-          this.grantTypesLoading = false
-        })
+          .finally(() => this.grantTypesLoading = false)
       },
       loadScopes() {
         this.scopesLoading = true
-        this.$uim.ax.get("api/client/scopes").then(res => {
-          this.scopeOptions = []
-          res.forEach(s => {
-            this.scopeOptions.push({
-              label: s.name + " (" + s.description + ")",
-              value: s.id
+        this.$uim.client.getAllScopes()
+          .then(res => {
+            this.scopeOptions = []
+            res.forEach(s => {
+              this.scopeOptions.push({
+                label: s.name + " (" + s.description + ")",
+                value: s.id
+              })
             })
           })
-        }).finally(() => {
-          this.scopesLoading = false
-        })
+          .finally(() => this.scopesLoading = false)
       },
       onSubmit() {
-        let data = {
-          name: this.name,
-          description: this.description,
-          redirectUri: this.redirectUri,
-          scopes: this.scopes,
-          grantTypes: this.grantTypes
-        }
         this.$q.loading.show()
-        this.$uim.ax.post("api/client/app", qs.stringify(data, {indices: false})).then(res => {
-          this.appKey = res.appKey
-          this.appSecret = res.appSecret
-          this.showAppCard = true
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.client.createClient(this.name, this.description, this.redirectUri, this.scopes, this.grantTypes)
+          .then(res => {
+            this.appKey = res.appKey
+            this.appSecret = res.appSecret
+            this.showAppCard = true
+          })
+          .finally(() => this.$q.loading.hide())
       }
     }, mounted() {
       this.loadGrantTypes()

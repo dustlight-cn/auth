@@ -60,8 +60,6 @@
 </template>
 
 <script>
-  import qs from 'qs'
-
   export default {
     name: "Authorities",
     inject: ["hasAuthority"],
@@ -76,30 +74,23 @@
         if (this.loading)
           return
         this.loading = true
-        this.$uim.ax.get("api/client/authorities")
-          .then((res) => {
-            this.authorities = res
-          })
-          .finally(() => {
-            this.loading = false
-          })
+        this.$uim.client.getAllAuthorities()
+          .then(res => this.authorities = res)
+          .finally(() => this.loading = false)
       },
       isProtectedAuthority(authority) {
         return this.protectedAuthority.indexOf(authority) >= 0
       },
       updateAuthority(val, initVal, authority, flag) {
         this.$q.loading.show()
-        this.$uim.ax.post("api/client/authority/" + authority.id, qs.stringify({
-          name: authority.name,
-          description: authority.description
-        })).catch(e => {
-          if (flag)
-            authority.name = initVal
-          else
-            authority.description = initVal
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.client.updateAuthority(authority.id, authority.name, authority.description)
+          .catch(e => {
+            if (flag)
+              authority.name = initVal
+            else
+              authority.description = initVal
+          })
+          .finally(() => this.$q.loading.hide())
 
       },
       createAuthority() {
@@ -117,13 +108,9 @@
           if (data == null || data.trim().length == 0)
             return
           this.$q.loading.show()
-          this.$uim.ax.post("api/client/authority", qs.stringify({name: data, description: data}))
-            .then(res => {
-              this.load();
-            })
-            .finally(() => {
-              this.$q.loading.hide();
-            })
+          this.$uim.client.createAuthority(data, data)
+            .then(res => this.load())
+            .finally(() => this.$q.loading.hide())
         })
       },
       deleteAuthority(authority) {
@@ -139,11 +126,9 @@
           cancel: {label: "取消", color: "primary", flat: true}
         }).onOk(() => {
           this.$q.loading.show()
-          this.$uim.ax.delete("api/client/authority/" + authority.id).then(res => {
-            this.load()
-          }).finally(() => {
-            this.$q.loading.hide()
-          })
+          this.$uim.client.deleteAuthority(authority.id)
+            .then(res => this.load())
+            .finally(() => this.$q.loading.hide())
         })
       }
     }, mounted() {
