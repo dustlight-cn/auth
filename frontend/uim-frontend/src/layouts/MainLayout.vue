@@ -15,6 +15,7 @@
         />
         <q-toolbar-title>账号</q-toolbar-title>
         <q-space/>
+        <SearchBox class="q-mr-sm" :hasAuthorities="hasAuthorities"/>
         <!-- 其他菜单 -->
         <q-btn flat round dense icon="more_vert">
           <q-menu>
