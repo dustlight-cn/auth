@@ -11,7 +11,7 @@
           <q-item-label overline>空空如也</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item clickable v-ripple v-for="role in roles">
+      <q-item clickable v-ripple v-for="role in roles" :key="role.id">
         <q-item-section>
           <div>
             <q-item-label v-if="roleName() == role.name" caption>{{role.name}}</q-item-label>
@@ -88,7 +88,7 @@
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-item dense v-for="authority in selectedRoleAuthorities">
+            <q-item dense v-for="authority in selectedRoleAuthorities" :key="authority.id">
               <q-item-section>
                 <q-item-label>
                   <q-chip v-if="roleName() == selectedRole.name && authority.name=='MANAGE_ROLE'"
@@ -135,7 +135,7 @@
                 </q-item-section>
               </q-item>
               <q-separator/>
-              <q-item v-for="authority in authorities">
+              <q-item v-for="authority in authorities" :key="authority.id">
                 <q-item-section>
                   <q-item-label>{{authority.name}}</q-item-label>
                   <q-item-label caption>{{authority.description}}</q-item-label>

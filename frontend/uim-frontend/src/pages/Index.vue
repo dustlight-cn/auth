@@ -25,7 +25,7 @@
       height="300px"
       class="bg-light-green text-white"
     >
-      <q-carousel-slide v-for="i in data" :name="i.name" class="column no-wrap flex-center">
+      <q-carousel-slide v-for="(i,index) in data" :key="index" :name="i.name" class="column no-wrap flex-center">
         <q-icon :name="i.icon" size="56px"/>
         <div class="q-mt-md text-center" v-html="i.description"/>
         <q-btn v-if="i.to" :to="i.to" icon="link" flat round dense/>
@@ -56,32 +56,32 @@
             name: "account",
             icon: "person",
             description: "管理包括邮箱、昵称、性别等账号相关信息",
-            to: "manage/info"
+            to: "/info"
           }, {
             name: "apps",
             icon: "apps",
             description: "创建OAuth应用，获取AppKey和AppSecret以调用API",
-            to: "manage/clients"
+            to: "/clients"
           }, {
             name: "template",
             icon: "mail",
             description: "轻松管理邮件模板，并且提供可视化编辑功能",
-            to: "manage/templates"
+            to: "/templates"
           }, {
             name: "authorities",
             icon: "security",
             description: "创建、编辑、删除权限列表",
-            to: "manage/authorities"
+            to: "/authorities"
           }, {
             name: "roles",
             icon: "admin_panel_settings",
             description: "添加、删除或管理角色，为角色分配相应权限",
-            to: "manage/roles"
+            to: "/roles"
           }, {
             name: "scopes",
             icon: "app_settings_alt",
             description: "添加、删除或授权作用域（Scope），为其分配相应权限",
-            to: "manage/scopes"
+            to: "/scopes"
           }
         ],
         slide: 'account'

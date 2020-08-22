@@ -11,7 +11,7 @@
           <q-item-label overline>空空如也</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item clickable v-ripple v-for="authority in authorities">
+      <q-item clickable v-ripple v-for="authority in authorities" :key="authority.id">
         <q-item-section>
           <q-item-label v-if="isProtectedAuthority(authority.name)" caption>{{authority.name}}</q-item-label>
           <q-item-label v-else>

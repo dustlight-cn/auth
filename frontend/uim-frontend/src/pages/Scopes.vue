@@ -11,7 +11,7 @@
           <q-item-label overline>空空如也</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item clickable v-ripple v-for="scope in scopes">
+      <q-item clickable v-ripple v-for="scope in scopes" :key="scope.id">
         <q-item-section>
           <div>
             <q-item-label> {{scope.name}}</q-item-label>
@@ -83,7 +83,7 @@
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-item dense v-for="authority in selectedScopeAuthorities">
+            <q-item dense v-for="authority in selectedScopeAuthorities" :key="authority.id">
               <q-item-section>
                 <q-item-label>
                   <q-chip removable
@@ -127,7 +127,7 @@
                 </q-item-section>
               </q-item>
               <q-separator/>
-              <q-item v-for="authority in authorities">
+              <q-item v-for="authority in authorities" :key="authority.id">
                 <q-item-section>
                   <q-item-label>{{authority.name}}</q-item-label>
                   <q-item-label caption>{{authority.description}}</q-item-label>

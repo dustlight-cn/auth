@@ -15,7 +15,7 @@
         <input type="hidden" hidden name="user_oauth_approval" value="true"/>
         <q-list>
           <q-item-label header>应用 "{{clientName}}" 申请以下权限：</q-item-label>
-          <q-item v-for="scope in scopes" tag="label" v-ripple>
+          <q-item v-for="(scope,i) in scopes" :key="i" tag="label" v-ripple>
             <q-item-section side top>
               <q-checkbox v-if="scope && scope.approved" disable :name="'scope.'+ scope.scope"
                           v-model="scope.value"/>

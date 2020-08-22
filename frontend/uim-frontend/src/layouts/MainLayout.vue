@@ -20,7 +20,7 @@
         <q-btn flat round dense icon="more_vert">
           <q-menu>
             <q-list style="min-width: 150px">
-              <q-item v-for="menu in menus.other" :to="menu.link" v-ripple clickable v-close-popup>
+              <q-item v-for="(menu,i) in menus.other" :key="i" :to="menu.link" v-ripple clickable v-close-popup>
                 <q-item-section>
                   <q-item-label>
                     <q-icon v-if="menu.icon" :name="menu.icon" size="22px"/>
@@ -43,7 +43,7 @@
             </div>
             <q-list style="min-width: 150px;">
               <q-separator/>
-              <q-item v-for="menu in menus.avatar" :to="menu.link" v-ripple clickable v-close-popup>
+              <q-item v-for="(menu,i) in menus.avatar" :key="i" :to="menu.link" v-ripple clickable v-close-popup>
                 <q-item-section>
                   <q-item-label>
                     <q-icon v-if="menu.icon" size="22px" :name="menu.icon"/>
@@ -69,7 +69,8 @@
         indicator-color="primary"
         v-if="!leftDrawerOpen"
       >
-        <q-route-tab v-for="menu in menus.main"
+        <q-route-tab v-for="(menu,i) in menus.main"
+                     :key="i"
                      v-if="hasAuthorities(menu.authorities)"
                      :name="menu.label"
                      :icon="menu.icon"
@@ -97,7 +98,8 @@
           indicator-color="primary"
           vertical
         >
-          <q-route-tab v-for="menu in menus.main"
+          <q-route-tab v-for="(menu,i) in menus.main"
+                       :key="i"
                        v-if="hasAuthorities(menu.authorities)"
                        :name="menu.label"
                        :icon="menu.icon"

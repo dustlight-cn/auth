@@ -16,7 +16,7 @@
       <div class="q-mb-sm q-mt-sm text-grey">{{hint}}</div>
       <q-scroll-area v-if="!isEmpty && menus && menus.length > 0" style="height: 150px">
         <q-list separator>
-          <q-item :to="menu.link" v-ripple clickable v-for="menu in this.menus">
+          <q-item :to="menu.link" v-ripple clickable v-for="(menu,i) in this.menus" :key="i">
             <q-item-section>
               <q-item-label>
                 <q-icon v-if="menu.icon" :name="menu.icon" size="28px"/>
