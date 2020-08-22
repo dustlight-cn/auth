@@ -55,7 +55,7 @@
       onSubmit() {
         this.$q.loading.show()
         this.$uim.user.login(this.account, this.password)
-          .then(res => location.href = this.$route.query.redirect_uri ? this.$route.query.redirect_uri : ocation.href = '/')
+          .then(res => location.href = this.$route.query.redirect_uri ? this.$route.query.redirect_uri : location.href = '.')
           .finally(() => this.$q.loading.hide())
       }
     }

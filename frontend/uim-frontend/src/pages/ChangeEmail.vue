@@ -112,7 +112,7 @@
             if (this.$route.query.redirect_uri)
               location.href = this.$route.query.redirect_uri
             else
-              location.href = '..'
+              location.href = './info'
           })
           .finally(() => this.$q.loading.hide())
       }
