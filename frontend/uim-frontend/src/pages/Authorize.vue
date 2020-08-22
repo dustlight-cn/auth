@@ -44,8 +44,6 @@
 </template>
 
 <script>
-  import qs from 'qs'
-
   export default {
     name: 'Authorize',
     data() {
@@ -53,7 +51,14 @@
         loading: true,
         clientName: this.$route.query.client_id || "Unknown",
         clientDescription: "",
-        scopes: []
+        scopes: [],
+        query: {
+          response_type: this.$route.query.response_type,
+          client_id: this.$route.query.client_id,
+          redirect_uri: this.$route.query.redirect_uri,
+          scope: this.$route.query.scope,
+          state: this.$route.query.state
+        }
       }
     },
     methods: {
@@ -65,26 +70,13 @@
           data['scope.' + scope.scope] = scope.value;
         })
         this.$q.loading.show()
-        this.$uim.ax.post('/oauth/authorize?' + qs.stringify(this.$route.query), qs.stringify(data))
-          .then(res => {
-
-            location.href = res;
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.authorize(this.query.response_type, this.query.client_id, this.query.redirect_uri, this.query.scope, this.query.state, data)
+          .then(res => location.href = res)
+          .finally(() => this.$q.loading.hide())
       }
     },
     mounted() {
-      let data = {
-        response_type: this.$route.query.response_type,
-        client_id: this.$route.query.client_id,
-        redirect_uri: this.$route.query.redirect_uri,
-        scope: this.$route.query.scope,
-        state: this.$route.query.state
-      }
-      this.$uim.ax.get('/oauth/authorize?' + qs.stringify(data))
+      this.$uim.preAuthorize(this.query.response_type, this.query.client_id, this.query.redirect_uri, this.query.scope, this.query.state)
         .then(res => {
           this.clientName = res.clientName;
           this.clientDescription = res.description;
@@ -97,9 +89,8 @@
                 value: true
               })
           }
-        }).catch(e => {
-        console.error(e);
-      }).finally(() => this.loading = false)
+        })
+        .finally(() => this.loading = false)
     }
   }
 </script>

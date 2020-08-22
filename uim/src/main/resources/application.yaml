@@ -46,6 +46,7 @@ dustlight:
       - /api/user/exists/**
       - /api/user/login
       - /api/user/register
+      - /api/user/reset/email/password
       - /oauth/check_token
       - /oauth/token
     resource-paths:

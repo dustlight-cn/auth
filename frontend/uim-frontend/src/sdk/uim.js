@@ -2,6 +2,7 @@ import config from "./config"
 import axios, {AxiosInstance} from 'axios'
 import qs from "qs";
 import de from "quasar/lang/de";
+import da from "quasar/lang/da";
 
 /**
  * API异常
@@ -55,8 +56,20 @@ class UserApi {
     return this.ax.post(config.api.user.sendCode.email.register, qs.stringify({email: email}))
   }
 
+  sendEmailResetPasswordCode(email) {
+    return this.ax.post(config.api.user.sendCode.email.resetPassword, qs.stringify({email: email}))
+  }
+
   verifyEmailCode(email, code) {
     return this.ax.post(config.api.user.verify.email.register, qs.stringify({email: email, code: code}))
+  }
+
+  verifyResetPasswordEmailCode(email, code) {
+    return this.ax.post(config.api.user.verify.email.resetPassword, qs.stringify({email: email, code: code}))
+  }
+
+  resetPasswordByEmail(email, password) {
+    return this.ax.post(config.api.user.resetPasswordByEmail, qs.stringify({email: email, password: password}))
   }
 
   getCurrentUserDetails() {
@@ -86,6 +99,10 @@ class UserApi {
 
   updateNickname(nickname) {
     return this.ax.post(config.api.user.resetNickname, qs.stringify({nickname: nickname}))
+  }
+
+  updateEmail(email) {
+    return this.ax.post(config.api.user.changeEmail, qs.stringify({email: email}))
   }
 
   applyForDeveloper() {
@@ -190,6 +207,10 @@ class ClientApi {
   }
 
 
+  createAuthority(name, description) {
+    return this.ax.post(config.api.client.createAuthority, qs.stringify({name: name, description: description}))
+  }
+
   updateAuthority(id, name, description) {
     return this.ax.post(config.api.client.updateAuthority + encodeURIComponent(id), qs.stringify({
       name: name,
@@ -197,12 +218,68 @@ class ClientApi {
     }))
   }
 
-  createAuthority(name, description) {
-    return this.ax.post(config.api.client.createAuthority, qs.stringify({name: name, description: description}))
-  }
-
   deleteAuthority(id) {
     return this.ax.delete(config.api.client.deleteAuthority + encodeURIComponent(id))
+  }
+
+  createRole(name, description) {
+    return this.ax.post(config.api.client.createRole, qs.stringify({name: name, description: description}))
+  }
+
+  updateRole(id, name, description) {
+    return this.ax.post(config.api.client.updateRole + encodeURIComponent(id), qs.stringify({
+      name: name,
+      description: description
+    }))
+  }
+
+  deleteRole(id) {
+    return this.ax.delete(config.api.client.deleteRole + encodeURIComponent(id))
+  }
+
+  getRoleAuthorities(roleId) {
+    return this.ax.get(config.api.client.getRoleAuthorities + encodeURIComponent(roleId))
+  }
+
+  addRoleAuthority(roleId, authorityId) {
+    return this.ax.post(config.api.client.addRoleAuthority, qs.stringify({roleId: roleId, authorityId: authorityId}))
+  }
+
+  deleteRoleAuthority(roleId, authorityId) {
+    return this.ax.delete(config.api.client.deleteRoleAuthority + "?" + qs.stringify({
+      roleId: roleId,
+      authorityId: authorityId
+    }))
+  }
+
+  createScope(name, description) {
+    return this.ax.post(config.api.client.createScope, qs.stringify({name: name, description: description}))
+  }
+
+  updateScope(id, name, description) {
+    return this.ax.post(config.api.client.updateScope + encodeURIComponent(id), qs.stringify({
+      name: name,
+      description: description
+    }))
+  }
+
+  deleteScope(id) {
+    return this.ax.delete(config.api.client.deleteScope + encodeURIComponent(id))
+  }
+
+  getScopeAuthorities(scopeId) {
+    return this.ax.get(config.api.client.getScopeAuthorities + encodeURIComponent(scopeId))
+  }
+
+  addScopeAuthority(scopeId, authorityId) {
+    return this.ax.post(config.api.client.addScopeAuthority, qs.stringify({scopeId: scopeId, authorityId: authorityId}))
+  }
+
+  deleteScopeAuthority(scopeId, authorityId) {
+    return this.ax.delete(config.api.client.deleteScopeAuthority + "?" + qs.stringify({
+      scopeId: scopeId,
+      authorityId: authorityId
+    }))
   }
 }
 
@@ -248,6 +325,28 @@ class Uim {
     })
     this.user = new UserApi(this.ax)
     this.client = new ClientApi(this.ax)
+  }
+
+  preAuthorize(response_type, client_id, redirect_uri, scope, state) {
+    let data = {
+      response_type: response_type,
+      client_id: client_id,
+      redirect_uri: redirect_uri,
+      scope: scope,
+      state: state
+    }
+    return this.ax.get(config.api.oauth.authorize + "?" + qs.stringify(data))
+  }
+
+  authorize(response_type, client_id, redirect_uri, scope, state, data) {
+    if (data == null)
+      data = {}
+    data.response_type = response_type
+    data.client_id = client_id
+    data.redirect_uri = redirect_uri
+    data.scope = scope
+    data.state = state
+    return this.ax.post(config.api.oauth.authorize, qs.stringify(data))
   }
 }
 

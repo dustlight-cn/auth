@@ -1,8 +1,6 @@
 <template>
-  <div
-    style="margin:0 auto;max-width: 800px"
-    class="q-pa-md">
-    <h4>密码重置</h4>
+  <q-page style="margin:0 auto;max-width: 800px">
+    <div class="q-ma-lg text-h4">密码重置</div>
     <q-stepper
       v-model="step"
       ref="stepper"
@@ -96,12 +94,10 @@
       </q-step>
 
     </q-stepper>
-  </div>
+  </q-page>
 </template>
 
 <script>
-  import qs from 'qs'
-
   export default {
     name: 'ResetPassword',
     data() {
@@ -116,47 +112,31 @@
     },
     methods: {
       sendEmailCode() {
-        let data = {email: this.email}
         this.$q.loading.show()
-        this.$uim.ax.post("api/user/code/email/resetPwd", qs.stringify(data))
-          .then(res => {
-            this.step = 2;
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.user.sendEmailResetPasswordCode(this.email)
+          .then(res => this.step = 2)
+          .finally(() => this.$q.loading.hide())
       },
       verifyEmail() {
-        let data = {email: this.email, code: this.code}
         this.$q.loading.show()
-        this.$uim.ax.post("api/user/verify/email/resetPwd", qs.stringify(data))
-          .then(res => {
-            this.step = 3;
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.user.verifyResetPasswordEmailCode(this.email, this.code)
+          .then(res => this.step = 3)
+          .finally(() => this.$q.loading.hide())
       },
       resetPwd() {
         if (this.rePassword != this.password) {
           console.error("password error");
           return;
         }
-        let data = {email: this.email, password: this.password}
         this.$q.loading.show()
-        this.$uim.ax.post("api/user/reset/email/password", qs.stringify(data))
+        this.$uim.user.resetPasswordByEmail(this.email, this.password)
           .then(res => {
             if (this.$route.query.redirect_uri)
               location.href = this.$route.query.redirect_uri
             else
-              location.href = '/Login'
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+              location.href = 'login'
+          })
+          .finally(() => this.$q.loading.hide())
       }
     }
   }

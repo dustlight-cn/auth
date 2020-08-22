@@ -153,7 +153,6 @@
       </q-dialog>
     </q-dialog>
 
-
     <q-inner-loading :showing="loading">
       <q-spinner-gears size="50px" color="primary"/>
     </q-inner-loading>
@@ -161,8 +160,6 @@
 </template>
 
 <script>
-  import qs from 'qs'
-
   export default {
     name: "Scopes",
     inject: ["hasAuthority", "roleName"],
@@ -184,28 +181,20 @@
         if (this.loading)
           return
         this.loading = true
-        this.$uim.ax.get("api/client/scopes")
-          .then((res) => {
-            this.scopes = res
-          })
-          .finally(() => {
-            this.loading = false
-          })
+        this.$uim.client.getAllScopes()
+          .then(res => this.scopes = res)
+          .finally(() => this.loading = false)
       },
       updateScope(val, initVal, scope, flag) {
         this.$q.loading.show()
-        this.$uim.ax.post("api/client/scope/" + scope.id, qs.stringify({
-          name: scope.name,
-          description: scope.description
-        })).catch(e => {
-          if (flag)
-            scope.name = initVal
-          else
-            scope.description = initVal
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
-
+        this.$uim.client.updateScope(scope.id, scope.name, scope.description)
+          .catch(e => {
+            if (flag)
+              scope.name = initVal
+            else
+              scope.description = initVal
+          })
+          .finally(() => this.$q.loading.hide())
       },
       createScope() {
         this.$q.dialog({
@@ -222,13 +211,9 @@
           if (data == null || data.trim().length == 0)
             return
           this.$q.loading.show()
-          this.$uim.ax.post("api/client/scope", qs.stringify({name: data, description: data}))
-            .then(res => {
-              this.load();
-            })
-            .finally(() => {
-              this.$q.loading.hide();
-            })
+          this.$uim.client.createScope(data, data)
+            .then(res => this.load())
+            .finally(() => this.$q.loading.hide())
         })
       },
       deleteScope(scope) {
@@ -255,30 +240,20 @@
         this.selectedScope = scope
         this.editting = true
         this.loadingScopeAuthorities = true
-        this.$uim.ax.get("api/client/authorities/scope/" + scope.id)
-          .then(res => {
-            this.selectedScopeAuthorities = res
-          }).finally(() => {
-          this.loadingScopeAuthorities = false
-        })
+        this.$uim.client.getScopeAuthorities(scope.id)
+          .then(res => this.selectedScopeAuthorities = res)
+          .finally(() => this.loadingScopeAuthorities = false)
       },
       removeAuthority(authority, scope) {
         this.$q.loading.show()
-        let data = {
-          scopeId: scope.id,
-          authorityId: authority.id
-        }
-        this.$uim.ax.delete("api/client/scope_authority?" + qs.stringify(data))
-          .then((res) => {
-            this.editScope(scope)
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.client.deleteScopeAuthority(scope.id, authority.id)
+          .then((res) => this.editScope(scope))
+          .finally(() => this.$q.loading.hide())
       },
       selectAuthority() {
         this.loadingAuthorities = true
         this.selectingAuthority = true
-        this.$uim.ax.get("api/client/authorities")
+        this.$uim.client.getAllAuthorities()
           .then((res) => {
             this.authorities = res
             let arr = []
@@ -291,29 +266,24 @@
               else
                 a.flag = false
             })
-          }).finally(() => {
-          this.loadingAuthorities = false
-        })
-      }, addAuthority(authority, scope) {
+          })
+          .finally(() => this.loadingAuthorities = false)
+      },
+      addAuthority(authority, scope) {
         this.$q.loading.show()
         let data = {
           scopeId: scope.id,
           authorityId: authority.id
         }
-        this.$uim.ax.post("api/client/scope_authority?" + qs.stringify(data))
+        this.$uim.client.addScopeAuthority(scope.id, authority.id)
           .then(res => {
             authority.flag = true
             this.selectedScopeAuthorities.push(authority)
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+          })
+          .finally(() => this.$q.loading.hide())
       }
     }, mounted() {
       this.load()
     }
   }
 </script>
-
-<style scoped>
-
-</style>

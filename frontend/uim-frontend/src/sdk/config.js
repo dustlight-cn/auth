@@ -1,5 +1,8 @@
 const config = {
   api: {
+    oauth: {
+      authorize: 'oauth/authorize'
+    },
     user: {
       sendCode: {
         email: {
@@ -57,9 +60,23 @@ const config = {
       updateTemplateText: 'api/template/text/',
       deleteTemplate: 'api/template/delete',
 
-      updateAuthority: 'api/client/authority/',
       createAuthority: 'api/client/authority',
-      deleteAuthority:'api/client/authority/'
+      updateAuthority: 'api/client/authority/',
+      deleteAuthority: 'api/client/authority/',
+
+      createRole: 'api/client/role',
+      updateRole: 'api/client/role/',
+      deleteRole: 'api/client/role/',
+      getRoleAuthorities: 'api/client/authorities/role/',
+      addRoleAuthority: 'api/client/role_authority',
+      deleteRoleAuthority: 'api/client/role_authority',
+
+      createScope: 'api/client/scope',
+      updateScope: 'api/client/scope/',
+      deleteScope: 'api/client/scope/',
+      getScopeAuthorities: 'api/client/authorities/scope/',
+      addScopeAuthority: 'api/client/scope_authority',
+      deleteScopeAuthority: 'api/client/scope_authority'
     }
   }
 }

@@ -149,6 +149,7 @@
               </q-item>
             </q-list>
           </q-card-section>
+
           <q-inner-loading :showing="loadingAuthorities">
             <q-spinner-gears size="50px" color="primary"/>
           </q-inner-loading>
@@ -161,7 +162,6 @@
       </q-dialog>
     </q-dialog>
 
-
     <q-inner-loading :showing="loading">
       <q-spinner-gears size="50px" color="primary"/>
     </q-inner-loading>
@@ -169,8 +169,6 @@
 </template>
 
 <script>
-  import qs from 'qs'
-
   export default {
     name: "Roles",
     inject: ["hasAuthority", "roleName"],
@@ -192,27 +190,20 @@
         if (this.loading)
           return
         this.loading = true
-        this.$uim.ax.get("api/client/roles")
-          .then((res) => {
-            this.roles = res
-          })
-          .finally(() => {
-            this.loading = false
-          })
+        this.$uim.client.getAllRoles()
+          .then(res => this.roles = res)
+          .finally(() => this.loading = false)
       },
       updateRole(val, initVal, role, flag) {
         this.$q.loading.show()
-        this.$uim.ax.post("api/client/role/" + role.id, qs.stringify({
-          name: role.name,
-          description: role.description
-        })).catch(e => {
-          if (flag)
-            role.name = initVal
-          else
-            role.description = initVal
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.client.updateRole(role.id, role.name, role.description)
+          .catch(e => {
+            if (flag)
+              role.name = initVal
+            else
+              role.description = initVal
+          })
+          .finally(() => this.$q.loading.hide())
 
       },
       createRole() {
@@ -230,13 +221,9 @@
           if (data == null || data.trim().length == 0)
             return
           this.$q.loading.show()
-          this.$uim.ax.post("api/client/role", qs.stringify({name: data, description: data}))
-            .then(res => {
-              this.load();
-            })
-            .finally(() => {
-              this.$q.loading.hide();
-            })
+          this.$uim.client.createRole(data, data)
+            .then(res => this.load())
+            .finally(() => this.$q.loading.hide())
         })
       },
       deleteRole(role) {
@@ -252,41 +239,29 @@
           cancel: {label: "取消", color: "primary", flat: true}
         }).onOk(() => {
           this.$q.loading.show()
-          this.$uim.ax.delete("api/client/role/" + role.id).then(res => {
-            this.load()
-          }).finally(() => {
-            this.$q.loading.hide()
-          })
+          this.$uim.client.deleteRole(role.id)
+            .then(res => this.load())
+            .finally(() => this.$q.loading.hide())
         })
       },
       editRole(role) {
         this.selectedRole = role
         this.editting = true
         this.loadingRoleAuthorities = true
-        this.$uim.ax.get("api/client/authorities/role/" + role.id)
-          .then(res => {
-            this.selectedRoleAuthorities = res
-          }).finally(() => {
-          this.loadingRoleAuthorities = false
-        })
+        this.$uim.client.getRoleAuthorities(role.id)
+          .then(res => this.selectedRoleAuthorities = res)
+          .finally(() => this.loadingRoleAuthorities = false)
       },
       removeAuthority(authority, role) {
         this.$q.loading.show()
-        let data = {
-          roleId: role.id,
-          authorityId: authority.id
-        }
-        this.$uim.ax.delete("api/client/role_authority?" + qs.stringify(data))
-          .then((res) => {
-            this.editRole(role)
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.client.deleteRoleAuthority(role.id, authority.id)
+          .then(res => this.editRole(role))
+          .finally(() => this.$q.loading.hide())
       },
       selectAuthority() {
         this.loadingAuthorities = true
         this.selectingAuthority = true
-        this.$uim.ax.get("api/client/authorities")
+        this.$uim.client.getAllAuthorities()
           .then((res) => {
             this.authorities = res
             let arr = []
@@ -299,22 +274,17 @@
               else
                 a.flag = false
             })
-          }).finally(() => {
-          this.loadingAuthorities = false
-        })
-      }, addAuthority(authority, role) {
+          })
+          .finally(() => this.loadingAuthorities = false)
+      },
+      addAuthority(authority, role) {
         this.$q.loading.show()
-        let data = {
-          roleId: role.id,
-          authorityId: authority.id
-        }
-        this.$uim.ax.post("api/client/role_authority?" + qs.stringify(data))
+        this.$uim.client.addRoleAuthority(role.id, authority.id)
           .then(res => {
             authority.flag = true
             this.selectedRoleAuthorities.push(authority)
-          }).finally(() => {
-          this.$q.loading.hide()
-        })
+          })
+          .finally(() => this.$q.loading.hide())
       }
     }, mounted() {
       this.load()

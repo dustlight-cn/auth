@@ -1,8 +1,5 @@
 <template>
-  <div
-    style="margin:0 auto;max-width: 800px"
-    class="q-pa-md">
-    <h4>更换邮箱</h4>
+  <q-page style="margin:0 auto;max-width: 800px">
     <q-stepper
       v-model="step"
       ref="stepper"
@@ -79,12 +76,10 @@
       </q-step>
 
     </q-stepper>
-  </div>
+  </q-page>
 </template>
 
 <script>
-  import qs from 'qs'
-
   export default {
     name: 'ChangeEmail',
     data() {
@@ -99,47 +94,27 @@
     },
     methods: {
       sendEmailCode() {
-        // this.step = 2;
-        // return;
-        let data = {email: this.email}
         this.$q.loading.show()
-        this.$uim.ax.post("api/user/code/email/register", qs.stringify(data))
-          .then(res => {
-            this.step = 2;
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.user.sendEmailRegisterCode(this.email)
+          .then(res => this.step = 2)
+          .finally(() => this.$q.loading.hide())
       },
       verifyEmail() {
-        // this.step = 3;
-        // return;
-        let data = {email: this.email, code: this.code}
         this.$q.loading.show()
-        this.$uim.ax.post("api/user/verify/email/register", qs.stringify(data))
-          .then(res => {
-            this.step = 3;
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+        this.$uim.user.verifyEmailCode(this.email, this.code)
+          .then(res => this.step = 3)
+          .finally(() => this.$q.loading.hide())
       },
       changeEmail() {
-        let data = {email: this.email}
         this.$q.loading.show()
-        this.$uim.ax.post("api/user/reset/email", qs.stringify(data))
+        this.$uim.user.updateEmail(this.email)
           .then(res => {
             if (this.$route.query.redirect_uri)
               location.href = this.$route.query.redirect_uri
             else
-              location.href = '/manage/info'
-          }).catch(e => {
-          console.error(e);
-        }).finally(() => {
-          this.$q.loading.hide()
-        })
+              location.href = '..'
+          })
+          .finally(() => this.$q.loading.hide())
       }
     }
   }
