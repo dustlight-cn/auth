@@ -32,8 +32,8 @@ public interface UserDetailsMapper {
             @Result(property = "accountExpired", column = "account_expired"),
             @Result(property = "credentialsExpired", column = "credentials_expired"),
             @Result(property = "accountLocked", column = "account_locked"),
-            @Result(property = "roleDetails", column = "role", one = @One(select = "cn.dustlight.uim.services.RoleDetailsMapper.getRoleNameAndDescription")),
-            @Result(property = "authorities", column = "role", many = @Many(select = "cn.dustlight.uim.services.AuthorityDetailsMapper.getAuthorityByRoleId"))
+            @Result(property = "roleDetails", column = "role", one = @One(select = "cn.dustlight.oauth2.uim.services.RoleDetailsMapper.getRoleNameAndDescription")),
+            @Result(property = "authorities", column = "role", many = @Many(select = "cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper.getAuthorityByRoleId"))
     })
     UserDetails loadUser(String username);
 
