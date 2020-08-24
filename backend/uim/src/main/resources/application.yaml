@@ -36,6 +36,12 @@ mybatis-plus:
   configuration:
     cache-enabled: true
     local-cache-scope: session
+# SpringDoc
+springdoc:
+  api-docs:
+    path: /api/doc/v3
+  swagger-ui:
+    path: /api/doc/swaager-ui
 # 应用配置
 dustlight:
   uim:
@@ -47,6 +53,7 @@ dustlight:
       - /api/user/login
       - /api/user/register
       - /api/user/reset/email/password
+      - /api/doc/**
       - /oauth/check_token
       - /oauth/token
     resource-paths:
