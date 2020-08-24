@@ -1,0 +1,20 @@
+security:
+  oauth2:
+    sso:
+      login-path: /login
+    client:
+      client-secret: 5e2808cf48ea4f1cdf360e2b19954c999073767c
+      client-id: VTWQABLXBFXNFJX2KYBQAAAA
+      user-authorization-uri: https://account.dustlight.cn/authorize
+      access-token-uri: https://account.dustlight.cn/oauth/token
+    resource:
+      token-info-uri: https://account.dustlight.cn/oauth/check_token
+
+spring:
+  mvc:
+    static-path-pattern: /static/**
+    view:
+      prefix: classpath:/templates/
+      suffix: .html
+  thymeleaf:
+    cache: false
