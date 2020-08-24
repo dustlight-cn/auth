@@ -66,7 +66,9 @@
         回调地址
         <q-btn flat round dense icon="edit">
           <q-popup-edit
+            title="回调地址"
             @save="updateRedirectUri"
+            persistent
             buttons
             v-model="client.registeredRedirectUri"
             label-set="保存"
@@ -75,8 +77,8 @@
             <q-input
               v-for="(uri,i) in client.registeredRedirectUri"
               :key="i"
-              rounded bottom-slots dense
-              v-model="client.registeredRedirectUri[i]" :label="'URL-' + (i + 1)" hint="" counter>
+               dense
+              v-model="client.registeredRedirectUri[i]" :label="'URL ' + (i + 1)" hint="" counter>
               <template v-slot:append>
                 <q-btn round dense
                        @click="()=>client.registeredRedirectUri.splice(i,1)"
