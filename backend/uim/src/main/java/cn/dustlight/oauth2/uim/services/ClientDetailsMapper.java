@@ -47,6 +47,9 @@ public interface ClientDetailsMapper {
     @ResultMap("ClientDetails")
     ClientDetails loadClientDescription(String clientId);
 
+    @Select("SELECT COUNT(uid) FROM oauth_client_details WHERE client_id=#{clientId} AND uid=#{uid}")
+    boolean isClientOwner(String clientId, Long uid);
+
     @Select("SELECT client_id,uid,client_name,redirect_uri,access_token_validity,refresh_token_validity,additional_information,enabled,description,createdAt,updatedAt FROM oauth_client_details WHERE uid=#{uid}")
     @ResultMap("ClientDetails")
     List<ClientDetails> loadClientsByUserId(Long uid);

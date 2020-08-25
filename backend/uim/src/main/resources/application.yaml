@@ -53,7 +53,10 @@ dustlight:
       - /api/user/login
       - /api/user/register
       - /api/user/reset/email/password
+      - /api/user/avatar/**
+      - /api/client/app_image/**
       - /api/doc/**
+      - /api/pub/**
       - /oauth/check_token
       - /oauth/token
     resource-paths:

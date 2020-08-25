@@ -1,20 +1,25 @@
 package cn.dustlight.oauth2.uim.controllers;
 
+import cn.dustlight.oauth2.uim.configurations.UimProperties;
 import cn.dustlight.oauth2.uim.models.*;
 import cn.dustlight.oauth2.uim.services.*;
 import cn.dustlight.oauth2.uim.RestfulConstants;
 import cn.dustlight.oauth2.uim.RestfulResult;
 import cn.dustlight.oauth2.uim.utils.Snowflake;
+import cn.dustlight.storage.core.Permission;
+import cn.dustlight.storage.tencent.cos.TencentCloudObjectStorage;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -48,7 +53,10 @@ public class ClientController implements IClientController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AuthorizationEndpoint authorizationEndpoint;
+    private TencentCloudObjectStorage storage;
+
+    @Autowired
+    private UimProperties properties;
 
     private final static Base32 base32 = new Base32();
 
@@ -120,6 +128,30 @@ public class ClientController implements IClientController {
                 clientMapper.updateClientRedirectUri(appKey, redirectUri) :
                 clientMapper.updateClientRedirectUriWithUid(appKey, redirectUri, ((IUserDetails) authentication.getPrincipal()).getUid());
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public RestfulResult uploadClientImage(String appKey, Authentication authentication) throws IOException {
+        boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY")
+                || clientMapper.isClientOwner(appKey, ((IUserDetails) authentication.getPrincipal()).getUid());
+        if (!flag)
+            throw new AccessDeniedException("access denied.");
+        String url = storage.generatePutUrl(properties.getStorage().getStoragePath() + "app/img/logo/" + appKey,
+                Permission.READABLE, properties.getStorage().getDefaultExpiration());
+        return RestfulResult.success(url);
+    }
+
+    @Override
+    public void getClientImage(String appKey, Integer size, HttpServletResponse response, HttpServletRequest request) throws IOException {
+        String key = properties.getStorage().getStoragePath() + "app/img/logo/" + appKey;
+        if (!storage.isExist(key)) {
+            response.sendError(404); // 头像不存在
+            return;
+        }
+        String urlString = storage.generateGetUrl(key, 1000L * 60L * 60 * 24L);
+        if (size != null)
+            urlString += "&imageMogr2/thumbnail/" + size + "x" + size;
+        response.sendRedirect(urlString);
     }
 
     @Override

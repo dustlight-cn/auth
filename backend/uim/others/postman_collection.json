@@ -1305,6 +1305,56 @@
 					"response": []
 				},
 				{
+					"name": "upload_app_image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app_image/VTWQABLXBFXJOJ6D76BQAAAA",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app_image",
+								"VTWQABLXBFXJOJ6D76BQAAAA"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_app_image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/client/app_image/VTWQABLXBFXJOJ6D76BQAAAA?size=512",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"client",
+								"app_image",
+								"VTWQABLXBFXJOJ6D76BQAAAA"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "512"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "update_app_redirect_uri",
 					"request": {
 						"method": "POST",

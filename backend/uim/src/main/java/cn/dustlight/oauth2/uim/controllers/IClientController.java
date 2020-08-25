@@ -6,6 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -40,6 +43,13 @@ public interface IClientController {
     @PostMapping("/app_redirect_uri/{appKey}")
     @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
     RestfulResult updateClientRedirectUri(@PathVariable String appKey, String redirectUri, Authentication authentication);
+
+    @PostMapping("/app_image/{appKey}")
+    @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
+    RestfulResult uploadClientImage(@PathVariable String appKey, Authentication authentication) throws IOException;
+
+    @GetMapping("/app_image/{appKey}")
+    void getClientImage(@PathVariable String appKey, @RequestParam(required = false) Integer size, HttpServletResponse response, HttpServletRequest request) throws IOException;
 
     @PostMapping("/app_scopes/{appKey}")
     @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")
