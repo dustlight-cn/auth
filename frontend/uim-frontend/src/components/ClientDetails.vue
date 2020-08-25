@@ -19,7 +19,17 @@
         </div>
       </div>
     </q-card-section>
-
+    <q-card-section class="q-pt-none">
+      <div class="text-subtitle1">
+        图标
+        <q-btn dense @click="uploadImage" flat rounded icon="edit"/>
+      </div>
+      <div>
+        <q-btn @click="uploadImage" flat>
+          <ClientImage :client="client" size="128"/>
+        </q-btn>
+      </div>
+    </q-card-section>
     <!-- 应用描述 -->
     <q-card-section class="q-pt-none">
       <div class="text-subtitle1">
@@ -77,7 +87,7 @@
             <q-input
               v-for="(uri,i) in client.registeredRedirectUri"
               :key="i"
-               dense
+              dense
               v-model="client.registeredRedirectUri[i]" :label="'URL ' + (i + 1)" hint="" counter>
               <template v-slot:append>
                 <q-btn round dense
@@ -298,11 +308,29 @@
              label="删除"/>
       <q-btn v-close-popup flat color="primary" label="返回"/>
     </q-card-actions>
+    <q-dialog v-model="uploadImageFlag">
+      <q-uploader
+        :url=uploadImageURL
+        label="上传应用图标"
+        method="PUT"
+        accept=".jpg, image/*"
+        style="max-width: 300px"
+        auto-upload
+        hide-upload-btn
+        send-raw=""
+        @uploaded="uploadImageSuccess"
+      >
+
+      </q-uploader>
+    </q-dialog>
   </q-card>
 </template>
 <script>
+  import ClientImage from "components/ClientImage";
+
   export default {
     name: "ClientDetails",
+    components: {ClientImage},
     props: {
       client: {
         type: Object,
@@ -331,10 +359,24 @@
         loadingScopes: false,
         selectingGrantTypes: false,
         grantTypes: [],
-        loadingGrantTypes: false
+        loadingGrantTypes: false,
+        uploadImageFlag: false,
+        uploadImageURL: ""
       }
     },
     methods: {
+      uploadImage() {
+        this.uploadImageFlag = true
+        this.$uim.client.uploadClientImage(this.client.clientId)
+          .then(res => this.uploadImageURL = res)
+          .catch(e => this.uploadImageFlag = false)
+      },
+      uploadImageSuccess() {
+        let t = new Date().getTime()
+        this.$uim.client.notifyClientImageUpdate(this.client.clientId, t)
+        this.$root.$emit("client_image_update", this.client.clientId, t)
+        this.uploadImageFlag = false
+      },
       resetSecret() {
         this.$q.dialog({
           title: '是否重置',

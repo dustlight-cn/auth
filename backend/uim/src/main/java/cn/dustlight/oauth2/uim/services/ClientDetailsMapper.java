@@ -43,7 +43,8 @@ public interface ClientDetailsMapper {
     })
     ClientDetails loadClientByClientId(String clientId);
 
-    @Select("SELECT client_id,client_name,description FROM oauth_client_details WHERE client_id=#{clientId}")
+    @Select("SELECT client_id,client_name,description,oauth_client_details.createdAt,oauth_client_details.updatedAt,nickname as redirect_uri,username as client_secret " +
+            "FROM oauth_client_details,user_details WHERE client_id=#{clientId} AND oauth_client_details.uid=user_details.uid")
     @ResultMap("ClientDetails")
     ClientDetails loadClientDescription(String clientId);
 

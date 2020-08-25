@@ -48,6 +48,8 @@ const config = {
       updateClientRedirectUri: 'api/client/app_redirect_uri/',
       updateClientName: 'api/client/app_name/',
       updateClientDescription: 'api/client/app_description/',
+      uploadClientImage: 'api/client/app_image/',
+      getClientImage: 'api/client/app_image/',
       addClientScopes: 'api/client/app_scopes/',
       removeClientScopes: 'api/client/app_scopes/',
       addClientGrantTypes: 'api/client/app_grant_types/',

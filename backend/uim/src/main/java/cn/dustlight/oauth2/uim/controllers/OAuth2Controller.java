@@ -66,6 +66,15 @@ public class OAuth2Controller {
             }
             data.put("clientName", details.getClientName());
             data.put("description", details.getDescription());
+            data.put("clientId", details.getClientId());
+            data.put("createdAt", details.getCreatedAt());
+            data.put("updatedAt", details.getUpdatedAt());
+            if (details.getRegisteredRedirectUri() != null && !details.getRegisteredRedirectUri().isEmpty()) {
+                String[] nicknameArr = details.getRegisteredRedirectUri().toArray(new String[0]);
+                if (nicknameArr != null)
+                    data.put("nickname", nicknameArr[0]);
+            }
+            data.put("username", details.getClientSecret());
             data.put("scopes", scopes);
         }
         return RestfulResult.success(data).toModelAndView();

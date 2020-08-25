@@ -122,6 +122,9 @@ class UserApi {
 class ClientApi {
   constructor(axiosInstance) {
     this.ax = axiosInstance
+    this.clientImageUpdateAt = {
+
+    }
   }
 
   getCurrentUserClients() {
@@ -168,6 +171,24 @@ class ClientApi {
 
   updateClientDescription(clientId, description) {
     return this.ax.post(config.api.client.updateClientDescription + encodeURIComponent(clientId), qs.stringify({description: description}))
+  }
+
+  uploadClientImage(clientId) {
+    return this.ax.post(config.api.client.uploadClientImage + encodeURIComponent(clientId))
+  }
+
+  notifyClientImageUpdate(clientId,timestamp) {
+    if (timestamp == null)
+      timestamp = new Date().getTime()
+    this.clientImageUpdateAt[clientId] = timestamp
+  }
+
+  getClientImageUrl(clientId, size, params) {
+    if (params == null)
+      params = {}
+    if (size != null)
+      params.size = size
+    return config.api.client.getClientImage + encodeURIComponent(clientId) + "?" + qs.stringify(params)
   }
 
   addClientScopes(clientId, scopes) {

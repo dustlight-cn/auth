@@ -7,6 +7,9 @@
         </q-item-section>
       </q-item>
       <q-item @click="select(client)" v-for="client in clients" :key="client.clientId" clickable v-ripple>
+        <q-item-section avatar>
+          <ClientImage :client="client" size="50"/>
+        </q-item-section>
         <q-item-section>
           <q-item-label>{{client.clientName}}</q-item-label>
           <q-item-label caption>{{client.description}}</q-item-label>
@@ -36,10 +39,11 @@
 
 <script>
   import ClientDetails from "components/ClientDetails";
+  import ClientImage from "components/ClientImage";
 
   export default {
     name: "Clients",
-    components: {ClientDetails},
+    components: {ClientImage, ClientDetails},
     inject: ["hasAuthority", "user"],
     data() {
       return {
