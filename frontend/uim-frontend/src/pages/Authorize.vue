@@ -86,6 +86,16 @@
               </q-item-label>
             </q-item-section>
           </q-item>
+          <q-item v-if="createdAt">
+            <q-item-section>
+              <q-item-label overline>
+                授权用户
+              </q-item-label>
+              <q-item-label caption>
+                {{UserNumber}}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
         </q-list>
       </div>
 
@@ -121,12 +131,20 @@
         createdAt: null,
         updatedAt: null,
         client: null,
-        currentUser: null
+        currentUser: null,
+        userNumber: 0
       }
     },
     computed: {
       provider() {
         return this.nickname && this.nickname.trim() ? this.nickname : this.username
+      },
+      UserNumber() {
+        if (this.userNumber < 1000)
+          return this.userNumber
+        if (this.userNumber < 1000 * 100)
+          return (this.userNumber / 1000).toFixed(1) + " k"
+        return (this.userNumber / 1000).toFixed(0) + " k"
       }
     },
     methods: {
@@ -173,6 +191,7 @@
           this.nickname = res.nickname
           this.updatedAt = new Date(res.updatedAt)
           this.createdAt = new Date(res.createdAt)
+          this.userNumber = res.userNumber
           if (res.scopes) {
             for (var i in res.scopes)
               this.scopes.push({

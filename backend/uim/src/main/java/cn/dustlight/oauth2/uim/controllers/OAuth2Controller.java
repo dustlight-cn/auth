@@ -5,10 +5,12 @@ import cn.dustlight.oauth2.uim.services.ClientDetailsMapper;
 import cn.dustlight.oauth2.uim.RestfulResult;
 import cn.dustlight.oauth2.uim.models.IScopeDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
@@ -33,6 +35,9 @@ public class OAuth2Controller {
 
     @Autowired
     private ApprovalStore approvalStore;
+
+    @Autowired
+    private TokenStore redisTokenStore;
 
     @RequestMapping(value = {"/oauth/authorize"}, method = RequestMethod.GET)
     public ModelAndView authorize(Map<String, Object> model, @RequestParam Map<String, String> parameters, SessionStatus sessionStatus, Principal principal) {
@@ -69,6 +74,9 @@ public class OAuth2Controller {
             data.put("clientId", details.getClientId());
             data.put("createdAt", details.getCreatedAt());
             data.put("updatedAt", details.getUpdatedAt());
+            Collection<OAuth2AccessToken> tokens = redisTokenStore.findTokensByClientId(details.getClientId());
+            if (tokens != null)
+                data.put("userNumber", tokens.size());
             if (details.getRegisteredRedirectUri() != null && !details.getRegisteredRedirectUri().isEmpty()) {
                 String[] nicknameArr = details.getRegisteredRedirectUri().toArray(new String[0]);
                 if (nicknameArr != null)
