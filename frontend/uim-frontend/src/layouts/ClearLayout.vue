@@ -1,13 +1,17 @@
 <template>
-  <q-layout view="lHh Lpr lFf" class="bg-white text-black">
+  <q-layout view="hHh Lpr lff" class="bg-white text-black">
     <q-header class="bg-1 text-black shadow-2">
       <q-toolbar>
-        <q-btn to="/" flat round dense icon="home"/>
-        <q-toolbar-title>
-          统一身份管理系统
-        </q-toolbar-title>
-        <!--        <q-btn flat round dense icon="sim_card" class="q-mr-xs"/>-->
-        <!--        <q-btn flat round dense icon="gamepad"/>-->
+        <q-btn
+          flat
+          dense
+          round
+          :icon="'ion-logo-google'"
+          :color="'blue'"
+          aria-label="Home Page"
+          to="/"
+        />
+        <q-toolbar-title>光尘</q-toolbar-title>
       </q-toolbar>
     </q-header>
     <q-page-container>

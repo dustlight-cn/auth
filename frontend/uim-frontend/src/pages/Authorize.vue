@@ -10,11 +10,11 @@
         v-show="!loading">
         <div class="flex flex-center">
           <div>
-            <ClientImage :client="client" size="128"/>
-            <div class="flex flex-center text-subtitle2">
+            <ClientImage class="flex flex-center" :client="client" size="128"/>
+            <div class="flex flex-center text-h6">
               <div>{{clientName}}</div>
             </div>
-            <div class="flex flex-center text-caption">
+            <div class="flex flex-center text-caption text-grey">
               <div>{{clientDescription}}</div>
             </div>
           </div>
@@ -38,7 +38,8 @@
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-item dense v-for="(scope,i) in scopes" :key="i" tag="label" v-ripple>
+
+            <q-item dense v-for="(scope,i) in scopes" :key="scope.details.id" tag="label" v-ripple>
               <q-item-section>
                 <q-item-label overline>{{scope.details.description}}</q-item-label>
                 <q-item-label v-if="scope.approved" caption>已授权</q-item-label>
@@ -57,7 +58,6 @@
                 <q-btn label="授权" type="submit" color="primary"/>
               </q-item-section>
             </q-item>
-<!--            <div style="min-height: 80px"/>-->
             <div class="q-pb-md text-caption text-grey text-center">
               授权完成后将跳转到
               <div><b>{{query.redirect_uri}}</b></div>
@@ -65,7 +65,7 @@
           </q-list>
         </q-form>
 
-        <q-list class="q-ma-sm q-mt-lg text-grey" bordered>
+        <q-list class="q-ma-sm q-mt-lg" bordered>
           <q-item>
             <q-item-section>
               <q-item-label overline>
