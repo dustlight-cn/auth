@@ -1,6 +1,7 @@
 package cn.dustlight.oauth2.uim.services;
 
 import cn.dustlight.oauth2.uim.models.UserDetails;
+import cn.dustlight.oauth2.uim.models.UserPublicDetails;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,17 @@ public interface UserDetailsMapper {
             "</script>"})
     @ResultMap("UserDetails")
     List<UserDetails> loadUsers(@Param("usernameArray") List<String> usernameArray);
+
+    @Select({"<script>SELECT uid,username,nickname,gender,createdAt FROM user_details WHERE username IN ",
+            "<foreach collection='usernameArray' item='username' open='(' separator=',' close=')'>#{username}</foreach>",
+            "</script>"})
+    @Results(id = "UserPublicDetails", value = {@Result(property = "uid", column = "uid"),
+            @Result(property = "username", column = "username"),
+            @Result(property = "nickname", column = "nickname"),
+            @Result(property = "gender", column = "gender"),
+            @Result(property = "createdAt", column = "createdAt")
+    })
+    List<UserPublicDetails> loadUsersPublic(@Param("usernameArray") List<String> usernameArray);
 
     @Select("SELECT COUNT(*) FROM user_details WHERE email=#{email}")
     boolean isEmailExist(String email);

@@ -54,6 +54,7 @@ dustlight:
       - /api/user/register
       - /api/user/reset/email/password
       - /api/user/avatar/**
+      - /api/user/details
       - /api/client/app_image/**
       - /api/doc/**
       - /api/pub/**

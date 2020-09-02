@@ -1,6 +1,7 @@
 package cn.dustlight.oauth2.uim.controllers;
 
 import cn.dustlight.oauth2.uim.configurations.UimProperties;
+import cn.dustlight.oauth2.uim.models.UserPublicDetails;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.tencent.cos.TencentCloudObjectStorage;
 import cn.dustlight.oauth2.uim.RestfulConstants;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 public class UserController implements IUserController {
@@ -265,8 +267,8 @@ public class UserController implements IUserController {
     }
 
     @Override
-    public RestfulResult<List<UserDetails>> getUsersDetails(List<String> usernameArray) {
-        return RestfulResult.success(userDetailsMapper.loadUsers(usernameArray));
+    public RestfulResult<List<UserPublicDetails>> getUsersDetails(List<String> usernameArray) {
+        return RestfulResult.success(userDetailsMapper.loadUsersPublic(usernameArray));
     }
 
     @Override

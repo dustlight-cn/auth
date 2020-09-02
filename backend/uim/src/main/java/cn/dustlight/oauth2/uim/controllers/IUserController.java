@@ -2,6 +2,7 @@ package cn.dustlight.oauth2.uim.controllers;
 
 import cn.dustlight.oauth2.uim.RestfulResult;
 import cn.dustlight.oauth2.uim.models.UserDetails;
+import cn.dustlight.oauth2.uim.models.UserPublicDetails;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -71,8 +72,7 @@ public interface IUserController {
     RestfulResult<UserDetails> getUserDetails(@PathVariable(required = false) String username);
 
     @PostMapping("/details")
-    @PreAuthorize("hasAuthority('READ_USERINFO_ANY')")
-    RestfulResult<List<UserDetails>> getUsersDetails(@RequestBody List<String> usernameArray);
+    RestfulResult<List<UserPublicDetails>> getUsersDetails(@RequestBody List<String> usernameArray);
 
     @PostMapping("/applyForDeveloper")
     RestfulResult applyForDeveloper(Authentication authentication);
