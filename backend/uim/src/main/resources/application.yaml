@@ -26,16 +26,23 @@ logging:
   level:
     cn:
       dustlight:
-        uim:
-          services:
-            ClientDetailsMapper: debug
-            TemplateManagerMapper: debug
-            UserDetailsMapper: debug
-# Mybatis 缓存
-mybatis-plus:
+        oauth2:
+          uim:
+            services:
+              ClientDetailsMapper: debug
+              TemplateManagerMapper: debug
+              UserDetailsMapper: debug
+              AuthorityDetailsMapper: debug
+              GrantTypeMapper: debug
+              ResourceDetailsMapper: debug
+              RoleDetailsMapper: debug
+              ScopeDetailsMapper: debug
+# Mybatis
+mybatis:
   configuration:
-    cache-enabled: true
-    local-cache-scope: session
+    cache-enabled: false
+    local-cache-scope: statement
+
 # SpringDoc
 springdoc:
   api-docs:
@@ -54,7 +61,7 @@ dustlight:
       - /api/user/register
       - /api/user/reset/email/password
       - /api/user/avatar/**
-      - /api/user/details
+      - /api/user/public_details
       - /api/client/app_image/**
       - /api/doc/**
       - /api/pub/**

@@ -61,11 +61,11 @@
             <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
-        <!-- mybatis-plus -->
+        <!-- mybatis -->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.3.2</version>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.1.3</version>
         </dependency>
 
         <!-- Spring Doc -->

@@ -356,7 +356,7 @@
 					"response": []
 				},
 				{
-					"name": "users_details",
+					"name": "users_public_details",
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -365,7 +365,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\"111111\",\"asd\",\"hansin\"]",
+							"raw": "[\"845612500\",\"hansin1997\",\"hansin\"]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -373,7 +373,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/details",
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/public_details",
 							"protocol": "{{Protocol}}",
 							"host": [
 								"{{Host}}"
@@ -382,7 +382,7 @@
 							"path": [
 								"api",
 								"user",
-								"details"
+								"public_details"
 							]
 						}
 					},
@@ -563,6 +563,28 @@
 									"key": "phone",
 									"value": "123"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_detail Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Protocol}}://{{Host}}:{{Port}}/api/user/details/hansin",
+							"protocol": "{{Protocol}}",
+							"host": [
+								"{{Host}}"
+							],
+							"port": "{{Port}}",
+							"path": [
+								"api",
+								"user",
+								"details",
+								"hansin"
 							]
 						}
 					},

@@ -71,7 +71,7 @@ public interface IUserController {
     @PreAuthorize("hasAuthority('READ_USERINFO_ANY')")
     RestfulResult<UserDetails> getUserDetails(@PathVariable(required = false) String username);
 
-    @PostMapping("/details")
+    @PostMapping("/public_details")
     RestfulResult<List<UserPublicDetails>> getUsersDetails(@RequestBody List<String> usernameArray);
 
     @PostMapping("/applyForDeveloper")
