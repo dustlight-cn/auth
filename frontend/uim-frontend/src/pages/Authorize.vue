@@ -82,7 +82,7 @@
                 创建时间
               </q-item-label>
               <q-item-label caption>
-                {{dateFormat(createdAt,"YYYY-mm-dd")}}
+                {{$util.dateFormat(createdAt,"YYYY-mm-dd")}}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -159,26 +159,6 @@
         this.$uim.authorize(this.query.response_type, this.query.client_id, this.query.redirect_uri, this.query.scope, this.query.state, data)
           .then(res => location.href = res)
           .finally(() => this.$q.loading.hide())
-      },
-      dateFormat(date, fmt) {
-        let ret;
-        const opt = {
-          "Y+": date.getFullYear().toString(),        // 年
-          "m+": (date.getMonth() + 1).toString(),     // 月
-          "d+": date.getDate().toString(),            // 日
-          "H+": date.getHours().toString(),           // 时
-          "M+": date.getMinutes().toString(),         // 分
-          "S+": date.getSeconds().toString()          // 秒
-        };
-        for (let k in opt) {
-          ret = new RegExp("(" + k + ")").exec(fmt);
-          if (ret) {
-            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-          }
-          ;
-        }
-        ;
-        return fmt;
       }
     },
     mounted() {

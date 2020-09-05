@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-sm">
-    <q-card>
+    <q-card class="shadow-0" bordered>
       <q-card-section>
         <div class="text-h6">个人资料</div>
         <div class="text-caption">您的基本信息</div>
@@ -70,7 +70,7 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="q-mt-sm">
+    <q-card class="q-mt-sm shadow-0" bordered>
       <q-card-section>
         <div class="text-h6">联系方式</div>
         <div class="text-caption">您的联系方式</div>
@@ -90,7 +90,7 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="q-mt-sm">
+    <q-card class="q-mt-sm shadow-0" bordered>
       <q-card-section>
         <div class="text-h6">其他</div>
         <div class="text-caption"></div>
@@ -107,6 +107,12 @@
             <q-item-section>
               <q-item-label caption>角色</q-item-label>
               <q-item-label overline>{{user().roleDescription}}</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section>
+              <q-item-label caption>注册时间</q-item-label>
+              <q-item-label overline>{{this.$util.dateFormat(user().createdAt)}}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>

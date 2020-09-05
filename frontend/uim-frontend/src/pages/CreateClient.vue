@@ -1,9 +1,10 @@
 <template>
-  <div class="q-pa-md" style="margin: 0 auto;max-width: 400px">
+  <div class="q-pa-md" style="margin: 0 auto;max-width: 600px">
     <q-form
       class="q-gutter-md"
       @submit="onSubmit"
     >
+
       <q-input
         outlined
         v-model="name"
@@ -35,37 +36,44 @@
         lazy-rules
         :rules="[ val => val && val.length > 0 || '回调地址不能为空']"
       />
-      <q-expansion-item
-        default-opened
-        expand-separator
-        icon="lock"
-        label="授权作用域"
-      >
-        <q-option-group
-          v-model="scopes"
-          :options="scopeOptions"
-          color="primary"
-          type="checkbox"
-        />
-      </q-expansion-item>
+      <q-list>
 
-      <q-expansion-item
-        default-opened
-        expand-separator
-        icon="link"
-        label="授权模式"
-      >
-        <q-option-group
-          v-model="grantTypes"
-          :options="grantTypeOptions"
-          color="primary"
-          type="checkbox"
-        />
-      </q-expansion-item>
-      <div>
-        <q-btn label="创建" type="submit" color="primary"/>
-      </div>
+        <q-expansion-item
+          default-opened
+          expand-separator
+          icon="app_settings_alt"
+          label="授权作用域"
+        >
+          <q-option-group
+            v-model="scopes"
+            :options="scopeOptions"
+            color="primary"
+            type="checkbox"
+          />
+        </q-expansion-item>
 
+        <q-expansion-item
+          default-opened
+          expand-separator
+          icon="link"
+          label="授权模式"
+        >
+          <q-option-group
+            v-model="grantTypes"
+            :options="grantTypeOptions"
+            color="primary"
+            type="checkbox"
+          />
+        </q-expansion-item>
+
+        <q-item class="q-pt-lg">
+          <q-item-section side top>
+            <q-space/>
+            <q-btn label="创建" type="submit" color="primary"/>
+          </q-item-section>
+        </q-item>
+
+      </q-list>
       <q-inner-loading :showing="scopesLoading || grantTypesLoading">
         <q-spinner-gears size="50px" color="primary"/>
       </q-inner-loading>
@@ -154,7 +162,7 @@
             this.scopeOptions = []
             res.forEach(s => {
               this.scopeOptions.push({
-                label: s.name + " (" + s.description + ")",
+                label: s.description + " (" + s.name + ")",
                 value: s.id
               })
             })

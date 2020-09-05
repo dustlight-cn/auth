@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh Lpr lff" class="bg-white text-black">
     <!-- 头部 -->
-    <q-header class="bg-1 text-black shadow-2">
+    <q-header class="bg-1 text-black" reveal bordered>
       <!-- 工具栏 -->
       <q-toolbar>
         <q-btn
