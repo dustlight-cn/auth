@@ -11,7 +11,25 @@ public class TencentCosProperties {
     private String secretKey;
     private String bucket;
     private String region;
+    private String generalApi = null;
+    private String serviceApi = "service.cos.myqcloud.com";
     private HttpProtocol httpProtocol = HttpProtocol.https;
+
+    public String getGeneralApi() {
+        return generalApi;
+    }
+
+    public void setGeneralApi(String generalApi) {
+        this.generalApi = generalApi;
+    }
+
+    public String getServiceApi() {
+        return serviceApi;
+    }
+
+    public void setServiceApi(String serviceApi) {
+        this.serviceApi = serviceApi;
+    }
 
     public HttpProtocol getHttpProtocol() {
         return httpProtocol;
