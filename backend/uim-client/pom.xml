@@ -8,11 +8,11 @@
         <version>2.2.7.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>cn.dustlight.oauth2.template</groupId>
-    <artifactId>client-template</artifactId>
+    <groupId>cn.dustlight.oauth2</groupId>
+    <artifactId>uim-client</artifactId>
     <version>0.0.1</version>
-    <name>Client Service Template</name>
-    <description>OAuth2 client service template</description>
+    <name>Unified Identity Management Client</name>
+    <description>OAuth2 authorization client</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -21,20 +21,25 @@
 
     <dependencies>
         <dependency>
-            <groupId>cn.dustlight.oauth2</groupId>
-            <artifactId>uim-client</artifactId>
-            <version>0.0.1</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security.oauth.boot</groupId>
+            <artifactId>spring-security-oauth2-autoconfigure</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-
-        <!-- Spring Doc -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.4.4</version>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
 
         <dependency>

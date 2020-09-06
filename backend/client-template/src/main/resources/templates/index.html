@@ -15,26 +15,14 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-
-<!--    <div class="collapse navbar-collapse" id="navbarSupportedContent">-->
-<!--        <ul class="navbar-nav mr-auto">-->
-
-<!--        </ul>-->
-<!--        <form class="form-inline my-2 my-lg-0">-->
-<!--            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
-<!--            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
-<!--        </form>-->
-<!--    </div>-->
 </nav>
 <div class="container">
-    <h4>欢迎 <i
-            th:text="${nickname}"/>
-    </h4>
+    <h4>欢迎 <i th:text="${nickname}"/></h4>
     <div>
-        您的权限：
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item" th:text="${authority}" th:each="authority : ${user.getAuthorities()}"/>
-        </ul>
+        登录来源：<i th:text="${user.getOAuth2ClientName()}"/>
+    </div>
+    <div>
+        邮箱：<i th:text="${user.getEmail()}"/>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"

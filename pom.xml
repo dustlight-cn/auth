@@ -13,6 +13,7 @@
         <module>common/sender</module>
         <module>common/storage</module>
         <module>backend/uim</module>
+        <module>backend/uim-client</module>
         <module>backend/client-template</module>
     </modules>
 </project>

@@ -1,17 +1,27 @@
-security:
-  oauth2:
-    sso:
-      login-path: /login
-    client:
-      client-secret: 9074e0e958e6422ac5e9f88cd7c92260cd0f9722
-      client-id: VTWQABLXBFXNKD3QBFBQAAAA
-      user-authorization-uri: https://account.dustlight.cn/authorize
-      access-token-uri: https://account.dustlight.cn/oauth/token
-      authorized-grant-types: code
-    resource:
-      token-info-uri: https://account.dustlight.cn/oauth/check_token
-
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          dustlight:
+            client-id: VTWQABLXBFXNKD3QBFBQAAAA
+            client-secret: 9074e0e958e6422ac5e9f88cd7c92260cd0f9722
+            provider: DUSTLIGHT
+            authorization-grant-type: authorization_code
+            redirect-uri: http://192.168.199.248:8080/login/oauth2/code/dustlight
+            client-name: Dustlight
+          github:
+            client-id: 05f65580866c22d3460c
+            client-secret: b3f6cd67165a4a249682c522d66a98dd71c3e3f2
+            provider: GITHUB
+            authorization-grant-type: authorization_code
+            redirect-uri: http://192.168.199.248:8080/login/oauth2/code/github
+        provider:
+          DUSTLIGHT:
+            authorization-uri: https://account.dustlight.cn/authorize
+            token-uri: https://account.dustlight.cn/oauth/token
+            user-info-uri: https://account.dustlight.cn/api/res/details
+            user-name-attribute: uid
   mvc:
     static-path-pattern: /static/**
     view:
@@ -19,3 +29,8 @@ spring:
       suffix: .html
   thymeleaf:
     cache: false
+dustlight:
+  uim-client:
+    user-data-path: # 用户数据路径。当数据是复杂结构时，用户数据所处的位置，例如：{"msg": "success", "code": 200, "data": {"uid": 123, "username": "user"}}
+      Dustlight:
+        - data
