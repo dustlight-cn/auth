@@ -1,6 +1,7 @@
 package cn.dustlight.oauth2.uim.controllers;
 
 import cn.dustlight.oauth2.uim.configurations.UimProperties;
+import cn.dustlight.oauth2.uim.endpoints.IVerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.models.*;
 import cn.dustlight.oauth2.uim.services.*;
 import cn.dustlight.oauth2.uim.RestfulConstants;

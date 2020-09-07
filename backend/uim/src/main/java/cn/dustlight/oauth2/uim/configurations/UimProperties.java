@@ -16,7 +16,6 @@ public class UimProperties {
     @Autowired
     private Logout logout;
     private boolean csrfEnabled = true;
-    private boolean httpBasicEnabled = true;
     private int snowflakeWorkerId = -1;
     private int registerVerificationCodeLength = 6;
     private int resetPasswordVerificationCodeLength = 12;
@@ -88,14 +87,6 @@ public class UimProperties {
 
     public void setRedirectToLoginPath(String[] redirectToLoginPath) {
         this.redirectToLoginPath = redirectToLoginPath;
-    }
-
-    public boolean isHttpBasicEnabled() {
-        return httpBasicEnabled;
-    }
-
-    public void setHttpBasicEnabled(boolean httpBasicEnabled) {
-        this.httpBasicEnabled = httpBasicEnabled;
     }
 
     public String[] getPublicPaths() {

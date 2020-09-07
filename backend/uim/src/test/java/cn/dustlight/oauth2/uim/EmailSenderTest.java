@@ -1,7 +1,7 @@
 package cn.dustlight.oauth2.uim;
 
-import cn.dustlight.oauth2.uim.services.EmailSenderService;
-import cn.dustlight.oauth2.uim.services.IVerificationCodeGenerator;
+import cn.dustlight.oauth2.uim.endpoints.DefaultEmailSenderEndpoint;
+import cn.dustlight.oauth2.uim.endpoints.IVerificationCodeGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class EmailSenderTest {
 
     @Autowired
-    EmailSenderService sender;
+    DefaultEmailSenderEndpoint sender;
 
     @Autowired
     private IVerificationCodeGenerator codeGenerator;

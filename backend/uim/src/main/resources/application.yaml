@@ -68,7 +68,6 @@ dustlight:
       - /oauth/check_token
       - /oauth/token
     resource-paths:
-      - /oauth_info
       - /api/res/**
     form-login:
       login-page: /login

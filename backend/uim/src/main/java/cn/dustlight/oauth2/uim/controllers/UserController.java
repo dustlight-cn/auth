@@ -8,8 +8,8 @@ import cn.dustlight.oauth2.uim.RestfulConstants;
 import cn.dustlight.oauth2.uim.RestfulResult;
 import cn.dustlight.oauth2.uim.models.IUserDetails;
 import cn.dustlight.oauth2.uim.models.UserDetails;
-import cn.dustlight.oauth2.uim.services.IEmailSender;
-import cn.dustlight.oauth2.uim.services.IVerificationCodeGenerator;
+import cn.dustlight.oauth2.uim.endpoints.IEmailSenderEndpoint;
+import cn.dustlight.oauth2.uim.endpoints.IVerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.services.UserDetailsMapper;
 import cn.dustlight.oauth2.uim.utils.Snowflake;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +25,12 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 
 @RestController
 public class UserController implements IUserController {
 
     @Autowired
-    private IEmailSender emailSender;
+    private IEmailSenderEndpoint emailSender;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

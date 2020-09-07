@@ -29,6 +29,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
         http.requestMatchers().antMatchers(resourcePaths)
                 .and().authorizeRequests()
-                .antMatchers(resourcePaths).authenticated();
+                .antMatchers(resourcePaths).authenticated()
+                .and().httpBasic();
     }
 }

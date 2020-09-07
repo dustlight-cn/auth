@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.services;
+package cn.dustlight.oauth2.uim.endpoints;
 
 import cn.dustlight.sender.core.ITemplateManager;
 import cn.dustlight.sender.email.EmailSender;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 @Service
-public class EmailSenderService implements IEmailSender {
+public class DefaultEmailSenderEndpoint implements IEmailSenderEndpoint {
 
     @Autowired
     private EmailSender sender;

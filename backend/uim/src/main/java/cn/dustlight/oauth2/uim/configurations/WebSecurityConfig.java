@@ -72,10 +72,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
         ;
 
-        if (uimProperties.isHttpBasicEnabled())
-            http.httpBasic();
-        else
-            http.httpBasic().disable();
         if (uimProperties.isCsrfEnabled())
             http.csrf();
         else

@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.services;
+package cn.dustlight.oauth2.uim.endpoints;
 
 public interface IVerificationCodeGenerator {
 
