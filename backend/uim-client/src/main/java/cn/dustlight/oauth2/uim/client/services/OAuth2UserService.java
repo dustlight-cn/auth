@@ -2,6 +2,7 @@ package cn.dustlight.oauth2.uim.client.services;
 
 import cn.dustlight.oauth2.uim.client.converter.DefaultUserConverter;
 import cn.dustlight.oauth2.uim.client.converter.IUimUserConverter;
+import cn.dustlight.oauth2.uim.client.entity.IUimUser;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.RequestEntity;
@@ -46,12 +47,12 @@ public class OAuth2UserService implements org.springframework.security.oauth2.cl
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         Assert.notNull(userRequest, "userRequest cannot be null");
         if (!StringUtils.hasText(userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri())) {
-            OAuth2Error oauth2Error = new OAuth2Error("missing_user_info_uri", "Missing required UserInfo Uri in UserInfoEndpoint for Client Registration: " + userRequest.getClientRegistration().getRegistrationId(), (String) null);
+            OAuth2Error oauth2Error = new OAuth2Error(MISSING_USER_INFO_URI_ERROR_CODE, "Missing required UserInfo Uri in UserInfoEndpoint for Client Registration: " + userRequest.getClientRegistration().getRegistrationId(), (String) null);
             throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString());
         } else {
             String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
             if (!StringUtils.hasText(userNameAttributeName)) {
-                OAuth2Error oauth2Error = new OAuth2Error("missing_user_name_attribute", "Missing required \"user name\" attribute name in UserInfoEndpoint for Client Registration: " + userRequest.getClientRegistration().getRegistrationId(), (String) null);
+                OAuth2Error oauth2Error = new OAuth2Error(MISSING_USER_NAME_ATTRIBUTE_ERROR_CODE, "Missing required \"user name\" attribute name in UserInfoEndpoint for Client Registration: " + userRequest.getClientRegistration().getRegistrationId(), (String) null);
                 throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString());
             } else {
                 RequestEntity request = (RequestEntity) this.requestEntityConverter.convert(userRequest);
@@ -71,10 +72,10 @@ public class OAuth2UserService implements org.springframework.security.oauth2.cl
                     }
 
                     errorDetails.append("]");
-                    oauth2Error = new OAuth2Error("invalid_user_info_response", "An error occurred while attempting to retrieve the UserInfo Resource: " + errorDetails.toString(), (String) null);
+                    oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE, "An error occurred while attempting to retrieve the UserInfo Resource: " + errorDetails.toString(), (String) null);
                     throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString(), var10);
                 } catch (RestClientException var11) {
-                    oauth2Error = new OAuth2Error("invalid_user_info_response", "An error occurred while attempting to retrieve the UserInfo Resource: " + var11.getMessage(), (String) null);
+                    oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE, "An error occurred while attempting to retrieve the UserInfo Resource: " + var11.getMessage(), (String) null);
                     throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString(), var11);
                 }
 
@@ -93,7 +94,8 @@ public class OAuth2UserService implements org.springframework.security.oauth2.cl
                 String clientUser = userAttributes == null || userNameAttributeName == null || userAttributes.get(userNameAttributeName) == null ?
                         null : userAttributes.get(userNameAttributeName).toString();
                 IUimUserConverter converter = customConverter != null ? customConverter.getOrDefault(clientName, this.converter) : this.converter;
-                return converter.convert(clientName, clientUser, userAttributes);
+                IUimUser user = converter.convert(clientName, clientUser, userAttributes, userRequest);
+                return user;
             }
         }
     }

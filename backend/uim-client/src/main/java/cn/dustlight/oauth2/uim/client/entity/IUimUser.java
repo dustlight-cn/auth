@@ -1,5 +1,6 @@
 package cn.dustlight.oauth2.uim.client.entity;
 
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.io.Serializable;
@@ -19,4 +20,6 @@ public interface IUimUser extends OAuth2User, Serializable {
     String getOAuth2ClientName();
 
     String getOAuth2User();
+
+    OAuth2UserRequest getOAuth2UserRequest();
 }
