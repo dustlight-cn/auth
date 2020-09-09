@@ -19,7 +19,6 @@ public class UimClientSecurityConfiguration extends WebSecurityConfigurerAdapter
                 .oauth2Login()
                 .userInfoEndpoint()
                 .userService(oAuth2UserService);
-
         http.oauth2Client();
     }
 

@@ -16,6 +16,15 @@ spring:
             provider: GITHUB
             authorization-grant-type: authorization_code
             redirect-uri: ${REDIRECT_URI_2:http://localhost:8080/login/oauth2/code/github}
+          google:
+            client-id: 452427670192-4uvn1pn3cef09r30o32t2k6trm8voc7q.apps.googleusercontent.com
+            client_secret: fQgsgyN_uyshAtc1wCBx6H6G
+            provider: GOOGLE
+            authorization-grant-type: authorization_code
+            redirect-uri: ${REDIRECT_URI_3:http://localhost:8080/login/oauth2/code/google}
+            scope:
+              - email
+              - profile
         provider:
           DUSTLIGHT:
             authorization-uri: https://account.dustlight.cn/authorize

@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-import java.util.logging.Logger;
-
 @RestController
 @RequestMapping("/api/")
 public class RestResource {
@@ -25,8 +22,6 @@ public class RestResource {
 
     @RequestMapping("request")
     public Object request(@RequestParam String url) {
-        Logger.getLogger(RestResource.class.getName()).info("REQUEST:TOKEN: "
-                + restTemplate.getOAuth2ClientContext().getAccessToken().isExpired());
         return restTemplate.getForEntity(url, Object.class).getBody();
     }
 }

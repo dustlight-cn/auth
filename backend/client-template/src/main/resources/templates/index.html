@@ -17,6 +17,7 @@
     </button>
 </nav>
 <div class="container">
+    <img width="100px" th:src="${user.getAvatarUrl()}"/>
     <h4>欢迎 <i th:text="${nickname}"/></h4>
     <div>
         登录来源：<i th:text="${user.getOAuth2ClientName()}"/>

@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.resource.BaseOAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.common.*;
@@ -23,7 +22,6 @@ import org.springframework.security.oauth2.common.*;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.*;
-import java.util.logging.Logger;
 
 @EnableConfigurationProperties(UimClientProperties.class)
 public class OAuth2UserServiceConfiguration {
@@ -59,17 +57,6 @@ public class OAuth2UserServiceConfiguration {
         details.setAccessTokenUri(providerDetails.getTokenUri());
         details.setClientId(registration.getClientId());
         details.setClientSecret(registration.getClientSecret());
-        details.setGrantType(registration.getAuthorizationGrantType().getValue());
-        details.setId(registration.getRegistrationId());
-        details.setUserAuthorizationUri(providerDetails.getAuthorizationUri());
-        if (registration.getScopes() != null)
-            details.setScope(new LinkedList<>(registration.getScopes()));
-        details.setUseCurrentUri(false);
-        Logger.getGlobal().info("redirect_uri: " + registration.getRedirectUriTemplate() +
-                ", token_uri=" + providerDetails.getTokenUri());
-        Logger.getGlobal().info("Token: " + oAuth2AuthorizedClient.getAccessToken().getTokenValue() +
-                ", RefreshToken=" + (oAuth2AuthorizedClient.getRefreshToken() == null? null : oAuth2AuthorizedClient.getRefreshToken().getTokenValue()));
-
         return new OAuth2RestTemplate(details, clientContext);
     }
 
@@ -146,7 +133,8 @@ public class OAuth2UserServiceConfiguration {
 
         @Override
         public boolean isExpired() {
-            Logger.getGlobal().info(accessToken.getIssuedAt() + " : " + accessToken.getExpiresAt() + " : " + Instant.now());
+            if (accessToken.getExpiresAt().toEpochMilli() - accessToken.getIssuedAt().toEpochMilli() == 1000)
+                return false;
             return accessToken.getExpiresAt().isBefore(Instant.now());
         }
 

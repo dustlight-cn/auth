@@ -17,10 +17,21 @@ public class DefaultUserConverter implements IUimUserConverter {
         uimUser.setOAuth2ClientName(clientName);
         uimUser.setOAuth2User(clientUser);
         if (data != null) {
-            uimUser.setUsername((String) data.getOrDefault("username", data.getOrDefault("user", clientUser)));
-            uimUser.setEmail((String) data.get("email"));
-            uimUser.setNickname((String) data.getOrDefault("nickname", data.getOrDefault("login", clientUser)));
+            uimUser.setUsername(tryGet(data, clientUser, "username", "login"));
+            uimUser.setEmail(tryGet(data, null, "email"));
+            uimUser.setNickname(tryGet(data, uimUser.getUsername(), "nickname", "user", "name"));
+            uimUser.setAvatarUrl(tryGet(data, uimUser.getUsername(), "avatar", "avatar_url", "picture", "head_pic"));
         }
         return uimUser;
+    }
+
+    private static <T> T tryGet(Map<String, ?> map, T defaultValue, String... key) {
+        if (key != null)
+            for (String k : key) {
+                if (map.containsKey(k) &&
+                        map.get(k) != null)
+                    return (T) map.get(k);
+            }
+        return defaultValue;
     }
 }
