@@ -40,24 +40,24 @@ public class TencentCloudObjectStorage implements IStorage, IRestfulStorage {
     }
 
     @Override
-    public String generateGetUrl(String key, Long expiration) throws IOException {
+    public String generateGetUrl(String key, Long expiration) {
         return cosClient.generatePresignedUrl(bucket, key, new Date(System.currentTimeMillis() + expiration), HttpMethodName.GET).toExternalForm();
     }
 
     @Override
-    public String generatePutUrl(String key, int permission, Long expiration) throws IOException {
+    public String generatePutUrl(String key, int permission, Long expiration) {
         GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucket, key, HttpMethodName.PUT);
         req.withExpiration(new Date(System.currentTimeMillis() + expiration));
         return cosClient.generatePresignedUrl(req).toExternalForm();
     }
 
     @Override
-    public String generateRemoveUrl(String key, Long expiration) throws IOException {
+    public String generateRemoveUrl(String key, Long expiration) {
         return cosClient.generatePresignedUrl(bucket, key, new Date(System.currentTimeMillis() + expiration), HttpMethodName.DELETE).toExternalForm();
     }
 
     @Override
-    public TencentCloudStorableObject create(String key, int permission) throws IOException {
+    public TencentCloudStorableObject create(String key, int permission) {
         PutObjectRequest req = new PutObjectRequest(bucket, key, EmptyInputStream.INSTANCE, null);
         req.withCannedAcl(getACL(permission));
         cosClient.putObject(req);
@@ -65,7 +65,7 @@ public class TencentCloudObjectStorage implements IStorage, IRestfulStorage {
     }
 
     @Override
-    public TencentCloudStorableObject get(String key) throws IOException {
+    public TencentCloudStorableObject get(String key) {
         return new TencentCloudStorableObject(this, key);
     }
 
@@ -83,17 +83,17 @@ public class TencentCloudObjectStorage implements IStorage, IRestfulStorage {
     }
 
     @Override
-    public void remove(String key) throws IOException {
+    public void remove(String key) {
         cosClient.deleteObject(bucket, key);
     }
 
     @Override
-    public void setPermission(String key, int permission) throws IOException {
+    public void setPermission(String key, int permission) {
         cosClient.setObjectAcl(bucket, key, getACL(permission));
     }
 
     @Override
-    public boolean isExist(String key) throws IOException {
+    public boolean isExist(String key) {
         return cosClient.doesObjectExist(bucket, key);
     }
 

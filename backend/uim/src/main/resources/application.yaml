@@ -78,6 +78,8 @@ dustlight:
         - SESSION
     register-email: 邮箱验证
     reset-password-email: 密码重置
+    storage:
+      storage-base-url: https://res.dustlight.cn/
   storage:
     tencent:
       cos:

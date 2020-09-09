@@ -149,9 +149,11 @@ public class ClientController implements IClientController {
             response.sendError(404); // 头像不存在
             return;
         }
-        String urlString = storage.generateGetUrl(key, 1000L * 60L * 60 * 24L);
+        String urlString = properties.getStorage().getStorageBaseUrl() == null ?
+                storage.generateGetUrl(key, 1000L * 60L * 60 * 24L) + "&" :
+                properties.getStorage().getStorageBaseUrl() + key + "?";
         if (size != null)
-            urlString += "&imageMogr2/thumbnail/" + size + "x" + size;
+            urlString += "imageMogr2/thumbnail/" + size + "x" + size;
         response.sendRedirect(urlString);
     }
 

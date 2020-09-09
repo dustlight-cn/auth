@@ -11,9 +11,13 @@ public class UserPublicDetails implements Serializable {
 
     private String nickname;
 
+    private String email;
+
     private int gender;
 
     private Date createdAt;
+
+    private String avatar;
 
     public long getUid() {
         return uid;
@@ -39,6 +43,14 @@ public class UserPublicDetails implements Serializable {
         this.nickname = nickname;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public int getGender() {
         return gender;
     }
@@ -53,5 +65,25 @@ public class UserPublicDetails implements Serializable {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public static UserPublicDetails fromUserDetails(UserDetails userDetails){
+        UserPublicDetails result = new UserPublicDetails();
+        result.setUid(userDetails.getUid());
+        result.setUsername(userDetails.getUsername());
+        result.setNickname(userDetails.getNickname());
+        result.setGender(userDetails.getGender());
+        result.setCreatedAt(userDetails.getCreatedAt());
+        result.setEmail(userDetails.getEmail());
+        result.setAvatar(userDetails.getAvatar());
+        return result;
     }
 }

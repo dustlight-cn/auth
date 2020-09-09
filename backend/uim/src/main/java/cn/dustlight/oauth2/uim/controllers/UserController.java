@@ -214,15 +214,11 @@ public class UserController implements IUserController {
 
     @Override
     public void getAvatar(Long uid, Integer size, HttpServletResponse response, HttpServletRequest request) throws IOException {
-        String key = uimProperties.getStorage().getStoragePath() + "avatar/" + uid;
-        if (!storage.isExist(key)) {
-            response.sendError(404); // 头像不存在
-            return;
-        }
-        String urlString = storage.generateGetUrl(key, 1000L * 60L * 60 * 24L);
-        if (size != null)
-            urlString += "&imageMogr2/thumbnail/" + size + "x" + size;
-        response.sendRedirect(urlString);
+        String url = generateAvatarUrl(uid, size);
+        if (url == null)
+            response.sendError(404);
+        else
+            response.sendRedirect(url);
     }
 
     @Override
@@ -251,6 +247,7 @@ public class UserController implements IUserController {
         UserDetails user = userDetailsMapper.loadUser(principal.getName());
         if (user == null)
             return RestfulConstants.ERROR_USER_NOT_FOUND;
+        user.setAvatar(generateAvatarUrl(user.getUid(), 256));
         return RestfulResult.success(user);
     }
 
@@ -262,12 +259,16 @@ public class UserController implements IUserController {
         user.setEmail(null);
         user.setPhone(null);
         user.setRole(null);
+        user.setAvatar(generateAvatarUrl(user.getUid(), 256));
         return RestfulResult.success(user);
     }
 
     @Override
     public RestfulResult<List<UserPublicDetails>> getUsersDetails(List<String> usernameArray) {
-        return RestfulResult.success(userDetailsMapper.loadUsersPublic(usernameArray));
+        List<UserPublicDetails> arr = userDetailsMapper.loadUsersPublic(usernameArray);
+        for (UserPublicDetails userPublicDetails : arr)
+            userPublicDetails.setAvatar(generateAvatarUrl(userPublicDetails.getUid(), 256));
+        return RestfulResult.success(arr);
     }
 
     @Override
@@ -280,5 +281,19 @@ public class UserController implements IUserController {
                 return RestfulConstants.SUCCESS;
         }
         return RestfulConstants.ERROR_UNKNOWN;
+    }
+
+    public String generateAvatarUrl(Long uid, Integer size) {
+        String key = uimProperties.getStorage().getStoragePath() + "avatar/" + uid;
+        if (!storage.isExist(key)) {
+            // 头像不存在
+            return null;
+        }
+        String urlString = uimProperties.getStorage().getStorageBaseUrl() == null ?
+                storage.generateGetUrl(key, 1000L * 60L * 60 * 24L) + "&" :
+                uimProperties.getStorage().getStorageBaseUrl() + key + "?";
+        if (size != null)
+            urlString += "imageMogr2/thumbnail/" + size + "x" + size;
+        return urlString;
     }
 }

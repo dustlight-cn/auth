@@ -190,9 +190,17 @@ public class UimProperties {
     @Component
     @ConfigurationProperties(prefix = "dustlight.uim.storage")
     public static class Storage {
-
+        private String storageBaseUrl = null;
         private String storagePath = "dustlight/uim/upload/";
         private Long defaultExpiration = 1000L * 60 * 15L;
+
+        public String getStorageBaseUrl() {
+            return storageBaseUrl;
+        }
+
+        public void setStorageBaseUrl(String storageBaseUrl) {
+            this.storageBaseUrl = storageBaseUrl;
+        }
 
         public String getStoragePath() {
             return storagePath;

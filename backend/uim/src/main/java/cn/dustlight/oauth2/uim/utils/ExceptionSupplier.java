@@ -9,11 +9,15 @@ public class ExceptionSupplier implements Supplier<String> {
 
     private String str;
 
-    public ExceptionSupplier(Exception e) throws UnsupportedEncodingException {
+    public ExceptionSupplier(Exception e) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(out);
         e.printStackTrace(printStream);
-        str = new String(out.toByteArray(),"UTF-8");
+        try {
+            str = new String(out.toByteArray(), "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            str = new String(out.toByteArray());
+        }
     }
 
     @Override

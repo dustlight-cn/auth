@@ -47,6 +47,8 @@ public class UserDetails implements IUserDetails {
 
     private RoleDetails roleDetails;
 
+    private String avatar;
+
     public void setUid(long uid) {
         this.uid = uid;
     }
@@ -203,5 +205,13 @@ public class UserDetails implements IUserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
