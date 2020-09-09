@@ -143,7 +143,7 @@ public class ClientController implements IClientController {
     }
 
     @Override
-    public void getClientImage(String appKey, Integer size, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public void getClientImage(String appKey, Integer size, Long t, HttpServletResponse response, HttpServletRequest request) throws IOException {
         String key = properties.getStorage().getStoragePath() + "app/img/logo/" + appKey;
         if (!storage.isExist(key)) {
             response.sendError(404); // 头像不存在
@@ -154,6 +154,8 @@ public class ClientController implements IClientController {
                 properties.getStorage().getStorageBaseUrl() + key + "?";
         if (size != null)
             urlString += "imageMogr2/thumbnail/" + size + "x" + size;
+        if (t != null)
+            urlString += "&t=" + System.currentTimeMillis();
         response.sendRedirect(urlString);
     }
 

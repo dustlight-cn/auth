@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+
 @RestController
 public class ResourceController implements IResourceController {
 
@@ -22,7 +23,7 @@ public class ResourceController implements IResourceController {
         if (details == null)
             return null;
         UserPublicDetails result = UserPublicDetails.fromUserDetails(details);
-        result.setAvatar(userController.generateAvatarUrl(details.getUid(), 256));
+        result.setAvatar(userController.generateAvatarUrl(details.getUid(), 256, null));
         return result;
     }
 }

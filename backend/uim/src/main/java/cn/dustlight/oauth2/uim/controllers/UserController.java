@@ -213,8 +213,8 @@ public class UserController implements IUserController {
     }
 
     @Override
-    public void getAvatar(Long uid, Integer size, HttpServletResponse response, HttpServletRequest request) throws IOException {
-        String url = generateAvatarUrl(uid, size);
+    public void getAvatar(Long uid, Integer size, Long t, HttpServletResponse response, HttpServletRequest request) throws IOException {
+        String url = generateAvatarUrl(uid, size, t);
         if (url == null)
             response.sendError(404);
         else
@@ -247,7 +247,7 @@ public class UserController implements IUserController {
         UserDetails user = userDetailsMapper.loadUser(principal.getName());
         if (user == null)
             return RestfulConstants.ERROR_USER_NOT_FOUND;
-        user.setAvatar(generateAvatarUrl(user.getUid(), 256));
+        user.setAvatar(generateAvatarUrl(user.getUid(), 256, null));
         return RestfulResult.success(user);
     }
 
@@ -259,7 +259,7 @@ public class UserController implements IUserController {
         user.setEmail(null);
         user.setPhone(null);
         user.setRole(null);
-        user.setAvatar(generateAvatarUrl(user.getUid(), 256));
+        user.setAvatar(generateAvatarUrl(user.getUid(), 256, null));
         return RestfulResult.success(user);
     }
 
@@ -267,7 +267,7 @@ public class UserController implements IUserController {
     public RestfulResult<List<UserPublicDetails>> getUsersDetails(List<String> usernameArray) {
         List<UserPublicDetails> arr = userDetailsMapper.loadUsersPublic(usernameArray);
         for (UserPublicDetails userPublicDetails : arr)
-            userPublicDetails.setAvatar(generateAvatarUrl(userPublicDetails.getUid(), 256));
+            userPublicDetails.setAvatar(generateAvatarUrl(userPublicDetails.getUid(), 256, null));
         return RestfulResult.success(arr);
     }
 
@@ -283,7 +283,7 @@ public class UserController implements IUserController {
         return RestfulConstants.ERROR_UNKNOWN;
     }
 
-    public String generateAvatarUrl(Long uid, Integer size) {
+    public String generateAvatarUrl(Long uid, Integer size, Long t) {
         String key = uimProperties.getStorage().getStoragePath() + "avatar/" + uid;
         if (!storage.isExist(key)) {
             // 头像不存在
@@ -294,6 +294,8 @@ public class UserController implements IUserController {
                 uimProperties.getStorage().getStorageBaseUrl() + key + "?";
         if (size != null)
             urlString += "imageMogr2/thumbnail/" + size + "x" + size;
+        if (t != null)
+            urlString += "&t=" + t;
         return urlString;
     }
 }

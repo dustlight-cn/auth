@@ -49,7 +49,10 @@ public interface IClientController {
     RestfulResult uploadClientImage(@PathVariable String appKey, Authentication authentication) throws IOException;
 
     @GetMapping("/app_image/{appKey}")
-    void getClientImage(@PathVariable String appKey, @RequestParam(required = false) Integer size, HttpServletResponse response, HttpServletRequest request) throws IOException;
+    void getClientImage(@PathVariable String appKey,
+                        @RequestParam(required = false) Integer size,
+                        @RequestParam(required = false) Long t,
+                        HttpServletResponse response, HttpServletRequest request) throws IOException;
 
     @PostMapping("/app_scopes/{appKey}")
     @PreAuthorize("hasAnyAuthority('UPDATE_CLIENT','UPDATE_CLIENT_ANY')")

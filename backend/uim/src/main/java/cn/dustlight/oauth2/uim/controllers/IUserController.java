@@ -52,7 +52,10 @@ public interface IUserController {
     RestfulResult<String> uploadAvatar(Authentication authentication) throws IOException;
 
     @GetMapping("/avatar/{uid}")
-    void getAvatar(@PathVariable Long uid, @RequestParam(required = false) Integer size, HttpServletResponse response, HttpServletRequest request) throws IOException;
+    void getAvatar(@PathVariable Long uid,
+                   @RequestParam(required = false) Integer size,
+                   @RequestParam(required = false) Long t,
+                   HttpServletResponse response, HttpServletRequest request) throws IOException;
 
     @GetMapping("/exists/username")
     RestfulResult<Boolean> isUsernameExists(@RequestParam(required = false) String username);
