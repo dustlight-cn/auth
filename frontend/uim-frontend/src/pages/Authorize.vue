@@ -55,7 +55,8 @@
             <q-item class="q-pt-lg">
               <q-space/>
               <q-item-section side top>
-                <q-btn label="授权" type="submit" color="primary"/>
+                <q-btn v-if="!isApproved" label="授权" type="submit" color="primary"/>
+                <q-btn v-else label="正在跳转" color="primary"/>
               </q-item-section>
             </q-item>
             <div class="q-pb-md text-caption text-grey text-center">
@@ -132,7 +133,8 @@
         updatedAt: null,
         client: null,
         currentUser: null,
-        userNumber: 0
+        userNumber: 0,
+        isApproved: false
       }
     },
     computed: {
@@ -172,6 +174,7 @@
           this.updatedAt = new Date(res.updatedAt)
           this.createdAt = new Date(res.createdAt)
           this.userNumber = res.userNumber
+          this.isApproved = res.isApproved
           if (res.scopes) {
             for (var i in res.scopes)
               this.scopes.push({

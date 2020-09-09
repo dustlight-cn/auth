@@ -43,20 +43,24 @@ public class OAuth2Controller {
     public ModelAndView authorize(Map<String, Object> model, @RequestParam Map<String, String> parameters, SessionStatus sessionStatus, Principal principal) {
         Map<String, Object> data = new HashMap<>();
         ModelAndView mv = endpoint.authorize(model, parameters, sessionStatus, principal);
+
+        String clientId = parameters.get("client_id");
+        IClientDetails details = mapper.loadClientDescription(clientId);
+        String username = principal.getName();
+
+        data.put("clientName", details.getClientName());
+        data.put("description", details.getDescription());
+        data.put("clientId", details.getClientId());
+        data.put("createdAt", details.getCreatedAt());
+        data.put("updatedAt", details.getUpdatedAt());
         if (mv.getView() instanceof RedirectView) {
             RedirectView redirectView = (RedirectView) mv.getView();
             data.put("redirect_uri", redirectView.getUrl());
+            data.put("isApproved", true);
         } else {
             AuthorizationRequest authorizationRequest = (AuthorizationRequest) model.get("authorizationRequest");
-            String clientId = authorizationRequest.getClientId();
-            IClientDetails details = mapper.loadClientDescription(clientId);
-            String username = principal.getName();
-
             Set<String> requestScopes = authorizationRequest.getScope();
-
             Collection<Approval> approvals = approvalStore.getApprovals(username, clientId);
-
-
             Map<String, IScopeDetails> scopeDes = details.getScopeDetails();
 
             Map<String, Map<String, Object>> scopes = new LinkedHashMap<>();
@@ -69,11 +73,6 @@ public class OAuth2Controller {
                 if (approval.isApproved() && scopes.containsKey(approval.getScope()))
                     scopes.get(approval.getScope()).put("approved", true);
             }
-            data.put("clientName", details.getClientName());
-            data.put("description", details.getDescription());
-            data.put("clientId", details.getClientId());
-            data.put("createdAt", details.getCreatedAt());
-            data.put("updatedAt", details.getUpdatedAt());
             Collection<OAuth2AccessToken> tokens = redisTokenStore.findTokensByClientId(details.getClientId());
             if (tokens != null)
                 data.put("userNumber", tokens.size());
@@ -82,8 +81,9 @@ public class OAuth2Controller {
                 if (nicknameArr != null)
                     data.put("nickname", nicknameArr[0]);
             }
-            data.put("username", details.getClientSecret());
+            data.put("username", details.getClientSecret()); // 并不是真的ClientSecret，只是Mapper查询时用username存放于次
             data.put("scopes", scopes);
+            data.put("isApproved", false);
         }
         return RestfulResult.success(data).toModelAndView();
     }
