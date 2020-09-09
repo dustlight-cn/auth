@@ -39,7 +39,9 @@ public class OAuth2UserServiceConfiguration {
                 instanceMap.put(key, clazz.getDeclaredConstructor().newInstance());
             }
         }
-        return new OAuth2UserService(instanceMap, properties.getUserDataPath());
+        return new OAuth2UserService(instanceMap,
+                properties.getUserDataPath(),
+                properties.getUserDetailsMapping());
     }
 
     @Bean

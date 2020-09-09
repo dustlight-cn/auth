@@ -40,6 +40,12 @@ spring:
     cache: false
 dustlight:
   uim-client:
-    user-data-path: # 用户数据路径。当数据是复杂结构时，用户数据所处的位置，例如：{"msg": "success", "code": 200, "data": {"uid": 123, "username": "user"}}
-      Dustlight:
-        - data
+    user-details-mapping:
+      github:
+        nickname: name
+        username: login
+        avatar: avatar_url
+      google:
+        nickname: name
+        username: sub
+        avatar: picture

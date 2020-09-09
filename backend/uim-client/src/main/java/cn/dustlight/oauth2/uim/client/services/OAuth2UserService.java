@@ -1,5 +1,6 @@
 package cn.dustlight.oauth2.uim.client.services;
 
+import cn.dustlight.oauth2.uim.client.UimClientProperties;
 import cn.dustlight.oauth2.uim.client.converter.DefaultUserConverter;
 import cn.dustlight.oauth2.uim.client.converter.IUimUserConverter;
 import cn.dustlight.oauth2.uim.client.entity.IUimUser;
@@ -33,15 +34,19 @@ public class OAuth2UserService implements org.springframework.security.oauth2.cl
     private RestOperations restOperations;
     private Map<String, IUimUserConverter> customConverter;
     private IUimUserConverter converter;
-    private Map<String, List<String>> userDataPath;
+    private Map<String, String> userDataPath;
+    private Map<String, UimClientProperties.UserDetailsMapping> userDetailsMappingMap;
 
-    public OAuth2UserService(Map<String, IUimUserConverter> customConverter, Map<String, List<String>> userDataPath) {
+    public OAuth2UserService(Map<String, IUimUserConverter> customConverter,
+                             Map<String, String> userDataPath,
+                             Map<String, UimClientProperties.UserDetailsMapping> userDetailsMapping) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
         this.restOperations = restTemplate;
         this.customConverter = customConverter;
         this.converter = new DefaultUserConverter();
         this.userDataPath = userDataPath;
+        this.userDetailsMappingMap = userDetailsMapping;
     }
 
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -82,9 +87,9 @@ public class OAuth2UserService implements org.springframework.security.oauth2.cl
                 String clientName = userRequest.getClientRegistration().getClientName();
                 Map<String, Object> userAttributes = (Map) response.getBody();
                 if (userDataPath != null && userDataPath.get(clientName) != null) {
-                    List<String> path = userDataPath.get(clientName);
-                    for (int i = 0, len = path.size(); i < len; i++) {
-                        String k = path.get(i);
+                    String[] path = userDataPath.get(clientName).split("/");
+                    for (int i = 0, len = path.length; i < len; i++) {
+                        String k = path[i];
                         if (userAttributes == null || userAttributes.get(k) == null
                                 || !(userAttributes.get(k) instanceof Map))
                             break;
@@ -94,7 +99,11 @@ public class OAuth2UserService implements org.springframework.security.oauth2.cl
                 String clientUser = userAttributes == null || userNameAttributeName == null || userAttributes.get(userNameAttributeName) == null ?
                         null : userAttributes.get(userNameAttributeName).toString();
                 IUimUserConverter converter = customConverter != null ? customConverter.getOrDefault(clientName, this.converter) : this.converter;
-                IUimUser user = converter.convert(clientName, clientUser, userAttributes, userRequest);
+                IUimUser user = converter.convert(clientName,
+                        clientUser,
+                        userAttributes,
+                        userRequest,
+                        userDetailsMappingMap.get(userRequest.getClientRegistration().getRegistrationId()));
                 return user;
             }
         }
