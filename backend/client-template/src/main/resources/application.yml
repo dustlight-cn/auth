@@ -49,3 +49,4 @@ dustlight:
         nickname: name
         username: sub
         avatar: picture
+    restful-enabled: true
