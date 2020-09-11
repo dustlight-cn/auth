@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.client.services;
 
-import cn.dustlight.oauth2.uim.client.UimClientProperties;
+import cn.dustlight.oauth2.uim.client.confgurations.UimClientProperties;
 import cn.dustlight.oauth2.uim.client.converter.DefaultUserConverter;
 import cn.dustlight.oauth2.uim.client.converter.IUimUserConverter;
 import cn.dustlight.oauth2.uim.client.entity.IUimUser;

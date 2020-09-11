@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.client;
+package cn.dustlight.oauth2.uim.client.confgurations;
 
 import cn.dustlight.oauth2.uim.client.converter.IUimUserConverter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,6 +9,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "dustlight.uim-client")
 public class UimClientProperties {
 
+    public String[] publishPaths = new String[]{};
     /**
      * 用户信息路径，例如第三方登录返回数据为 {code: 200,data:{user:{username: name,email: email},extend:123}}，则用户信息路径为 data/user
      */
@@ -25,6 +26,22 @@ public class UimClientProperties {
      * 是否启用Restful模式，启用后登录认证等将不进行重定向改为返回Json。
      */
     public boolean restfulEnabled = true;
+    /**
+     * 授权基础uri
+     */
+    public String authorizationRequestBaseUri = "/oauth2/authorization";
+    /**
+     * 登录处理url
+     */
+    private String loginProcessingUrl = "/oauth2/code/*";
+    /**
+     * 注销url
+     */
+    private String logoutUrl = "/oauth2/logout";
+
+    private boolean apiEnabled = true;
+
+    private boolean csrfEnabled = false;
 
     public Map<String, Class<? extends IUimUserConverter>> getCustomConverter() {
         return customConverter;
@@ -56,6 +73,54 @@ public class UimClientProperties {
 
     public void setRestfulEnabled(boolean restfulEnabled) {
         this.restfulEnabled = restfulEnabled;
+    }
+
+    public String getAuthorizationRequestBaseUri() {
+        return authorizationRequestBaseUri;
+    }
+
+    public void setAuthorizationRequestBaseUri(String authorizationRequestBaseUri) {
+        this.authorizationRequestBaseUri = authorizationRequestBaseUri;
+    }
+
+    public String getLoginProcessingUrl() {
+        return loginProcessingUrl;
+    }
+
+    public void setLoginProcessingUrl(String loginProcessingUrl) {
+        this.loginProcessingUrl = loginProcessingUrl;
+    }
+
+    public String getLogoutUrl() {
+        return logoutUrl;
+    }
+
+    public void setLogoutUrl(String logoutUrl) {
+        this.logoutUrl = logoutUrl;
+    }
+
+    public boolean isCsrfEnabled() {
+        return csrfEnabled;
+    }
+
+    public void setCsrfEnabled(boolean csrfEnabled) {
+        this.csrfEnabled = csrfEnabled;
+    }
+
+    public boolean isApiEnabled() {
+        return apiEnabled;
+    }
+
+    public void setApiEnabled(boolean apiEnabled) {
+        this.apiEnabled = apiEnabled;
+    }
+
+    public String[] getPublishPaths() {
+        return publishPaths;
+    }
+
+    public void setPublishPaths(String[] publishPaths) {
+        this.publishPaths = publishPaths;
     }
 
     public static class UserDetailsMapping {

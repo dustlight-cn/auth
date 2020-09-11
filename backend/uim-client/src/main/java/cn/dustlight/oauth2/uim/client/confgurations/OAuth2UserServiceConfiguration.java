@@ -1,13 +1,11 @@
 package cn.dustlight.oauth2.uim.client.confgurations;
 
-import cn.dustlight.oauth2.uim.client.UimClientProperties;
 import cn.dustlight.oauth2.uim.client.converter.IUimUserConverter;
 import cn.dustlight.oauth2.uim.client.entity.IUimUser;
 import cn.dustlight.oauth2.uim.client.services.OAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -23,7 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.*;
 
-@EnableConfigurationProperties(UimClientProperties.class)
 public class OAuth2UserServiceConfiguration {
 
     @Bean
