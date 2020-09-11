@@ -54,8 +54,8 @@ public class UimClientSecurityConfiguration extends WebSecurityConfigurerAdapter
         if (properties.isApiEnabled()) {
             http.authorizeRequests().antMatchers("/api/clients").permitAll();
             http.addFilterBefore(new UimClientApiFilter("/api/user",
-                    "/api/clients",
-                    clientRegistrationRepository, objectMapper),
+                            "/api/clients",
+                            clientRegistrationRepository, objectMapper),
                     OAuth2AuthorizationRequestRedirectFilter.class);
         }
         http.authorizeRequests()
@@ -141,6 +141,10 @@ public class UimClientSecurityConfiguration extends WebSecurityConfigurerAdapter
                 OAuth2AuthorizationRequest authorizationRequest = authorizationRequestResolver.resolve(request);
                 if (authorizationRequest != null) {
                     if (AuthorizationGrantType.AUTHORIZATION_CODE.equals(authorizationRequest.getGrantType())) {
+                        if (request.getParameter("redirect_uri") != null)
+                            authorizationRequest = OAuth2AuthorizationRequest.from(authorizationRequest)
+                                    .redirectUri(request.getParameter("redirect_uri"))
+                                    .build();
                         authorizationRequestRepository.saveAuthorizationRequest(authorizationRequest, request, response);
                     }
                     Map<String, Object> result = new LinkedHashMap<>();

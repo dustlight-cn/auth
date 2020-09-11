@@ -8,30 +8,28 @@
 
 module.exports = function (/* ctx */) {
   return {
-    // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
-    supportIE: false,
-
-    // https://quasar.dev/quasar-cli/cli-documentation/supporting-ts
+    // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
 
-    // https://quasar.dev/quasar-cli/cli-documentation/prefetch-feature
+    // https://quasar.dev/quasar-cli/prefetch-feature
     // preFetch: true,
 
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
-    // https://quasar.dev/quasar-cli/cli-documentation/boot-files
+    // https://quasar.dev/quasar-cli/boot-files
     boot: [
-      'axios', 'uim','addressbar-color'
+      'axios',
+      'uim-client'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: [
-      'app.sass'
+      'app.css'
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
-      'ionicons-v4',
+      // 'ionicons-v4',
       // 'mdi-v5',
       // 'fontawesome-v5',
       // 'eva-icons',
@@ -47,12 +45,13 @@ module.exports = function (/* ctx */) {
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
-      // Add dependencies for transpiling with Babel (Array of regexes)
+      // transpile: false,
+
+      // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
-      // Does not applies to modern builds.
+      // Applies only if "transpile" is set to true.
       // transpileDependencies: [],
 
-      // modern: true, // https://quasar.dev/quasar-cli/modern-build
       // rtl: false, // https://quasar.dev/options/rtl-support
       // preloadChunks: true,
       // showProgress: false,
@@ -62,7 +61,7 @@ module.exports = function (/* ctx */) {
       // Options below are automatically set depending on the env, set them if you want to override
       // extractCSS: false,
 
-      // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
+      // https://quasar.dev/quasar-cli/handling-webpack
       extendWebpack(cfg) {
       },
     },
@@ -74,7 +73,7 @@ module.exports = function (/* ctx */) {
       open: true, // opens browser window automatically
       proxy: {
         "/api": "http://localhost:8080",
-        "/oauth": "http://localhost:8080"
+        "/oauth2": "http://localhost:8080"
       }
     },
 
@@ -82,26 +81,23 @@ module.exports = function (/* ctx */) {
     framework: {
       iconSet: 'material-icons', // Quasar icon set
       lang: 'en-us', // Quasar language pack
+      config: {},
 
-      // Possible values for "all":
-      // * 'auto' - Auto-import needed Quasar components & directives
-      //            (slightly higher compile time; next to minimum bundle size; most convenient)
-      // * false  - Manually specify what to import
-      //            (fastest compile time; minimum bundle size; most tedious)
-      // * true   - Import everything from Quasar
-      //            (not treeshaking Quasar; biggest bundle size; convenient)
-      all: 'auto',
+      // Possible values for "importStrategy":
+      // * 'auto' - (DEFAULT) Auto-import needed Quasar components & directives
+      // * 'all'  - Manually specify what to import
+      importStrategy: 'auto',
 
-      components: ["QSkeleton"],
-      directives: [],
+      // For special cases outside of where "auto" importStrategy can have an impact
+      // (like functional components as one of the examples),
+      // you can manually specify Quasar components/directives to be available everywhere:
+      //
+      // components: [],
+      // directives: [],
 
       // Quasar plugins
-      plugins: [
-        'Loading', '7', 'Dialog', 'AddressbarColor'
-      ],
-      config: {
-        loading: { /* Loading defaults */}, notify: { /* Notify defaults */}
-      }
+      plugins: ["Notify",
+        'SessionStorage']
     },
 
     // animations: 'all', // --- includes all animations
@@ -118,36 +114,36 @@ module.exports = function (/* ctx */) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: 'uim',
-        short_name: 'uim',
-        description: 'uim',
+        name: `Uim Client`,
+        short_name: `Uim Client`,
+        description: `Uim Client`,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
         theme_color: '#027be3',
         icons: [
           {
-            src: 'statics/icons/icon-128x128.png',
+            src: 'icons/icon-128x128.png',
             sizes: '128x128',
             type: 'image/png'
           },
           {
-            src: 'statics/icons/icon-192x192.png',
+            src: 'icons/icon-192x192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'statics/icons/icon-256x256.png',
+            src: 'icons/icon-256x256.png',
             sizes: '256x256',
             type: 'image/png'
           },
           {
-            src: 'statics/icons/icon-384x384.png',
+            src: 'icons/icon-384x384.png',
             sizes: '384x384',
             type: 'image/png'
           },
           {
-            src: 'statics/icons/icon-512x512.png',
+            src: 'icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png'
           }
@@ -158,7 +154,6 @@ module.exports = function (/* ctx */) {
     // Full list of options: https://quasar.dev/quasar-cli/developing-cordova-apps/configuring-cordova
     cordova: {
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
-      id: 'org.cordova.quasar.app'
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/developing-capacitor-apps/configuring-capacitor
@@ -186,7 +181,7 @@ module.exports = function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'uim-frontend'
+        appId: 'uim-client-frontend'
       },
 
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration

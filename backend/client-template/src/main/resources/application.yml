@@ -8,20 +8,20 @@ spring:
             client-secret: 9074e0e958e6422ac5e9f88cd7c92260cd0f9722
             provider: DUSTLIGHT
             authorization-grant-type: authorization_code
-            redirect-uri: ${REDIRECT_URI_1:http://localhost:8080/oauth2/code/dustlight}
+            redirect-uri: ${REDIRECT_URI_1:http://localhost/login/code/dustlight}
             client-name: Dustlight
           github:
             client-id: 05f65580866c22d3460c
             client-secret: b3f6cd67165a4a249682c522d66a98dd71c3e3f2
             provider: GITHUB
             authorization-grant-type: authorization_code
-            redirect-uri: ${REDIRECT_URI_2:http://localhost:8080/oauth2/code/github}
+            redirect-uri: ${REDIRECT_URI_2:http://localhost/login/code/github}
           google:
             client-id: 452427670192-4uvn1pn3cef09r30o32t2k6trm8voc7q.apps.googleusercontent.com
             client_secret: fQgsgyN_uyshAtc1wCBx6H6G
             provider: GOOGLE
             authorization-grant-type: authorization_code
-            redirect-uri: ${REDIRECT_URI_3:http://localhost:8080/oauth2/code/google}
+            redirect-uri: ${REDIRECT_URI_3:http://localhost/login/code/google}
             scope:
               - email
               - profile
