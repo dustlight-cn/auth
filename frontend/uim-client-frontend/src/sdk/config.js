@@ -4,7 +4,8 @@ const config = {
     clients: 'api/clients',
     oauth: {
       authorization: 'oauth2/authorization/',
-      code: 'oauth2/code/'
+      code: 'oauth2/code/',
+      logout: 'oauth2/logout'
     }
   }
 }

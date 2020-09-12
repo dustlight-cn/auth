@@ -60,6 +60,7 @@ public class UimClientApiFilter implements Filter {
             else {
                 if (authorization.getPrincipal() instanceof IUimUser) {
                     IUimUser user = (IUimUser) authorization.getPrincipal();
+                    response.setContentType("application/json;charset=utf-8");
                     mapper.writeValue(response.getWriter(), user);
                 } else {
                     response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
@@ -79,6 +80,8 @@ public class UimClientApiFilter implements Filter {
                 clientRegistrations.forEach((registration) -> {
                     result.add(registration.getRegistrationId());
                 });
+
+                response.setContentType("application/json;charset=utf-8");
                 mapper.writeValue(response.getWriter(), result);
             }
             return;

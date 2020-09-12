@@ -11,7 +11,7 @@
     if (e.response) {
       Vue.prototype.$q.notify({
         message: e.response.statusText + " " + e.response.status,
-        caption: e.response.data,
+        caption: e.response.data.length < 100 ? e.response.data : e.response.data.substring(0, 95) + "...",
         icon: 'warning',
         color: 'negative'
       })

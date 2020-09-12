@@ -6,15 +6,15 @@
           flat
           dense
           round
-          icon="menu"
+          icon="home"
           aria-label="Menu"
+          to="/"
         />
 
         <q-toolbar-title>
-          Quasar App
+          Client Template
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 

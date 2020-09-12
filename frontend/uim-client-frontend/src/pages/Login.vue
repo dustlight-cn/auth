@@ -14,9 +14,10 @@
         </q-item-section>
       </q-item>
     </q-list>
-    <div>
-      {{clientInfo}}
-    </div>
+
+    <q-inner-loading :showing="loading">
+      <q-spinner-gears size="50px" color="primary"/>
+    </q-inner-loading>
   </q-page>
 </template>
 

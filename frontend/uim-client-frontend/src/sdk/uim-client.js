@@ -1,8 +1,7 @@
 import config from "./config"
 import axios, {AxiosInstance} from 'axios'
 import qs from "qs";
-import de from "quasar/lang/de";
-import da from "quasar/lang/da";
+import vue from 'vue'
 
 /**
  * Uim客户端
@@ -28,7 +27,10 @@ class UimClient {
   }
 
   getUserInfo() {
-    return this.ax.get(config.api.userInfo)
+    return this.ax.get(config.api.userInfo).then(r => {
+      r.logout = () => this.ax.post(config.api.oauth.logout)
+      return r
+    })
   }
 
   preAuthorization(client, redirect_uri) {

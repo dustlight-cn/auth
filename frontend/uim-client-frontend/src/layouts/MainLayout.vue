@@ -6,44 +6,44 @@
           flat
           dense
           round
-          icon="menu"
+          icon="home"
           aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
+          to="/"
         />
 
         <q-toolbar-title>
-          Quasar App
+          Client Template
         </q-toolbar-title>
         <div>
-          <q-avatar v-if="user.uid">
-            <q-img v-if="user.avatarUrl" :src="user.avatarUrl"/>
-            <span v-else>{{user.nickname[0]}}</span>
-          </q-avatar>
+          <q-btn v-if="loading || isLogin" rounded flat dense>
+            <Avatar :user="user" size="32"/>
+            <q-menu v-if="!loading">
+              <div class="text-center q-pa-md">
+                <Avatar class="q-ma-sm" size="50" :user="user"/>
+                <div class="text-bold">{{user.nickname || user.username}}</div>
+                <div class="text-caption">{{user.email}}</div>
+              </div>
+              <q-list style="min-width: 150px;">
+                <q-separator/>
+                <q-item v-ripple clickable v-close-popup to="/login">
+                  <q-item-section>
+                    <q-item-label>
+                      切换登录
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-item @click="logout" v-ripple clickable v-close-popup>
+                  <q-item-section>
+                    <q-item-label>退出登录</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+          <q-btn v-else flat label="登录" dense to="/login"/>
         </div>
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-1"
-    >
-      <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
-          Essential Links
-        </q-item-label>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>
 
     <q-page-container>
       <router-view/>
@@ -52,66 +52,40 @@
 </template>
 
 <script>
-  import EssentialLink from 'components/EssentialLink.vue'
-
-  const linksData = [
-    {
-      title: 'Docs',
-      caption: 'quasar.dev',
-      icon: 'school',
-      link: 'https://quasar.dev'
-    },
-    {
-      title: 'Github',
-      caption: 'github.com/quasarframework',
-      icon: 'code',
-      link: 'https://github.com/quasarframework'
-    },
-    {
-      title: 'Discord Chat Channel',
-      caption: 'chat.quasar.dev',
-      icon: 'chat',
-      link: 'https://chat.quasar.dev'
-    },
-    {
-      title: 'Forum',
-      caption: 'forum.quasar.dev',
-      icon: 'record_voice_over',
-      link: 'https://forum.quasar.dev'
-    },
-    {
-      title: 'Twitter',
-      caption: '@quasarframework',
-      icon: 'rss_feed',
-      link: 'https://twitter.quasar.dev'
-    },
-    {
-      title: 'Facebook',
-      caption: '@QuasarFramework',
-      icon: 'public',
-      link: 'https://facebook.quasar.dev'
-    },
-    {
-      title: 'Quasar Awesome',
-      caption: 'Community Quasar projects',
-      icon: 'favorite',
-      link: 'https://awesome.quasar.dev'
-    }
-  ];
+  import Avatar from "components/Avatar";
 
   export default {
     name: 'MainLayout',
-    components: {EssentialLink},
+    components: {Avatar},
     data() {
       return {
-        leftDrawerOpen: false,
-        essentialLinks: linksData,
-        user: {}
+        user: null,
+        loading: false
+      }
+    },
+    computed: {
+      isLogin() {
+        return this.user && this.user.uid
       }
     },
     mounted() {
+      this.$root.$on('user_update', (user) => {
+        this.user = user
+      })
+      this.loading = true
       this.$uclient.getUserInfo()
         .then(r => this.user = r)
+        .finally(() => this.loading = false)
+    },
+    methods: {
+      logout() {
+        if (!this.user || !this.user.logout)
+          return
+        this.user.logout()
+          .then(r => {
+            this.$root.$emit("user_update", null)
+          })
+      }
     }
   }
 </script>
