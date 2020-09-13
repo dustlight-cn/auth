@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 @EnableAuthorizationServer
@@ -23,7 +24,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private TokenStore redisTokenStore;
+    private TokenStore uimTokenStore;
 
     @Autowired
     private OAuthClientDetailsService clientDetailsService;
@@ -34,12 +35,17 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Autowired
     private UimUserApprovalHandler uimUserApprovalHandler;
 
+    @Autowired
+    private AuthorizationCodeServices authorizationCodeServices;
+
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
                 .accessTokenConverter(accessTokenConverter)
-                .tokenStore(redisTokenStore);
+                .tokenStore(uimTokenStore)
+                .authorizationCodeServices(authorizationCodeServices)
+        ;
         uimUserApprovalHandler.setRequestFactory(endpoints.getOAuth2RequestFactory());
         endpoints.userApprovalHandler(uimUserApprovalHandler);
     }

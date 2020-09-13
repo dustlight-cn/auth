@@ -7,17 +7,21 @@ import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
 import cn.dustlight.oauth2.uim.handlers.code.DefaultVerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
+import cn.dustlight.oauth2.uim.services.RedisAuthorizationCodeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -90,7 +94,7 @@ public class UimConfiguration {
     @ConditionalOnMissingBean
     public UimUserApprovalHandler uimUserApprovalHandler(@Autowired ClientDetailsService clientDetailsService,
                                                          @Autowired ApprovalStore approvalStore,
-                                                         @Autowired AuthorityDetailsMapper authorityDetailsMapper){
+                                                         @Autowired AuthorityDetailsMapper authorityDetailsMapper) {
         UimUserApprovalHandler approvalHandler = new UimUserApprovalHandler();
         approvalHandler.setClientDetailsService(clientDetailsService);
         approvalHandler.setApprovalStore(approvalStore);
@@ -99,14 +103,35 @@ public class UimConfiguration {
     }
 
     @Bean
-    public TokenStore redisTokenStore(@Autowired RedisConnectionFactory redisConnectionFactory) {
+    @ConditionalOnMissingBean
+    public RedisTemplate<String, Object> javaRedisTemplate(@Autowired RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(RedisSerializer.string());
+        redisTemplate.setValueSerializer(RedisSerializer.java());
+        redisTemplate.setHashKeySerializer(RedisSerializer.string());
+        redisTemplate.setHashValueSerializer(RedisSerializer.java());
+        return redisTemplate;
+    }
+
+
+    @Bean("uimTokenStore")
+    @ConditionalOnMissingBean
+    public TokenStore tokenStore(@Autowired RedisConnectionFactory redisConnectionFactory) {
         return new RedisTokenStore(redisConnectionFactory);
     }
 
-    @Bean
-    public ApprovalStore redisTokenApprovalStore(@Autowired TokenStore redisTokenStore) {
+    @Bean("uimApprovalStore")
+    @ConditionalOnMissingBean
+    public ApprovalStore approvalStore(@Autowired TokenStore uimTokenStore) {
         TokenApprovalStore tokenApprovalStore = new TokenApprovalStore();
-        tokenApprovalStore.setTokenStore(redisTokenStore);
+        tokenApprovalStore.setTokenStore(uimTokenStore);
         return tokenApprovalStore;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AuthorizationCodeServices authorizationCodeServices(@Autowired RedisTemplate<String, Object> redisTemplate) {
+        return new RedisAuthorizationCodeService(redisTemplate);
     }
 }
