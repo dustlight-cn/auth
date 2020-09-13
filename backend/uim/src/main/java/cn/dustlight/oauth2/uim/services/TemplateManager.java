@@ -2,7 +2,7 @@ package cn.dustlight.oauth2.uim.services;
 
 import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
 import cn.dustlight.sender.core.ITemplateManager;
-import cn.dustlight.oauth2.uim.models.TemplateNode;
+import cn.dustlight.oauth2.uim.entities.TemplateNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

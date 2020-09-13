@@ -1,8 +1,8 @@
 package cn.dustlight.oauth2.uim.services;
 
-import cn.dustlight.oauth2.uim.models.ClientDetails.ClientScope;
-import cn.dustlight.oauth2.uim.models.ClientDetails;
-import cn.dustlight.oauth2.uim.models.GrantType;
+import cn.dustlight.oauth2.uim.entities.ClientDetails.ClientScope;
+import cn.dustlight.oauth2.uim.entities.ClientDetails;
+import cn.dustlight.oauth2.uim.entities.GrantType;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 

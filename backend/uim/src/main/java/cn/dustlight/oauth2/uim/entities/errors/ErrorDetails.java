@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.models.errors;
+package cn.dustlight.oauth2.uim.entities.errors;
 
 public class ErrorDetails {
 

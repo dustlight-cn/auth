@@ -3,7 +3,7 @@ package cn.dustlight.oauth2.uim.controllers;
 import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
 import cn.dustlight.oauth2.uim.configurations.UimProperties;
 import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
-import cn.dustlight.oauth2.uim.models.*;
+import cn.dustlight.oauth2.uim.entities.*;
 import cn.dustlight.oauth2.uim.services.*;
 import cn.dustlight.oauth2.uim.RestfulConstants;
 import cn.dustlight.oauth2.uim.RestfulResult;

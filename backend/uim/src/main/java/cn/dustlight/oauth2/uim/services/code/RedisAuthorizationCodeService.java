@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.services;
+package cn.dustlight.oauth2.uim.services.code;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;

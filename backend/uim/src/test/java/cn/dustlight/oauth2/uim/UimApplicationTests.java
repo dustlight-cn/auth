@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim;
 
-import cn.dustlight.oauth2.uim.models.errors.ErrorEnum;
+import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

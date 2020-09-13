@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.models;
+package cn.dustlight.oauth2.uim.entities;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.io.Serializable;
 import java.util.Date;
 
-public interface IRoleDetails extends Serializable {
+public interface IAuthorityDetails extends Serializable {
 
     @JsonSerialize(using = ToStringSerializer.class)
     Long getId();
@@ -17,5 +17,5 @@ public interface IRoleDetails extends Serializable {
 
     Date getCreatedAt();
 
-    Date GetUpdatedAt();
+    Date getUpdatedAt();
 }

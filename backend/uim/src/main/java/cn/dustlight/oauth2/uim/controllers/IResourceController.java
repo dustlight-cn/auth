@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.controllers;
 
-import cn.dustlight.oauth2.uim.models.UserPublicDetails;
+import cn.dustlight.oauth2.uim.entities.UserPublicDetails;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

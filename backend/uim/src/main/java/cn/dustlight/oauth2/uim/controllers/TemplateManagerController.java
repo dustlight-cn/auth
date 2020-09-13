@@ -2,7 +2,7 @@ package cn.dustlight.oauth2.uim.controllers;
 
 import cn.dustlight.oauth2.uim.RestfulConstants;
 import cn.dustlight.oauth2.uim.RestfulResult;
-import cn.dustlight.oauth2.uim.models.TemplateNode;
+import cn.dustlight.oauth2.uim.entities.TemplateNode;
 import cn.dustlight.oauth2.uim.services.TemplateManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;

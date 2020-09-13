@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.models;
+package cn.dustlight.oauth2.uim.entities;
 
 public class GrantType implements IGrantType {
 

@@ -1,9 +1,9 @@
 package cn.dustlight.oauth2.uim.controllers;
 
-import cn.dustlight.oauth2.uim.models.IClientDetails;
+import cn.dustlight.oauth2.uim.entities.IClientDetails;
 import cn.dustlight.oauth2.uim.services.ClientDetailsMapper;
 import cn.dustlight.oauth2.uim.RestfulResult;
-import cn.dustlight.oauth2.uim.models.IScopeDetails;
+import cn.dustlight.oauth2.uim.entities.IScopeDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;

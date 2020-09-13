@@ -1,7 +1,6 @@
 package cn.dustlight.oauth2.uim.handlers;
 
-import cn.dustlight.oauth2.uim.models.IUserDetails;
-import cn.dustlight.oauth2.uim.models.errors.ErrorEnum;
+import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -28,7 +27,7 @@ public class DefaultUimHandler implements UimHandler {
 
     @Override
     public void handleAccessDenied(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException {
-        sendObject(HttpStatus.UNAUTHORIZED.value(), ErrorEnum.UNAUTHORIZED.message(e.getMessage()), httpServletResponse);
+        sendObject(HttpStatus.UNAUTHORIZED.value(), ErrorEnum.ACCESS_DENIED.message(e.getMessage()), httpServletResponse);
     }
 
     @Override

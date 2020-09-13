@@ -1,7 +1,7 @@
 package cn.dustlight.oauth2.uim.controllers;
 
-import cn.dustlight.oauth2.uim.models.UserDetails;
-import cn.dustlight.oauth2.uim.models.UserPublicDetails;
+import cn.dustlight.oauth2.uim.entities.UserDetails;
+import cn.dustlight.oauth2.uim.entities.UserPublicDetails;
 import cn.dustlight.oauth2.uim.services.UserDetailsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;

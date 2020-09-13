@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.controllers;
 
-import cn.dustlight.oauth2.uim.models.*;
+import cn.dustlight.oauth2.uim.entities.*;
 import cn.dustlight.oauth2.uim.RestfulResult;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;

@@ -1,7 +1,7 @@
 package cn.dustlight.oauth2.uim.services;
 
-import cn.dustlight.oauth2.uim.models.UserDetails;
-import cn.dustlight.oauth2.uim.models.UserPublicDetails;
+import cn.dustlight.oauth2.uim.entities.UserDetails;
+import cn.dustlight.oauth2.uim.entities.UserPublicDetails;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -67,8 +67,8 @@ public interface UserDetailsMapper {
     @Insert("INSERT INTO user_details SET uid=#{uid},username=#{username},password=#{password},email=#{email},nickname=#{nickname}")
     boolean insertUser(long uid, String username, String password, String email, String nickname);
 
-    @Update("UPDATE user_details SET email=#{email} WHERE username=#{username}")
-    boolean changeEmail(String username, String email);
+    @Update("UPDATE user_details SET email=#{email} WHERE uid=#{uid}")
+    boolean changeEmail(Long uid, String email);
 
     @Update("UPDATE user_details SET role=#{roleId} WHERE uid=#{uid}")
     boolean changeRole(Long uid, Long roleId);
@@ -79,9 +79,9 @@ public interface UserDetailsMapper {
     @Update("UPDATE user_details SET password=#{password} WHERE email=#{email}")
     boolean changePasswordByEmail(String email, String password);
 
-    @Update("UPDATE user_details SET nickname=#{nickname} WHERE username=#{username}")
-    boolean changeNickname(String username, String nickname);
+    @Update("UPDATE user_details SET nickname=#{nickname} WHERE uid=#{uid}")
+    boolean changeNickname(Long uid, String nickname);
 
-    @Update("UPDATE user_details SET gender=#{gender} WHERE username=#{username}")
-    boolean changeGender(String username, int gender);
+    @Update("UPDATE user_details SET gender=#{gender} WHERE uid=#{uid}")
+    boolean changeGender(Long uid, int gender);
 }

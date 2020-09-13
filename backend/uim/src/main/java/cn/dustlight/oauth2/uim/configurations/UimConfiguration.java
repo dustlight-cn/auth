@@ -6,16 +6,24 @@ import cn.dustlight.oauth2.uim.handlers.UimHandler;
 import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
 import cn.dustlight.oauth2.uim.handlers.code.DefaultVerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
+import cn.dustlight.oauth2.uim.entities.IUserDetails;
 import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
-import cn.dustlight.oauth2.uim.services.RedisAuthorizationCodeService;
+import cn.dustlight.oauth2.uim.services.code.RedisAuthorizationCodeService;
+import cn.dustlight.oauth2.uim.services.code.RedisVerificationCodeStoreService;
+import cn.dustlight.oauth2.uim.services.code.VerificationCodeStoreService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
@@ -133,5 +141,29 @@ public class UimConfiguration {
     @ConditionalOnMissingBean
     public AuthorizationCodeServices authorizationCodeServices(@Autowired RedisTemplate<String, Object> redisTemplate) {
         return new RedisAuthorizationCodeService(redisTemplate);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public VerificationCodeStoreService verificationCodeStoreService(@Autowired StringRedisTemplate redisTemplate) {
+        return new RedisVerificationCodeStoreService(redisTemplate);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
+    public Authentication authentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
+    public IUserDetails userDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal() == null ||
+                !(authentication.getPrincipal() instanceof IUserDetails))
+            return null;
+        return (IUserDetails) authentication.getPrincipal();
     }
 }

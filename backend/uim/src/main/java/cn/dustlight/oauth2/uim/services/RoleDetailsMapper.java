@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.services;
 
-import cn.dustlight.oauth2.uim.models.RoleDetails;
+import cn.dustlight.oauth2.uim.entities.RoleDetails;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 

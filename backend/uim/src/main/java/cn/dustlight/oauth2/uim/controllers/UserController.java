@@ -3,26 +3,25 @@ package cn.dustlight.oauth2.uim.controllers;
 import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
 import cn.dustlight.oauth2.uim.configurations.UimProperties;
 import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
-import cn.dustlight.oauth2.uim.models.UserPublicDetails;
+import cn.dustlight.oauth2.uim.entities.UserPublicDetails;
+import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
+import cn.dustlight.oauth2.uim.services.code.VerificationCodeStoreService;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.tencent.cos.TencentCloudObjectStorage;
-import cn.dustlight.oauth2.uim.RestfulConstants;
-import cn.dustlight.oauth2.uim.RestfulResult;
-import cn.dustlight.oauth2.uim.models.IUserDetails;
-import cn.dustlight.oauth2.uim.models.UserDetails;
+import cn.dustlight.oauth2.uim.entities.IUserDetails;
+import cn.dustlight.oauth2.uim.entities.UserDetails;
 import cn.dustlight.oauth2.uim.handlers.email.EmailSenderHandler;
 import cn.dustlight.oauth2.uim.services.UserDetailsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,91 +44,97 @@ public class UserController implements IUserController {
     private VerificationCodeGenerator codeGenerator;
 
     @Autowired
+    private VerificationCodeStoreService codeStoreService;
+
+    @Autowired
     private UimProperties uimProperties;
 
     @Autowired
     private TencentCloudObjectStorage storage;
 
+    @Autowired
+    private IUserDetails userDetails;
+
     @Override
-    public RestfulResult sendEmailCodeRegister(String email, HttpSession session) {
+    public void sendEmailCodeRegister(String email) throws IOException {
         if (email == null || (email = email.trim()).length() == 0)
-            return RestfulConstants.ERROR_EMAIL_INVALID;
+            ErrorEnum.EMAIL_INVALID.throwException();
         if (userDetailsMapper.isEmailExist(email))
-            return RestfulConstants.ERROR_EMAIL_EXISTS;
+            ErrorEnum.EMAIL_EXISTS.throwException();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpSession session = attributes.getRequest().getSession(true);
         String code = codeGenerator.generatorCode(uimProperties.getRegisterVerificationCodeLength());
-        session.setAttribute("code_email", code);
         session.setAttribute("email", email);
         session.setAttribute("email_verified", false);
+        codeStoreService.store("code_email:" + session.getId(), code, 1000 * 60 * 30);
         HashMap<String, Object> data = new HashMap<>();
         data.put("code", code);
-        try {
-            emailSenderHandler.send(uimProperties.getRegisterEmail(), data, email);
-            return RestfulConstants.SUCCESS;
-        } catch (IOException e) {
-            return RestfulResult.error(e.getMessage());
-        }
+        emailSenderHandler.send(uimProperties.getRegisterEmail(), data, email);
     }
 
     @Override
-    public RestfulResult sendEmailCodeResetPassword(String email, HttpSession session) {
+    public void sendEmailCodeResetPassword(String email) throws IOException {
         if (email == null || (email = email.trim()).length() == 0)
-            return RestfulConstants.ERROR_EMAIL_INVALID;
+            ErrorEnum.EMAIL_INVALID.throwException();
         if (!userDetailsMapper.isEmailExist(email))
-            return RestfulConstants.ERROR_USER_NOT_FOUND;
+            ErrorEnum.USER_NOT_FOUND.throwException();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpSession session = attributes.getRequest().getSession(true);
         String code = codeGenerator.generatorCode(uimProperties.getResetPasswordVerificationCodeLength());
-        session.setAttribute("code_email_reset", code);
         session.setAttribute("email_reset", email);
         session.setAttribute("email_reset_verified", false);
+        codeStoreService.store("code_email_reset:" + session.getId(), code, 1000 * 60 * 30);
         HashMap<String, Object> data = new HashMap<>();
         data.put("code", code);
-        try {
-            emailSenderHandler.send(uimProperties.getResetPasswordEmail(), data, email);
-            return RestfulConstants.SUCCESS;
-        } catch (IOException e) {
-            return RestfulResult.error(e.getMessage());
-        }
+        emailSenderHandler.send(uimProperties.getResetPasswordEmail(), data, email);
     }
 
     @Override
-    public RestfulResult verifyEmailRegister(String email, String code, HttpSession session) {
-        if (session.getAttribute("code_email") == null || code == null)
-            return RestfulConstants.ERROR_VERIFICATION_CODE_INVALID;
+    public void verifyEmailRegister(String email, String code) {
+        if (code == null)
+            ErrorEnum.CODE_INVALID.throwException();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpSession session = attributes.getRequest().getSession(true);
         if (session.getAttribute("email") == null || email == null || (email = email.trim()).length() == 0)
-            return RestfulConstants.ERROR_EMAIL_INVALID;
-        String code_session = session.getAttribute("code_email").toString();
+            ErrorEnum.EMAIL_INVALID.throwException();
+        String codeKey = "code_email:" + session.getId();
         String email_session = session.getAttribute("email").toString();
-        if (code_session.equals(code) && email_session.equals(email)) {
-            session.setAttribute("email_verified", true);
-            session.removeAttribute("code_email");
-            return RestfulConstants.SUCCESS;
-        }
-        return RestfulConstants.ERROR_VERIFICATION_CODE_INVALID;
+        if (!email_session.equals(email))
+            ErrorEnum.CODE_INVALID.throwException();
+        if (!codeStoreService.verify(codeKey, code))
+            ErrorEnum.CODE_INVALID.throwException();
+        session.setAttribute("email_verified", true);
+        codeStoreService.remove(codeKey);
     }
 
     @Override
-    public RestfulResult verifyEmailResetPassword(String email, String code, HttpSession session) {
-        if (session.getAttribute("code_email_reset") == null || code == null)
-            return RestfulConstants.ERROR_VERIFICATION_CODE_INVALID;
+    public void verifyEmailResetPassword(String email, String code) {
+        if (code == null)
+            ErrorEnum.CODE_INVALID.throwException();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpSession session = attributes.getRequest().getSession(true);
         if (session.getAttribute("email_reset") == null || email == null || (email = email.trim()).length() == 0)
-            return RestfulConstants.ERROR_EMAIL_INVALID;
-        String code_session = session.getAttribute("code_email_reset").toString();
+            ErrorEnum.EMAIL_INVALID.throwException();
+        String codeKey = "code_email_reset:" + session.getId();
         String email_session = session.getAttribute("email_reset").toString();
-        if (code_session.equals(code) && email_session.equals(email)) {
-            session.setAttribute("email_reset_verified", true);
-            session.removeAttribute("code_email_reset");
-            return RestfulConstants.SUCCESS;
-        }
-        return RestfulConstants.ERROR_VERIFICATION_CODE_INVALID;
+        if (!email_session.equals(email))
+            ErrorEnum.CODE_INVALID.throwException();
+        if (!codeStoreService.verify(codeKey, code))
+            ErrorEnum.CODE_INVALID.throwException();
+        session.setAttribute("email_reset_verified", true);
+        codeStoreService.remove(codeKey);
     }
 
     @Override
-    public RestfulResult register(String username, String password, String nickname, HttpSession session) {
+    public void register(String username, String password, String nickname) {
         if (username == null || (username = username.trim()).length() < 6)
-            return RestfulConstants.ERROR_USERNAME_INVALID;
+            ErrorEnum.USERNAME_INVALID.throwException();
         if (password == null || (password = password.trim()).length() < 6)
-            return RestfulConstants.ERROR_PASSWORD_INVALID;
+            ErrorEnum.PASSWORD_INVALID.throwException();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpSession session = attributes.getRequest().getSession(true);
         if (session.getAttribute("email") == null || session.getAttribute("email_verified") == null)
-            return RestfulConstants.ERROR_EMAIL_INVALID;
+            ErrorEnum.EMAIL_INVALID.throwException();
         if (nickname == null)
             nickname = "";
         else
@@ -137,7 +142,7 @@ public class UserController implements IUserController {
         String email = session.getAttribute("email").toString();
         boolean emailVerified = (boolean) session.getAttribute("email_verified");
         if (!emailVerified)
-            return RestfulConstants.ERROR_EMAIL_INVALID;
+            ErrorEnum.EMAIL_INVALID.throwException();
         boolean result = userDetailsMapper.insertUser(snowflake.generate()
                 , username
                 , passwordEncoder.encode(password)
@@ -145,76 +150,69 @@ public class UserController implements IUserController {
                 , nickname);
         session.removeAttribute("email");
         session.removeAttribute("email_verified");
-        return result ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+        if (!result)
+            ErrorEnum.REGISTER_FAIL.throwException();
     }
 
     @Override
-    public RestfulResult resetEmail(String email, Principal principal, HttpSession session) {
-        if (principal == null)
-            return RestfulConstants.ERROR_UNAUTHORIZED;
+    public void resetEmail(String email) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpSession session = attributes.getRequest().getSession(true);
         if (session.getAttribute("email") == null || email == null || (email = email.trim()).length() == 0
                 || session.getAttribute("email_verified") == null)
-            return RestfulConstants.ERROR_EMAIL_INVALID;
+            ErrorEnum.EMAIL_INVALID.throwException();
 
         String emailSession = session.getAttribute("email").toString();
         boolean emailVerified = (boolean) session.getAttribute("email_verified");
 
         if (!(emailSession.equals(email) && emailVerified))
-            return RestfulConstants.ERROR_EMAIL_INVALID;
-        boolean result = userDetailsMapper.changeEmail(principal.getName(), email);
+            ErrorEnum.EMAIL_INVALID.throwException();
+        boolean result = userDetailsMapper.changeEmail(userDetails.getUid(), email);
         session.removeAttribute("email");
         session.removeAttribute("email_verified");
-        return result ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
     @Override
-    public RestfulResult resetPasswordByEmail(String email, String password, HttpSession session) {
+    public void resetPasswordByEmail(String email, String password) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpSession session = attributes.getRequest().getSession(true);
         if (session.getAttribute("email_reset") == null || email == null || (email = email.trim()).length() == 0
                 || session.getAttribute("email_reset_verified") == null)
-            return RestfulConstants.ERROR_EMAIL_INVALID;
+            ErrorEnum.EMAIL_INVALID.throwException();
         String emailSession = session.getAttribute("email_reset").toString();
         boolean emailVerified = (boolean) session.getAttribute("email_reset_verified");
         if (!(emailSession.equals(email) && emailVerified))
-            return RestfulConstants.ERROR_EMAIL_INVALID;
+            ErrorEnum.EMAIL_INVALID.throwException();
         boolean result = userDetailsMapper.changePasswordByEmail(email, passwordEncoder.encode(password));
         session.removeAttribute("email_reset");
         session.removeAttribute("email_reset_verified");
-        return result ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
     @Override
-    public RestfulResult resetNickname(String nickname, Principal principal) {
-        if (principal == null)
-            return RestfulConstants.ERROR_UNAUTHORIZED;
+    public void resetNickname(String nickname) {
         if (nickname == null)
             nickname = "";
-        boolean result = userDetailsMapper.changeNickname(principal.getName(), nickname);
-        return result ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+        boolean result = userDetailsMapper.changeNickname(userDetails.getUid(), nickname);
     }
 
     @Override
-    public RestfulResult resetGender(int gender, Principal principal) {
-        if (principal == null)
-            return RestfulConstants.ERROR_UNAUTHORIZED;
-        boolean result = userDetailsMapper.changeGender(principal.getName(), gender);
-        return result ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+    public void resetGender(int gender) {
+        boolean result = userDetailsMapper.changeGender(userDetails.getUid(), gender);
     }
 
     @Override
-    public RestfulResult<String> uploadAvatar(Authentication authentication) throws IOException {
-        if (authentication.getPrincipal() instanceof IUserDetails) {
-            IUserDetails user = (IUserDetails) authentication.getPrincipal();
-            String url = storage.generatePutUrl(uimProperties.getStorage().getStoragePath() + "avatar/" + user.getUid(),
-                    Permission.READABLE,
-                    uimProperties.getStorage().getDefaultExpiration());
-            return RestfulResult.success(url);
-        }
-        return RestfulConstants.ERROR_UNKNOWN;
+    public String uploadAvatar() throws IOException {
+        String url = storage.generatePutUrl(uimProperties.getStorage().getStoragePath() + "avatar/" + userDetails.getUid(),
+                Permission.READABLE,
+                uimProperties.getStorage().getDefaultExpiration());
+        return url;
     }
 
     @Override
-    public void getAvatar(Long uid, Integer size, Long t, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public void getAvatar(Long uid, Integer size, Long t) throws IOException {
         String url = generateAvatarUrl(uid, size, t);
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletResponse response = attributes.getResponse();
         if (url == null)
             response.sendError(404);
         else
@@ -222,65 +220,57 @@ public class UserController implements IUserController {
     }
 
     @Override
-    public RestfulResult<Boolean> isUsernameExists(String username) {
+    public Boolean isUsernameExists(String username) {
         if (username == null || (username = username.trim()).length() == 0)
-            return RestfulConstants.ERROR_USERNAME_INVALID;
-        return RestfulResult.success(userDetailsMapper.isUsernameExist(username));
+            ErrorEnum.USERNAME_INVALID.throwException();
+        return userDetailsMapper.isUsernameExist(username);
     }
 
     @Override
-    public RestfulResult<Boolean> isEmailExists(String email) {
+    public Boolean isEmailExists(String email) {
         if (email == null || (email = email.trim()).length() == 0)
-            return RestfulConstants.ERROR_EMAIL_INVALID;
-        return RestfulResult.success(userDetailsMapper.isEmailExist(email));
+            ErrorEnum.EMAIL_INVALID.throwException();
+        return userDetailsMapper.isEmailExist(email);
     }
 
     @Override
-    public RestfulResult<Boolean> isPhoneExists(String phone) {
+    public Boolean isPhoneExists(String phone) {
         if (phone == null || (phone = phone.trim()).length() == 0)
-            return RestfulConstants.ERROR_PHONE_INVALID;
-        return RestfulResult.success(userDetailsMapper.isPhoneExist(phone));
+            ErrorEnum.PHONE_INVALID.throwException();
+        return userDetailsMapper.isPhoneExist(phone);
     }
 
     @Override
-    public RestfulResult<UserDetails> getCurrentUserDetails(Principal principal) {
-        UserDetails user = userDetailsMapper.loadUser(principal.getName());
+    public IUserDetails getCurrentUserDetails() {
+        UserDetails user = userDetailsMapper.loadUser(userDetails.getUsername());
         if (user == null)
-            return RestfulConstants.ERROR_USER_NOT_FOUND;
+            ErrorEnum.USER_NOT_FOUND.throwException();
         user.setAvatar(generateAvatarUrl(user.getUid(), 256, null));
-        return RestfulResult.success(user);
+        return user;
     }
 
     @Override
-    public RestfulResult<UserDetails> getUserDetails(String username) {
+    public IUserDetails getUserDetails(String username) {
         UserDetails user = userDetailsMapper.loadUser(username);
         if (user == null)
-            return RestfulConstants.ERROR_USER_NOT_FOUND;
-        user.setEmail(null);
-        user.setPhone(null);
-        user.setRole(null);
+            ErrorEnum.USER_NOT_FOUND.throwException();
         user.setAvatar(generateAvatarUrl(user.getUid(), 256, null));
-        return RestfulResult.success(user);
+        return user;
     }
 
     @Override
-    public RestfulResult<List<UserPublicDetails>> getUsersDetails(List<String> usernameArray) {
+    public List<UserPublicDetails> getUsersDetails(List<String> usernameArray) {
         List<UserPublicDetails> arr = userDetailsMapper.loadUsersPublic(usernameArray);
         for (UserPublicDetails userPublicDetails : arr)
             userPublicDetails.setAvatar(generateAvatarUrl(userPublicDetails.getUid(), 256, null));
-        return RestfulResult.success(arr);
+        return arr;
     }
 
     @Override
-    public RestfulResult applyForDeveloper(Authentication authentication) {
-        if (AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("CREATE_CLIENT"))
-            return RestfulConstants.SUCCESS;
-        if (authentication.getPrincipal() instanceof IUserDetails) {
-            IUserDetails user = (IUserDetails) authentication.getPrincipal();
-            if (userDetailsMapper.changeRoleByRoleName(user.getUid(), "ROLE_DEV"))
-                return RestfulConstants.SUCCESS;
-        }
-        return RestfulConstants.ERROR_UNKNOWN;
+    public void applyForDeveloper() {
+        if (AuthorityUtils.authorityListToSet(userDetails.getAuthorities()).contains("CREATE_CLIENT"))
+            return;
+        userDetailsMapper.changeRoleByRoleName(userDetails.getUid(), "ROLE_DEV");
     }
 
     public String generateAvatarUrl(Long uid, Integer size, Long t) {

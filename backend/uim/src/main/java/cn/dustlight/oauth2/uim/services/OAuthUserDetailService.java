@@ -16,7 +16,7 @@ public class OAuthUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        cn.dustlight.oauth2.uim.models.UserDetails u = userDetailsMapper.loadUserOAuth(username);
+        cn.dustlight.oauth2.uim.entities.UserDetails u = userDetailsMapper.loadUserOAuth(username);
         if(u == null)
             throw new UsernameNotFoundException("Username or email: '" + username + "' not found!");
         return u;

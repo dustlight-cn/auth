@@ -1,8 +1,8 @@
-package cn.dustlight.oauth2.uim.models;
+package cn.dustlight.oauth2.uim.entities;
 
 import java.util.Date;
 
-public class ScopeDetails implements IScopeDetails {
+public class AuthorityDetails implements IAuthorityDetails {
 
     private Long id;
     private String name;
