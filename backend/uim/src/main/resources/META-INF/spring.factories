@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.dustlight.oauth2.uim.configurations.UimConfiguration,\
+   cn.dustlight.oauth2.uim.configurations.UimWebSecurityConfiguration,\
+  cn.dustlight.oauth2.uim.configurations.AuthorizationServerConfiguration,\
+  cn.dustlight.oauth2.uim.configurations.ResourceServerConfiguration,\
+  cn.dustlight.oauth2.uim.configurations.UimMethodSecurityConfiguration

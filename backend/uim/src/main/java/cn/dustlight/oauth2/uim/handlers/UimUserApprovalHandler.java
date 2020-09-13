@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.configurations;
+package cn.dustlight.oauth2.uim.handlers;
 
 import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
 import org.springframework.security.core.Authentication;
@@ -6,16 +6,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.approval.*;
-import org.springframework.util.Assert;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserApproveHandler extends ApprovalStoreUserApprovalHandler implements UserApprovalHandler {
+public class UimUserApprovalHandler extends ApprovalStoreUserApprovalHandler implements UserApprovalHandler {
 
     private AuthorityDetailsMapper mapper;
 
-    public UserApproveHandler() {
+    public UimUserApprovalHandler() {
 
     }
 
@@ -29,8 +28,8 @@ public class UserApproveHandler extends ApprovalStoreUserApprovalHandler impleme
 
     @Override
     public void afterPropertiesSet() {
-        super.afterPropertiesSet();
-        Assert.state(this.mapper != null, "ClientMapper must be provided");
+        // super.afterPropertiesSet();
+        // Assert.state(this.mapper != null, "ClientMapper must be provided");
     }
 
     @Override

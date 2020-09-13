@@ -1,8 +1,8 @@
 package cn.dustlight.oauth2.uim;
 
+import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
 import cn.dustlight.oauth2.uim.models.TemplateNode;
 import cn.dustlight.oauth2.uim.services.TemplateManagerMapper;
-import cn.dustlight.oauth2.uim.utils.Snowflake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +18,7 @@ public class TemplateManagerMapperTest {
     TemplateManagerMapper mapper;
 
     @Autowired
-    Snowflake snowflake;
+    SnowflakeIdGenerator snowflake;
 
     Logger logger = Logger.getLogger(getClass().getName());
 
@@ -38,14 +38,22 @@ public class TemplateManagerMapperTest {
     public void createTemplate() {
         String name = getClass().getName();
         String text = new Date().toString() + " - " + System.currentTimeMillis();
-        mapper.setTemplate(snowflake.getNextId(), name, text);
+        mapper.setTemplate(snowflake.generate(), name, text);
         logger.info(mapper.getTemplate(name));
     }
 
     @Test
     public void deleteAll() {
-        List<String> list = mapper.getTemplatesName();
-        mapper.deleteTemplate(list);
-        getTemplateNames();
+//        List<String> list = mapper.getTemplatesName();
+//        mapper.deleteTemplate(list);
+//        getTemplateNames();
+    }
+
+    @Test
+    public void snowflakeTest() {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++)
+            logger.info(snowflake.generate() + "");
+        logger.info((System.currentTimeMillis() - start) + "ms");
     }
 }

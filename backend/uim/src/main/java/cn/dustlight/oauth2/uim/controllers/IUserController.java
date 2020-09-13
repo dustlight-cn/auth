@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
-@RequestMapping("/api/user")
+@RequestMapping(value = "/api/user", produces = "application/json;charset=utf-8")
 public interface IUserController {
 
     @PostMapping("/code/email/register")

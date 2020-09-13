@@ -1,12 +1,12 @@
 package cn.dustlight.oauth2.uim.controllers;
 
+import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
 import cn.dustlight.oauth2.uim.configurations.UimProperties;
-import cn.dustlight.oauth2.uim.endpoints.IVerificationCodeGenerator;
+import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.models.*;
 import cn.dustlight.oauth2.uim.services.*;
 import cn.dustlight.oauth2.uim.RestfulConstants;
 import cn.dustlight.oauth2.uim.RestfulResult;
-import cn.dustlight.oauth2.uim.utils.Snowflake;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.tencent.cos.TencentCloudObjectStorage;
 import org.apache.commons.codec.binary.Base32;
@@ -45,10 +45,10 @@ public class ClientController implements IClientController {
     private GrantTypeMapper grantTypeMapper;
 
     @Autowired
-    private Snowflake snowflake;
+    private SnowflakeIdGenerator snowflake;
 
     @Autowired
-    private IVerificationCodeGenerator verificationCodeGenerator;
+    private VerificationCodeGenerator verificationCodeGenerator;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -70,7 +70,7 @@ public class ClientController implements IClientController {
     public RestfulResult createClient(String name, String redirectUri, String description, List<Long> scopes, List<Long> grantTypes, Authentication authentication) {
         IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Long id = snowflake.getNextId();
+        Long id = snowflake.generate();
         try (ObjectOutputStream os = new ObjectOutputStream(out)) {
             os.writeLong(id);
             os.writeByte(0);
@@ -99,7 +99,7 @@ public class ClientController implements IClientController {
 
     @Override
     public RestfulResult<String> resetClientSecret(String appKey, Authentication authentication) {
-        Long id = snowflake.getNextId();
+        Long id = snowflake.generate();
         String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generatorCode(128));
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("DELETE_CLIENT_ANY") ?
                 clientMapper.updateClientSecret(appKey, passwordEncoder.encode(appSecret)) :
@@ -209,7 +209,7 @@ public class ClientController implements IClientController {
 
     @Override
     public RestfulResult insertScopeDetail(String name, String description) {
-        return scopeDetailsMapper.insertScope(snowflake.getNextId(), name, description) ?
+        return scopeDetailsMapper.insertScope(snowflake.generate(), name, description) ?
                 RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
@@ -239,7 +239,7 @@ public class ClientController implements IClientController {
 
     @Override
     public RestfulResult insertRole(String name, String description) {
-        return roleDetailsMapper.insertRoleDetails(snowflake.getNextId(), name, description) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+        return roleDetailsMapper.insertRoleDetails(snowflake.generate(), name, description) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
     @Override
@@ -281,7 +281,7 @@ public class ClientController implements IClientController {
 
     @Override
     public RestfulResult insertRoleAuthority(String name, String description) {
-        return authorityDetailsMapper.insertAuthority(snowflake.getNextId(), name, description) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
+        return authorityDetailsMapper.insertAuthority(snowflake.generate(), name, description) ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
     @Override

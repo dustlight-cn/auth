@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Component
 @ConfigurationProperties(prefix = "dustlight.uim")
 public class UimProperties {
 
@@ -15,8 +14,8 @@ public class UimProperties {
     private FormLogin formLogin;
     @Autowired
     private Logout logout;
+    private SnowflakeConfiguration snowflake = new SnowflakeConfiguration();
     private boolean csrfEnabled = true;
-    private int snowflakeWorkerId = -1;
     private int registerVerificationCodeLength = 6;
     private int resetPasswordVerificationCodeLength = 12;
     private String registerEmail = "Register";
@@ -65,14 +64,6 @@ public class UimProperties {
         this.resourcePaths = resourcePaths;
     }
 
-    public int getSnowflakeWorkerId() {
-        return snowflakeWorkerId;
-    }
-
-    public void setSnowflakeWorkerId(int snowflakeWorkerId) {
-        this.snowflakeWorkerId = snowflakeWorkerId;
-    }
-
     public int getRegisterVerificationCodeLength() {
         return registerVerificationCodeLength;
     }
@@ -119,6 +110,14 @@ public class UimProperties {
 
     public void setLogout(Logout logout) {
         this.logout = logout;
+    }
+
+    public SnowflakeConfiguration getSnowflake() {
+        return snowflake;
+    }
+
+    public void setSnowflake(SnowflakeConfiguration snowflake) {
+        this.snowflake = snowflake;
     }
 
     @Component
@@ -216,6 +215,34 @@ public class UimProperties {
 
         public void setDefaultExpiration(Long defaultExpiration) {
             this.defaultExpiration = defaultExpiration;
+        }
+    }
+
+    public static class SnowflakeConfiguration {
+        public Long machineId,dataCenterId,startTimestamp;
+
+        public Long getMachineId() {
+            return machineId;
+        }
+
+        public void setMachineId(Long machineId) {
+            this.machineId = machineId;
+        }
+
+        public Long getDataCenterId() {
+            return dataCenterId;
+        }
+
+        public void setDataCenterId(Long dataCenterId) {
+            this.dataCenterId = dataCenterId;
+        }
+
+        public Long getStartTimestamp() {
+            return startTimestamp;
+        }
+
+        public void setStartTimestamp(Long startTimestamp) {
+            this.startTimestamp = startTimestamp;
         }
     }
 }

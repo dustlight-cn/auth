@@ -10,6 +10,7 @@
     <description>Parent Project</description>
 
     <modules>
+        <module>common/generator</module>
         <module>common/sender</module>
         <module>common/storage</module>
         <module>backend/uim</module>

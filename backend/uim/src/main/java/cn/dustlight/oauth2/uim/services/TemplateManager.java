@@ -1,8 +1,8 @@
 package cn.dustlight.oauth2.uim.services;
 
+import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
 import cn.dustlight.sender.core.ITemplateManager;
 import cn.dustlight.oauth2.uim.models.TemplateNode;
-import cn.dustlight.oauth2.uim.utils.Snowflake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class TemplateManager implements ITemplateManager {
     protected TemplateManagerMapper managerMapper;
 
     @Autowired
-    protected Snowflake snowflake;
+    protected SnowflakeIdGenerator snowflake;
 
     @Override
     public List<String> getTemplatesName() throws IOException {
@@ -30,7 +30,7 @@ public class TemplateManager implements ITemplateManager {
 
     @Override
     public void setTemplate(String templateName, String templateContent) throws IOException {
-        managerMapper.setTemplate(snowflake.getNextId(), templateName, templateContent);
+        managerMapper.setTemplate(snowflake.generate(), templateName, templateContent);
     }
 
     @Override

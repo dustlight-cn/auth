@@ -1,7 +1,7 @@
 package cn.dustlight.oauth2.uim;
 
-import cn.dustlight.oauth2.uim.endpoints.DefaultEmailSenderEndpoint;
-import cn.dustlight.oauth2.uim.endpoints.IVerificationCodeGenerator;
+import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
+import cn.dustlight.oauth2.uim.handlers.email.DefaultEmailSenderHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,16 +13,15 @@ import java.util.HashMap;
 public class EmailSenderTest {
 
     @Autowired
-    DefaultEmailSenderEndpoint sender;
+    DefaultEmailSenderHandler sender;
 
     @Autowired
-    private IVerificationCodeGenerator codeGenerator;
+    private VerificationCodeGenerator codeGenerator;
 
     @Test
     public void sendTest() throws IOException {
         HashMap<String, Object> data = new HashMap<>();
         data.put("code", codeGenerator.generatorCode(6));
-
-        sender.send("registerVerificationCode", data, "845612500@qq.com");
+        sender.send("邮箱验证", data, "845612500@qq.com");
     }
 }

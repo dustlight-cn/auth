@@ -39,7 +39,11 @@ public class OAuth2Controller {
     @Autowired
     private TokenStore redisTokenStore;
 
-    @RequestMapping(value = {"/oauth/authorize"}, method = RequestMethod.GET)
+    @RequestMapping(
+            value = {"/oauth/authorize"},
+            method = RequestMethod.GET,
+            produces = "application/json;charset=utf-8"
+    )
     public ModelAndView authorize(Map<String, Object> model, @RequestParam Map<String, String> parameters, SessionStatus sessionStatus, Principal principal) {
         Map<String, Object> data = new HashMap<>();
         ModelAndView mv = endpoint.authorize(model, parameters, sessionStatus, principal);
@@ -91,7 +95,8 @@ public class OAuth2Controller {
     @RequestMapping(
             value = {"/oauth/authorize"},
             method = {RequestMethod.POST},
-            params = {"user_oauth_approval"}
+            params = {"user_oauth_approval"},
+            produces = "application/json;charset=utf-8"
     )
     public ModelAndView approveOrDeny(@RequestParam Map<String, String> approvalParameters, Map<String, ?> model, SessionStatus sessionStatus, Principal principal) {
         RedirectView view = (RedirectView) endpoint.approveOrDeny(approvalParameters, model, sessionStatus, principal);

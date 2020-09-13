@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
-@RequestMapping("/api/template")
+@RequestMapping(value = "/api/template", produces = "application/json;charset=utf-8")
 public interface ITemplateManagerController {
 
     @GetMapping("/names")

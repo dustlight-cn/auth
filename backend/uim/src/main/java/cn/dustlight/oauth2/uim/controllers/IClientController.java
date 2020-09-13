@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 开放平台业务控制器
  */
-@RequestMapping("/api/client")
+@RequestMapping(value = "/api/client", produces = "application/json;charset=utf-8")
 public interface IClientController {
 
     @PostMapping("/app")

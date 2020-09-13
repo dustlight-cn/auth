@@ -1,6 +1,8 @@
 package cn.dustlight.oauth2.uim.controllers;
 
+import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
 import cn.dustlight.oauth2.uim.configurations.UimProperties;
+import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.models.UserPublicDetails;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.tencent.cos.TencentCloudObjectStorage;
@@ -8,10 +10,8 @@ import cn.dustlight.oauth2.uim.RestfulConstants;
 import cn.dustlight.oauth2.uim.RestfulResult;
 import cn.dustlight.oauth2.uim.models.IUserDetails;
 import cn.dustlight.oauth2.uim.models.UserDetails;
-import cn.dustlight.oauth2.uim.endpoints.IEmailSenderEndpoint;
-import cn.dustlight.oauth2.uim.endpoints.IVerificationCodeGenerator;
+import cn.dustlight.oauth2.uim.handlers.email.EmailSenderHandler;
 import cn.dustlight.oauth2.uim.services.UserDetailsMapper;
-import cn.dustlight.oauth2.uim.utils.Snowflake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -30,7 +30,7 @@ import java.util.List;
 public class UserController implements IUserController {
 
     @Autowired
-    private IEmailSenderEndpoint emailSender;
+    private EmailSenderHandler emailSenderHandler;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -39,10 +39,10 @@ public class UserController implements IUserController {
     private UserDetailsMapper userDetailsMapper;
 
     @Autowired
-    private Snowflake snowflake;
+    private SnowflakeIdGenerator snowflake;
 
     @Autowired
-    private IVerificationCodeGenerator codeGenerator;
+    private VerificationCodeGenerator codeGenerator;
 
     @Autowired
     private UimProperties uimProperties;
@@ -63,7 +63,7 @@ public class UserController implements IUserController {
         HashMap<String, Object> data = new HashMap<>();
         data.put("code", code);
         try {
-            emailSender.send(uimProperties.getRegisterEmail(), data, email);
+            emailSenderHandler.send(uimProperties.getRegisterEmail(), data, email);
             return RestfulConstants.SUCCESS;
         } catch (IOException e) {
             return RestfulResult.error(e.getMessage());
@@ -83,7 +83,7 @@ public class UserController implements IUserController {
         HashMap<String, Object> data = new HashMap<>();
         data.put("code", code);
         try {
-            emailSender.send(uimProperties.getResetPasswordEmail(), data, email);
+            emailSenderHandler.send(uimProperties.getResetPasswordEmail(), data, email);
             return RestfulConstants.SUCCESS;
         } catch (IOException e) {
             return RestfulResult.error(e.getMessage());
@@ -138,7 +138,7 @@ public class UserController implements IUserController {
         boolean emailVerified = (boolean) session.getAttribute("email_verified");
         if (!emailVerified)
             return RestfulConstants.ERROR_EMAIL_INVALID;
-        boolean result = userDetailsMapper.insertUser(snowflake.getNextId()
+        boolean result = userDetailsMapper.insertUser(snowflake.generate()
                 , username
                 , passwordEncoder.encode(password)
                 , email

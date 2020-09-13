@@ -1,6 +1,6 @@
-package cn.dustlight.oauth2.uim.endpoints;
+package cn.dustlight.oauth2.uim.handlers.code;
 
-public interface IVerificationCodeGenerator {
+public interface VerificationCodeGenerator {
 
     String generatorCode(int length);
 

@@ -1,43 +1,28 @@
 package cn.dustlight.oauth2.uim.configurations;
 
+import cn.dustlight.oauth2.uim.handlers.UimHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-@Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class UimWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public UimProperties uimProperties;
 
     @Autowired
-    public UnauthorizedEntryPoint unauthorizedEntryPoint;
-
-    @Autowired
-    public SignInSuccessHandler signInSuccessHandler;
-
-    @Autowired
-    public SignInFailureHandler signInFailureHandler;
-
-    @Autowired
-    public LogoutHandler logoutHandler;
+    public UimHandler uimHandler;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
+    @ConditionalOnMissingBean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
@@ -53,13 +38,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(unauthorizedEntryPoint)
+                .authenticationEntryPoint(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleAuthenticationEntryPoint(httpServletRequest, httpServletResponse, e)))
+                .accessDeniedHandler(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleAccessDenied(httpServletRequest, httpServletResponse, e)))
                 .and()
                 .formLogin()
                 .loginPage(uimProperties.getFormLogin().getLoginPage())
                 .loginProcessingUrl(uimProperties.getFormLogin().getLoginProcessingUrl())
-                .successHandler(signInSuccessHandler)
-                .failureHandler(signInFailureHandler)
+                .successHandler(((httpServletRequest, httpServletResponse, authentication) -> uimHandler.handleSignInSuccess(httpServletRequest, httpServletResponse, authentication)))
+                .failureHandler(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleSignInFail(httpServletRequest, httpServletResponse, e)))
                 .usernameParameter(uimProperties.getFormLogin().getUsernameParameter())
                 .passwordParameter(uimProperties.getFormLogin().getPasswordParameter())
                 .permitAll()
@@ -67,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutUrl(uimProperties.getLogout().getLogoutUrl())
                 .deleteCookies(uimProperties.getLogout().getDeleteCookies())
-                .logoutSuccessHandler(logoutHandler)
+                .logoutSuccessHandler(((httpServletRequest, httpServletResponse, authentication) -> uimHandler.handleLogout(httpServletRequest, httpServletResponse, authentication)))
                 .permitAll()
                 .and()
         ;

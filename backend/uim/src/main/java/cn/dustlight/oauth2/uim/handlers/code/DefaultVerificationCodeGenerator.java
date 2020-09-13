@@ -1,13 +1,11 @@
-package cn.dustlight.oauth2.uim.endpoints;
+package cn.dustlight.oauth2.uim.handlers.code;
 
-import org.springframework.stereotype.Service;
-
+import java.security.SecureRandom;
 import java.util.Random;
 
-@Service
-public class VerificationCodeGenerator implements IVerificationCodeGenerator {
+public class DefaultVerificationCodeGenerator implements VerificationCodeGenerator {
 
-    private Random random = new Random();
+    private Random random = new SecureRandom();
 
     @Override
     public String generatorCode(int length) {
@@ -16,7 +14,6 @@ public class VerificationCodeGenerator implements IVerificationCodeGenerator {
 
     @Override
     public String generatorCode(int length, char[] extendChars) {
-
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < length; i++) {
             int type = random.nextInt(extendChars == null || extendChars.length == 0 ?

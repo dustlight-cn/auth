@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
-@RequestMapping("/api/res")
+@RequestMapping(value = "/api/res", produces = "application/json;charset=utf-8")
 public interface IResourceController {
 
     @GetMapping("/details")
