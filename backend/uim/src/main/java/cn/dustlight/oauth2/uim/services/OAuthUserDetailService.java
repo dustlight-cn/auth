@@ -1,5 +1,6 @@
 package cn.dustlight.oauth2.uim.services;
 
+import cn.dustlight.oauth2.uim.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,7 +17,7 @@ public class OAuthUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        cn.dustlight.oauth2.uim.entities.UserDetails u = userDetailsMapper.loadUserOAuth(username);
+        User u = userDetailsMapper.loadUserOAuth(username);
         if(u == null)
             throw new UsernameNotFoundException("Username or email: '" + username + "' not found!");
         return u;

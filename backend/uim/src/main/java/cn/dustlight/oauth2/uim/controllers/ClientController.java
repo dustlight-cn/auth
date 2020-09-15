@@ -2,6 +2,7 @@ package cn.dustlight.oauth2.uim.controllers;
 
 import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
 import cn.dustlight.oauth2.uim.configurations.UimProperties;
+import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
 import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.entities.*;
 import cn.dustlight.oauth2.uim.services.*;
@@ -68,7 +69,7 @@ public class ClientController implements IClientController {
     @Transactional
     @Override
     public RestfulResult createClient(String name, String redirectUri, String description, List<Long> scopes, List<Long> grantTypes, Authentication authentication) {
-        IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
+        UimUser userDetails = (UimUser) authentication.getPrincipal();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Long id = snowflake.generate();
         try (ObjectOutputStream os = new ObjectOutputStream(out)) {
@@ -93,7 +94,7 @@ public class ClientController implements IClientController {
     public RestfulResult deleteClient(String appKey, Authentication authentication) {
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("DELETE_CLIENT_ANY") ?
                 clientMapper.deleteClient(appKey) :
-                clientMapper.deleteClientWithUid(appKey, ((IUserDetails) authentication.getPrincipal()).getUid());
+                clientMapper.deleteClientWithUid(appKey, ((UimUser) authentication.getPrincipal()).getUid());
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
@@ -103,7 +104,7 @@ public class ClientController implements IClientController {
         String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generatorCode(128));
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("DELETE_CLIENT_ANY") ?
                 clientMapper.updateClientSecret(appKey, passwordEncoder.encode(appSecret)) :
-                clientMapper.updateClientSecretWithUid(appKey, passwordEncoder.encode(appSecret), ((IUserDetails) authentication.getPrincipal()).getUid());
+                clientMapper.updateClientSecretWithUid(appKey, passwordEncoder.encode(appSecret), ((UimUser) authentication.getPrincipal()).getUid());
         return flag ? RestfulResult.success(appSecret) : RestfulConstants.ERROR_UNKNOWN;
     }
 
@@ -111,7 +112,7 @@ public class ClientController implements IClientController {
     public RestfulResult updateClientName(String appKey, String name, Authentication authentication) {
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY") ?
                 clientMapper.updateClientName(appKey, name) :
-                clientMapper.updateClientNameWithUid(appKey, name, ((IUserDetails) authentication.getPrincipal()).getUid());
+                clientMapper.updateClientNameWithUid(appKey, name, ((UimUser) authentication.getPrincipal()).getUid());
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
@@ -119,7 +120,7 @@ public class ClientController implements IClientController {
     public RestfulResult updateClientDescription(String appKey, String description, Authentication authentication) {
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY") ?
                 clientMapper.updateClientDescription(appKey, description) :
-                clientMapper.updateClientDescriptionWithUid(appKey, description, ((IUserDetails) authentication.getPrincipal()).getUid());
+                clientMapper.updateClientDescriptionWithUid(appKey, description, ((UimUser) authentication.getPrincipal()).getUid());
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
@@ -127,14 +128,14 @@ public class ClientController implements IClientController {
     public RestfulResult updateClientRedirectUri(String appKey, String redirectUri, Authentication authentication) {
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY") ?
                 clientMapper.updateClientRedirectUri(appKey, redirectUri) :
-                clientMapper.updateClientRedirectUriWithUid(appKey, redirectUri, ((IUserDetails) authentication.getPrincipal()).getUid());
+                clientMapper.updateClientRedirectUriWithUid(appKey, redirectUri, ((UimUser) authentication.getPrincipal()).getUid());
         return flag ? RestfulConstants.SUCCESS : RestfulConstants.ERROR_UNKNOWN;
     }
 
     @Override
     public RestfulResult uploadClientImage(String appKey, Authentication authentication) throws IOException {
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY")
-                || clientMapper.isClientOwner(appKey, ((IUserDetails) authentication.getPrincipal()).getUid());
+                || clientMapper.isClientOwner(appKey, ((UimUser) authentication.getPrincipal()).getUid());
         if (!flag)
             throw new AccessDeniedException("access denied.");
         String url = storage.generatePutUrl(properties.getStorage().getStoragePath() + "app/img/logo/" + appKey,
@@ -164,7 +165,7 @@ public class ClientController implements IClientController {
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY");
         if (!flag) {
             ClientDetails client = clientMapper.loadClientByClientId(appKey);
-            if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
+            if (client == null || client.getUid() != ((UimUser) authentication.getPrincipal()).getUid())
                 return RestfulConstants.ERROR_UNKNOWN;
         }
         flag = clientMapper.insertClientScopes(appKey, scopes);
@@ -176,7 +177,7 @@ public class ClientController implements IClientController {
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY");
         if (!flag) {
             ClientDetails client = clientMapper.loadClientByClientId(appKey);
-            if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
+            if (client == null || client.getUid() != ((UimUser) authentication.getPrincipal()).getUid())
                 return RestfulConstants.ERROR_UNKNOWN;
         }
         flag = clientMapper.deleteClientScopes(appKey, scopes);
@@ -188,7 +189,7 @@ public class ClientController implements IClientController {
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY");
         if (!flag) {
             ClientDetails client = clientMapper.loadClientByClientId(appKey);
-            if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
+            if (client == null || client.getUid() != ((UimUser) authentication.getPrincipal()).getUid())
                 return RestfulConstants.ERROR_UNKNOWN;
         }
         flag = clientMapper.insertClientGrantTypes(appKey, types);
@@ -200,7 +201,7 @@ public class ClientController implements IClientController {
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("UPDATE_CLIENT_ANY");
         if (!flag) {
             ClientDetails client = clientMapper.loadClientByClientId(appKey);
-            if (client == null || client.getUid() != ((IUserDetails) authentication.getPrincipal()).getUid())
+            if (client == null || client.getUid() != ((UimUser) authentication.getPrincipal()).getUid())
                 return RestfulConstants.ERROR_UNKNOWN;
         }
         flag = clientMapper.deleteClientGrantTypes(appKey, types);
@@ -301,7 +302,7 @@ public class ClientController implements IClientController {
 
     @Override
     public RestfulResult<List<ClientDetails>> getCurrentUserClientDetails(Authentication authentication) {
-        IUserDetails userDetails = (IUserDetails) authentication.getPrincipal();
+        UimUser userDetails = (UimUser) authentication.getPrincipal();
         return RestfulResult.success(clientMapper.loadClientsByUserId(userDetails.getUid()));
     }
 

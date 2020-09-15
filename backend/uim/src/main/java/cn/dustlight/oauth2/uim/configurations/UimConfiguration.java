@@ -6,7 +6,7 @@ import cn.dustlight.oauth2.uim.handlers.UimHandler;
 import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
 import cn.dustlight.oauth2.uim.handlers.code.DefaultVerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
-import cn.dustlight.oauth2.uim.entities.IUserDetails;
+import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
 import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
 import cn.dustlight.oauth2.uim.services.code.RedisAuthorizationCodeService;
 import cn.dustlight.oauth2.uim.services.code.RedisVerificationCodeStoreService;
@@ -159,11 +159,11 @@ public class UimConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
-    public IUserDetails userDetails() {
+    public UimUser userDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == null ||
-                !(authentication.getPrincipal() instanceof IUserDetails))
+                !(authentication.getPrincipal() instanceof UimUser))
             return null;
-        return (IUserDetails) authentication.getPrincipal();
+        return (UimUser) authentication.getPrincipal();
     }
 }

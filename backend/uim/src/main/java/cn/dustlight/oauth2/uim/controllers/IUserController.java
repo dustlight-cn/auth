@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.controllers;
 
-import cn.dustlight.oauth2.uim.entities.IUserDetails;
+import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
 import cn.dustlight.oauth2.uim.entities.UserPublicDetails;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -66,11 +66,11 @@ public interface IUserController {
 
     @GetMapping("/details")
     @PreAuthorize("hasAuthority('READ_USERINFO')")
-    IUserDetails getCurrentUserDetails();
+    UimUser getCurrentUserDetails();
 
     @GetMapping("/details/{username}")
     @PreAuthorize("hasAuthority('READ_USERINFO_ANY')")
-    IUserDetails getUserDetails(@PathVariable(required = false) String username);
+    UimUser getUserDetails(@PathVariable(required = false) String username);
 
     @PostMapping("/public_details")
     List<UserPublicDetails> getUsersDetails(@RequestBody List<String> usernameArray);

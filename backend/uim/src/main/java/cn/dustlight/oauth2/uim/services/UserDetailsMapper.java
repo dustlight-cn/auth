@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.services;
 
-import cn.dustlight.oauth2.uim.entities.UserDetails;
+import cn.dustlight.oauth2.uim.entities.User;
 import cn.dustlight.oauth2.uim.entities.UserPublicDetails;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public interface UserDetailsMapper {
 
     @Select("SELECT username,email,uid,password,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username=#{uoe} OR email=#{uoe}")
     @ResultMap("UserDetails")
-    UserDetails loadUserOAuth(String uoe);
+    User loadUserOAuth(String uoe);
 
     @Select("SELECT uid,username,email,nickname,phone,gender,createdAt,updatedAt,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username=#{username}")
     @Results(id = "UserDetails", value = {@Result(property = "uid", column = "uid"),
@@ -36,13 +36,13 @@ public interface UserDetailsMapper {
             @Result(property = "roleDetails", column = "role", one = @One(select = "cn.dustlight.oauth2.uim.services.RoleDetailsMapper.getRoleNameAndDescription")),
             @Result(property = "authorities", column = "role", many = @Many(select = "cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper.getAuthorityByRoleId"))
     })
-    UserDetails loadUser(String username);
+    User loadUser(String username);
 
     @Select({"<script>SELECT uid,username,nickname,gender,createdAt,updatedAt,role,enabled,account_expired,credentials_expired,account_locked FROM user_details WHERE username IN ",
             "<foreach collection='usernameArray' item='username' open='(' separator=',' close=')'>#{username}</foreach>",
             "</script>"})
     @ResultMap("UserDetails")
-    List<UserDetails> loadUsers(@Param("usernameArray") List<String> usernameArray);
+    List<User> loadUsers(@Param("usernameArray") List<String> usernameArray);
 
     @Select({"<script>SELECT uid,username,nickname,gender,createdAt FROM user_details WHERE username IN ",
             "<foreach collection='usernameArray' item='username' open='(' separator=',' close=')'>#{username}</foreach>",
@@ -69,6 +69,9 @@ public interface UserDetailsMapper {
 
     @Update("UPDATE user_details SET email=#{email} WHERE uid=#{uid}")
     boolean changeEmail(Long uid, String email);
+
+    @Update("UPDATE user_details SET password=#{password} WHERE uid=#{uid}")
+    boolean changePassword(Long uid, String password);
 
     @Update("UPDATE user_details SET role=#{roleId} WHERE uid=#{uid}")
     boolean changeRole(Long uid, Long roleId);

@@ -1,9 +1,14 @@
 package cn.dustlight.oauth2.uim.entities;
 
+import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
+import cn.dustlight.oauth2.uim.entities.v1.users.PublicUimUser;
+import org.springframework.security.core.GrantedAuthority;
+
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
-public class UserPublicDetails implements Serializable {
+public class UserPublicDetails implements PublicUimUser {
 
     private long uid;
 
@@ -19,7 +24,8 @@ public class UserPublicDetails implements Serializable {
 
     private String avatar;
 
-    public long getUid() {
+    @Override
+    public Long getUid() {
         return uid;
     }
 
@@ -27,8 +33,29 @@ public class UserPublicDetails implements Serializable {
         this.uid = uid;
     }
 
+    @Override
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setUsername(String username) {
@@ -45,6 +72,41 @@ public class UserPublicDetails implements Serializable {
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public Date getAccountExpiredAt() {
+        return null;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public Collection<UserRole> getUserRoles() {
+        return null;
+    }
+
+    @Override
+    public Date getCredentialsExpiredAt() {
+        return null;
+    }
+
+    @Override
+    public Date getUnlockedAt() {
+        return null;
+    }
+
+    @Override
+    public Date getUpdatedAt() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
     }
 
     public void setEmail(String email) {
@@ -75,7 +137,7 @@ public class UserPublicDetails implements Serializable {
         this.avatar = avatar;
     }
 
-    public static UserPublicDetails fromUserDetails(UserDetails userDetails){
+    public static UserPublicDetails fromUserDetails(User userDetails){
         UserPublicDetails result = new UserPublicDetails();
         result.setUid(userDetails.getUid());
         result.setUsername(userDetails.getUsername());

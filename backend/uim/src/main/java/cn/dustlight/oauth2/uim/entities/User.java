@@ -1,19 +1,19 @@
 package cn.dustlight.oauth2.uim.entities;
 
+import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
+import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * User Details
  */
-public class UserDetails implements IUserDetails {
+public class User implements UimUser {
 
     private long uid;
 
@@ -114,7 +114,7 @@ public class UserDetails implements IUserDetails {
     }
 
     @Override
-    public long getUid() {
+    public Long getUid() {
         return this.uid;
     }
 
@@ -124,28 +124,13 @@ public class UserDetails implements IUserDetails {
     }
 
     @Override
-    public String getPhone() {
-        return this.phone;
-    }
-
-    @Override
     public int getGender() {
         return this.gender;
     }
 
     @Override
-    public Long getRole() {
-        return this.role;
-    }
-
-    @Override
-    public String getRoleName() {
-        return this.roleDetails != null ? this.roleDetails.getName() : null;
-    }
-
-    @Override
-    public String getRoleDescription() {
-        return this.roleDetails != null ? this.roleDetails.getDescription() : null;
+    public Collection<UserRole> getUserRoles() {
+        return null;
     }
 
     @Override
@@ -158,23 +143,28 @@ public class UserDetails implements IUserDetails {
         return this.updatedAt;
     }
 
+    @Override
+    public Date getAccountExpiredAt() {
+        return null;
+    }
+
+    @Override
+    public Date getCredentialsExpiredAt() {
+        return null;
+    }
+
+    @Override
+    public Date getUnlockedAt() {
+        return null;
+    }
+
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.authorities == null)
             return null;
         List<GrantedAuthority> result = AuthorityUtils.createAuthorityList(authorities);
-        if (getRoleName() != null)
-            result.add(new SimpleGrantedAuthority(getRoleName()));
         return result;
-    }
-
-    @Override
-    public Set<String> getAuthoritiesString() {
-        Collection<? extends GrantedAuthority> authorities = getAuthorities();
-        if (authorities == null)
-            return null;
-        return AuthorityUtils.authorityListToSet(authorities);
     }
 
     @Override

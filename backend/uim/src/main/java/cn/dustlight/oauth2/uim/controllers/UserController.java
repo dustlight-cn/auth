@@ -8,8 +8,8 @@ import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.services.code.VerificationCodeStoreService;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.tencent.cos.TencentCloudObjectStorage;
-import cn.dustlight.oauth2.uim.entities.IUserDetails;
-import cn.dustlight.oauth2.uim.entities.UserDetails;
+import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.User;
 import cn.dustlight.oauth2.uim.handlers.email.EmailSenderHandler;
 import cn.dustlight.oauth2.uim.services.UserDetailsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ public class UserController implements IUserController {
     private TencentCloudObjectStorage storage;
 
     @Autowired
-    private IUserDetails userDetails;
+    private UimUser userDetails;
 
     @Override
     public void sendEmailCodeRegister(String email) throws IOException {
@@ -241,8 +241,8 @@ public class UserController implements IUserController {
     }
 
     @Override
-    public IUserDetails getCurrentUserDetails() {
-        UserDetails user = userDetailsMapper.loadUser(userDetails.getUsername());
+    public UimUser getCurrentUserDetails() {
+        User user = userDetailsMapper.loadUser(userDetails.getUsername());
         if (user == null)
             ErrorEnum.USER_NOT_FOUND.throwException();
         user.setAvatar(generateAvatarUrl(user.getUid(), 256, null));
@@ -250,8 +250,8 @@ public class UserController implements IUserController {
     }
 
     @Override
-    public IUserDetails getUserDetails(String username) {
-        UserDetails user = userDetailsMapper.loadUser(username);
+    public UimUser getUserDetails(String username) {
+        User user = userDetailsMapper.loadUser(username);
         if (user == null)
             ErrorEnum.USER_NOT_FOUND.throwException();
         user.setAvatar(generateAvatarUrl(user.getUid(), 256, null));

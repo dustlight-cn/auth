@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.controllers;
 
-import cn.dustlight.oauth2.uim.entities.UserDetails;
+import cn.dustlight.oauth2.uim.entities.User;
 import cn.dustlight.oauth2.uim.entities.UserPublicDetails;
 import cn.dustlight.oauth2.uim.services.UserDetailsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class ResourceController implements IResourceController {
 
     @Override
     public UserPublicDetails getCurrentUserDetails(Principal principal) {
-        UserDetails details = userDetailsMapper.loadUser(principal.getName());
+        User details = userDetailsMapper.loadUser(principal.getName());
         if (details == null)
             return null;
         UserPublicDetails result = UserPublicDetails.fromUserDetails(details);

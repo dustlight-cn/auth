@@ -4,7 +4,7 @@ spring:
     host: ${REDIS_HOST:redis}
     port: ${REDIS_PORT:6379}
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/oauth?characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/${MYSQL_DB:uim}?characterEncoding=${MYSQL_CHARSET:utf8}&useSSL=${MYSQL_SSL:false}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASS}
     hikari:
