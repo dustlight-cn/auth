@@ -123,19 +123,19 @@ public class DefaultUimUser implements UimUser {
     @Override
     public boolean isAccountNonExpired() {
         return accountExpiredAt == null ? true :
-                accountExpiredAt.before(new Date());
+                accountExpiredAt.after(new Date());
     }
 
     @Override
     public boolean isAccountNonLocked() {
         return unlockedAt == null ? true :
-                unlockedAt.after(new Date());
+                unlockedAt.before(new Date());
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
         return credentialsExpiredAt == null ? true :
-                credentialsExpiredAt.before(new Date());
+                credentialsExpiredAt.after(new Date());
     }
 
     @Override

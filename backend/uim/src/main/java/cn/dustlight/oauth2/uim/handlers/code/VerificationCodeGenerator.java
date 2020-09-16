@@ -1,9 +1,11 @@
 package cn.dustlight.oauth2.uim.handlers.code;
 
-public interface VerificationCodeGenerator {
+import cn.dustlight.generator.Generator;
 
-    String generatorCode(int length);
+public interface VerificationCodeGenerator extends Generator<String> {
 
-    String generatorCode(int length, char[] extendChars);
+    String generateCode(int length);
+
+    String generateCode(int length, char[] extendChars);
 
 }

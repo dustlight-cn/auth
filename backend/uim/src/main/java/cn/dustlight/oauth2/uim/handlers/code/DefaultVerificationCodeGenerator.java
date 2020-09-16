@@ -6,14 +6,15 @@ import java.util.Random;
 public class DefaultVerificationCodeGenerator implements VerificationCodeGenerator {
 
     private Random random = new SecureRandom();
+    private int defaultLength = 6;
 
     @Override
-    public String generatorCode(int length) {
-        return generatorCode(length, null);
+    public String generateCode(int length) {
+        return generateCode(length, null);
     }
 
     @Override
-    public String generatorCode(int length, char[] extendChars) {
+    public String generateCode(int length, char[] extendChars) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < length; i++) {
             int type = random.nextInt(extendChars == null || extendChars.length == 0 ?
@@ -38,4 +39,16 @@ public class DefaultVerificationCodeGenerator implements VerificationCodeGenerat
         return builder.toString();
     }
 
+    @Override
+    public String generate() {
+        return generateCode(defaultLength);
+    }
+
+    public void setDefaultLength(int defaultLength) {
+        this.defaultLength = defaultLength;
+    }
+
+    public int getDefaultLength() {
+        return defaultLength;
+    }
 }

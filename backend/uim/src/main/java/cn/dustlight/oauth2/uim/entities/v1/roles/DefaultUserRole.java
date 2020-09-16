@@ -40,4 +40,28 @@ public class DefaultUserRole implements UserRole {
     public boolean isExpired() {
         return expiredAt == null ? false : expiredAt.before(new Date());
     }
+
+    public Long getRid() {
+        return rid;
+    }
+
+    public void setRid(Long rid) {
+        this.rid = rid;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public void setRoleDescription(String roleDescription) {
+        this.roleDescription = roleDescription;
+    }
+
+    public void setExpiredAt(Date expiredAt) {
+        this.expiredAt = expiredAt;
+    }
+
+    public void setAuthorities(Collection<String> authorities) {
+        this.authorities = authorities;
+    }
 }

@@ -63,7 +63,7 @@ public class UserController implements IUserController {
             ErrorEnum.EMAIL_EXISTS.throwException();
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpSession session = attributes.getRequest().getSession(true);
-        String code = codeGenerator.generatorCode(uimProperties.getRegisterVerificationCodeLength());
+        String code = codeGenerator.generateCode(uimProperties.getRegisterVerificationCodeLength());
         session.setAttribute("email", email);
         session.setAttribute("email_verified", false);
         codeStoreService.store("code_email:" + session.getId(), code, 1000 * 60 * 30);
@@ -80,7 +80,7 @@ public class UserController implements IUserController {
             ErrorEnum.USER_NOT_FOUND.throwException();
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpSession session = attributes.getRequest().getSession(true);
-        String code = codeGenerator.generatorCode(uimProperties.getResetPasswordVerificationCodeLength());
+        String code = codeGenerator.generateCode(uimProperties.getResetPasswordVerificationCodeLength());
         session.setAttribute("email_reset", email);
         session.setAttribute("email_reset_verified", false);
         codeStoreService.store("code_email_reset:" + session.getId(), code, 1000 * 60 * 30);

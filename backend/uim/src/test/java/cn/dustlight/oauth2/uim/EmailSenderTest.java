@@ -21,7 +21,7 @@ public class EmailSenderTest {
     @Test
     public void sendTest() throws IOException {
         HashMap<String, Object> data = new HashMap<>();
-        data.put("code", codeGenerator.generatorCode(6));
+        data.put("code", codeGenerator.generateCode(6));
         sender.send("邮箱验证", data, "845612500@qq.com");
     }
 }

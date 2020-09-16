@@ -1,129 +1,182 @@
 package cn.dustlight.oauth2.uim.services.userdetails;
 
+import cn.dustlight.generator.UniqueGenerator;
+import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
+import cn.dustlight.oauth2.uim.entities.results.IntQueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
 import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUimUser;
-import cn.dustlight.oauth2.uim.entities.v1.users.PublicUimUser;
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUimUser;
+import cn.dustlight.oauth2.uim.mappers.v1.RoleMapper;
 import cn.dustlight.oauth2.uim.mappers.v1.UserMapper;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import cn.dustlight.oauth2.uim.utils.OrdersStringBuilder;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedHashSet;
 
-public class DefaultUimUserDetailsService implements UimUserDetailsService {
+public class DefaultUimUserDetailsService implements UimUserDetailsService<DefaultUimUser, DefaultPublicUimUser> {
 
-    private UserMapper mapper;
+    private UserMapper userMapper;
+    private RoleMapper roleMapper;
+    private PasswordEncoder passwordEncoder;
+    private UniqueGenerator<Long> idGenerator;
 
-    public DefaultUimUserDetailsService(UserMapper mapper) {
-        this.mapper = mapper;
+    private OrdersStringBuilder ordersStringBuilder = OrdersStringBuilder.create
+            ("uid", "createdAt", "updatedAt", "accountExpiredAt", "credentialsExpiredAt", "unlockedAt");
+
+    public DefaultUimUserDetailsService(UserMapper userMapper,
+                                        RoleMapper roleMapper,
+                                        PasswordEncoder passwordEncoder,
+                                        UniqueGenerator<Long> idGenerator) {
+        this.userMapper = userMapper;
+        this.roleMapper = roleMapper;
+        this.idGenerator = idGenerator;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    private String encodePassword(String raw) {
+        if (passwordEncoder == null)
+            return raw;
+        return passwordEncoder.encode(raw);
     }
 
     @Override
-    public UimUser loadUserByUsername(String s) throws UsernameNotFoundException {
-        UimUser u = mapper.selectUserByUsernameOrEmail(s);
+    public DefaultUimUser loadUserByUsername(String s) {
+        DefaultUimUser u = userMapper.selectUserByUsernameOrEmail(s);
         if (u == null)
-            throw new UsernameNotFoundException("username or email '" + s + "' not found.");
+            ErrorEnum.USER_NOT_FOUND.throwException();
         return u;
     }
 
+    @Transactional
     @Override
-    public UimUser createUser(String username,
-                              String password,
-                              String email,
-                              int gender,
-                              Collection<UserRole> roles,
-                              Date accountExpiredAt,
-                              Date credentialsExpiredAt,
-                              Date unlocked,
-                              boolean enabled) {
-        return null;
+    public void createUser(String username,
+                           String password,
+                           String email,
+                           String nickname,
+                           int gender,
+                           Collection<UserRole> roles,
+                           Date accountExpiredAt,
+                           Date credentialsExpiredAt,
+                           Date unlockedAt,
+                           boolean enabled) {
+        Long id = idGenerator.generate();
+        try {
+            if (!userMapper.insertUser(id,
+                    username,
+                    encodePassword(password),
+                    email,
+                    nickname,
+                    gender,
+                    accountExpiredAt,
+                    credentialsExpiredAt,
+                    unlockedAt,
+                    enabled))
+                ErrorEnum.CREATE_USER_FAIL.throwException();
+        } catch (DuplicateKeyException e) {
+            ErrorEnum.USER_EXISTS.details(e.getMessage()).throwException();
+        }
+        if (roles != null && roles.size() > 0 && !roleMapper.insertUserRoles(id, roles))
+            ErrorEnum.CREATE_ROLE_FAIL.details("fail to insert user roles").throwException();
     }
 
     @Override
-    public UimUser loadUser(Long uid) {
-        return mapper.selectUser(uid);
+    public DefaultUimUser loadUser(Long uid) {
+        return userMapper.selectUser(uid);
     }
 
     @Override
-    public Collection<PublicUimUser> loadUserPublic(Collection<Long> uidArray) {
-        Collection<DefaultPublicUimUser> tmp = mapper.selectUsersPublic(uidArray);
-        if (tmp == null)
-            return null;
-        LinkedHashSet<PublicUimUser> results = new LinkedHashSet<>(tmp.size());
-        for (DefaultPublicUimUser u : tmp)
-            results.add(u);
-        return results;
+    public Collection<DefaultPublicUimUser> loadPublicUserByUid(Collection<Long> uidArray) {
+        return userMapper.selectUsersPublic(uidArray);
     }
 
     @Override
-    public Collection<UimUser> loadUsersByUsername(Collection<String> usernames) {
-        return null;
+    public Collection<DefaultUimUser> loadUsersByUsername(Collection<String> usernames) {
+        return userMapper.selectUsersByUsername(usernames);
     }
 
     @Override
-    public Collection<UimUser> loadUsers(Collection<Long> uidArray) {
-        return null;
+    public Collection<DefaultUimUser> loadUsers(Collection<Long> uids) {
+        return userMapper.selectUsersByUid(uids);
     }
 
     @Override
-    public boolean updatePassword(Long uid, String password) {
-        return false;
+    public IntQueryResults<DefaultUimUser> listUsers(Collection<String> orderBy, Integer offset, Integer limit) {
+        IntQueryResults<DefaultUimUser> result = new IntQueryResults<>();
+        result.setData(userMapper.listUsers(ordersStringBuilder.build(orderBy), offset, limit));
+        result.setCount(userMapper.count());
+        return result;
     }
 
     @Override
-    public boolean updatePasswordByEmail(String email, String password) {
-        return false;
+    public IntQueryResults<DefaultUimUser> searchUsers(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
+        IntQueryResults<DefaultUimUser> result = new IntQueryResults<>();
+        result.setData(userMapper.searchUsers(keywords, ordersStringBuilder.build(orderBy), offset, limit));
+        result.setCount(userMapper.countSearch(keywords));
+        return result;
     }
 
     @Override
-    public boolean updateNickname(Long uid, String nickname) {
-        return false;
+    public IntQueryResults<DefaultPublicUimUser> searchPublicUsers(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
+        IntQueryResults<DefaultPublicUimUser> result = new IntQueryResults<>();
+        result.setData(userMapper.searchPublicUsers(keywords, ordersStringBuilder.build(orderBy), offset, limit));
+        result.setCount(userMapper.countSearch(keywords));
+        return result;
     }
 
     @Override
-    public boolean updateGender(Long uid, int gender) {
-        return false;
+    public void updatePassword(Long uid, String password) {
     }
 
     @Override
-    public boolean updateEmail(Long uid, String email) {
-        return false;
+    public void updatePasswordByEmail(String email, String password) {
     }
 
     @Override
-    public boolean addRoles(Long uid, Collection<UserRole> roles) {
-        return false;
+    public void updateNickname(Long uid, String nickname) {
     }
 
     @Override
-    public boolean removeRoles(Long uid, Collection<Long> roleIds) {
-        return false;
+    public void updateGender(Long uid, int gender) {
     }
 
     @Override
-    public boolean updateRoleByRoleName(Long uid, String roleName) {
-        return false;
+    public void updateEmail(Long uid, String email) {
     }
 
     @Override
-    public boolean updateUnlockedAt(Long uid, Date unlockedAt) {
-        return false;
+    public void addRoles(Long uid, Collection<UserRole> roles) {
     }
 
     @Override
-    public boolean updateAccountExpiredAt(Long uid, Date expiredAt) {
-        return false;
+    public void removeRoles(Long uid, Collection<Long> roleIds) {
+
     }
 
     @Override
-    public boolean updateCredentialsExpiredAt(Long uid, Date expiredAt) {
-        return false;
+    public void updateRoleByRoleName(Long uid, String roleName) {
     }
 
     @Override
-    public boolean updateEnabled(Long uid, boolean enabled) {
-        return false;
+    public void updateUnlockedAt(Long uid, Date unlockedAt) {
     }
+
+    @Override
+    public void updateAccountExpiredAt(Long uid, Date expiredAt) {
+    }
+
+    @Override
+    public void updateCredentialsExpiredAt(Long uid, Date expiredAt) {
+    }
+
+    @Override
+    public void updateEnabled(Long uid, boolean enabled) {
+    }
+
+    @Override
+    public void deleteUsers(Collection<Long> uids) {
+    }
+
 }

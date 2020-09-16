@@ -79,7 +79,7 @@ public class ClientController implements IClientController {
             return RestfulResult.error(e.getMessage());
         }
         String appKey = base32.encodeToString(out.toByteArray());//Base64.getEncoder().encodeToString(out.toByteArray());
-        String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generatorCode(128));
+        String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generateCode(128));
         boolean flag = clientMapper.insertClient(appKey, userDetails.getUid(), passwordEncoder.encode(appSecret), name, redirectUri,
                 null, null, null, true, description);
         flag = flag & clientMapper.insertClientScopes(appKey, scopes);
@@ -101,7 +101,7 @@ public class ClientController implements IClientController {
     @Override
     public RestfulResult<String> resetClientSecret(String appKey, Authentication authentication) {
         Long id = snowflake.generate();
-        String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generatorCode(128));
+        String appSecret = sha1(authentication.getName() + id + verificationCodeGenerator.generateCode(128));
         boolean flag = AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("DELETE_CLIENT_ANY") ?
                 clientMapper.updateClientSecret(appKey, passwordEncoder.encode(appSecret)) :
                 clientMapper.updateClientSecretWithUid(appKey, passwordEncoder.encode(appSecret), ((UimUser) authentication.getPrincipal()).getUid());

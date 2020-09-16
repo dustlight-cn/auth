@@ -18,10 +18,20 @@ public enum ErrorEnum {
     CODE_INVALID(1005, "code invalid"),
 
     RESOURCE_NOT_FOUND(2000, "resource not found"),
-    USER_NOT_FOUND(2001, "user not found"),
+    EMAIL_NOT_FOUND(2001, "email not found"),
+    USER_NOT_FOUND(2002, "user not found"),
 
     RESOURCE_EXISTS(3000, "resource already exists"),
-    EMAIL_EXISTS(3001, "email already exists");
+    EMAIL_EXISTS(3001, "email already exists"),
+    USER_EXISTS(3001, "user already exists"),
+
+    CREATE_RESOURCE_FAIL(4000, "fail to create resource"),
+    CREATE_USER_FAIL(4001, "fail to create user"),
+    CREATE_ROLE_FAIL(4002, "fail to create role"),
+
+    UPDATE_RESOURCE_FAIL(5000, "fail to update resource"),
+    UPDATE_USER_FAIL(5001, "fail to update user"),
+    UPDATE_ROLE_FAIL(5002, "fail to update role");
 
     private ErrorDetails details;
 
@@ -46,7 +56,17 @@ public enum ErrorEnum {
         return this.details.getMessage();
     }
 
+    public String getErrorDetails() {
+        return this.details.getDetails();
+    }
+
     public ErrorDetails message(String message) {
         return new ErrorDetails(this.details.getCode(), message != null ? message : this.details.getMessage());
+    }
+
+    public ErrorDetails details(String details) {
+        ErrorDetails instance = new ErrorDetails(this.details.getCode(), this.details.getMessage());
+        instance.setDetails(details != null ? details : this.details.getDetails());
+        return instance;
     }
 }
