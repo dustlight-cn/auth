@@ -10,7 +10,7 @@
     </parent>
     <groupId>cn.dustlight.oauth2.template</groupId>
     <artifactId>client-template</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <name>Client Service Template</name>
     <description>OAuth2 client service template</description>
 
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>cn.dustlight.oauth2</groupId>
             <artifactId>uim-client</artifactId>
-            <version>0.0.1</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

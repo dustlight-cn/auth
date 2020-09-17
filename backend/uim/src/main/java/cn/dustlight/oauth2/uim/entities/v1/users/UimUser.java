@@ -5,6 +5,9 @@ import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -98,6 +101,7 @@ public interface UimUser extends UserDetails {
      */
     Date getUnlockedAt();
 
+    @ArraySchema(schema = @Schema(type = "string"))
     @JsonSerialize(using = ToStringCollectionSerializer.class)
     @Override
     Collection<? extends GrantedAuthority> getAuthorities();

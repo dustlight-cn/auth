@@ -5,12 +5,12 @@
     <parent>
         <groupId>cn.dustlight.storage</groupId>
         <artifactId>storage-parent</artifactId>
-        <version>0.0.1</version>
+        <version>1.0.0</version>
     </parent>
 
     <groupId>cn.dustlight.storage</groupId>
     <artifactId>tencent-cloud-object-storage</artifactId>
-    <version>0.0.2</version>
+    <version>1.0.0</version>
     <name>Tencent Storage</name>
     <description>Tencent Could Object Storage</description>
 

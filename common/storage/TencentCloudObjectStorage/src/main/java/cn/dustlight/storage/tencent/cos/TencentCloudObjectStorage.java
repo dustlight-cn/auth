@@ -1,9 +1,6 @@
 package cn.dustlight.storage.tencent.cos;
 
-import cn.dustlight.storage.core.IRestfulStorage;
-import cn.dustlight.storage.core.IStorableObject;
-import cn.dustlight.storage.core.IStorage;
-import cn.dustlight.storage.core.Permission;
+import cn.dustlight.storage.core.*;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.http.HttpMethodName;
 import com.qcloud.cos.model.Bucket;
@@ -18,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TencentCloudObjectStorage implements IStorage, IRestfulStorage {
+public class TencentCloudObjectStorage implements RestfulStorage {
 
     COSClient cosClient;
     String bucket;
@@ -70,12 +67,12 @@ public class TencentCloudObjectStorage implements IStorage, IRestfulStorage {
     }
 
     @Override
-    public TencentCloudStorableObject put(String key, IStorableObject source) throws IOException {
+    public TencentCloudStorableObject put(String key, StorableObject source) throws IOException {
         return put(key, source, source.getPermission());
     }
 
     @Override
-    public TencentCloudStorableObject put(String key, IStorableObject source, int permission) throws IOException {
+    public TencentCloudStorableObject put(String key, StorableObject source, int permission) throws IOException {
         PutObjectRequest req = new PutObjectRequest(bucket, key, source.getInputStream(), null);
         req.withCannedAcl(getACL(permission));
         cosClient.putObject(req);

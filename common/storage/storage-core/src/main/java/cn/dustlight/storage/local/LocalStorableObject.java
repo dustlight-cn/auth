@@ -1,11 +1,11 @@
 package cn.dustlight.storage.local;
 
-import cn.dustlight.storage.core.IStorableObject;
+import cn.dustlight.storage.core.StorableObject;
 import cn.dustlight.storage.core.Permission;
 
 import java.io.*;
 
-public class LocalStorableObject implements IStorableObject {
+public class LocalStorableObject implements StorableObject {
 
     protected String path;
     protected String fileName;

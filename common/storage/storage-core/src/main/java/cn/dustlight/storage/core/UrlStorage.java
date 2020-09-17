@@ -2,7 +2,7 @@ package cn.dustlight.storage.core;
 
 import java.io.IOException;
 
-public interface IRestfulStorage {
+public interface UrlStorage {
 
     String generateGetUrl(String key, Long expiration) throws IOException;
 

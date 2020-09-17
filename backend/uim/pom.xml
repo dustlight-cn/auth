@@ -10,7 +10,7 @@
     </parent>
     <groupId>cn.dustlight.oauth2</groupId>
     <artifactId>uim</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <name>Unified Identity Management Service</name>
     <description>OAuth2 authorization service</description>
 
@@ -78,19 +78,19 @@
         <dependency>
             <groupId>cn.dustlight.sender</groupId>
             <artifactId>email-simple</artifactId>
-            <version>0.0.1</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>cn.dustlight.storage</groupId>
             <artifactId>tencent-cloud-object-storage</artifactId>
-            <version>0.0.2</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>cn.dustlight</groupId>
             <artifactId>generator</artifactId>
-            <version>0.0.1</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

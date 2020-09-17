@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.services.userdetails;
+package cn.dustlight.oauth2.uim.services.users;
 
 import cn.dustlight.oauth2.uim.entities.results.IntQueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
@@ -171,44 +171,36 @@ public interface UimUserDetailsService<T extends UimUser, V extends PublicUimUse
     void removeRoles(Long uid, Collection<Long> roleIds);
 
     /**
-     * 通过角色名更新用户角色
-     *
-     * @param uid      用户uid
-     * @param roleName 角色名
-     */
-    void updateRoleByRoleName(Long uid, String roleName);
-
-    /**
      * 更新用户解锁时间
      *
-     * @param uid        用户uid
+     * @param uids       用户uid集合
      * @param unlockedAt 用户解锁时间
      */
-    void updateUnlockedAt(Long uid, Date unlockedAt);
+    void updateUnlockedAt(Collection<Long> uids, Date unlockedAt);
 
     /**
      * 更新账号过期时间
      *
-     * @param uid       用户uid
+     * @param uids      用户uid集合
      * @param expiredAt 账号过期时间
      */
-    void updateAccountExpiredAt(Long uid, Date expiredAt);
+    void updateAccountExpiredAt(Collection<Long> uids, Date expiredAt);
 
     /**
      * 更新凭证过期时间
      *
-     * @param uid       用户uid
+     * @param uids      用户uid集合
      * @param expiredAt 凭证过期时间
      */
-    void updateCredentialsExpiredAt(Long uid, Date expiredAt);
+    void updateCredentialsExpiredAt(Collection<Long> uids, Date expiredAt);
 
     /**
      * 更新用户是否启用
      *
-     * @param uid     用户uid
+     * @param uids    用户uid集合
      * @param enabled 用户是否启用
      */
-    void updateEnabled(Long uid, boolean enabled);
+    void updateEnabled(Collection<Long> uids, boolean enabled);
 
     /**
      * 删除用户

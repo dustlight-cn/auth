@@ -1,17 +1,27 @@
 package cn.dustlight.oauth2.uim.configurations;
 
+import cn.dustlight.generator.UniqueGenerator;
 import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
+import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUimUser;
 import cn.dustlight.oauth2.uim.handlers.DefaultUimHandler;
 import cn.dustlight.oauth2.uim.handlers.UimHandler;
 import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
 import cn.dustlight.oauth2.uim.handlers.code.DefaultVerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.mappers.RoleMapper;
+import cn.dustlight.oauth2.uim.mappers.UserMapper;
 import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
 import cn.dustlight.oauth2.uim.services.code.RedisAuthorizationCodeService;
 import cn.dustlight.oauth2.uim.services.code.RedisVerificationCodeStoreService;
 import cn.dustlight.oauth2.uim.services.code.VerificationCodeStoreService;
+import cn.dustlight.oauth2.uim.services.users.DefaultUimUserDetailsService;
+import cn.dustlight.oauth2.uim.services.users.UimUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -24,6 +34,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
@@ -42,6 +53,8 @@ import java.util.Enumeration;
 
 @EnableConfigurationProperties(UimProperties.class)
 @EnableRedisHttpSession
+@OpenAPIDefinition(info = @Info(title = "统一身份管理 (UIM)", description = "主要包含用户管理，OAuth2应用管理等服务。", version = "1.0"),
+        externalDocs = @ExternalDocumentation(description = "Github", url = "https://github.com/Hansin1997/Dustlight"))
 public class UimConfiguration {
 
     @Bean
@@ -165,5 +178,14 @@ public class UimConfiguration {
                 !(authentication.getPrincipal() instanceof UimUser))
             return null;
         return (UimUser) authentication.getPrincipal();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public UimUserDetailsService uimUserDetailsService(@Autowired UserMapper userMapper,
+                                                       @Autowired RoleMapper roleMapper,
+                                                       @Autowired PasswordEncoder passwordEncoder,
+                                                       @Autowired UniqueGenerator<Long> idGenerator) {
+        return new DefaultUimUserDetailsService(userMapper, roleMapper, passwordEncoder, idGenerator);
     }
 }

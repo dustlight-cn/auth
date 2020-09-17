@@ -25,7 +25,7 @@ class UimApplicationTests {
 
     @Test
     void contextLoads() {
-        Logger.getGlobal().log(Level.INFO, encoder.encode("order-secret-8888"));
+        Logger.getGlobal().log(Level.INFO, encoder.encode("123456"));
     }
 
     @Test

@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.mappers.v1;
+package cn.dustlight.oauth2.uim.mappers;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

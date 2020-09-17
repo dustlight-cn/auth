@@ -4,6 +4,7 @@ import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
 import cn.dustlight.oauth2.uim.handlers.convert.AccessTokenConverter;
 import cn.dustlight.oauth2.uim.services.OAuthClientDetailsService;
 import cn.dustlight.oauth2.uim.services.OAuthUserDetailService;
+import cn.dustlight.oauth2.uim.services.users.UimUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -18,7 +19,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
-    public OAuthUserDetailService userDetailsService;
+    public UimUserDetailsService userDetailsService;
 
     @Autowired
     private AuthenticationManager authenticationManager;

@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-@RestController
+//@RestController
 public class UserController implements IUserController {
 
     @Autowired

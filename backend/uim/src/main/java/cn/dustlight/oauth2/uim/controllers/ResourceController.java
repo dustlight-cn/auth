@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
-@RestController
+//@RestController
 public class ResourceController implements IResourceController {
 
     @Autowired

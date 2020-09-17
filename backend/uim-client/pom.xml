@@ -10,7 +10,7 @@
     </parent>
     <groupId>cn.dustlight.oauth2</groupId>
     <artifactId>uim-client</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <name>Unified Identity Management Client</name>
     <description>OAuth2 authorization client</description>
 

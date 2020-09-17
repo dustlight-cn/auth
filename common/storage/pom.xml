@@ -11,7 +11,7 @@
     </parent>
     <groupId>cn.dustlight.storage</groupId>
     <artifactId>storage-parent</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <name>Storage Module Parent</name>
     <description>Storage Module Parent Project</description>
 
@@ -24,7 +24,7 @@
         <java.version>1.8</java.version>
         <spring-boot.version>2.2.7.RELEASE</spring-boot.version>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
-        <storage-core.version>0.0.1</storage-core.version>
+        <storage-core.version>1.0.0</storage-core.version>
     </properties>
 
     <dependencyManagement>

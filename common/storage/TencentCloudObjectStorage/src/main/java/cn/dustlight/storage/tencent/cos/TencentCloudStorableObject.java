@@ -1,12 +1,12 @@
 package cn.dustlight.storage.tencent.cos;
 
-import cn.dustlight.storage.core.IStorableObject;
+import cn.dustlight.storage.core.StorableObject;
 import cn.dustlight.storage.core.Permission;
 import com.qcloud.cos.model.*;
 
 import java.io.*;
 
-public class TencentCloudStorableObject implements IStorableObject {
+public class TencentCloudStorableObject implements StorableObject {
 
     private COSObject cosObject;
     private TencentCloudObjectStorage storage;

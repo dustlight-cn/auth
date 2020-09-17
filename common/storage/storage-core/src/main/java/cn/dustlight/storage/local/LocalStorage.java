@@ -1,12 +1,12 @@
 package cn.dustlight.storage.local;
 
-import cn.dustlight.storage.core.IStorableObject;
-import cn.dustlight.storage.core.IStorage;
+import cn.dustlight.storage.core.StorableObject;
+import cn.dustlight.storage.core.Storage;
 import cn.dustlight.storage.core.Permission;
 
 import java.io.*;
 
-public class LocalStorage implements IStorage {
+public class LocalStorage implements Storage {
 
     protected String root;
 
@@ -45,12 +45,12 @@ public class LocalStorage implements IStorage {
     }
 
     @Override
-    public LocalStorableObject put(String key, IStorableObject source) throws IOException {
+    public LocalStorableObject put(String key, StorableObject source) throws IOException {
         return put(key, source, source.getPermission());
     }
 
     @Override
-    public LocalStorableObject put(String key, IStorableObject source, int permission) throws IOException {
+    public LocalStorableObject put(String key, StorableObject source, int permission) throws IOException {
         LocalStorableObject target = new LocalStorableObject(root, key, permission);
         BufferedInputStream in = new BufferedInputStream(source.getInputStream());
         BufferedOutputStream out = new BufferedOutputStream(target.getOutputStream());

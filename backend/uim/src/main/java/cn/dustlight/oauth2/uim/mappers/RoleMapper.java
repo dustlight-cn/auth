@@ -1,12 +1,14 @@
-package cn.dustlight.oauth2.uim.mappers.v1;
+package cn.dustlight.oauth2.uim.mappers;
 
 import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultUserRole;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
 
+@Service
 @Mapper
 public interface RoleMapper {
 
@@ -16,7 +18,7 @@ public interface RoleMapper {
             @Result(column = "rid", property = "rid"),
             @Result(column = "rid",
                     property = "authorities",
-                    many = @Many(select = "cn.dustlight.oauth2.uim.mappers.v1.AuthorityMapper.listRoleAuthorities"))
+                    many = @Many(select = "cn.dustlight.oauth2.uim.mappers.AuthorityMapper.listRoleAuthorities"))
     })
     Collection<DefaultUserRole> listUserRoles(Long uid);
 
@@ -35,7 +37,7 @@ public interface RoleMapper {
 
     @Insert("<script>INSERT INTO user_role (uid,rid,expiredAt) VALUES " +
             "<foreach collection='roles' item='role' separator=','>(#{uid},<choose>" +
-            "<when test='role.roleId != null'>#{role.roleId}</when>" + // 如果roleId存在
+            "<when test='role.roleId'>#{role.roleId}</when>" + // 如果roleId存在
             "<otherwise>(SELECT rid FROM roles WHERE roleName=#{role.roleName} LIMIT 1)</otherwise>" + // 不存在则查询
             "</choose>,#{role.expiredAt})</foreach>" +
             "ON DUPLICATE KEY UPDATE expiredAt=VALUES(expiredAt)</script>")

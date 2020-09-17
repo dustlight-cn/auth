@@ -1,5 +1,6 @@
 package cn.dustlight.oauth2.uim.configurations;
 
+import cn.dustlight.oauth2.uim.Constants;
 import cn.dustlight.oauth2.uim.handlers.UimHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -34,6 +35,7 @@ public class UimWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         Logger.getLogger(getClass().getName()).info("Public paths: " + Arrays.toString(publicPaths));
 
         http.authorizeRequests()
+                .antMatchers(Constants.V1.API_ROOT + "**").permitAll()
                 .antMatchers(publicPaths).permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -41,21 +43,21 @@ public class UimWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleAuthenticationEntryPoint(httpServletRequest, httpServletResponse, e)))
                 .accessDeniedHandler(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleAccessDenied(httpServletRequest, httpServletResponse, e)))
                 .and()
-                .formLogin()
-                .loginPage(uimProperties.getFormLogin().getLoginPage())
-                .loginProcessingUrl(uimProperties.getFormLogin().getLoginProcessingUrl())
-                .successHandler(((httpServletRequest, httpServletResponse, authentication) -> uimHandler.handleSignInSuccess(httpServletRequest, httpServletResponse, authentication)))
-                .failureHandler(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleSignInFail(httpServletRequest, httpServletResponse, e)))
-                .usernameParameter(uimProperties.getFormLogin().getUsernameParameter())
-                .passwordParameter(uimProperties.getFormLogin().getPasswordParameter())
-                .permitAll()
-                .and()
-                .logout()
-                .logoutUrl(uimProperties.getLogout().getLogoutUrl())
-                .deleteCookies(uimProperties.getLogout().getDeleteCookies())
-                .logoutSuccessHandler(((httpServletRequest, httpServletResponse, authentication) -> uimHandler.handleLogout(httpServletRequest, httpServletResponse, authentication)))
-                .permitAll()
-                .and()
+//                .formLogin()
+//                .loginPage(Constants.Mapping.API_ROOT + Constants.Mapping.SESSION)
+//                .loginProcessingUrl(Constants.Mapping.API_ROOT + Constants.Mapping.SESSION)
+//                .successHandler(((httpServletRequest, httpServletResponse, authentication) -> uimHandler.handleSignInSuccess(httpServletRequest, httpServletResponse, authentication)))
+//                .failureHandler(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleSignInFail(httpServletRequest, httpServletResponse, e)))
+//                .usernameParameter("login")
+//                .passwordParameter("password")
+//                .permitAll()
+//                .and()
+//                .logout()
+//
+//                .logoutUrl(Constants.Mapping.API_ROOT + Constants.Mapping.SESSION)
+//                .logoutSuccessHandler(((httpServletRequest, httpServletResponse, authentication) -> uimHandler.handleLogout(httpServletRequest, httpServletResponse, authentication)))
+//                .permitAll()
+//                .and()
         ;
 
         if (uimProperties.isCsrfEnabled())

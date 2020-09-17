@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.mappers.v1;
+package cn.dustlight.oauth2.uim.mappers;
 
 import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUimUser;
 import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUimUser;
@@ -30,7 +30,7 @@ public interface UserMapper {
             @Result(column = "uid", property = "uid"),
             @Result(column = "uid",
                     property = "roles",
-                    many = @Many(select = "cn.dustlight.oauth2.uim.mappers.v1.RoleMapper.listUserRoles"))
+                    many = @Many(select = "cn.dustlight.oauth2.uim.mappers.RoleMapper.listUserRoles"))
     })
     DefaultUimUser selectUserByUsernameOrEmail(String uoe);
 
@@ -81,4 +81,44 @@ public interface UserMapper {
             "<if test='limit'> LIMIT #{limit}<if test='offset'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")
     Collection<DefaultPublicUimUser> searchPublicUsers(String keywords, String orderBy, Integer offset, Integer limit);
+
+    @Update("UPDATE users SET password=#{password} WHERE uid=#{uid}")
+    boolean updatePassword(Long uid, String password);
+
+    @Update("UPDATE users SET password=#{password} WHERE email=#{email}")
+    boolean updatePasswordByEmail(String email, String password);
+
+    @Update("UPDATE users SET nickname=#{nickname} WHERE uid=#{uid}")
+    boolean updateNickname(Long uid, String nickname);
+
+    @Update("UPDATE users SET email=#{email} WHERE uid=#{uid}")
+    boolean updateEmail(Long uid, String email);
+
+    @Update("UPDATE users SET gender=#{gender} WHERE uid=#{uid}")
+    boolean updateGender(Long uid, Integer gender);
+
+    @Update("<script>UPDATE users SET enabled=#{enabled} WHERE uid IN " +
+            "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
+            "</script>")
+    boolean updateEnabled(Collection<Long> uids, boolean enabled);
+
+    @Update("<script>UPDATE users SET accountExpiredAt=#{accountExpiredAt} WHERE uid IN " +
+            "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
+            "</script>")
+    boolean updateAccountExpiredAt(Collection<Long> uids, Date accountExpiredAt);
+
+    @Update("<script>UPDATE users SET credentialsExpiredAt=#{credentialsExpiredAt} WHERE uid IN " +
+            "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
+            "</script>")
+    boolean updateCredentialsExpiredAt(Collection<Long> uids, Date credentialsExpiredAt);
+
+    @Update("<script>UPDATE users SET unlockedAt=#{unlockedAt} WHERE uid IN " +
+            "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
+            "</script>")
+    boolean updateUnlockedAt(Collection<Long> uids, Date unlockedAt);
+
+    @Delete("<script>DELETE FROM users WHERE uid IN " +
+            "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
+            "</script>")
+    boolean deleteUsers(Collection<Long> uids);
 }

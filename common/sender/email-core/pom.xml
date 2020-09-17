@@ -6,12 +6,12 @@
     <parent>
         <groupId>cn.dustlight.sender</groupId>
         <artifactId>sender-parent</artifactId>
-        <version>0.0.1</version>
+        <version>1.0.0</version>
     </parent>
 
     <groupId>cn.dustlight.sender</groupId>
     <artifactId>email-core</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <name>Email Sender Core Module</name>
     <description>Core module of Email Sender</description>
 

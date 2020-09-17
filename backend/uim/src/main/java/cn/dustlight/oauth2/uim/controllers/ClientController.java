@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.*;
 
-@RestController
+//@RestController
 public class ClientController implements IClientController {
 
     @Autowired

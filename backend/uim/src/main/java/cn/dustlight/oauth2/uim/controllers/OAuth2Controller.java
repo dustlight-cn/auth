@@ -23,7 +23,7 @@ import java.util.*;
 /**
  * 覆盖 '/oauth/authorize' ，返回Json数据。
  */
-@Controller
+//@Controller
 @SessionAttributes({"authorizationRequest", "org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint.ORIGINAL_AUTHORIZATION_REQUEST"})
 public class OAuth2Controller {
 

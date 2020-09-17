@@ -11,7 +11,7 @@
     </parent>
     <groupId>cn.dustlight.sender</groupId>
     <artifactId>sender-parent</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <name>Sender Module Parent</name>
     <description>Sender Module Parent Project</description>
 
@@ -25,7 +25,7 @@
         <java.version>1.8</java.version>
         <spring-boot.version>2.2.7.RELEASE</spring-boot.version>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
-        <sender-core.version>0.0.1</sender-core.version>
+        <sender-core.version>1.0.0</sender-core.version>
     </properties>
 
     <dependencyManagement>
