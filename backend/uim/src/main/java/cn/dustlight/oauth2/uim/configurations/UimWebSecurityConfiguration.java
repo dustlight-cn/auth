@@ -42,22 +42,6 @@ public class UimWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleAuthenticationEntryPoint(httpServletRequest, httpServletResponse, e)))
                 .accessDeniedHandler(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleAccessDenied(httpServletRequest, httpServletResponse, e)))
-                .and()
-//                .formLogin()
-//                .loginPage(Constants.Mapping.API_ROOT + Constants.Mapping.SESSION)
-//                .loginProcessingUrl(Constants.Mapping.API_ROOT + Constants.Mapping.SESSION)
-//                .successHandler(((httpServletRequest, httpServletResponse, authentication) -> uimHandler.handleSignInSuccess(httpServletRequest, httpServletResponse, authentication)))
-//                .failureHandler(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleSignInFail(httpServletRequest, httpServletResponse, e)))
-//                .usernameParameter("login")
-//                .passwordParameter("password")
-//                .permitAll()
-//                .and()
-//                .logout()
-//
-//                .logoutUrl(Constants.Mapping.API_ROOT + Constants.Mapping.SESSION)
-//                .logoutSuccessHandler(((httpServletRequest, httpServletResponse, authentication) -> uimHandler.handleLogout(httpServletRequest, httpServletResponse, authentication)))
-//                .permitAll()
-//                .and()
         ;
 
         if (uimProperties.isCsrfEnabled())

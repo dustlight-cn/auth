@@ -1,29 +1,17 @@
 package cn.dustlight.oauth2.uim.controllers;
 
-import cn.dustlight.oauth2.uim.entities.User;
-import cn.dustlight.oauth2.uim.entities.UserPublicDetails;
-import cn.dustlight.oauth2.uim.services.UserDetailsMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import cn.dustlight.oauth2.uim.Constants;
+import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+@Tag(name = "资源业务")
+@RequestMapping(value = "/api/res", produces = Constants.ContentType.APPLICATION_JSON)
+public interface ResourceController {
 
-//@RestController
-public class ResourceController implements IResourceController {
+    @GetMapping("/user")
+    @PreAuthorize("hasAuthority('READ_USER') and #oauth2.clientHasRole('READ_USER')")
+    UimUser getUser();
 
-    @Autowired
-    private UserController userController;
-
-    @Autowired
-    private UserDetailsMapper userDetailsMapper;
-
-    @Override
-    public UserPublicDetails getCurrentUserDetails(Principal principal) {
-        User details = userDetailsMapper.loadUser(principal.getName());
-        if (details == null)
-            return null;
-        UserPublicDetails result = UserPublicDetails.fromUserDetails(details);
-        result.setAvatar(userController.generateAvatarUrl(details.getUid(), 256, null));
-        return result;
-    }
 }

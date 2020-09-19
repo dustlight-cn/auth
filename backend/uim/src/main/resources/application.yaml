@@ -11,7 +11,7 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-      maximum-pool-size: 4
+      maximum-pool-size: 3
       minimum-idle: 1
   mvc:
     throw-exception-if-no-handler-found: true
@@ -46,38 +46,17 @@ mybatis:
 # SpringDoc
 springdoc:
   api-docs:
-    path: /api/doc/v3
+    path: /api/v1
   swagger-ui:
-    path: /api/doc/swaager-ui
+    path: /api/doc/
 # 应用配置
 dustlight:
   uim:
     csrf-enabled: false
     public-paths:
-      - /api/user/code/**
-      - /api/user/verify/**
-      - /api/user/exists/**
-      - /api/user/login
-      - /api/user/register
-      - /api/user/reset/email/password
-      - /api/user/avatar/**
-      - /api/user/public_details
-      - /api/client/app_image/**
       - /api/doc/**
-      - /api/pub/**
-      - /oauth/check_token
-      - /oauth/token
     resource-paths:
       - /api/res/**
-    form-login:
-      login-page: /login
-      login-processing-url: /api/user/login
-    logout:
-      logout-url: /api/user/logout
-      delete-cookies:
-        - SESSION
-    register-email: 邮箱验证
-    reset-password-email: 密码重置
     storage:
       storage-base-url: https://res.dustlight.cn/
   storage:

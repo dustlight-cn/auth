@@ -1,8 +1,6 @@
 package cn.dustlight.oauth2.uim.configurations;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "dustlight.uim")
 public class UimProperties {
@@ -10,10 +8,7 @@ public class UimProperties {
     private String[] publicPaths = {};
     private String[] resourcePaths = {};
     private String[] redirectToLoginPath = {};
-    @Autowired
-    private FormLogin formLogin;
-    @Autowired
-    private Logout logout;
+
     private SnowflakeConfiguration snowflake = new SnowflakeConfiguration();
     private boolean csrfEnabled = true;
     private int registerVerificationCodeLength = 6;
@@ -21,7 +16,6 @@ public class UimProperties {
     private String registerEmail = "Register";
     private String resetPasswordEmail = "Password Reset";
 
-    @Autowired
     private Storage storage;
 
     public Storage getStorage() {
@@ -88,28 +82,12 @@ public class UimProperties {
         this.publicPaths = publicPaths;
     }
 
-    public FormLogin getFormLogin() {
-        return formLogin;
-    }
-
-    public void setFormLogin(FormLogin formLogin) {
-        this.formLogin = formLogin;
-    }
-
-    public Logout getLogout() {
-        return logout;
-    }
-
     public boolean isCsrfEnabled() {
         return csrfEnabled;
     }
 
     public void setCsrfEnabled(boolean csrfEnabled) {
         this.csrfEnabled = csrfEnabled;
-    }
-
-    public void setLogout(Logout logout) {
-        this.logout = logout;
     }
 
     public SnowflakeConfiguration getSnowflake() {
@@ -120,74 +98,6 @@ public class UimProperties {
         this.snowflake = snowflake;
     }
 
-    @Component
-    @ConfigurationProperties(prefix = "dustlight.uim.form-login")
-    public static class FormLogin {
-
-        private String loginPage = "/login";
-        private String loginProcessingUrl = "/login";
-        private String usernameParameter = "username";
-        private String passwordParameter = "password";
-
-        public String getPasswordParameter() {
-            return passwordParameter;
-        }
-
-        public void setPasswordParameter(String passwordParameter) {
-            this.passwordParameter = passwordParameter;
-        }
-
-        public String getUsernameParameter() {
-            return usernameParameter;
-        }
-
-        public void setUsernameParameter(String usernameParameter) {
-            this.usernameParameter = usernameParameter;
-        }
-
-        public String getLoginPage() {
-            return loginPage;
-        }
-
-        public void setLoginPage(String loginPage) {
-            this.loginPage = loginPage;
-        }
-
-        public String getLoginProcessingUrl() {
-            return loginProcessingUrl;
-        }
-
-        public void setLoginProcessingUrl(String loginProcessingUrl) {
-            this.loginProcessingUrl = loginProcessingUrl;
-        }
-    }
-
-    @Component
-    @ConfigurationProperties(prefix = "dustlight.uim.logout")
-    public static class Logout {
-
-        private String logoutUrl = "/logout";
-        private String[] deleteCookies = {};
-
-        public String getLogoutUrl() {
-            return logoutUrl;
-        }
-
-        public void setLogoutUrl(String logoutUrl) {
-            this.logoutUrl = logoutUrl;
-        }
-
-        public String[] getDeleteCookies() {
-            return deleteCookies;
-        }
-
-        public void setDeleteCookies(String[] deleteCookies) {
-            this.deleteCookies = deleteCookies;
-        }
-    }
-
-    @Component
-    @ConfigurationProperties(prefix = "dustlight.uim.storage")
     public static class Storage {
         private String storageBaseUrl = null;
         private String storagePath = "dustlight/uim/upload/";

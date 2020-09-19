@@ -2,8 +2,6 @@ package cn.dustlight.oauth2.uim.configurations;
 
 import cn.dustlight.generator.UniqueGenerator;
 import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
-import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUimUser;
-import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUimUser;
 import cn.dustlight.oauth2.uim.handlers.DefaultUimHandler;
 import cn.dustlight.oauth2.uim.handlers.UimHandler;
 import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
@@ -34,7 +32,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetailsService;

@@ -5,7 +5,6 @@ import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 
 /**
- * 用户详情接口
+ * 用户详情
  */
 public interface UimUser extends UserDetails {
 

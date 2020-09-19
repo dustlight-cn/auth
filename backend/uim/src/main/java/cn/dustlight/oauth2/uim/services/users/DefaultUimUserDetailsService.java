@@ -8,7 +8,7 @@ import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUimUser;
 import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUimUser;
 import cn.dustlight.oauth2.uim.mappers.RoleMapper;
 import cn.dustlight.oauth2.uim.mappers.UserMapper;
-import cn.dustlight.oauth2.uim.utils.OrdersStringBuilder;
+import cn.dustlight.oauth2.uim.utils.OrderBySqlBuilder;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +24,7 @@ public class DefaultUimUserDetailsService implements UimUserDetailsService<Defau
     private PasswordEncoder passwordEncoder;
     private UniqueGenerator<Long> idGenerator;
 
-    private OrdersStringBuilder ordersStringBuilder = OrdersStringBuilder.create
+    private OrderBySqlBuilder orderBySqlBuilder = OrderBySqlBuilder.create
             ("uid", "createdAt", "updatedAt", "accountExpiredAt", "credentialsExpiredAt", "unlockedAt");
 
     public DefaultUimUserDetailsService(UserMapper userMapper,
@@ -53,29 +53,15 @@ public class DefaultUimUserDetailsService implements UimUserDetailsService<Defau
 
     @Transactional
     @Override
-    public void createUser(String username,
-                           String password,
-                           String email,
-                           String nickname,
-                           int gender,
-                           Collection<UserRole> roles,
-                           Date accountExpiredAt,
-                           Date credentialsExpiredAt,
-                           Date unlockedAt,
-                           boolean enabled) {
+    public void createUser(String username, String password, String email, String nickname, int gender,
+                           Collection<UserRole> roles, Date accountExpiredAt, Date credentialsExpiredAt, Date unlockedAt, boolean enabled) {
         Long id = idGenerator.generate();
         try {
-            if (!userMapper.insertUser(id,
-                    username,
-                    encodePassword(password),
-                    email,
-                    nickname,
-                    gender,
-                    accountExpiredAt,
-                    credentialsExpiredAt,
-                    unlockedAt,
-                    enabled))
+            // 先创建用户
+            if (!userMapper.insertUser(id, username, encodePassword(password), email, nickname, gender,
+                    accountExpiredAt, credentialsExpiredAt, unlockedAt, enabled))
                 ErrorEnum.CREATE_USER_FAIL.throwException();
+            // 再添加角色
             if (roles != null && roles.size() > 0 && !roleMapper.insertUserRoles(id, roles))
                 ErrorEnum.CREATE_ROLE_FAIL.details("fail to insert user roles").throwException();
         } catch (DuplicateKeyException e) {
@@ -106,7 +92,7 @@ public class DefaultUimUserDetailsService implements UimUserDetailsService<Defau
     @Override
     public IntQueryResults<DefaultUimUser> listUsers(Collection<String> orderBy, Integer offset, Integer limit) {
         IntQueryResults<DefaultUimUser> result = new IntQueryResults<>();
-        result.setData(userMapper.listUsers(ordersStringBuilder.build(orderBy), offset, limit));
+        result.setData(userMapper.listUsers(orderBySqlBuilder.build(orderBy), offset, limit));
         result.setCount(userMapper.count());
         return result;
     }
@@ -114,7 +100,7 @@ public class DefaultUimUserDetailsService implements UimUserDetailsService<Defau
     @Override
     public IntQueryResults<DefaultUimUser> searchUsers(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
         IntQueryResults<DefaultUimUser> result = new IntQueryResults<>();
-        result.setData(userMapper.searchUsers(keywords, ordersStringBuilder.build(orderBy), offset, limit));
+        result.setData(userMapper.searchUsers(keywords, orderBySqlBuilder.build(orderBy), offset, limit));
         result.setCount(userMapper.countSearch(keywords));
         return result;
     }
@@ -122,7 +108,7 @@ public class DefaultUimUserDetailsService implements UimUserDetailsService<Defau
     @Override
     public IntQueryResults<DefaultPublicUimUser> searchPublicUsers(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
         IntQueryResults<DefaultPublicUimUser> result = new IntQueryResults<>();
-        result.setData(userMapper.searchPublicUsers(keywords, ordersStringBuilder.build(orderBy), offset, limit));
+        result.setData(userMapper.searchPublicUsers(keywords, orderBySqlBuilder.build(orderBy), offset, limit));
         result.setCount(userMapper.countSearch(keywords));
         return result;
     }
@@ -198,5 +184,4 @@ public class DefaultUimUserDetailsService implements UimUserDetailsService<Defau
         if (!userMapper.deleteUsers(uids))
             ErrorEnum.DELETE_USER_FAIL.throwException();
     }
-
 }

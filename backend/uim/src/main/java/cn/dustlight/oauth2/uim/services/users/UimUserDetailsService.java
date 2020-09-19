@@ -30,16 +30,8 @@ public interface UimUserDetailsService<T extends UimUser, V extends PublicUimUse
      * @param unlockedAt           账号解锁时间
      * @param enabled              账号是否启用
      */
-    void createUser(String username,
-                    String password,
-                    String email,
-                    String nickname,
-                    int gender,
-                    Collection<UserRole> roles,
-                    Date accountExpiredAt,
-                    Date credentialsExpiredAt,
-                    Date unlockedAt,
-                    boolean enabled);
+    void createUser(String username, String password, String email, String nickname, int gender,
+                    Collection<UserRole> roles, Date accountExpiredAt, Date credentialsExpiredAt, Date unlockedAt, boolean enabled);
 
     /**
      * 通过uid获取用户

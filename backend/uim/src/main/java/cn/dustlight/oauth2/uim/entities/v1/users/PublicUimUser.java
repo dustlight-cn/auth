@@ -7,6 +7,9 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 import java.util.Date;
 
+/**
+ * 用户公开信息
+ */
 public interface PublicUimUser extends UimUser {
 
     @JsonIgnore
