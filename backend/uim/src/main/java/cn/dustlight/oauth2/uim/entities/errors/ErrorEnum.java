@@ -9,6 +9,7 @@ public enum ErrorEnum {
     ACCESS_DENIED(2, "access denied"),
     SIGN_IN_FAIL(3, "sign in fail"),
     REGISTER_FAIL(4, "register fail"),
+    VERIFY_FAIL(5, "verify fail"),
 
     INPUT_INVALID(1000, "input invalid"),
     EMAIL_INVALID(1001, "email invalid"),
