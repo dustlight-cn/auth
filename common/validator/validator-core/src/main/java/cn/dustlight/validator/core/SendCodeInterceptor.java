@@ -1,6 +1,6 @@
 package cn.dustlight.validator.core;
 
-import cn.dustlight.validator.BeanUtils;
+import cn.dustlight.validator.Util;
 import cn.dustlight.validator.annotation.SendCode;
 import cn.dustlight.validator.generator.CodeGenerator;
 import cn.dustlight.validator.sender.CodeSender;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.BeanFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SendCodeInterceptor implements MethodInterceptor {
@@ -24,21 +23,34 @@ public class SendCodeInterceptor implements MethodInterceptor {
 
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
         Method method = methodInvocation.getMethod();
-        SendCode sendCode = method.getAnnotation(SendCode.class);
-        CodeGenerator generator = BeanUtils.getBean(factory, sendCode.generator(), CodeGenerator.class);
-        CodeStore store = BeanUtils.getBean(factory, sendCode.store(), CodeStore.class);
-        CodeSender sender = BeanUtils.getBean(factory, sendCode.sender(), CodeSender.class);
-        Map<String, Object> parameters = new LinkedHashMap<>();
-        if (method.getParameterCount() > 0) {
-            Object[] arguments = methodInvocation.getArguments();
-            Parameter[] parameters1 = method.getParameters();
-            for (int i = 0, len = Math.min(arguments.length, parameters1.length); i < len; i++)
-                parameters.put(parameters1[i].getName(), arguments[i]);
-        }
+
+        SendCode sendCode = method.getAnnotation(SendCode.class); // 获取注解
+
+        /*
+         * 获取Bean
+         */
+        CodeGenerator generator = Util.getBean(factory, sendCode.generator().value(), sendCode.generator().generatorClass());
+        CodeStore store = Util.getBean(factory, sendCode.store().value(), sendCode.store().generatorClass());
+        CodeSender sender = Util.getBean(factory, sendCode.sender().value(), sendCode.sender().generatorClass());
+
+        Map<String, Object> parameters = Util.getParameters(methodInvocation); // 获取参数列表
 
         Code code = generator.generate(sendCode.value(), parameters);
-        store.store(code, sendCode.value(), sendCode.duration(), parameters);
-        sender.send(code, sendCode.value(), parameters);
+        store.store(code, sendCode.duration(), parameters);
+        sender.send(code, parameters);
+
+        Object codeValue = code.getValue();
+
+        Parameter[] params = method.getParameters();
+        Object[] objects = methodInvocation.getArguments();
+        if (params != null && objects != null)
+            for (int i = 0, len = Math.min(params.length, objects.length); i < len; i++) {
+                if (params[i].getName().equals(sendCode.parameter()) &&
+                        params[i].getType().isAssignableFrom(codeValue.getClass())) {
+                    objects[i] = codeValue;
+                    break;
+                }
+            }
         return methodInvocation.proceed();
     }
 

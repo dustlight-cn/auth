@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * 验证码生成器
  */
-public interface CodeGenerator {
+public interface CodeGenerator<T> {
 
-    Code generate(Object key, Map<String, Object> parameters) throws GenerateCodeException;
+    Code<T> generate(String name, Map<String, Object> parameters) throws GenerateCodeException;
 }

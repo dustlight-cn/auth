@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * 验证码发送器
  */
-public interface CodeSender {
+public interface CodeSender<T> {
 
-    void send(Code code, Object key, Map<String, Object> parameters) throws SendCodeException;
+    void send(Code<T> code, Map<String, Object> parameters) throws SendCodeException;
 }

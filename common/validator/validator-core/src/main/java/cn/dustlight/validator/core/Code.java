@@ -3,9 +3,29 @@ package cn.dustlight.validator.core;
 import java.io.Serializable;
 import java.util.Map;
 
-public interface Code extends Serializable {
+/**
+ * 验证码
+ */
+public interface Code<T> extends Serializable {
 
-    Object getCode();
+    /**
+     * 获取验证码名
+     *
+     * @return
+     */
+    String getName();
 
-    Map<String, Object> getBody();
+    /**
+     * 获取验证码值
+     *
+     * @return
+     */
+    T getValue();
+
+    /**
+     * 获取额外数据
+     *
+     * @return
+     */
+    Map<String, Object> getDate();
 }

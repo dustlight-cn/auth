@@ -8,6 +8,7 @@ import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
 import cn.dustlight.oauth2.uim.handlers.code.DefaultVerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.handlers.email.EmailCodeSender;
 import cn.dustlight.oauth2.uim.mappers.RoleMapper;
 import cn.dustlight.oauth2.uim.mappers.UserMapper;
 import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
@@ -16,6 +17,8 @@ import cn.dustlight.oauth2.uim.services.code.RedisVerificationCodeStoreService;
 import cn.dustlight.oauth2.uim.services.code.VerificationCodeStoreService;
 import cn.dustlight.oauth2.uim.services.users.DefaultUimUserDetailsService;
 import cn.dustlight.oauth2.uim.services.users.UimUserDetailsService;
+import cn.dustlight.sender.email.EmailSender;
+import cn.dustlight.validator.generator.RandomStringCodeGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -184,5 +187,19 @@ public class UimConfiguration {
                                                        @Autowired PasswordEncoder passwordEncoder,
                                                        @Autowired UniqueGenerator<Long> idGenerator) {
         return new DefaultUimUserDetailsService(userMapper, roleMapper, passwordEncoder, idGenerator);
+    }
+
+    @Bean
+    public RandomStringCodeGenerator fourNumberGenerator() {
+        RandomStringCodeGenerator generator = new RandomStringCodeGenerator();
+        generator.setChars("1234567890".toCharArray());
+        generator.setLength(4);
+        return generator;
+    }
+
+    @Bean
+    public EmailCodeSender hahahah(@Autowired EmailSender sender) {
+        EmailCodeSender codeSender = new EmailCodeSender(sender);
+        return codeSender;
     }
 }

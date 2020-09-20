@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * 验证码校验器
  */
-public interface CodeVerifier {
+public interface CodeVerifier<T> {
 
-    void verify(Code code, Object key, Map<String, Object> parameters) throws VerifyCodeException;
+    void verify(Code<T> code, T target, Map<String, Object> parameters) throws VerifyCodeException;
 }

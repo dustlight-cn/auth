@@ -9,9 +9,11 @@ import java.lang.annotation.*;
 public @interface VerifyCode {
     String value() default "code";
 
-    String store() default "defaultCodeStore";
+    String parameter() default "code";
 
-    String verifier() default "defaultCodeVerifier";
+    Store store() default @Store;
+
+    Verifier verifier() default @Verifier;
 
     DeleteCode delete() default @DeleteCode;
 }

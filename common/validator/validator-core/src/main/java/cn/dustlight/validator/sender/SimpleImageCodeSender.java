@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
-public class SimpleImageCodeSender implements CodeSender {
+public class SimpleImageCodeSender<T> implements CodeSender<T> {
 
     private ImageHandler imageHandler;
     private int width, height;
@@ -26,17 +26,19 @@ public class SimpleImageCodeSender implements CodeSender {
     }
 
     public SimpleImageCodeSender() {
-        this(new DefaultImageHandler(), 100, 50);
+        this(new DefaultImageHandler(), 200, 100);
     }
 
-    public void send(Code code, Object key, Map<String, Object> parameters) throws SendCodeException {
+    public void send(Code<T> code, Map<String, Object> parameters) throws SendCodeException {
+        if (code == null || code.getValue() == null)
+            throw new SendCodeException("Code is null!");
         BufferedImage image = null;
         try {
             ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletResponse response = requestAttributes.getResponse();
-            image = imageHandler.getImage(code.getCode(), width, height, key, parameters);
+            image = imageHandler.getImage(code.getValue().toString(), width, height, parameters);
             response.setStatus(200);
-            response.setContentType("image/*");
+            response.setContentType("image/jpeg");
             ImageIO.write(image, "jpeg", new BufferedOutputStream(response.getOutputStream()));
         } catch (Exception e) {
             throw new SendCodeException("Fail to send code: " + code, e);
@@ -75,7 +77,7 @@ public class SimpleImageCodeSender implements CodeSender {
     }
 
     public interface ImageHandler {
-        BufferedImage getImage(Object code, int width, int height, Object id, Map<String, Object> parameters);
+        BufferedImage getImage(String code, int width, int height, Map<String, Object> parameters);
     }
 
     public static class DefaultImageHandler implements ImageHandler {
@@ -97,20 +99,19 @@ public class SimpleImageCodeSender implements CodeSender {
             this.fonts = fonts.toArray(new String[0]);
         }
 
-        public BufferedImage getImage(Object code, int width, int height, Object key, Map<String, Object> parameters) {
-            String str = code.toString();
-
+        public BufferedImage getImage(String code, int width, int height, Map<String, Object> parameters) {
             /**
              * 创建背景
              */
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             Graphics2D g = (Graphics2D) image.getGraphics();
-            g.setColor(new Color(255, 255, secureRandom.nextInt(225) + 10));
+
+            g.setColor(new Color(255, 255, 255));
             g.fillRect(0, 0, width, height);
             int min = Math.min(width, height), MIN = min / 3, MAX = (int) (min / 1.5f), D = MAX - MIN;
 
-            for (int i = 0, len = str.length(); i < len; i++) {
-                String c = str.substring(i, i + 1);
+            for (int i = 0, len = code.length(); i < len; i++) {
+                String c = code.substring(i, i + 1);
                 float x = i * 1.0F * width / len;
 
                 /**
@@ -125,15 +126,15 @@ public class SimpleImageCodeSender implements CodeSender {
                 g.setFont(font);
                 g.setColor(randomColor(secureRandom));
                 g.drawString(c, x, height / 2 + size / 4 + (height - size) / 2 - secureRandom.nextInt(height - size));
-                int num = secureRandom.nextInt(2); //定义干扰线的数量
-                for (int j = 0; j < num; j++) {
-                    int x1 = secureRandom.nextInt(width);
-                    int y1 = secureRandom.nextInt(height);
-                    int x2 = secureRandom.nextInt(width);
-                    int y2 = secureRandom.nextInt(height);
-                    g.setColor(randomColor(secureRandom));
-                    g.drawLine(x1, y1, x2, y2);
-                }
+//                int num = len; //定义干扰线的数量
+//                for (int j = 0; j < num; j++) {
+//                    int x1 = secureRandom.nextInt(width);
+//                    int y1 = secureRandom.nextInt(height);
+//                    int x2 = secureRandom.nextInt(width);
+//                    int y2 = secureRandom.nextInt(height);
+//                    g.setColor(randomColor(secureRandom));
+//                    g.drawLine(x1, y1, x2, y2);
+//                }
             }
             return image;
         }

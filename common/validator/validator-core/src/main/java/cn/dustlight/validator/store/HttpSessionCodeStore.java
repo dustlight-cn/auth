@@ -9,26 +9,28 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
-public class HttpSessionCodeStore implements CodeStore {
+public class HttpSessionCodeStore<T> implements CodeStore<T> {
 
     @Override
-    public void store(Code code, Object key, Duration duration, Map<String, Object> parameters) throws StoreCodeException {
+    public void store(Code<T> code, Duration duration, Map<String, Object> parameters) throws StoreCodeException {
+        if (code == null || code.getName() == null)
+            throw new StoreCodeException("Code is null");
         try {
             HttpSession session = getSession(true);
             if (duration != null && duration.enabled())
                 session.setMaxInactiveInterval((int) (duration.value() / 1000));
-            session.setAttribute(key.toString(), code);
+            session.setAttribute(code.getName(), code);
         } catch (Exception e) {
             throw new StoreCodeException("Store code fail", e);
         }
     }
 
     @Override
-    public Code load(Object key, Map<String, Object> parameters) throws LoadCodeException {
+    public Code<T> load(String key, Map<String, Object> parameters) throws LoadCodeException {
         try {
             HttpSession session = getSession(false);
             Object val = null;
-            if (session == null || (val = session.getAttribute(key.toString())) == null)
+            if (session == null || (val = session.getAttribute(key)) == null)
                 throw new CodeNotExistsException("Code not exists");
             return (Code) val;
         } catch (Exception e) {
@@ -39,7 +41,7 @@ public class HttpSessionCodeStore implements CodeStore {
     }
 
     @Override
-    public void remove(Object key) throws RemoveCodeException {
+    public void remove(String key) throws RemoveCodeException {
         try {
             HttpSession session = getSession(false);
             if (session == null)

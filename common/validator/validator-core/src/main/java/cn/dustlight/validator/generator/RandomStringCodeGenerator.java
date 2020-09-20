@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * 随机字符串生成器
  */
-public class RandomStringCodeGenerator implements CodeGenerator {
+public class RandomStringCodeGenerator implements CodeGenerator<String> {
 
     public static final char[] DEFAULT_CHARACTERS = "0123456789qwertyuiopasdfghjklzxcvbnm".toCharArray();
 
@@ -24,17 +24,19 @@ public class RandomStringCodeGenerator implements CodeGenerator {
     }
 
     public RandomStringCodeGenerator() {
-        this(DEFAULT_CHARACTERS, 6);
+        this(DEFAULT_CHARACTERS, 4);
     }
 
-    public Code generate(Object key, Map<String, Object> parameters) throws GenerateCodeException {
+    public Code<String> generate(String name, Map<String, Object> parameters) throws GenerateCodeException {
         try {
             int len = this.length;
             char[] chars = this.chars;
             StringBuilder builder = new StringBuilder(length);
             for (int i = 0; i < len; i++)
                 builder.append(chars[secureRandom.nextInt(chars.length)]);
-            return new DefaultCode(builder.toString());
+            DefaultCode<String> code = new DefaultCode<>(builder.toString());
+            code.setName(name);
+            return code;
         } catch (Exception e) {
             throw new GenerateCodeException("Fail to generate code", e);
         }

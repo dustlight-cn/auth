@@ -5,7 +5,7 @@ import cn.dustlight.validator.core.Code;
 
 import java.util.Map;
 
-public class StringCodeVerifier implements CodeVerifier {
+public class StringCodeVerifier implements CodeVerifier<String> {
 
     private StringVerifierHandler handler;
 
@@ -18,12 +18,11 @@ public class StringCodeVerifier implements CodeVerifier {
     }
 
     @Override
-    public void verify(Code code, Object key, Map<String, Object> parameters) throws VerifyCodeException {
+    public void verify(Code<String> code, String target, Map<String, Object> parameters) throws VerifyCodeException {
         try {
-            Object target = parameters.get(key);
             String c, t;
-            c = code == null || code.getCode() == null ? null : code.getCode().toString();
-            t = target == null ? null : target.toString();
+            c = code == null || code.getValue() == null ? null : code.getValue();
+            t = target;
             if (!handler.verify(c, t)) {
                 throw new VerifyFailException("Fail to verify code.");
             }

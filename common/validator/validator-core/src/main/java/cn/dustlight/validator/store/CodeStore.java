@@ -8,12 +8,12 @@ import java.util.Map;
 /**
  * 验证码储存器
  */
-public interface CodeStore {
+public interface CodeStore<T> {
 
-    void store(Code code, Object key, Duration duration, Map<String, Object> parameters) throws StoreCodeException;
+    void store(Code<T> code, Duration duration, Map<String, Object> parameters) throws StoreCodeException;
 
-    Code load(Object key, Map<String, Object> parameters) throws LoadCodeException;
+    Code<T> load(String name, Map<String, Object> parameters) throws LoadCodeException;
 
-    void remove(Object key) throws RemoveCodeException;
+    void remove(String key) throws RemoveCodeException;
 
 }

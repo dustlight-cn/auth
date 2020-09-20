@@ -10,7 +10,6 @@ import cn.dustlight.validator.store.CodeStore;
 import cn.dustlight.validator.store.HttpSessionCodeStore;
 import cn.dustlight.validator.verifier.CodeVerifier;
 import cn.dustlight.validator.verifier.StringCodeVerifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
 public class DefaultComponentConfiguration {
@@ -26,28 +25,24 @@ public class DefaultComponentConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
     public CodeGenerator defaultCodeGenerator() {
         RandomStringCodeGenerator generator = new RandomStringCodeGenerator();
         return generator;
     }
 
     @Bean
-    @ConditionalOnMissingBean
     public CodeStore defaultCodeStore() {
         HttpSessionCodeStore store = new HttpSessionCodeStore();
         return store;
     }
 
     @Bean
-    @ConditionalOnMissingBean
     public CodeSender defaultCodeSender() {
         SimpleImageCodeSender sender = new SimpleImageCodeSender();
         return sender;
     }
 
     @Bean
-    @ConditionalOnMissingBean
     public CodeVerifier defaultCodeVerifier() {
         StringCodeVerifier verifier = new StringCodeVerifier();
         return verifier;

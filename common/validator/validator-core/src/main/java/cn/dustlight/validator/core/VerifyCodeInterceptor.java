@@ -1,6 +1,6 @@
 package cn.dustlight.validator.core;
 
-import cn.dustlight.validator.BeanUtils;
+import cn.dustlight.validator.Util;
 import cn.dustlight.validator.annotation.VerifyCode;
 import cn.dustlight.validator.store.CodeStore;
 import cn.dustlight.validator.verifier.CodeVerifier;
@@ -10,8 +10,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.BeanFactory;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class VerifyCodeInterceptor implements MethodInterceptor {
@@ -24,29 +22,23 @@ public class VerifyCodeInterceptor implements MethodInterceptor {
 
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
         Method method = methodInvocation.getMethod();
-        VerifyCode sendCode = method.getAnnotation(VerifyCode.class);
+        VerifyCode verifyCode = method.getAnnotation(VerifyCode.class);
 
-        CodeStore store = BeanUtils.getBean(factory, sendCode.store(), CodeStore.class);
-        CodeVerifier verifier = BeanUtils.getBean(factory, sendCode.verifier(), CodeVerifier.class);
-        Map<String, Object> parameters = new LinkedHashMap<>();
-        if (method.getParameterCount() > 0) {
-            Object[] arguments = methodInvocation.getArguments();
-            Parameter[] parameters1 = method.getParameters();
-            for (int i = 0, len = Math.min(arguments.length, parameters1.length); i < len; i++)
-                parameters.put(parameters1[i].getName(), arguments[i]);
-        }
+        CodeStore store = Util.getBean(factory, verifyCode.store().value(), verifyCode.store().generatorClass());
+        CodeVerifier verifier = Util.getBean(factory, verifyCode.verifier().value(), verifyCode.verifier().generatorClass());
+        Map<String, Object> parameters = Util.getParameters(methodInvocation);
 
-        Code code = store.load(sendCode.value(), parameters);
+        Code code = store.load(verifyCode.value(), parameters);
         try {
-            verifier.verify(code, sendCode.value(), parameters);
-            store.remove(sendCode.value()); // 验证成功删除验证码
+            verifier.verify(code, verifyCode.value(), parameters);
+            store.remove(verifyCode.value()); // 验证成功删除验证码
         } catch (VerifyCodeException e) {
             // 验证失败
             addChanceCount(code); // 记录++
-            if (checkChance(code, sendCode.delete().onFail())) {
-                store.store(code, sendCode.value(), null, parameters);
+            if (checkChance(code, verifyCode.delete().onFail())) {
+                store.store(code, null, parameters);
             } else {
-                store.remove(sendCode.value()); // 重试次数用光
+                store.remove(verifyCode.value()); // 重试次数用光
             }
             throw e;
         }
@@ -56,20 +48,20 @@ public class VerifyCodeInterceptor implements MethodInterceptor {
     }
 
     boolean checkChance(Code code, int chance) {
-        if (code.getBody().get("CHANCE") == null)
+        if (code.getDate().get("CHANCE") == null)
             return true;
-        Integer CHANCE = Integer.valueOf(code.getBody().get("CHANCE").toString());
+        Integer CHANCE = Integer.valueOf(code.getDate().get("CHANCE").toString());
         if (CHANCE >= chance)
             return false;
         return true;
     }
 
     void addChanceCount(Code code) {
-        if (code.getBody().get("CHANCE") == null) {
-            code.getBody().put("CHANCE", 1);
+        if (code.getDate().get("CHANCE") == null) {
+            code.getDate().put("CHANCE", 1);
             return;
         }
-        Integer CHANCE = Integer.valueOf(code.getBody().get("CHANCE").toString());
-        code.getBody().put("CHANCE", CHANCE + 1);
+        Integer CHANCE = Integer.valueOf(code.getDate().get("CHANCE").toString());
+        code.getDate().put("CHANCE", CHANCE + 1);
     }
 }

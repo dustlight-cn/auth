@@ -3,36 +3,46 @@ package cn.dustlight.validator.core;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class DefaultCode implements Code {
+public class DefaultCode<T> implements Code<T> {
 
-    private Object code;
-    private Map<String, Object> body;
+    private String name;
+    private T value;
+    private Map<String, Object> data;
 
-    public DefaultCode(Object code, Map<String, Object> body) {
-        this.code = code;
-        this.body = body;
+    public DefaultCode(T value, Map<String, Object> data) {
+        this.value = value;
+        this.data = data;
     }
 
-    public DefaultCode(Object code) {
-        this.code = code;
-        this.body = new LinkedHashMap<>();
-    }
-
-    @Override
-    public Object getCode() {
-        return code;
+    public DefaultCode(T value) {
+        this.value = value;
+        this.data = new LinkedHashMap<>();
     }
 
     @Override
-    public Map<String, Object> getBody() {
-        return body;
+    public String getName() {
+        return name;
     }
 
-    public void setCode(Object code) {
-        this.code = code;
+    @Override
+    public T getValue() {
+        return value;
     }
 
-    public void setBody(Map<String, Object> body) {
-        this.body = body;
+    @Override
+    public Map<String, Object> getDate() {
+        return data;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    public void setData(Map<String, Object> data) {
+        this.data = data;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

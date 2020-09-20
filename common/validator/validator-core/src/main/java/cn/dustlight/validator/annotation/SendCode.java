@@ -9,11 +9,13 @@ import java.lang.annotation.*;
 public @interface SendCode {
     String value() default "code";
 
-    String generator() default "defaultCodeGenerator";
+    String parameter() default "code";
 
-    String store() default "defaultCodeStore";
+    Generator generator() default @Generator;
 
-    String sender() default "defaultCodeSender";
+    Store store() default @Store;
+
+    Sender sender() default @Sender;
 
     Duration duration() default @Duration;
 }
