@@ -13,19 +13,17 @@ import java.lang.annotation.*;
  */
 public @interface CodeParam {
     /**
-     * 参数名
+     * 验证码名称，用于区分不同业务的验证码。
      *
      * @return
      */
-    @AliasFor("name")
-    String value() default "";
+    String value() default "code";
 
     /**
      * 参数名
      *
      * @return
      */
-    @AliasFor("value")
     String name() default "";
 
     /**

@@ -28,39 +28,42 @@ public class SendCodeInterceptor implements MethodInterceptor, Ordered {
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
         Method method = methodInvocation.getMethod();
 
-        SendCode sendCode = method.getAnnotation(SendCode.class); // 获取注解
+        SendCode sendCodeAnnotation = method.getAnnotation(SendCode.class); // 获取注解
 
         /*
          * 获取Bean
          */
-        CodeGenerator generator = Util.getBean(factory, sendCode.generator().value(), sendCode.generator().type());
-        CodeStore store = Util.getBean(factory, sendCode.store().value(), sendCode.store().type());
-        CodeSender sender = Util.getBean(factory, sendCode.sender().value(), sendCode.sender().type());
+        CodeGenerator generator = Util.getBean(factory, sendCodeAnnotation.generator().value(), sendCodeAnnotation.generator().type());
+        CodeStore store = Util.getBean(factory, sendCodeAnnotation.store().value(), sendCodeAnnotation.store().type());
+        CodeSender sender = Util.getBean(factory, sendCodeAnnotation.sender().value(), sendCodeAnnotation.sender().type());
 
         Map<String, Object> parameters = Util.getParameters(methodInvocation); // 获取方法参数列表
-        for (cn.dustlight.validator.annotations.Parameter parameter : sendCode.parameters())
+        for (cn.dustlight.validator.annotations.Parameter parameter : sendCodeAnnotation.parameters())
             parameters.put(parameter.name(), parameter.value()); // 获取注解参数
 
-        Code code = generator.generate(sendCode.value(), parameters); // 生成验证码
+        Code code = generator.generate(sendCodeAnnotation.value(), parameters); // 生成验证码
         Object codeValue = code.getValue();
 
         Parameter[] params = method.getParameters();
         Object[] objects = methodInvocation.getArguments();
         if (params != null && objects != null) {
             for (int i = 0, len = Math.min(params.length, objects.length); i < len; i++) {
-                CodeParam codeParam;
-                if (params[i].isAnnotationPresent(CodeValue.class)) {
+                CodeParam codeParamAnnotation;
+                CodeValue codeValueAnnotation;
+                if ((codeValueAnnotation = params[i].getAnnotation(CodeValue.class)) != null &&
+                        codeValueAnnotation.value().equals(sendCodeAnnotation.value())) {
                     objects[i] = codeValue; // 往验证码值注入方法参数
                     parameters.put(params[i].getName(), codeValue); // 更新参数表
-                } else if ((codeParam = params[i].getAnnotation(CodeParam.class)) != null) {
-                    String key = codeParam.value().length() > 0 ? codeParam.value() : params[i].getName();
-                    Object value = objects[i] != null ? objects[i] : codeParam.defaultValue();
+                } else if ((codeParamAnnotation = params[i].getAnnotation(CodeParam.class)) != null &&
+                        codeParamAnnotation.value().equals(sendCodeAnnotation.value())) {
+                    String key = codeParamAnnotation.value().length() > 0 ? codeParamAnnotation.value() : params[i].getName();
+                    Object value = objects[i] != null ? objects[i] : codeParamAnnotation.defaultValue();
                     code.getData().put(key, value); // 存储验证码参数
                 }
             }
         }
 
-        store.store(code, sendCode.duration(), parameters); // 存储验证码
+        store.store(code, sendCodeAnnotation.duration(), parameters); // 存储验证码
         sender.send(code, parameters); // 发送验证码
 
         return methodInvocation.proceed();
