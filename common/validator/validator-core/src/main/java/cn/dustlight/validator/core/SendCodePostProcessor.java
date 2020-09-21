@@ -10,4 +10,14 @@ public class SendCodePostProcessor extends AbstractBeanFactoryAwareAdvisingPostP
         super.setBeanFactory(beanFactory);
         this.advisor = new SendCodeAdvisor(beanFactory);
     }
+
+    @Override
+    public int getOrder() {
+        return ((SendCodeAdvisor) this.advisor).getOrder();
+    }
+
+    @Override
+    public void setOrder(int order) {
+        ((SendCodeAdvisor) this.advisor).setOrder(order);
+    }
 }

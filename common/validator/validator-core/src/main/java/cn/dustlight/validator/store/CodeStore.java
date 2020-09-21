@@ -1,6 +1,6 @@
 package cn.dustlight.validator.store;
 
-import cn.dustlight.validator.annotation.Duration;
+import cn.dustlight.validator.annotations.Duration;
 import cn.dustlight.validator.core.Code;
 
 import java.util.Map;

@@ -190,15 +190,15 @@ public class UimConfiguration {
     }
 
     @Bean
-    public RandomStringCodeGenerator fourNumberGenerator() {
+    public RandomStringCodeGenerator numberCodeGenerator() {
         RandomStringCodeGenerator generator = new RandomStringCodeGenerator();
         generator.setChars("1234567890".toCharArray());
-        generator.setLength(4);
+        generator.setLength(6);
         return generator;
     }
 
     @Bean
-    public EmailCodeSender hahahah(@Autowired EmailSender sender) {
+    public EmailCodeSender emailCodeSender(@Autowired EmailSender sender) {
         EmailCodeSender codeSender = new EmailCodeSender(sender);
         return codeSender;
     }

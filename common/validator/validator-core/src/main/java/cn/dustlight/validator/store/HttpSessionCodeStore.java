@@ -1,7 +1,7 @@
 package cn.dustlight.validator.store;
 
 import cn.dustlight.validator.ValidatorException;
-import cn.dustlight.validator.annotation.Duration;
+import cn.dustlight.validator.annotations.Duration;
 import cn.dustlight.validator.core.Code;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

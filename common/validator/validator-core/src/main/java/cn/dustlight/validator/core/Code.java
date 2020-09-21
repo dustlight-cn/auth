@@ -27,5 +27,5 @@ public interface Code<T> extends Serializable {
      *
      * @return
      */
-    Map<String, Object> getDate();
+    Map<String, Object> getData();
 }

@@ -14,7 +14,7 @@ public class StringCodeVerifier implements CodeVerifier<String> {
     }
 
     public StringCodeVerifier() {
-        this.handler = new StringEqualsVerifierHandler(false, true);
+        this.handler = new StringEqualsVerifierHandler(false, true, false);
     }
 
     @Override
@@ -49,10 +49,12 @@ public class StringCodeVerifier implements CodeVerifier<String> {
 
         private boolean enabledNull;
         private boolean trim;
+        private boolean caseSensitive;
 
-        public StringEqualsVerifierHandler(boolean enabledNull, boolean trim) {
+        public StringEqualsVerifierHandler(boolean enabledNull, boolean trim, boolean caseSensitive) {
             this.enabledNull = enabledNull;
             this.trim = trim;
+            this.caseSensitive = caseSensitive;
         }
 
         @Override
@@ -60,6 +62,22 @@ public class StringCodeVerifier implements CodeVerifier<String> {
             if (code == null || target == null)
                 return enabledNull ? code == target : false;
             return trim ? code.trim().equals(target.trim()) : code.equals(target);
+        }
+
+        public void setCaseSensitive(boolean caseSensitive) {
+            this.caseSensitive = caseSensitive;
+        }
+
+        public boolean isCaseSensitive() {
+            return caseSensitive;
+        }
+
+        public void setTrim(boolean trim) {
+            this.trim = trim;
+        }
+
+        public boolean isTrim() {
+            return trim;
         }
 
         public void setEnabledNull(boolean enabledNull) {

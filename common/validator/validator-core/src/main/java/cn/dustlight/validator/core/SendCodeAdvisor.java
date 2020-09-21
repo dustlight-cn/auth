@@ -1,6 +1,6 @@
 package cn.dustlight.validator.core;
 
-import cn.dustlight.validator.annotation.SendCode;
+import cn.dustlight.validator.annotations.SendCode;
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
@@ -9,10 +9,10 @@ import org.springframework.beans.factory.BeanFactory;
 
 public class SendCodeAdvisor extends AbstractPointcutAdvisor {
 
-    private BeanFactory factory;
+    private SendCodeInterceptor interceptor;
 
     public SendCodeAdvisor(BeanFactory factory) {
-        this.factory = factory;
+        interceptor = new SendCodeInterceptor(factory);
     }
 
     public Pointcut getPointcut() {
@@ -20,6 +20,16 @@ public class SendCodeAdvisor extends AbstractPointcutAdvisor {
     }
 
     public Advice getAdvice() {
-        return new SendCodeInterceptor(factory);
+        return interceptor;
+    }
+
+    @Override
+    public int getOrder() {
+        return interceptor.getOrder();
+    }
+
+    @Override
+    public void setOrder(int order) {
+        interceptor.setOrder(order);
     }
 }

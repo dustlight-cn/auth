@@ -1,4 +1,4 @@
-package cn.dustlight.validator.annotation;
+package cn.dustlight.validator.annotations;
 
 import cn.dustlight.validator.verifier.CodeVerifier;
 
@@ -8,8 +8,21 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+/**
+ * 验证其器配置
+ */
 public @interface Verifier {
+    /**
+     * 验证器Bean名
+     *
+     * @return
+     */
     String value() default "defaultCodeVerifier";
 
-    Class<? extends CodeVerifier> generatorClass() default CodeVerifier.class;
+    /**
+     * 验证器类型
+     *
+     * @return
+     */
+    Class<? extends CodeVerifier> type() default CodeVerifier.class;
 }

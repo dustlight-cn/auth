@@ -30,7 +30,7 @@ public class DefaultCode<T> implements Code<T> {
     }
 
     @Override
-    public Map<String, Object> getDate() {
+    public Map<String, Object> getData() {
         return data;
     }
 

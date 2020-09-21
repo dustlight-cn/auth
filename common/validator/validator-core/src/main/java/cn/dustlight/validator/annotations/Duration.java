@@ -1,4 +1,4 @@
-package cn.dustlight.validator.annotation;
+package cn.dustlight.validator.annotations;
 
 import java.lang.annotation.*;
 
@@ -6,6 +6,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+/**
+ * 有效时间
+ */
 public @interface Duration {
     long value() default 1000 * 60 * 10L;
 

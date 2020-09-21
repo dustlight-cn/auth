@@ -10,4 +10,14 @@ public class VerifyCodePostProcessor extends AbstractBeanFactoryAwareAdvisingPos
         super.setBeanFactory(beanFactory);
         this.advisor = new VerifyCodeAdvisor(beanFactory);
     }
+
+    @Override
+    public int getOrder() {
+        return ((VerifyCodeAdvisor) this.advisor).getOrder();
+    }
+
+    @Override
+    public void setOrder(int order) {
+        ((VerifyCodeAdvisor) this.advisor).setOrder(order);
+    }
 }

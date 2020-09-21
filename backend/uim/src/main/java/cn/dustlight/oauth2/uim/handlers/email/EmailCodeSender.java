@@ -19,10 +19,12 @@ public class EmailCodeSender implements CodeSender<String> {
     @Override
     public void send(Code<String> code, Map<String, Object> parameters) throws SendCodeException {
         try {
-            parameters.put("code", code.getValue());
-            sender.send("您的验证码是${code}", "Email Register", parameters, parameters.get("email").toString());
-        } catch (IOException e) {
-            throw new SendCodeException("?", e);
+            String title = parameters.getOrDefault("title", "untitled").toString();
+            String content = parameters.getOrDefault("content", "no content").toString();
+            String email = parameters.getOrDefault("email", "").toString();
+            sender.send(content, title, parameters, email);
+        } catch (Exception e) {
+            throw new SendCodeException("Fail to send email code", e);
         }
     }
 }
