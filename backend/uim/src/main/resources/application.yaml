@@ -28,15 +28,12 @@ logging:
       dustlight:
         oauth2:
           uim:
-            services:
-              ClientDetailsMapper: debug
-              TemplateManagerMapper: debug
-              UserDetailsMapper: debug
-              AuthorityDetailsMapper: debug
-              GrantTypeMapper: debug
-              ResourceDetailsMapper: debug
-              RoleDetailsMapper: debug
-              ScopeDetailsMapper: debug
+            controllers:
+              code:
+                DefaultVerificationCodeController: debug
+              users:
+                DefaultUserBaseController: debug
+                DefaultUserExtendController: debug
 # Mybatis
 mybatis:
   configuration:
@@ -52,7 +49,6 @@ springdoc:
 # 应用配置
 dustlight:
   uim:
-    csrf-enabled: false
     public-paths:
       - /api/doc/**
     resource-paths:

@@ -1,51 +1,39 @@
 package cn.dustlight.oauth2.uim.controllers;
 
-import cn.dustlight.oauth2.uim.RestfulConstants;
 import cn.dustlight.oauth2.uim.RestfulResult;
-import cn.dustlight.oauth2.uim.entities.TemplateNode;
-import cn.dustlight.oauth2.uim.services.TemplateManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import cn.dustlight.oauth2.uim.entities.Template;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
-//@RestController
-public class TemplateManagerController implements ITemplateManagerController {
+@RequestMapping(value = "/api/template", produces = "application/json;charset=utf-8")
+public interface TemplateManagerController {
 
-    @Autowired
-    private TemplateManager templateManager;
+    @GetMapping("/names")
+    @PreAuthorize("hasAuthority('READ_TEMPLATE')")
+    RestfulResult<Collection<String>> getTemplateNames() throws IOException;
 
-    @Override
-    public RestfulResult<List<String>> getTemplateNames() throws IOException {
-        return RestfulResult.success(templateManager.getTemplatesName());
-    }
+    @GetMapping("/list")
+    @PreAuthorize("hasAuthority('READ_TEMPLATE')")
+    RestfulResult<List<Template>> getTemplates() throws IOException;
 
-    @Override
-    public RestfulResult<List<TemplateNode>> getTemplates() throws IOException {
-        return RestfulResult.success(templateManager.getTemplatesList());
-    }
 
-    @Override
-    public RestfulResult<String> getTemplate(String name) throws IOException {
-        return RestfulResult.success(templateManager.getTemplate(name));
-    }
+    @GetMapping("/text/{name}")
+    @PreAuthorize("hasAuthority('READ_TEMPLATE')")
+    RestfulResult<String> getTemplate(@PathVariable String name) throws IOException;
 
-    @Override
-    public RestfulResult setTemplate(String name, String text) throws IOException {
-        templateManager.setTemplate(name, text);
-        return RestfulConstants.SUCCESS;
-    }
+    @PostMapping("/text/{name}")
+    @PreAuthorize("hasAuthority('WRITE_TEMPLATE')")
+    RestfulResult setTemplate(@PathVariable String name, @RequestParam String text) throws IOException;
 
-    @Override
-    public RestfulResult deleteTemplate(String[] names) throws IOException {
-        templateManager.deleteTemplate(names);
-        return RestfulConstants.SUCCESS;
-    }
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasAuthority('WRITE_TEMPLATE')")
+    RestfulResult deleteTemplate(@RequestBody String[] names) throws IOException;
 
-    @Override
-    public RestfulResult updateName(Long id, String name) {
-        templateManager.updateName(id, name);
-        return RestfulConstants.SUCCESS;
-    }
+    @PostMapping("/name/{id}")
+    @PreAuthorize("hasAuthority('WRITE_TEMPLATE')")
+    RestfulResult updateName(@PathVariable Long id, String name);
 }

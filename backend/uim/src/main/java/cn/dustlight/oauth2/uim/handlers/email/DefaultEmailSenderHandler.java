@@ -1,14 +1,16 @@
 package cn.dustlight.oauth2.uim.handlers.email;
 
-import cn.dustlight.sender.core.ITemplateManager;
+import cn.dustlight.sender.core.Template;
+import cn.dustlight.sender.core.TemplateManager;
 import cn.dustlight.sender.email.EmailSender;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.logging.Logger;
 
 @Service
 public class DefaultEmailSenderHandler implements EmailSenderHandler {
@@ -17,16 +19,16 @@ public class DefaultEmailSenderHandler implements EmailSenderHandler {
     private EmailSender sender;
 
     @Autowired
-    private ITemplateManager templateManager;
+    private TemplateManager templateManager;
+
+    private final Log logger = LogFactory.getLog(this.getClass().getName());
 
     @Override
     public void send(String templateName, Map<String, Object> parameters, String... receivers) throws IOException {
-        Logger.getLogger(getClass().getName()).info("Send Email: template: \"" + templateName + "\", " +
+        logger.debug("Send Email: template: \"" + templateName + "\", " +
                 "parameters: " + parameters + ", "
                 + "receivers: " + Arrays.toString(receivers));
-        String template = templateManager.getTemplate(templateName);
-        Object subject_ = parameters.remove("subject");
-        String subject = subject_ == null ? templateName : subject_.toString();
-        sender.send(template, subject, parameters, receivers);
+        Template template = templateManager.getTemplate(templateName);
+        sender.send(template.getContent(), template.getTitle(), parameters, receivers);
     }
 }

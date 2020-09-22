@@ -1,8 +1,9 @@
 package cn.dustlight.oauth2.uim.services;
 
+import cn.dustlight.generator.UniqueGenerator;
 import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
-import cn.dustlight.sender.core.ITemplateManager;
-import cn.dustlight.oauth2.uim.entities.TemplateNode;
+import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.sender.core.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,27 +11,31 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-public class TemplateManager implements ITemplateManager {
+public class TemplateManager implements cn.dustlight.sender.core.TemplateManager {
 
     @Autowired
     protected TemplateManagerMapper managerMapper;
 
     @Autowired
-    protected SnowflakeIdGenerator snowflake;
+    protected UniqueGenerator<Long> snowflake;
+
+    @Autowired
+    UimUser user;
 
     @Override
-    public List<String> getTemplatesName() throws IOException {
+    public Collection<String> getNames() throws IOException {
         return managerMapper.getTemplatesName();
     }
 
     @Override
-    public String getTemplate(String templateName) throws IOException {
-        return managerMapper.getTemplate(templateName);
+    public Template getTemplate(String name) throws IOException {
+        return managerMapper.getTemplate(name);
     }
 
+
     @Override
-    public void setTemplate(String templateName, String templateContent) throws IOException {
-        managerMapper.setTemplate(snowflake.generate(), templateName, templateContent);
+    public void setTemplate(String name, String title, String content) throws IOException {
+        managerMapper.setTemplate(name, user.getUid(), title, content);
     }
 
     @Override
@@ -39,32 +44,13 @@ public class TemplateManager implements ITemplateManager {
     }
 
     @Override
-    public Map<String, String> getTemplates() throws IOException {
-        Map<String, String> result = new HashMap<>();
-        List<TemplateNode> list = managerMapper.getTemplates();
-        for (TemplateNode node : list) {
-            result.put(node.name, node.text);
-        }
-        return result;
+    public Collection<? extends Template> getTemplates() throws IOException {
+        return managerMapper.getTemplates();
     }
 
     @Override
-    public void setTemplates(Map<String, String> templates) throws IOException {
-        List<TemplateNode> list = new ArrayList<>(templates.size());
-        Set<Map.Entry<String, String>> set = templates.entrySet();
-        Iterator<Map.Entry<String, String>> iter = set.iterator();
-        while (iter.hasNext()) {
-            Map.Entry<String, String> kv = iter.next();
-            list.add(new TemplateNode(kv.getKey(), kv.getValue()));
-        }
-        managerMapper.setTemplates(list);
+    public void setTemplates(Collection<? extends Template> templates) throws IOException {
+        managerMapper.setTemplates((Collection<cn.dustlight.oauth2.uim.entities.Template>) templates);
     }
 
-    public void updateName(Long id, String name) {
-        managerMapper.updateTemplateName(id, name);
-    }
-
-    public List<TemplateNode> getTemplatesList() {
-        return managerMapper.getTemplates();
-    }
 }

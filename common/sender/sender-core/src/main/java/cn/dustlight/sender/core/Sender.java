@@ -3,7 +3,7 @@ package cn.dustlight.sender.core;
 import java.io.IOException;
 import java.util.Map;
 
-public interface ISender {
+public interface Sender {
 
     void send(String template,
               Map<String, String> data,

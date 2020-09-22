@@ -7,14 +7,9 @@ public class UimProperties {
 
     private String[] publicPaths = {};
     private String[] resourcePaths = {};
-    private String[] redirectToLoginPath = {};
 
     private SnowflakeConfiguration snowflake = new SnowflakeConfiguration();
-    private boolean csrfEnabled = true;
-    private int registerVerificationCodeLength = 6;
-    private int resetPasswordVerificationCodeLength = 12;
-    private String registerEmail = "Register";
-    private String resetPasswordEmail = "Password Reset";
+    private boolean csrfEnabled = false;
 
     private Storage storage;
 
@@ -26,52 +21,12 @@ public class UimProperties {
         this.storage = storage;
     }
 
-    public String getRegisterEmail() {
-        return registerEmail;
-    }
-
-    public String getResetPasswordEmail() {
-        return resetPasswordEmail;
-    }
-
-    public void setRegisterEmail(String registerEmail) {
-        this.registerEmail = registerEmail;
-    }
-
-    public void setResetPasswordEmail(String resetPasswordEmail) {
-        this.resetPasswordEmail = resetPasswordEmail;
-    }
-
-    public int getResetPasswordVerificationCodeLength() {
-        return resetPasswordVerificationCodeLength;
-    }
-
-    public void setResetPasswordVerificationCodeLength(int resetPasswordVerificationCodeLength) {
-        this.resetPasswordVerificationCodeLength = resetPasswordVerificationCodeLength;
-    }
-
     public String[] getResourcePaths() {
         return resourcePaths;
     }
 
     public void setResourcePaths(String[] resourcePaths) {
         this.resourcePaths = resourcePaths;
-    }
-
-    public int getRegisterVerificationCodeLength() {
-        return registerVerificationCodeLength;
-    }
-
-    public void setRegisterVerificationCodeLength(int registerVerificationCodeLength) {
-        this.registerVerificationCodeLength = registerVerificationCodeLength;
-    }
-
-    public String[] getRedirectToLoginPath() {
-        return redirectToLoginPath;
-    }
-
-    public void setRedirectToLoginPath(String[] redirectToLoginPath) {
-        this.redirectToLoginPath = redirectToLoginPath;
     }
 
     public String[] getPublicPaths() {

@@ -9,12 +9,7 @@ import org.springframework.beans.factory.BeanFactory;
 
 public class VerifyCodeAdvisor extends AbstractPointcutAdvisor {
 
-    private VerifyCodeInterceptor interceptor;
-
-    public VerifyCodeAdvisor(BeanFactory factory) {
-        this.interceptor = new VerifyCodeInterceptor(factory);
-
-    }
+    private VerifyCodeInterceptor interceptor = new VerifyCodeInterceptor();
 
     public Pointcut getPointcut() {
         return new AnnotationMatchingPointcut((Class) null, VerifyCode.class, true);
@@ -22,6 +17,14 @@ public class VerifyCodeAdvisor extends AbstractPointcutAdvisor {
 
     public Advice getAdvice() {
         return interceptor;
+    }
+
+    public BeanFactory getFactory() {
+        return interceptor.getFactory();
+    }
+
+    public void setFactory(BeanFactory factory) {
+        interceptor.setFactory(factory);
     }
 
     @Override

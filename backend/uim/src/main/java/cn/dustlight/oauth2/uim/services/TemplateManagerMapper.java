@@ -1,39 +1,36 @@
 package cn.dustlight.oauth2.uim.services;
 
-import cn.dustlight.oauth2.uim.entities.TemplateNode;
+import cn.dustlight.oauth2.uim.entities.Template;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Collection;
 
 @CacheNamespace
 @Service
 @Mapper
 public interface TemplateManagerMapper {
 
-    @Select("SELECT name FROM sender_templates")
-    List<String> getTemplatesName();
+    @Select("SELECT name FROM templates")
+    Collection<String> getTemplatesName();
 
-    @Select("SELECT text FROM sender_templates where name=#{templateName}")
-    String getTemplate(String templateName);
+    @Select("SELECT * FROM templates where name=#{name}")
+    Template getTemplate(String name);
 
-    @Insert("INSERT INTO sender_templates (id,name,text) VALUES (#{id},#{templateName},#{templateContent}) ON DUPLICATE KEY UPDATE text=#{templateContent}")
-    boolean setTemplate(Long id, String templateName, String templateContent);
+    @Insert("INSERT INTO templates (name,uid,title,content) VALUES (#{name},#{uid},#{title},#{content}) ON DUPLICATE KEY UPDATE uid=#{uid},title=#{title},content=#{content}")
+    boolean setTemplate(String name, Long uid, String title, String content);
 
-    @Select("SELECT * FROM sender_templates")
-    List<TemplateNode> getTemplates();
+    @Select("SELECT * FROM templates")
+    Collection<Template> getTemplates();
 
-    @Insert({"<script><foreach collection='templates' item='template' separator=';'>",
-            "INSERT INTO sender_templates (name,text) VALUES (#{template.name},#{template.text}) ON DUPLICATE KEY UPDATE text=#{template.text}",
-            "</foreach></script>"})
-    boolean setTemplates(@Param("templates") List<TemplateNode> templates);
+    @Insert({"<script>INSERT INTO templates (name,uid,title,content) VALUES <foreach collection='templates' item='template' separator=';'>",
+            "(#{template.name},#{template.uid},#{template.title},#{template.content})",
+            "</foreach>ON DUPLICATE KEY UPDATE uid=VALUES(uid),title=VALUES(title),content=VALUES(content)</script>"})
+    boolean setTemplates(@Param("templates") Collection<Template> templates);
 
-    @Delete({"<script>DELETE FROM sender_templates WHERE name IN " +
-            "<foreach collection='templateNames' item='name' open='(' separator=',' close=')'>",
+    @Delete({"<script>DELETE FROM templates WHERE name IN " +
+            "<foreach collection='names' item='name' open='(' separator=',' close=')'>",
             "#{name}",
             "</foreach></script>"})
-    boolean deleteTemplate(@Param("templateNames") List<String> templateNames);
-
-    @Update("UPDATE sender_templates SET name=#{name} WHERE id=#{id}")
-    boolean updateTemplateName(Long id, String name);
+    boolean deleteTemplate(@Param("names") Collection<String> names);
 }

@@ -5,10 +5,14 @@ import org.springframework.beans.factory.BeanFactory;
 
 public class SendCodePostProcessor extends AbstractBeanFactoryAwareAdvisingPostProcessor {
 
+    public SendCodePostProcessor() {
+        this.advisor = new SendCodeAdvisor();
+    }
+
     @Override
     public void setBeanFactory(BeanFactory beanFactory) {
         super.setBeanFactory(beanFactory);
-        this.advisor = new SendCodeAdvisor(beanFactory);
+        ((SendCodeAdvisor) this.advisor).setFactory(beanFactory);
     }
 
     @Override

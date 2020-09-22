@@ -33,6 +33,7 @@ public class DefaultUserBaseController implements UserBaseController {
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UimUser cache = (UimUser) authentication.getPrincipal();
         UimUser snapshot = userDetailsService.loadUser(cache.getUid());
+        logger.debug(String.format("用户: [%s] 访问会话信息", snapshot.getUsername()));
         return snapshot;
     }
 
@@ -42,6 +43,7 @@ public class DefaultUserBaseController implements UserBaseController {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password);
             Authentication authentication = authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            logger.debug(String.format("用户: [%s] 创建会话", authentication.getName()));
         } catch (InternalAuthenticationServiceException e) {
             this.logger.error("An internal error occurred while trying to authenticate the user.", e);
             SecurityContextHolder.clearContext();
@@ -58,6 +60,7 @@ public class DefaultUserBaseController implements UserBaseController {
 
     @Override
     public void deleteSession() {
+        logger.debug(String.format("用户: [%s] 销毁会话", SecurityContextHolder.getContext().getAuthentication().getName()));
         SecurityContextHolder.clearContext();
     }
 
@@ -75,21 +78,24 @@ public class DefaultUserBaseController implements UserBaseController {
         }
         if (user == null)
             ErrorEnum.USER_NOT_FOUND.throwException();
+        logger.debug(String.format("查询用户: [%s] ", user.getUsername()));
         return user;
     }
 
     @Override
-    public void createUser(String username, String password, String email) {
+    public void createUser(String username, String password, String email, String code) {
         DefaultUserRole defaultRole = new DefaultUserRole();
         defaultRole.setRoleName("User");
         userDetailsService.createUser(username, password, email, username, 0,
                 Arrays.asList(defaultRole), null, null, null,
                 true);
+        logger.debug(String.format("创建用户: [%s] 邮箱：[%s]", username, email));
     }
 
     @Override
     public void deleteUser(Long uid) {
         userDetailsService.deleteUsers(Arrays.asList(uid));
+        logger.debug(String.format("删除用户: [%s] ", uid));
     }
 
 }

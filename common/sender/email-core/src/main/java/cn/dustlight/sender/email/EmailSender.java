@@ -1,6 +1,6 @@
 package cn.dustlight.sender.email;
 
-import cn.dustlight.sender.core.ISender;
+import cn.dustlight.sender.core.Sender;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -10,7 +10,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class EmailSender implements ISender {
+public abstract class EmailSender implements Sender {
 
 
     @Override

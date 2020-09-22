@@ -2,11 +2,16 @@ package cn.dustlight.oauth2.uim.controllers.users;
 
 import cn.dustlight.oauth2.uim.Constants;
 import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.validator.annotations.CodeParam;
+import cn.dustlight.validator.annotations.CodeValue;
+import cn.dustlight.validator.annotations.VerifyCode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@RestController
 @RequestMapping(value = Constants.V1.API_ROOT,
         produces = Constants.ContentType.APPLICATION_JSON)
 @Tag(name = "用户基础业务",
@@ -56,11 +61,15 @@ public interface UserBaseController {
      *
      * @param username 用户名
      * @param password 密码
-     * @param email    邮箱
+     * @param email    邮箱（自动注入）
+     * @param code     验证码
      */
     @Operation(summary = "注册用户", description = "创建新用户，用户名和邮箱不可重复。")
     @PostMapping("user")
-    void createUser(@RequestParam String username, @RequestParam String password, @RequestParam String email);
+    @VerifyCode("registration")
+    void createUser(@RequestParam String username, @RequestParam String password,
+                    @Parameter(hidden = true) @CodeParam("registration") String email,
+                    @RequestParam @CodeValue("registration") String code);
 
     /**
      * 删除用户

@@ -5,10 +5,14 @@ import org.springframework.beans.factory.BeanFactory;
 
 public class VerifyCodePostProcessor extends AbstractBeanFactoryAwareAdvisingPostProcessor {
 
+    public VerifyCodePostProcessor() {
+        this.advisor = new VerifyCodeAdvisor();
+    }
+
     @Override
     public void setBeanFactory(BeanFactory beanFactory) {
         super.setBeanFactory(beanFactory);
-        this.advisor = new VerifyCodeAdvisor(beanFactory);
+        ((VerifyCodeAdvisor) this.advisor).setFactory(beanFactory);
     }
 
     @Override

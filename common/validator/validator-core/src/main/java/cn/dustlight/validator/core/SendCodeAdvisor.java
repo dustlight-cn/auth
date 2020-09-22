@@ -9,11 +9,7 @@ import org.springframework.beans.factory.BeanFactory;
 
 public class SendCodeAdvisor extends AbstractPointcutAdvisor {
 
-    private SendCodeInterceptor interceptor;
-
-    public SendCodeAdvisor(BeanFactory factory) {
-        interceptor = new SendCodeInterceptor(factory);
-    }
+    private SendCodeInterceptor interceptor = new SendCodeInterceptor();
 
     public Pointcut getPointcut() {
         return new AnnotationMatchingPointcut((Class) null, SendCode.class, true);
@@ -21,6 +17,14 @@ public class SendCodeAdvisor extends AbstractPointcutAdvisor {
 
     public Advice getAdvice() {
         return interceptor;
+    }
+
+    public BeanFactory getFactory() {
+        return interceptor.getFactory();
+    }
+
+    public void setFactory(BeanFactory factory) {
+        interceptor.setFactory(factory);
     }
 
     @Override

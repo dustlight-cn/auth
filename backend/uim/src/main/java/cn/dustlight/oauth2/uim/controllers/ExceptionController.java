@@ -66,7 +66,7 @@ public class ExceptionController {
     @ExceptionHandler(ValidatorException.class)
     public ErrorDetails onValidatorException(ValidatorException e, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        logger.error(e.getMessage(), e);
+        logger.warn(e.getMessage());
         return ErrorEnum.VERIFY_FAIL.details(e.getMessage());
     }
 

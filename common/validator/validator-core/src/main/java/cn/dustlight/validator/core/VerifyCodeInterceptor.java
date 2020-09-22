@@ -7,55 +7,67 @@ import cn.dustlight.validator.annotations.VerifyCode;
 import cn.dustlight.validator.store.CodeStore;
 import cn.dustlight.validator.verifier.CodeVerifier;
 import cn.dustlight.validator.verifier.VerifyCodeException;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
 
-public class VerifyCodeInterceptor implements MethodInterceptor, Ordered {
+public class VerifyCodeInterceptor implements MethodBeforeAdvice, Ordered {
 
     private BeanFactory factory;
-    private int order = 1;
+    private int order;
 
-    public VerifyCodeInterceptor(BeanFactory factory) {
-        this.factory = factory;
+    boolean checkChance(Code code, int chance) {
+        if (code.getData().get("CHANCE") == null)
+            return true;
+        Integer CHANCE = Integer.valueOf(code.getData().get("CHANCE").toString());
+        if (CHANCE >= chance)
+            return false;
+        return true;
     }
 
-    public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-        Method method = methodInvocation.getMethod();
+    void addChanceCount(Code code) {
+        if (code.getData().get("CHANCE") == null) {
+            code.getData().put("CHANCE", 1);
+            return;
+        }
+        Integer CHANCE = Integer.valueOf(code.getData().get("CHANCE").toString());
+        code.getData().put("CHANCE", CHANCE + 1);
+    }
 
-        VerifyCode verifyCodeAnnotation = method.getAnnotation(VerifyCode.class);
-
+    @Override
+    public void before(Method method, Object[] objects, Object o) throws Throwable {
+        VerifyCode verifyCodeAnnotation = AnnotationUtils.findAnnotation(method, VerifyCode.class); // 搜索注解
         /**
          * 获取Bean
          */
         CodeStore store = Util.getBean(factory, verifyCodeAnnotation.store().value(), verifyCodeAnnotation.store().type());
         CodeVerifier verifier = Util.getBean(factory, verifyCodeAnnotation.verifier().value(), verifyCodeAnnotation.verifier().type());
 
-        Map<String, Object> parameters = Util.getParameters(methodInvocation); // 获取方法参数
+        Map<String, Object> parameters = Util.getParameters(method, objects); // 获取方法参数
         for (cn.dustlight.validator.annotations.Parameter parameter : verifyCodeAnnotation.parameters())
             parameters.put(parameter.name(), parameter.value()); // 获取注解参数
 
         Code code = store.load(verifyCodeAnnotation.value(), parameters);
         Object codeValue = code.getValue();
         Object targetValue = parameters.get(verifyCodeAnnotation.value());
-
         Parameter[] params = method.getParameters();
-        Object[] objects = methodInvocation.getArguments();
+
+
         if (params != null && objects != null) {
             for (int i = 0, len = Math.min(params.length, objects.length); i < len; i++) {
                 CodeParam codeParamAnnotation;
                 CodeValue codeValueAnnotation;
-                if ((codeValueAnnotation = params[i].getAnnotation(CodeValue.class)) != null &&
+                if ((codeValueAnnotation = AnnotationUtils.findAnnotation(params[i], CodeValue.class)) != null &&
                         codeValueAnnotation.value().equals(verifyCodeAnnotation.value())) {
                     targetValue = objects[i];
                     objects[i] = codeValue; // 往验证码值注入方法参数
                     parameters.put(params[i].getName(), codeValue); // 更新参数表
-                } else if ((codeParamAnnotation = params[i].getAnnotation(CodeParam.class)) != null &&
+                } else if ((codeParamAnnotation = AnnotationUtils.findAnnotation(params[i], CodeParam.class)) != null &&
                         codeParamAnnotation.value().equals(verifyCodeAnnotation.value())) {
                     String key = codeParamAnnotation.value().length() > 0 ? codeParamAnnotation.value() : params[i].getName();
                     Object value = code.getData() == null ? null : code.getData().get(key);
@@ -79,27 +91,14 @@ public class VerifyCodeInterceptor implements MethodInterceptor, Ordered {
             }
             throw e;
         }
-
-
-        return methodInvocation.proceed();
     }
 
-    boolean checkChance(Code code, int chance) {
-        if (code.getData().get("CHANCE") == null)
-            return true;
-        Integer CHANCE = Integer.valueOf(code.getData().get("CHANCE").toString());
-        if (CHANCE >= chance)
-            return false;
-        return true;
+    public BeanFactory getFactory() {
+        return factory;
     }
 
-    void addChanceCount(Code code) {
-        if (code.getData().get("CHANCE") == null) {
-            code.getData().put("CHANCE", 1);
-            return;
-        }
-        Integer CHANCE = Integer.valueOf(code.getData().get("CHANCE").toString());
-        code.getData().put("CHANCE", CHANCE + 1);
+    public void setFactory(BeanFactory factory) {
+        this.factory = factory;
     }
 
     @Override

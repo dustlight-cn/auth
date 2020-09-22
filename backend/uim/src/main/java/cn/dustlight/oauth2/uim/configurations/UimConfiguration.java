@@ -9,6 +9,7 @@ import cn.dustlight.oauth2.uim.handlers.code.DefaultVerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
 import cn.dustlight.oauth2.uim.handlers.email.EmailCodeSender;
+import cn.dustlight.oauth2.uim.handlers.email.EmailSenderHandler;
 import cn.dustlight.oauth2.uim.mappers.RoleMapper;
 import cn.dustlight.oauth2.uim.mappers.UserMapper;
 import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
@@ -17,10 +18,9 @@ import cn.dustlight.oauth2.uim.services.code.RedisVerificationCodeStoreService;
 import cn.dustlight.oauth2.uim.services.code.VerificationCodeStoreService;
 import cn.dustlight.oauth2.uim.services.users.DefaultUimUserDetailsService;
 import cn.dustlight.oauth2.uim.services.users.UimUserDetailsService;
-import cn.dustlight.sender.email.EmailSender;
+import cn.dustlight.validator.annotations.EnableValidator;
 import cn.dustlight.validator.generator.RandomStringCodeGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +44,7 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -52,9 +53,10 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 @EnableConfigurationProperties(UimProperties.class)
+@EnableValidator
+@EnableTransactionManagement
 @EnableRedisHttpSession
-@OpenAPIDefinition(info = @Info(title = "统一身份管理 (UIM)", description = "主要包含用户管理，OAuth2应用管理等服务。", version = "1.0"),
-        externalDocs = @ExternalDocumentation(description = "Github", url = "https://github.com/Hansin1997/Dustlight"))
+@OpenAPIDefinition(info = @Info(title = "统一身份管理 (UIM)", description = "主要包含用户管理，OAuth2应用管理等服务。", version = "1.0"))
 public class UimConfiguration {
 
     @Bean
@@ -198,7 +200,7 @@ public class UimConfiguration {
     }
 
     @Bean
-    public EmailCodeSender emailCodeSender(@Autowired EmailSender sender) {
+    public EmailCodeSender emailCodeSender(@Autowired EmailSenderHandler sender) {
         EmailCodeSender codeSender = new EmailCodeSender(sender);
         return codeSender;
     }
