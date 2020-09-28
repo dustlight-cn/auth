@@ -19,4 +19,9 @@ public class DefaultVerificationCodeController implements VerificationCodeContro
         logger.debug(String.format("图像验证码：%s\t注册验证码：%s\t邮箱：%s", targetCode, code, email));
     }
 
+    @Override
+    public void createEmailCode(String targetCode, String code, String email) {
+        logger.debug(String.format("图像验证码：%s\t更新邮箱验证码：%s\t邮箱：%s", targetCode, code, email));
+    }
+
 }

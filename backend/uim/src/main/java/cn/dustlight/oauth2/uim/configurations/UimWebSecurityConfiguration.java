@@ -35,7 +35,7 @@ public class UimWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         Logger.getLogger(getClass().getName()).info("Public paths: " + Arrays.toString(publicPaths));
 
         http.authorizeRequests()
-                .antMatchers(Constants.V1.API_ROOT + "**").permitAll()
+                .antMatchers(Constants.V1.API_ROOT + "**", "/oauth/**").permitAll()
                 .antMatchers(publicPaths).permitAll()
                 .anyRequest().authenticated()
                 .and()

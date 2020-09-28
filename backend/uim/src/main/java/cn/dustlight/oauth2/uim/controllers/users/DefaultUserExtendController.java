@@ -50,7 +50,7 @@ public class DefaultUserExtendController implements UserExtendController {
     }
 
     @Override
-    public void updateEmail(Long uid, String email) {
+    public void updateEmail(Long uid, String code, String email) {
         userDetailsService.updateEmail(uid, email);
     }
 

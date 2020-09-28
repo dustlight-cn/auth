@@ -10,9 +10,13 @@ import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
 import cn.dustlight.oauth2.uim.handlers.email.EmailCodeSender;
 import cn.dustlight.oauth2.uim.handlers.email.EmailSenderHandler;
+import cn.dustlight.oauth2.uim.mappers.AuthorityMapper;
+import cn.dustlight.oauth2.uim.mappers.ClientMapper;
 import cn.dustlight.oauth2.uim.mappers.RoleMapper;
 import cn.dustlight.oauth2.uim.mappers.UserMapper;
 import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
+import cn.dustlight.oauth2.uim.services.clients.DefaultUimClientDetailsService;
+import cn.dustlight.oauth2.uim.services.clients.UimClientDetailsService;
 import cn.dustlight.oauth2.uim.services.code.RedisAuthorizationCodeService;
 import cn.dustlight.oauth2.uim.services.code.RedisVerificationCodeStoreService;
 import cn.dustlight.oauth2.uim.services.code.VerificationCodeStoreService;
@@ -117,11 +121,11 @@ public class UimConfiguration {
     @ConditionalOnMissingBean
     public UimUserApprovalHandler uimUserApprovalHandler(@Autowired ClientDetailsService clientDetailsService,
                                                          @Autowired ApprovalStore approvalStore,
-                                                         @Autowired AuthorityDetailsMapper authorityDetailsMapper) {
+                                                         @Autowired AuthorityMapper authorityMapper) {
         UimUserApprovalHandler approvalHandler = new UimUserApprovalHandler();
         approvalHandler.setClientDetailsService(clientDetailsService);
         approvalHandler.setApprovalStore(approvalStore);
-        approvalHandler.setMapper(authorityDetailsMapper);
+        approvalHandler.setMapper(authorityMapper);
         return approvalHandler;
     }
 
@@ -203,5 +207,11 @@ public class UimConfiguration {
     public EmailCodeSender emailCodeSender(@Autowired EmailSenderHandler sender) {
         EmailCodeSender codeSender = new EmailCodeSender(sender);
         return codeSender;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public UimClientDetailsService uimClientDetailsService(@Autowired ClientMapper mapper) {
+        return new DefaultUimClientDetailsService(mapper);
     }
 }

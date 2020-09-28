@@ -2,7 +2,7 @@ package cn.dustlight.oauth2.uim.configurations;
 
 import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
 import cn.dustlight.oauth2.uim.handlers.convert.UimAccessTokenConverter;
-import cn.dustlight.oauth2.uim.services.OAuthClientDetailsService;
+import cn.dustlight.oauth2.uim.services.clients.UimClientDetailsService;
 import cn.dustlight.oauth2.uim.services.users.UimUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +27,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private TokenStore uimTokenStore;
 
     @Autowired
-    private OAuthClientDetailsService clientDetailsService;
+    private UimClientDetailsService clientDetailsService;
 
     private UimAccessTokenConverter uimAccessTokenConverter = new UimAccessTokenConverter();
 
@@ -47,6 +47,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         ;
         uimUserApprovalHandler.setRequestFactory(endpoints.getOAuth2RequestFactory());
         endpoints.userApprovalHandler(uimUserApprovalHandler);
+
     }
 
     @Override

@@ -21,13 +21,16 @@ spring:
     host: ${SMTP_HOST:smtp.exmail.qq.com}
     username: ${SMTP_USER}
     password: ${SMTP_PASS}
-# 日志输出
+# 日志输出 cn.dustlight.oauth2.uim.mappers
 logging:
   level:
     cn:
       dustlight:
         oauth2:
           uim:
+            mappers:
+              GrantTypeMapper: debug
+              ClientMapper: debug
             controllers:
               code:
                 DefaultVerificationCodeController: debug

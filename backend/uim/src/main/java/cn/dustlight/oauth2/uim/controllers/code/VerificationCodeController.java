@@ -27,4 +27,14 @@ public interface VerificationCodeController {
     void createRegisterCode(@RequestParam(name = "code") @CodeValue String targetCode,
                             @io.swagger.v3.oas.annotations.Parameter(hidden = true) @CodeValue("registration") String code,
                             @CodeParam("registration") @RequestParam String email);
+
+    @PostMapping("code/email")
+    @VerifyCode
+    @SendCode(value = "email", generator = @Generator("numberCodeGenerator"), sender = @Sender("emailCodeSender"), parameters = {
+            @Parameter(name = "template", value = "register")
+    })
+    void createEmailCode(@RequestParam(name = "code") @CodeValue String targetCode,
+                         @io.swagger.v3.oas.annotations.Parameter(hidden = true) @CodeValue("email") String code,
+                         @CodeParam("email") @RequestParam String email);
+
 }

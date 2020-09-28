@@ -27,6 +27,16 @@ public class DefaultUserRole implements UserRole {
     }
 
     @Override
+    public Date getCreatedAt() {
+        return null;
+    }
+
+    @Override
+    public Date getUpdatedAt() {
+        return null;
+    }
+
+    @Override
     public Collection<String> getAuthorities() {
         return authorities;
     }

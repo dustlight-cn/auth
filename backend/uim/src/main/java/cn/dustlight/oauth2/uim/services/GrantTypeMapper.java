@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@CacheNamespace
-@Service
-@Mapper
+//@CacheNamespace
+//@Service
+//@Mapper
 public interface GrantTypeMapper {
 
     @Select("SELECT id,grant_type FROM grant_types")

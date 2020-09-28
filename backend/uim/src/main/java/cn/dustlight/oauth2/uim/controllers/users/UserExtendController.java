@@ -3,7 +3,11 @@ package cn.dustlight.oauth2.uim.controllers.users;
 import cn.dustlight.oauth2.uim.Constants;
 import cn.dustlight.oauth2.uim.entities.results.QueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.validator.annotations.CodeParam;
+import cn.dustlight.validator.annotations.CodeValue;
+import cn.dustlight.validator.annotations.VerifyCode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
+@RestController
 @RequestMapping(value = Constants.V1.API_ROOT,
         produces = Constants.ContentType.APPLICATION_JSON)
 @Tag(name = "用户拓展业务",
@@ -40,12 +45,16 @@ public interface UserExtendController {
      * 更新用户邮箱
      *
      * @param uid   用户id
-     * @param email 新邮箱
+     * @param code  验证码
+     * @param email 新邮箱（自动注入）
      */
     @Operation(summary = "更新用户邮箱")
     @PutMapping("user/{uid}/email")
+    @VerifyCode("email")
     @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
-    void updateEmail(@PathVariable Long uid, @RequestParam String email);
+    void updateEmail(@PathVariable Long uid,
+                     @RequestParam @CodeValue("email") String code,
+                     @Parameter(hidden = true) @CodeParam("email") String email);
 
     /**
      * 更新用户性别

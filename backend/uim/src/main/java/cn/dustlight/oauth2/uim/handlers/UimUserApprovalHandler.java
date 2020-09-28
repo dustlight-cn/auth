@@ -1,5 +1,6 @@
 package cn.dustlight.oauth2.uim.handlers;
 
+import cn.dustlight.oauth2.uim.mappers.AuthorityMapper;
 import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,22 +8,23 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.approval.*;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 public class UimUserApprovalHandler extends ApprovalStoreUserApprovalHandler implements UserApprovalHandler {
 
-    private AuthorityDetailsMapper mapper;
+    private AuthorityMapper mapper;
 
     public UimUserApprovalHandler() {
 
     }
 
-    public void setMapper(AuthorityDetailsMapper mapper) {
+    public void setMapper(AuthorityMapper mapper) {
         this.mapper = mapper;
     }
 
-    public AuthorityDetailsMapper getMapper() {
+    public AuthorityMapper getMapper() {
         return mapper;
     }
 
@@ -56,10 +58,10 @@ public class UimUserApprovalHandler extends ApprovalStoreUserApprovalHandler imp
         if (authorizationRequest.isApproved() &&
                 (scope = authorizationRequest.getScope()) != null &&
                 !scope.isEmpty()) {
-            String[] authorities = mapper.getAuthoritiesByScopeNames(scope.toArray(new String[scope.size()]));
+            Collection<String> authorities = mapper.listScopeAuthorities(scope);
             Set<GrantedAuthority> au = new HashSet<>();
             au.addAll(authorizationRequest.getAuthorities());
-            au.addAll(AuthorityUtils.createAuthorityList(authorities));
+            au.addAll(AuthorityUtils.createAuthorityList(authorities.toArray(new String[0])));
             authorizationRequest.setAuthorities(au);
         }
     }

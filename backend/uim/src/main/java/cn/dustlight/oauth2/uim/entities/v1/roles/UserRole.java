@@ -9,31 +9,13 @@ import java.util.Collection;
 import java.util.Date;
 
 /**
- * 用户角色信息实体
+ * 用户角色信息
  */
-public interface UserRole extends Serializable {
+public interface UserRole extends Role, Serializable {
 
-    /**
-     * 获取角色id
-     *
-     * @return 角色id
-     */
     @JsonSerialize(using = ToStringSerializer.class)
+    @Override
     Long getRoleId();
-
-    /**
-     * 获取角色名
-     *
-     * @return 角色名
-     */
-    String getRoleName();
-
-    /**
-     * 获取角色描述
-     *
-     * @return 角色描述
-     */
-    String getRoleDescription();
 
     /**
      * 获取角色权限
@@ -56,4 +38,12 @@ public interface UserRole extends Serializable {
      * @return 是否过期
      */
     boolean isExpired();
+
+    @JsonIgnore
+    @Override
+    Date getCreatedAt();
+
+    @JsonIgnore
+    @Override
+    Date getUpdatedAt();
 }

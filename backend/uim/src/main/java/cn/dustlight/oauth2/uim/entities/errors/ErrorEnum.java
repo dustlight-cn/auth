@@ -10,6 +10,7 @@ public enum ErrorEnum {
     SIGN_IN_FAIL(3, "sign in fail"),
     REGISTER_FAIL(4, "register fail"),
     VERIFY_FAIL(5, "verify fail"),
+    OAUTH_ERROR(10, "OAuth2 Error"),
 
     INPUT_INVALID(1000, "input invalid"),
     EMAIL_INVALID(1001, "email invalid"),
