@@ -11,17 +11,17 @@ public class DefaultVerificationCodeController implements VerificationCodeContro
 
     @Override
     public void createCommonCode(String code) {
-        logger.debug("生成公共验证码：" + code);
+        logger.debug("生成图形验证码：" + code);
     }
 
     @Override
-    public void createRegisterCode(String targetCode, String code, String email) {
-        logger.debug(String.format("图像验证码：%s\t注册验证码：%s\t邮箱：%s", targetCode, code, email));
+    public void createRegistrationCode(String targetCode, String code, String email) {
+        logger.debug(String.format("消费图像验证码：%s\t发送邮箱注册验证码：%s\t邮箱：%s", targetCode, code, email));
     }
 
     @Override
     public void createEmailCode(String targetCode, String code, String email) {
-        logger.debug(String.format("图像验证码：%s\t更新邮箱验证码：%s\t邮箱：%s", targetCode, code, email));
+        logger.debug(String.format("消费图像验证码：%s\t发送更新邮箱验证码：%s\t邮箱：%s", targetCode, code, email));
     }
 
 }

@@ -1,6 +1,11 @@
 package cn.dustlight.oauth2.uim.entities.v1.roles;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -13,6 +18,7 @@ public interface Role extends Serializable {
      *
      * @return 角色id
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     Long getRoleId();
 
     /**
@@ -28,6 +34,13 @@ public interface Role extends Serializable {
      * @return 角色描述
      */
     String getRoleDescription();
+
+    /**
+     * 获取角色权限
+     *
+     * @return 角色权限
+     */
+    Collection<String> getAuthorities();
 
     /**
      * 获取创建时间

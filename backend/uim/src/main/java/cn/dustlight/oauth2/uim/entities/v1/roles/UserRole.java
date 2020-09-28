@@ -13,16 +13,8 @@ import java.util.Date;
  */
 public interface UserRole extends Role, Serializable {
 
-    @JsonSerialize(using = ToStringSerializer.class)
-    @Override
-    Long getRoleId();
-
-    /**
-     * 获取角色权限
-     *
-     * @return 角色权限
-     */
     @JsonIgnore
+    @Override
     Collection<String> getAuthorities();
 
     /**

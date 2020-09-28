@@ -60,6 +60,11 @@ public class DefaultUimClient implements UimClient {
     }
 
     @Override
+    public Collection<ClientScope> getScopes() {
+        return scopes;
+    }
+
+    @Override
     public String getClientId() {
         return cid;
     }
