@@ -156,6 +156,11 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     }
 
     @Override
+    public Collection<String> getRoles(Long uid) {
+        return roleMapper.listUserRoleNames(uid);
+    }
+
+    @Override
     public void updateUnlockedAt(Collection<Long> uids, Date unlockedAt) {
         if (!userMapper.updateUnlockedAt(uids, unlockedAt))
             ErrorEnum.UPDATE_USER_FAIL.details("fail to update unlocked date").throwException();

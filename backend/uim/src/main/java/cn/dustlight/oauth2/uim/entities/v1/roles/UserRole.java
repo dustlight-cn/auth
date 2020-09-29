@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * 用户角色信息
  */
-public interface UserRole extends Role, Serializable {
+public interface UserRole extends Role {
 
     /**
      * 获取角色权限

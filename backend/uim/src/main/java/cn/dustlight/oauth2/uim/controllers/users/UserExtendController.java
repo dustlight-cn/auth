@@ -2,6 +2,7 @@ package cn.dustlight.oauth2.uim.controllers.users;
 
 import cn.dustlight.oauth2.uim.Constants;
 import cn.dustlight.oauth2.uim.entities.results.QueryResults;
+import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultUserRole;
 import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.validator.annotations.CodeParam;
 import cn.dustlight.validator.annotations.CodeValue;
@@ -95,4 +96,18 @@ public interface UserExtendController {
     @GetMapping("user/{uid}/avatar")
     void getAvatar(@PathVariable Long uid, @RequestParam(required = false) Integer size, @RequestParam(required = false) Long t);
 
+    @Operation(summary = "获取用户角色")
+    @GetMapping("user/{uid}/roles")
+    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('READ_USER') or hasAnyAuthority('READ_USER_ANY')")
+    Collection<String> getUserRoles(@PathVariable Long uid);
+
+    @Operation(summary = "修改或添加用户角色")
+    @PutMapping("user/{uid}/roles")
+    @PreAuthorize("hasAnyAuthority('GRANT_USER')")
+    void setUserRoles(@PathVariable Long uid, @org.springframework.web.bind.annotation.RequestBody Collection<DefaultUserRole> roles);
+
+    @Operation(summary = "删除用户角色")
+    @DeleteMapping("user/{uid}/roles")
+    @PreAuthorize("hasAnyAuthority('GRANT_USER')")
+    void deleteUserRoles(@PathVariable Long uid, @RequestParam Collection<Long> id);
 }

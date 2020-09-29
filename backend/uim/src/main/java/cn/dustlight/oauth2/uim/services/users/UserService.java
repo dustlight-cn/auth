@@ -163,6 +163,14 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
     void removeRoles(Long uid, Collection<Long> roleIds);
 
     /**
+     * 获取用户角色
+     *
+     * @param uid 用户uid
+     * @return
+     */
+    Collection<String> getRoles(Long uid);
+
+    /**
      * 更新用户解锁时间
      *
      * @param uids       用户uid集合

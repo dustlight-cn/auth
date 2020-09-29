@@ -2,10 +2,12 @@ package cn.dustlight.oauth2.uim.controllers.users;
 
 import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.results.QueryResults;
+import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultUserRole;
 import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.oauth2.uim.services.users.UserService;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.core.RestfulStorage;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ public class DefaultUserExtendController implements UserExtendController {
     protected final Log logger = LogFactory.getLog(this.getClass());
 
     @Autowired
-    protected UserService userDetailsService;
+    protected UserService userService;
 
     @Autowired
     protected RestfulStorage storage;
@@ -37,26 +39,26 @@ public class DefaultUserExtendController implements UserExtendController {
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("READ_USER_ANY"));
         if (flag) {
             if (query != null && query.length() > 0)
-                return userDetailsService.searchUsers(query, order, offset, limit);
+                return userService.searchUsers(query, order, offset, limit);
             else
-                return userDetailsService.listUsers(order, offset, limit);
+                return userService.listUsers(order, offset, limit);
         }
-        return userDetailsService.searchPublicUsers(query, order, offset, limit);
+        return userService.searchPublicUsers(query, order, offset, limit);
     }
 
     @Override
     public void updatePassword(Long uid, String password) {
-        userDetailsService.updatePassword(uid, password);
+        userService.updatePassword(uid, password);
     }
 
     @Override
     public void updateEmail(Long uid, String code, String email) {
-        userDetailsService.updateEmail(uid, email);
+        userService.updateEmail(uid, email);
     }
 
     @Override
     public void updateGender(Long uid, int gender) {
-        userDetailsService.updateGender(uid, gender);
+        userService.updateGender(uid, gender);
     }
 
     @Override
@@ -90,6 +92,21 @@ public class DefaultUserExtendController implements UserExtendController {
         } catch (IOException e) {
             ErrorEnum.RESOURCE_NOT_FOUND.details(e.getMessage()).throwException();
         }
+    }
+
+    @Override
+    public Collection<String> getUserRoles(Long uid) {
+        return userService.getRoles(uid);
+    }
+
+    @Override
+    public void setUserRoles(Long uid, @RequestBody Collection<DefaultUserRole> roles) {
+        userService.addRoles(uid, roles);
+    }
+
+    @Override
+    public void deleteUserRoles(Long uid, Collection<Long> id) {
+        userService.removeRoles(uid, id);
     }
 
     protected String generateAvatarKey(Object id) {
