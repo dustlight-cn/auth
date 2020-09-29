@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.entities;
+package cn.dustlight.oauth2.uim.entities.v1.templates;
 
 import java.io.Serializable;
 import java.util.Date;

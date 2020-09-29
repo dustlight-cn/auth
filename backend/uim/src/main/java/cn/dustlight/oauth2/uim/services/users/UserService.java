@@ -15,7 +15,7 @@ import java.util.Date;
  * @param <T> 用户信息实体
  * @param <V> 用户公开信息实体
  */
-public interface UimUserDetailsService<T extends UimUser, V extends PublicUimUser> extends UserDetailsService {
+public interface UserService<T extends UimUser, V extends PublicUimUser> extends UserDetailsService {
     /**
      * 创建用户
      *

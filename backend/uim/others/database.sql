@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 5.7.30, for Linux (x86_64)
 --
--- Host: dustlight.cn    Database: oauth
+-- Host: 192.168.199.218    Database: uim
 -- ------------------------------------------------------
--- Server version	8.0.20
+-- Server version	8.0.21
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,39 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `oauth`
+-- Table structure for table `authorities`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `oauth` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-
-USE `oauth`;
-
---
--- Table structure for table `authority_details`
---
-
-DROP TABLE IF EXISTS `authority_details`;
+DROP TABLE IF EXISTS `authorities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `authority_details` (
-  `id` bigint NOT NULL,
-  `authority_name` varchar(45) NOT NULL,
-  `description` varchar(512) DEFAULT NULL,
+CREATE TABLE `authorities` (
+  `aid` bigint NOT NULL,
+  `authorityName` varchar(64) NOT NULL,
+  `authorityDescription` varchar(128) DEFAULT NULL,
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `authority_name_UNIQUE` (`authority_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`aid`),
+  UNIQUE KEY `authorityName_UNIQUE` (`authorityName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `authority_details`
+-- Dumping data for table `authorities`
 --
 
-LOCK TABLES `authority_details` WRITE;
-/*!40000 ALTER TABLE `authority_details` DISABLE KEYS */;
-INSERT INTO `authority_details` VALUES (0,'READ_USERINFO','获取用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(1,'WRITE_USERINFO','修改用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(2,'READ_USERINFNO_ANY','获取任意用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(3,'WRITE_USERINFO_ANY','修改任意用户信息','2020-06-19 18:57:01','2020-06-19 18:57:01'),(4,'CREATE_CLIENT','创建应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(5,'DELETE_CLIENT','删除应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(6,'DELETE_CLIENT_ANY','删除任意应用','2020-06-19 18:57:02','2020-06-19 18:57:02'),(7,'UPDATE_CLIENT','修改应用信息','2020-06-19 18:57:02','2020-06-19 18:57:02'),(8,'UPDATE_CLIENT_ANY','修改任意应用信息','2020-06-19 18:57:02','2020-06-19 18:57:02'),(9,'READ_TEMPLATE','获取模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(10,'WRITE_TEMPLATE','修改模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(11,'DELETE_TEMPLATE','删除模板','2020-06-19 18:57:02','2020-06-19 18:57:02'),(12,'QUERY_USER_CLIENT','查询用户应用','2020-06-22 08:32:12','2020-06-22 08:32:12'),(13,'MANAGE_AUTHORITY','权限的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(14,'MANAGE_SCOPE','授权作用域（Scope）的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(15,'MANAGE_ROLE','角色的增删改查','2020-06-22 12:01:16','2020-06-22 12:01:16'),(7969554498115989504,'TEST','测试权限','2020-07-09 13:07:53','2020-07-09 13:07:53');
-/*!40000 ALTER TABLE `authority_details` ENABLE KEYS */;
+LOCK TABLES `authorities` WRITE;
+/*!40000 ALTER TABLE `authorities` DISABLE KEYS */;
+INSERT INTO `authorities` VALUES (0,'READ_USER','读取用户信息','2020-09-14 23:59:57','2020-09-17 16:20:43'),(1,'WRITE_USER','修改用户信息','2020-09-14 23:59:57','2020-09-17 16:20:43'),(2,'READ_USER_ANY','读取任意用户信息','2020-09-15 00:15:11','2020-09-17 16:20:43'),(3,'WRITE_USER_ANY','修改任意用户信息','2020-09-15 00:15:11','2020-09-17 16:20:43'),(4,'CREATE_USER','创建用户','2020-09-15 00:15:11','2020-09-15 00:15:11'),(5,'DELETE_USER','删除用户','2020-09-15 00:15:11','2020-09-15 00:15:11'),(6,'GRANT_USER','修改用户权限','2020-09-15 00:15:11','2020-09-15 00:15:11'),(7,'QUERY_USER','查询用户','2020-09-15 00:15:11','2020-09-15 00:15:11');
+/*!40000 ALTER TABLE `authorities` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -59,12 +51,12 @@ DROP TABLE IF EXISTS `client_authority`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `client_authority` (
-  `cid` varchar(256) NOT NULL,
+  `cid` varchar(64) NOT NULL,
   `aid` bigint NOT NULL,
   PRIMARY KEY (`cid`,`aid`),
   KEY `client_authority_aid_idx` (`aid`),
-  CONSTRAINT `client_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `client_authority_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE
+  CONSTRAINT `client_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authorities` (`aid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `client_authority_cid` FOREIGN KEY (`cid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -78,33 +70,6 @@ LOCK TABLES `client_authority` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `client_grant_types`
---
-
-DROP TABLE IF EXISTS `client_grant_types`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `client_grant_types` (
-  `cid` varchar(256) NOT NULL,
-  `tid` bigint NOT NULL,
-  PRIMARY KEY (`cid`,`tid`),
-  KEY `client_grant_types_type_id_idx` (`tid`),
-  CONSTRAINT `client_grant_types_client_id` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE,
-  CONSTRAINT `client_grant_types_type_id` FOREIGN KEY (`tid`) REFERENCES `grant_types` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `client_grant_types`
---
-
-LOCK TABLES `client_grant_types` WRITE;
-/*!40000 ALTER TABLE `client_grant_types` DISABLE KEYS */;
-INSERT INTO `client_grant_types` VALUES ('VTWQABLXBFXJOJ6D76BQAAAA',0),('VTWQABLXBFXM4ZOA7UBQAAAA',0),('VTWQABLXBFXM4ZOA7UBQAAAA',1),('VTWQABLXBFXM4ZOA7UBQAAAA',2),('VTWQABLXBFXM4ZOA7UBQAAAA',3),('VTWQABLXBFXJOJ6D76BQAAAA',4),('VTWQABLXBFXM4ZOA7UBQAAAA',4);
-/*!40000 ALTER TABLE `client_grant_types` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `client_resource`
 --
 
@@ -112,12 +77,12 @@ DROP TABLE IF EXISTS `client_resource`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `client_resource` (
-  `cid` varchar(256) NOT NULL,
-  `rid` bigint NOT NULL,
+  `cid` varchar(64) NOT NULL,
+  `rid` varchar(64) NOT NULL,
   PRIMARY KEY (`cid`,`rid`),
   KEY `client_resource_rid_idx` (`rid`),
-  CONSTRAINT `client_resource_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE,
-  CONSTRAINT `client_resource_rid` FOREIGN KEY (`rid`) REFERENCES `resource_details` (`id`) ON DELETE CASCADE
+  CONSTRAINT `client_resource_cid` FOREIGN KEY (`cid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `client_resource_rid` FOREIGN KEY (`rid`) REFERENCES `resources` (`rid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -138,13 +103,14 @@ DROP TABLE IF EXISTS `client_scope`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `client_scope` (
-  `cid` varchar(256) NOT NULL,
+  `cid` varchar(64) NOT NULL,
   `sid` bigint NOT NULL,
-  `auto_approve` int DEFAULT NULL,
+  `autoApprove` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`cid`,`sid`),
-  KEY `client_scope_sid_idx` (`sid`),
-  CONSTRAINT `client_scope_cid` FOREIGN KEY (`cid`) REFERENCES `oauth_client_details` (`client_id`) ON DELETE CASCADE,
-  CONSTRAINT `client_scope_sid` FOREIGN KEY (`sid`) REFERENCES `scope_details` (`id`) ON DELETE CASCADE
+  KEY `client_scope_sid_idx` (`sid`) /*!80000 INVISIBLE */,
+  KEY `client_scope_cid_idx` (`cid`) /*!80000 INVISIBLE */,
+  CONSTRAINT `client_scope_cid` FOREIGN KEY (`cid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `client_scope_sid` FOREIGN KEY (`sid`) REFERENCES `scopes` (`sid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -154,97 +120,98 @@ CREATE TABLE `client_scope` (
 
 LOCK TABLES `client_scope` WRITE;
 /*!40000 ALTER TABLE `client_scope` DISABLE KEYS */;
-INSERT INTO `client_scope` VALUES ('VTWQABLXBFXJOJ6D76BQAAAA',0,NULL),('VTWQABLXBFXJOJ6D76BQAAAA',1,NULL),('VTWQABLXBFXM4ZOA7UBQAAAA',0,NULL);
+INSERT INTO `client_scope` VALUES ('a',0,NULL);
 /*!40000 ALTER TABLE `client_scope` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `grant_types`
+-- Table structure for table `client_type`
 --
 
-DROP TABLE IF EXISTS `grant_types`;
+DROP TABLE IF EXISTS `client_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `grant_types` (
-  `id` bigint NOT NULL,
-  `grant_type` varchar(128) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `grant_type_UNIQUE` (`grant_type`)
+CREATE TABLE `client_type` (
+  `cid` varchar(64) NOT NULL,
+  `tid` bigint NOT NULL,
+  PRIMARY KEY (`cid`,`tid`),
+  KEY `client_type_tid_idx` (`tid`),
+  CONSTRAINT `client_type_cid` FOREIGN KEY (`cid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `client_type_tid` FOREIGN KEY (`tid`) REFERENCES `types` (`tid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `grant_types`
+-- Dumping data for table `client_type`
 --
 
-LOCK TABLES `grant_types` WRITE;
-/*!40000 ALTER TABLE `grant_types` DISABLE KEYS */;
-INSERT INTO `grant_types` VALUES (0,'authorization_code'),(2,'client_credentials'),(3,'implicit '),(1,'password'),(4,'refresh_token');
-/*!40000 ALTER TABLE `grant_types` ENABLE KEYS */;
+LOCK TABLES `client_type` WRITE;
+/*!40000 ALTER TABLE `client_type` DISABLE KEYS */;
+INSERT INTO `client_type` VALUES ('a',0),('a',1);
+/*!40000 ALTER TABLE `client_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `oauth_client_details`
+-- Table structure for table `clients`
 --
 
-DROP TABLE IF EXISTS `oauth_client_details`;
+DROP TABLE IF EXISTS `clients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oauth_client_details` (
-  `client_id` varchar(256) NOT NULL,
-  `uid` bigint NOT NULL DEFAULT '0',
-  `client_secret` varchar(256) NOT NULL,
-  `client_name` varchar(256) NOT NULL,
-  `redirect_uri` varchar(1024) DEFAULT NULL,
-  `access_token_validity` int DEFAULT '7200',
-  `refresh_token_validity` int DEFAULT '86400',
-  `additional_information` varchar(4096) DEFAULT NULL,
-  `enabled` int DEFAULT NULL,
-  `description` varchar(4096) DEFAULT NULL,
+CREATE TABLE `clients` (
+  `cid` varchar(64) NOT NULL,
+  `uid` bigint NOT NULL,
+  `secret` varchar(128) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `description` varchar(256) DEFAULT NULL,
+  `redirectUri` varchar(1024) DEFAULT NULL,
+  `accessTokenValidity` int DEFAULT '7200',
+  `refreshTokenValidity` int DEFAULT '86400',
+  `additionalInformation` varchar(2048) DEFAULT NULL,
+  `status` tinyint DEFAULT '0',
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`client_id`),
-  UNIQUE KEY `client_name_UNIQUE` (`client_name`),
-  KEY `oauth_client_details_uid_idx` (`uid`),
-  CONSTRAINT `oauth_client_details_uid` FOREIGN KEY (`uid`) REFERENCES `user_details` (`uid`) ON DELETE CASCADE
+  PRIMARY KEY (`cid`),
+  UNIQUE KEY `name_UNIQUE` (`name`),
+  KEY `client_owner_idx` (`uid`),
+  FULLTEXT KEY `client_keywords` (`name`,`description`,`redirectUri`,`cid`) /*!50100 WITH PARSER `ngram` */ ,
+  CONSTRAINT `client_owner` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `oauth_client_details`
+-- Dumping data for table `clients`
 --
 
-LOCK TABLES `oauth_client_details` WRITE;
-/*!40000 ALTER TABLE `oauth_client_details` DISABLE KEYS */;
-INSERT INTO `oauth_client_details` VALUES ('VTWQABLXBFXJOJ6D76BQAAAA',7963536486284521472,'$2a$10$zpju1G689Npf9itAKgE2zuB5BMcmGTExfy38AwIMuw/yXjLvSw.lm','Dustlight Blog','http://blog.dustlight.cn/callback',NULL,NULL,NULL,1,'光尘博客','2020-07-07 16:34:46','2020-08-20 02:30:49'),('VTWQABLXBFXM4ZOA7UBQAAAA',7984430369393016832,'$2a$10$LW.XDh5Ta22u0tKmj9IaTu3yVphDt19lC3k3GrP0CiwmQ2Yh7Fdb.','一','1',NULL,NULL,NULL,1,'一','2020-08-19 14:22:03','2020-08-19 14:22:03');
-/*!40000 ALTER TABLE `oauth_client_details` ENABLE KEYS */;
+LOCK TABLES `clients` WRITE;
+/*!40000 ALTER TABLE `clients` DISABLE KEYS */;
+INSERT INTO `clients` VALUES ('a',0,'a','a','a','http://localhost:8080',7200,86400,NULL,0,'2020-09-22 23:24:23','2020-09-22 23:24:23');
+/*!40000 ALTER TABLE `clients` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `resource_details`
+-- Table structure for table `resources`
 --
 
-DROP TABLE IF EXISTS `resource_details`;
+DROP TABLE IF EXISTS `resources`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `resource_details` (
-  `id` bigint NOT NULL,
-  `resource_name` varchar(128) NOT NULL,
-  `description` varchar(512) DEFAULT NULL,
+CREATE TABLE `resources` (
+  `rid` varchar(64) NOT NULL,
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `resource_name_UNIQUE` (`resource_name`)
+  PRIMARY KEY (`rid`),
+  CONSTRAINT `resources_rid` FOREIGN KEY (`rid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `resource_details`
+-- Dumping data for table `resources`
 --
 
-LOCK TABLES `resource_details` WRITE;
-/*!40000 ALTER TABLE `resource_details` DISABLE KEYS */;
-/*!40000 ALTER TABLE `resource_details` ENABLE KEYS */;
+LOCK TABLES `resources` WRITE;
+/*!40000 ALTER TABLE `resources` DISABLE KEYS */;
+/*!40000 ALTER TABLE `resources` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -258,10 +225,11 @@ CREATE TABLE `role_authority` (
   `rid` bigint NOT NULL,
   `aid` bigint NOT NULL,
   PRIMARY KEY (`rid`,`aid`),
-  KEY `role_authority_aid_idx` (`aid`),
-  CONSTRAINT `role_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `role_authority_rid` FOREIGN KEY (`rid`) REFERENCES `role_details` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `aid_idx` (`aid`),
+  KEY `rid_idx` (`rid`),
+  CONSTRAINT `role_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authorities` (`aid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `role_authority_rid` FOREIGN KEY (`rid`) REFERENCES `roles` (`rid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=ascii;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -270,36 +238,36 @@ CREATE TABLE `role_authority` (
 
 LOCK TABLES `role_authority` WRITE;
 /*!40000 ALTER TABLE `role_authority` DISABLE KEYS */;
-INSERT INTO `role_authority` VALUES (0,0),(1,0),(2,0),(3,0),(7969554307472289792,0),(0,1),(1,1),(2,1),(3,1),(7969554307472289792,1),(0,2),(1,2),(0,3),(1,3),(0,4),(1,4),(2,4),(0,5),(1,5),(2,5),(0,6),(1,6),(0,7),(1,7),(2,7),(0,8),(1,8),(0,9),(1,9),(0,10),(1,10),(0,11),(1,11),(0,12),(1,12),(0,13),(0,14),(0,15),(0,7969554498115989504),(1,7969554498115989504),(2,7969554498115989504),(7969554307472289792,7969554498115989504);
+INSERT INTO `role_authority` VALUES (0,0),(4,0),(0,1),(4,1),(4,2),(4,3),(4,4),(4,5),(4,6),(4,7);
 /*!40000 ALTER TABLE `role_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `role_details`
+-- Table structure for table `roles`
 --
 
-DROP TABLE IF EXISTS `role_details`;
+DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `role_details` (
-  `id` bigint NOT NULL,
-  `role_name` varchar(45) NOT NULL,
-  `description` varchar(512) DEFAULT NULL,
+CREATE TABLE `roles` (
+  `rid` bigint NOT NULL,
+  `roleName` varchar(64) NOT NULL,
+  `roleDescription` varchar(128) DEFAULT NULL,
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `role_name_UNIQUE` (`role_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`rid`),
+  UNIQUE KEY `roleName_UNIQUE` (`roleName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `role_details`
+-- Dumping data for table `roles`
 --
 
-LOCK TABLES `role_details` WRITE;
-/*!40000 ALTER TABLE `role_details` DISABLE KEYS */;
-INSERT INTO `role_details` VALUES (0,'ROLE_ROOT','超级管理员','2020-06-19 18:44:40','2020-08-12 10:28:51'),(1,'ROLE_ADMIN','管理员','2020-06-19 18:44:40','2020-07-09 09:10:58'),(2,'ROLE_DEV','开发者','2020-06-19 18:44:40','2020-07-09 09:10:18'),(3,'ROLE_USER','普通用户','2020-06-19 18:48:42','2020-07-09 09:10:13'),(7969554307472289792,'ROLE_TEST','测试者','2020-07-09 13:07:08','2020-07-09 13:07:23');
-/*!40000 ALTER TABLE `role_details` ENABLE KEYS */;
+LOCK TABLES `roles` WRITE;
+/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+INSERT INTO `roles` VALUES (0,'User','用户','2020-09-15 00:00:48','2020-09-15 00:00:48'),(1,'Developer','开发者','2020-09-15 00:18:30','2020-09-15 00:18:30'),(2,'Tester','测试员','2020-09-15 00:18:30','2020-09-15 00:18:30'),(3,'Administrator','管理员','2020-09-15 00:18:30','2020-09-15 00:18:30'),(4,'Root','超级管理员','2020-09-15 00:18:30','2020-09-15 00:18:30');
+/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -313,9 +281,10 @@ CREATE TABLE `scope_authority` (
   `sid` bigint NOT NULL,
   `aid` bigint NOT NULL,
   PRIMARY KEY (`sid`,`aid`),
-  KEY `scope_authority_aid_idx` (`aid`),
-  CONSTRAINT `scope_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authority_details` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `scope_authority_sid` FOREIGN KEY (`sid`) REFERENCES `scope_details` (`id`) ON DELETE CASCADE
+  KEY `scope_authority_aid_idx` (`aid`) /*!80000 INVISIBLE */,
+  KEY `scope_authority_sid_idx` (`sid`) /*!80000 INVISIBLE */,
+  CONSTRAINT `scope_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authorities` (`aid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `scope_authority_sid` FOREIGN KEY (`sid`) REFERENCES `scopes` (`sid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -325,104 +294,163 @@ CREATE TABLE `scope_authority` (
 
 LOCK TABLES `scope_authority` WRITE;
 /*!40000 ALTER TABLE `scope_authority` DISABLE KEYS */;
-INSERT INTO `scope_authority` VALUES (0,0),(0,1),(1,7969554498115989504);
+INSERT INTO `scope_authority` VALUES (0,0);
 /*!40000 ALTER TABLE `scope_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `scope_details`
+-- Table structure for table `scopes`
 --
 
-DROP TABLE IF EXISTS `scope_details`;
+DROP TABLE IF EXISTS `scopes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `scope_details` (
-  `id` bigint NOT NULL,
-  `scope_name` varchar(32) NOT NULL,
-  `description` varchar(512) DEFAULT NULL,
+CREATE TABLE `scopes` (
+  `sid` bigint NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `subtitle` varchar(64) DEFAULT NULL,
+  `description` varchar(256) DEFAULT NULL,
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `scope_name_UNIQUE` (`scope_name`)
+  PRIMARY KEY (`sid`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `scope_details`
+-- Dumping data for table `scopes`
 --
 
-LOCK TABLES `scope_details` WRITE;
-/*!40000 ALTER TABLE `scope_details` DISABLE KEYS */;
-INSERT INTO `scope_details` VALUES (0,'userinfo','获取用户信息','2020-06-19 19:29:57','2020-06-19 19:29:57'),(1,'test','测试功能','2020-06-20 22:26:58','2020-08-14 13:31:36');
-/*!40000 ALTER TABLE `scope_details` ENABLE KEYS */;
+LOCK TABLES `scopes` WRITE;
+/*!40000 ALTER TABLE `scopes` DISABLE KEYS */;
+INSERT INTO `scopes` VALUES (0,'userinfo','读取用户信息',NULL,'2020-09-28 18:35:37','2020-09-28 18:35:37');
+/*!40000 ALTER TABLE `scopes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sender_templates`
+-- Table structure for table `templates`
 --
 
-DROP TABLE IF EXISTS `sender_templates`;
+DROP TABLE IF EXISTS `templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sender_templates` (
-  `id` bigint NOT NULL,
+CREATE TABLE `templates` (
   `name` varchar(64) NOT NULL,
-  `text` text,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='-';
+  `uid` bigint NOT NULL,
+  `title` varchar(256) NOT NULL,
+  `content` text NOT NULL,
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`name`),
+  KEY `template_owner_idx` (`uid`),
+  CONSTRAINT `template_owner` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sender_templates`
+-- Dumping data for table `templates`
 --
 
-LOCK TABLES `sender_templates` WRITE;
-/*!40000 ALTER TABLE `sender_templates` DISABLE KEYS */;
-INSERT INTO `sender_templates` VALUES (5,'邮箱验证','<br><div><p style=\"margin-top: 20px; font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; text-align: center; height: 2px; background-color: rgb(0, 164, 255); border: 0px; font-size: 0px; padding: 0px; width: 713.021px;\"></p><div id=\"cTMail-inner\" style=\"font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; font-size: 12px; padding: 23px 0px 20px; box-shadow: rgba(122, 55, 55, 0.2) 0px 1px 1px 0px;\"><table style=\"width: 712.5px; margin-bottom: 10px; border-collapse: collapse;\"><tbody><tr><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td><td style=\"-webkit-font-smoothing: antialiased; max-width: 480px;\"><h1 id=\"cTMail-title\" style=\"font-size: 20px; font-weight: bold; line-height: 36px; margin: 0px 0px 16px;\">邮箱认证</h1><p id=\"cTMail-userName\" style=\"margin-bottom: 0px; font-size: 14px; color: rgb(51, 51, 51); line-height: 24px;\">尊敬的用户，您好！</p><p class=\"cTMail-content\" style=\"margin-top: 6px; margin-bottom: 0px; line-height: 24px; overflow-wrap: break-word; word-break: break-all;\"><span style=\"color: rgb(51, 51, 51); font-size: 14px;\">您正在注册<b>Dustlight</b>账户或更换绑定邮箱，邮箱验证码是：<b>${code}</b></span></p><p style=\"margin-top: 20px; margin-bottom: 20px; border-top: 1px solid rgb(234, 237, 240);\"></p><dl style=\"line-height: 18px;\"><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\"></dt><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\"></dt><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\">温馨提醒：</dt><dd style=\"margin: 0px 0px 6px; padding: 0px; line-height: 22px;\"><font color=\"#333333\">请在30分钟内完成注册，超过30分钟验证码将失效。</font></dd><dd style=\"color: rgb(51, 51, 51); margin: 0px 0px 6px; padding: 0px; line-height: 22px;\"><p id=\"cTMail-sender\" style=\"margin-top: 32px; font-size: 14px; line-height: 26px; overflow-wrap: break-word; word-break: break-all;\">此致<br><b>Dustlight团队</b></p></dd></dl></td><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td></tr></tbody></table></div><div id=\"cTMail-copy\" style=\"font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; font-size: 12px; text-align: center; line-height: 18px; color: rgb(153, 153, 153);\"><table style=\"width: 712.5px; margin-bottom: 10px; border-collapse: collapse;\"><tbody><tr><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td><td style=\"-webkit-font-smoothing: antialiased; max-width: 540px;\"><p style=\"margin: 20px auto 14px;\">此为系统邮件，请勿回复</p></td></tr></tbody></table></div></div>'),(7963842828905869312,'密码重置','<br><div><p style=\"margin-top: 20px; font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; text-align: center; height: 2px; background-color: rgb(0, 164, 255); border: 0px; font-size: 0px; padding: 0px; width: 713.021px;\"></p><div id=\"cTMail-inner\" style=\"font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; font-size: 12px; padding: 23px 0px 20px; box-shadow: rgba(122, 55, 55, 0.2) 0px 1px 1px 0px;\"><table style=\"width: 712.5px; margin-bottom: 10px; border-collapse: collapse;\"><tbody><tr><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td><td style=\"-webkit-font-smoothing: antialiased; max-width: 480px;\"><h1 id=\"cTMail-title\" style=\"font-size: 20px; font-weight: bold; line-height: 36px; margin: 0px 0px 16px;\">密码重置</h1><p id=\"cTMail-userName\" style=\"margin-bottom: 0px; font-size: 14px; color: rgb(51, 51, 51); line-height: 24px;\">尊敬的用户，您好！</p><p class=\"cTMail-content\" style=\"margin-top: 6px; margin-bottom: 0px; line-height: 24px; overflow-wrap: break-word; word-break: break-all;\"><span style=\"color: rgb(51, 51, 51); font-size: 14px;\">您正在重置<b>Dustlight</b>账户的密码，您的验证码是：<b>${code}</b></span></p><p style=\"margin-top: 20px; margin-bottom: 20px; border-top: 1px solid rgb(234, 237, 240);\"></p><dl style=\"line-height: 18px;\"><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\"></dt><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\"></dt><dt style=\"color: rgb(51, 51, 51); font-size: 14px; margin: 0px 0px 8px; padding: 0px;\">温馨提醒：</dt><dd style=\"margin: 0px 0px 6px; padding: 0px; line-height: 22px;\"><font color=\"#333333\">请在30分钟内完成密码重置，超过30分钟验证码将失效。</font></dd><dd style=\"color: rgb(51, 51, 51); margin: 0px 0px 6px; padding: 0px; line-height: 22px;\"><p id=\"cTMail-sender\" style=\"margin-top: 32px; font-size: 14px; line-height: 26px; overflow-wrap: break-word; word-break: break-all;\">此致<br><b>Dustlight团队</b></p></dd></dl></td><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td></tr></tbody></table></div><div id=\"cTMail-copy\" style=\"font-family: &quot;Helvetica Neue&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, sans-serif; font-size: 12px; text-align: center; line-height: 18px; color: rgb(153, 153, 153);\"><table style=\"width: 712.5px; margin-bottom: 10px; border-collapse: collapse;\"><tbody><tr><td style=\"-webkit-font-smoothing: antialiased; width: 20.5208px; max-width: 30px;\"></td><td style=\"-webkit-font-smoothing: antialiased; max-width: 540px;\"><p style=\"margin: 20px auto 14px;\">此为系统邮件，请勿回复</p></td></tr></tbody></table></div></div>'),(7985110240311980032,'asd','模板\"asd\"的内容xxx');
-/*!40000 ALTER TABLE `sender_templates` ENABLE KEYS */;
+LOCK TABLES `templates` WRITE;
+/*!40000 ALTER TABLE `templates` DISABLE KEYS */;
+INSERT INTO `templates` VALUES ('register',0,'注册验证码','您的验证码是：${code}','2020-09-21 23:38:25','2020-09-22 05:33:03');
+/*!40000 ALTER TABLE `templates` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `user_details`
+-- Table structure for table `types`
 --
 
-DROP TABLE IF EXISTS `user_details`;
+DROP TABLE IF EXISTS `types`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_details` (
+CREATE TABLE `types` (
+  `tid` bigint NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `description` varchar(256) DEFAULT NULL,
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`tid`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `types`
+--
+
+LOCK TABLES `types` WRITE;
+/*!40000 ALTER TABLE `types` DISABLE KEYS */;
+INSERT INTO `types` VALUES (0,'authorization_code','授权码模式','2020-09-22 23:48:18','2020-09-22 23:48:18'),(1,'refresh_token','令牌刷新','2020-09-22 23:48:18','2020-09-22 23:48:18'),(2,'implicit ','简易模式','2020-09-22 23:48:18','2020-09-22 23:48:18'),(3,'client_credentials','客户端凭据模式','2020-09-22 23:48:18','2020-09-22 23:48:18'),(4,'password','密码模式','2020-09-22 23:48:18','2020-09-22 23:48:18'),(12,'qwqwqw','xxxaaass','2020-09-28 20:32:50','2020-09-28 20:36:57');
+/*!40000 ALTER TABLE `types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_role`
+--
+
+DROP TABLE IF EXISTS `user_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_role` (
   `uid` bigint NOT NULL,
-  `username` varchar(45) NOT NULL,
+  `rid` bigint NOT NULL,
+  `expiredAt` datetime DEFAULT NULL,
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uid`,`rid`),
+  KEY `rid_idx` (`rid`),
+  KEY `uid_idx` (`uid`),
+  CONSTRAINT `user_role_rid` FOREIGN KEY (`rid`) REFERENCES `roles` (`rid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_role_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=ascii;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_role`
+--
+
+LOCK TABLES `user_role` WRITE;
+/*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
+INSERT INTO `user_role` VALUES (0,0,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,1,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,2,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,3,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,4,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(503694347777703936,0,'2020-09-16 12:26:42','2020-09-16 12:25:04','2020-09-16 12:25:43'),(503694347777703936,1,'2020-09-16 12:26:42','2020-09-16 12:25:04','2020-09-16 12:25:43'),(503694347777703936,2,'2020-09-16 12:26:42','2020-09-16 12:25:04','2020-09-16 12:25:43'),(504135522511269888,0,NULL,'2020-09-17 16:55:41','2020-09-17 16:55:41'),(505966692622970880,0,NULL,'2020-09-22 18:12:06','2020-09-22 18:12:06'),(505970177499770880,0,NULL,'2020-09-22 18:25:57','2020-09-22 18:25:57');
+/*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `uid` bigint NOT NULL,
+  `username` varchar(64) NOT NULL,
   `password` varchar(128) NOT NULL,
   `email` varchar(320) NOT NULL,
-  `nickname` varchar(45) DEFAULT NULL,
-  `phone` varchar(30) DEFAULT NULL,
+  `nickname` varchar(32) NOT NULL DEFAULT '',
   `gender` int(2) unsigned zerofill DEFAULT '00',
-  `role` bigint DEFAULT '3',
-  `enabled` int DEFAULT '1',
-  `account_expired` int DEFAULT '0',
-  `credentials_expired` int DEFAULT '0',
-  `account_locked` int DEFAULT '0',
+  `accountExpiredAt` datetime DEFAULT NULL,
+  `credentialsExpiredAt` datetime DEFAULT NULL,
+  `unlockedAt` datetime DEFAULT NULL,
+  `enabled` tinyint(1) DEFAULT '1',
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uid`),
-  UNIQUE KEY `uid_UNIQUE` (`uid`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`),
-  UNIQUE KEY `phone_UNIQUE` (`phone`),
-  KEY `user_details_role_idx` (`role`),
-  CONSTRAINT `user_details_role` FOREIGN KEY (`role`) REFERENCES `role_details` (`id`)
+  FULLTEXT KEY `user_keywords` (`username`,`email`,`nickname`) /*!50100 WITH PARSER `ngram` */ 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_details`
+-- Dumping data for table `users`
 --
 
-LOCK TABLES `user_details` WRITE;
-/*!40000 ALTER TABLE `user_details` DISABLE KEYS */;
-INSERT INTO `user_details` VALUES (7963536486284521472,'hansin','$2a$10$xRiqIt0jrQKqDB4ZO67NbeO0UJcL58q.rW8.M0Jmn/9Xig3a5cV9e','hansin@dustlight.cn','Hansin1997😃',NULL,01,0,1,0,0,0,'2020-06-22 22:34:26','2020-08-22 12:29:23'),(7968878396921020416,'845612500','$2a$10$C99.mcT3.vPkww8DNTLbtOJeB60hvFv35PmYtBhsqKctqLwXgqB1O','845612500@qq.com','老八蜜汁小憨包',NULL,01,2,1,0,0,0,'2020-07-07 16:21:17','2020-08-19 22:24:16'),(7984430369393016832,'210690','$2a$10$Gf7hq/Tdpx2SwZrwEnZ.F.BaR7A5ZMc3aEjOmtDJ16.n9cxRawaM6','2106907291@qq.com','萘',NULL,02,2,1,0,0,0,'2020-08-19 14:19:17','2020-08-19 14:21:41');
-/*!40000 ALTER TABLE `user_details` ENABLE KEYS */;
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (0,'root','$2a$10$XBQXZQLQg.s5/8JO/HdSXe7GpAxqgyglzywvZ4nZZPPnhNZhcyhLq','-','ROOT',00,NULL,NULL,NULL,1,'2020-09-15 00:27:10','2020-09-17 03:44:07'),(1,'root1','root1','-1','ROOT1',00,NULL,NULL,NULL,1,'2020-09-15 00:28:10','2020-09-16 16:45:54'),(2,'root2','root2','-2','ROOT2',00,NULL,NULL,NULL,1,'2020-09-15 00:29:10','2020-09-16 16:45:54'),(3,'root3','root3','-3','ROOT3',00,NULL,NULL,NULL,1,'2020-09-15 00:30:10','2020-09-16 16:45:54'),(503694347777703936,'ee-84e0-d20a8cb6b447','$2a$10$ixV4Wx5TZqAAbnyibaMBreNUtJAtwA2Jx1ROwBiL3XRo/ew.vJ7iK','ee-84e0-d20a8cb6b447','ZTmfey',00,'2020-09-16 11:47:36',NULL,NULL,1,'2020-09-16 11:42:37','2020-09-16 11:42:37'),(504135522511269888,'hansin','$2a$10$GP57XrnKif0JriZlHCyu2OwfMvB3/VpOUEZPvvAnleVOPYpvMR79e','hansin@dustlight.cn','hansin',00,NULL,NULL,NULL,1,'2020-09-17 16:55:41','2020-09-22 20:13:50'),(505966692622970880,'845612500','$2a$10$4D/p8ANABGJ5OvLfTYYMZuoqz4Fyu8eJoAoVdYdZtZKXngmnId/zS','845612500@qq.com','845612500',01,NULL,NULL,NULL,1,'2020-09-22 18:12:06','2020-09-22 18:13:26'),(505970177499770880,'lbgzs2010','$2a$10$kySdeEvbrRXdpt07KRkpn.8/jxmLCgTxz91lAAWlvuQDIu4VGSJW.','lbgzs2010@live.cn','lbgzs2010',00,NULL,NULL,NULL,1,'2020-09-22 18:25:57','2020-09-22 18:25:57');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -434,4 +462,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-22 20:33:19
+-- Dump completed on 2020-09-29  9:12:55

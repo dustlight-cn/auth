@@ -1,7 +1,7 @@
 //package cn.dustlight.oauth2.uim;
 //
 //import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
-//import cn.dustlight.oauth2.uim.entities.Template;
+//import cn.dustlight.oauth2.uim.entities.v1.templates.Template;
 //import cn.dustlight.oauth2.uim.services.TemplateManagerMapper;
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;

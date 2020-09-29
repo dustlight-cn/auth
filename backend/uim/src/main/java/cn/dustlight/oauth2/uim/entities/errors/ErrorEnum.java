@@ -30,14 +30,17 @@ public enum ErrorEnum {
     CREATE_RESOURCE_FAIL(4000, "fail to create resource"),
     CREATE_USER_FAIL(4001, "fail to create user"),
     CREATE_ROLE_FAIL(4002, "fail to create role"),
+    CREATE_AUTHORITY_FAIL(4003, "fail to create authority"),
 
     UPDATE_RESOURCE_FAIL(5000, "fail to update resource"),
     UPDATE_USER_FAIL(5001, "fail to update user"),
     UPDATE_ROLE_FAIL(5002, "fail to update role"),
+    UPDATE_AUTHORITY_FAIL(5003, "fail to update authority"),
 
     DELETE_RESOURCE_FAIL(6000, "fail to delete resource"),
     DELETE_USER_FAIL(6001, "fail to delete user"),
-    DELETE_ROLE_FAIL(6002, "fail to delete role");
+    DELETE_ROLE_FAIL(6002, "fail to delete role"),
+    DELETE_AUTHORITY_FAIL(6003, "fail to delete authority");
 
     private ErrorDetails details;
 

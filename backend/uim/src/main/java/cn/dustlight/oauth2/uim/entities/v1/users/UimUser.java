@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.entities.v1.users;
 
-import cn.dustlight.oauth2.uim.entities.ser.ToStringCollectionSerializer;
+import cn.dustlight.oauth2.uim.handlers.serializers.ToStringCollectionSerializer;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

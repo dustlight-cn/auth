@@ -1,13 +1,9 @@
-package cn.dustlight.oauth2.uim.controllers;
+package cn.dustlight.oauth2.uim.controllers.oauth;
 
-import cn.dustlight.oauth2.uim.entities.IClientDetails;
 import cn.dustlight.oauth2.uim.entities.v1.clients.UimClient;
 import cn.dustlight.oauth2.uim.entities.v1.scopes.ClientScope;
-import cn.dustlight.oauth2.uim.services.ClientDetailsMapper;
-import cn.dustlight.oauth2.uim.RestfulResult;
-import cn.dustlight.oauth2.uim.entities.IScopeDetails;
-import cn.dustlight.oauth2.uim.services.clients.UimClientDetailsService;
-import org.apache.ibatis.annotations.Result;
+import cn.dustlight.oauth2.uim.services.clients.ClientService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
@@ -15,7 +11,6 @@ import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,6 +23,7 @@ import java.util.*;
  * 覆盖 '/oauth/authorize' ，返回Json数据。
  */
 @RestController
+@Tag(name = "OAuth2 相关业务", description = "OAuth2授权、Token发放。")
 @SessionAttributes({"authorizationRequest", "org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint.ORIGINAL_AUTHORIZATION_REQUEST"})
 public class OAuth2Controller {
 
@@ -35,7 +31,7 @@ public class OAuth2Controller {
     private AuthorizationEndpoint endpoint;
 
     @Autowired
-    private UimClientDetailsService clientDetailsService;
+    private ClientService clientDetailsService;
 
     @Autowired
     private ApprovalStore approvalStore;

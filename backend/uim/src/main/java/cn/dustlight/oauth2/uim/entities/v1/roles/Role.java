@@ -36,13 +36,6 @@ public interface Role extends Serializable {
     String getRoleDescription();
 
     /**
-     * 获取角色权限
-     *
-     * @return 角色权限
-     */
-    Collection<String> getAuthorities();
-
-    /**
      * 获取创建时间
      *
      * @return

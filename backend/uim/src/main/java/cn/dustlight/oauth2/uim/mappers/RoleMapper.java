@@ -1,6 +1,8 @@
 package cn.dustlight.oauth2.uim.mappers;
 
+import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultRole;
 import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultUserRole;
+import cn.dustlight.oauth2.uim.entities.v1.roles.Role;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,43 @@ import java.util.Date;
 @Service
 @Mapper
 public interface RoleMapper {
+
+    /* ----------------------------------------------------------------------------------------------------- */
+
+    /* Role */
+
+    @Select("SELECT * FROM roles")
+    Collection<DefaultRole> listRoles();
+
+    @Select("<script>SELECT * FROM roles WHERE rid IN " +
+            "<foreach collection='rids' item='rid' open='(' separator=',' close=')'>" +
+            "#{rid}</foreach></script>")
+    Collection<DefaultRole> selectRoles(Collection<Long> rids);
+
+    @Select("SELECT * FROM roles WHERE rid=#{rid}")
+    DefaultRole selectRole(Long rid);
+
+    @Insert("INSERT INTO roles (rid,roleName,roleDescription) VALUES (#{rid},#{roleName},#{roleDescription}) " +
+            "ON DUPLICATE KEY UPDATE roleName=VALUES(roleName),roleDescription=VALUES(roleDescription)")
+    boolean insertRole(Long rid, String roleName, String roleDescription);
+
+    @Insert("<script>INSERT INTO roles (rid,roleName,roleDescription) VALUES " +
+            "<foreach collection='roles' item='role' separator=','>" +
+            "(#{role.rid},#{role.roleName},#{role.roleDescription})" +
+            "</foreach> ON DUPLICATE KEY UPDATE roleName=VALUES(roleName),roleDescription=VALUES(roleDescription)</script>")
+    boolean insertRoles(Collection<Role> roles);
+
+    @Delete("DELETE FROM roles WHERE rid=#{rid}")
+    boolean deleteRole(Long rid);
+
+    @Delete("<script>DELETE FROM roles WHERE rid IN " +
+            "<foreach collection='rids' item='rid' open='(' separator=',' close=')'>" +
+            "#{rid}</foreach></script>")
+    boolean deleteRoles(Collection<Long> rids);
+
+    /* ----------------------------------------------------------------------------------------------------- */
+
+    /* UserRole */
 
     @Select("SELECT uid,r.rid AS rid,roleName,roleDescription,expiredAt FROM user_role AS ur,roles AS r " +
             "WHERE ur.uid=#{uid} AND ur.rid=r.rid")
@@ -61,4 +100,6 @@ public interface RoleMapper {
             "#{roleName}" +
             "</foreach>)</script>")
     boolean deleteUserRolesByRoleNames(Long uid, Collection<String> roleNames);
+
+    /* ----------------------------------------------------------------------------------------------------- */
 }

@@ -5,11 +5,11 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 
-public class DefaultUimClientDetailsService implements UimClientDetailsService {
+public class DefaultClientService implements ClientService {
 
     private ClientMapper mapper;
 
-    public DefaultUimClientDetailsService(ClientMapper mapper) {
+    public DefaultClientService(ClientMapper mapper) {
         this.mapper = mapper;
     }
 

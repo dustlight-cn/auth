@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.Date;
 
-public class DefaultUimUserDetailsService implements UimUserDetailsService<DefaultUimUser, DefaultPublicUimUser> {
+public class DefaultUserService implements UserService<DefaultUimUser, DefaultPublicUimUser> {
 
     private UserMapper userMapper;
     private RoleMapper roleMapper;
@@ -27,10 +27,10 @@ public class DefaultUimUserDetailsService implements UimUserDetailsService<Defau
     private OrderBySqlBuilder orderBySqlBuilder = OrderBySqlBuilder.create
             ("uid", "createdAt", "updatedAt", "accountExpiredAt", "credentialsExpiredAt", "unlockedAt");
 
-    public DefaultUimUserDetailsService(UserMapper userMapper,
-                                        RoleMapper roleMapper,
-                                        PasswordEncoder passwordEncoder,
-                                        UniqueGenerator<Long> idGenerator) {
+    public DefaultUserService(UserMapper userMapper,
+                              RoleMapper roleMapper,
+                              PasswordEncoder passwordEncoder,
+                              UniqueGenerator<Long> idGenerator) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.idGenerator = idGenerator;

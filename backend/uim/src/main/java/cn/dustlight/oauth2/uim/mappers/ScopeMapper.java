@@ -1,5 +1,6 @@
 package cn.dustlight.oauth2.uim.mappers;
 
+import cn.dustlight.oauth2.uim.entities.v1.scopes.ClientScope;
 import cn.dustlight.oauth2.uim.entities.v1.scopes.DefaultClientScope;
 import cn.dustlight.oauth2.uim.entities.v1.scopes.DefaultScope;
 import org.apache.ibatis.annotations.Delete;
@@ -13,12 +14,12 @@ import java.util.Collection;
 @Service
 @Mapper
 public interface ScopeMapper {
+    /* ----------------------------------------------------------------------------------------------------- */
+
+    /* Scope */
 
     @Select("SELECT * FROM scopes")
     Collection<DefaultScope> listScopes();
-
-    @Select("SELECT scopes.* FROM scopes,client_scope WHERE client_scope.cid=#{cid} AND client_scope.sid=scopes.sid")
-    Collection<DefaultClientScope> listClientScopes(String cid);
 
     @Select("SELECT * FROM scopes WHERE sid=#{sid}")
     DefaultScope selectScope(Long sid);
@@ -46,4 +47,36 @@ public interface ScopeMapper {
             "<foreach collection='sids' item='sid' open='(' separator=',' close=')'>" +
             "#{sid}</foreach></script>")
     boolean deleteScopes(Collection<Long> sids);
+
+    /* ----------------------------------------------------------------------------------------------------- */
+
+    /* ClientScope */
+
+    @Select("SELECT scopes.* FROM scopes,client_scope WHERE client_scope.cid=#{cid} AND client_scope.sid=scopes.sid")
+    Collection<DefaultClientScope> listClientScopes(String cid);
+
+    @Select("SELECT scopes.name FROM scopes,client_scope WHERE client_scope.cid=#{cid} AND client_scopes.sid=scopes.sid")
+    Collection<String> listClientScopeNames(String cid);
+
+    @Select("SELECT scopes.sid FROM scopes,client_scope WHERE client_scope.cid=#{cid} AND client_scopes.sid=scopes.sid")
+    Collection<Long> listClientScopeIds(String cid);
+
+    @Insert("<script>INSERT INTO scopes (cid,sid,autoApprove) VALUES " +
+            "<foreach collection='sids' item='sid' separator=','>" +
+            "(#{cid},#{sid},#{autoApprove})" +
+            "</foreach> ON DUPLICATE KEY UPDATE autoApprove=VALUES(autoApprove)</script>")
+    boolean insertClientScopeByScopeIds(String cid, Collection<Long> sids, boolean autoApprove);
+
+    @Insert("<script>INSERT INTO scopes (cid,sid,autoApprove) VALUES " +
+            "<foreach collection='scopes' item='scope' separator=','>" +
+            "(#{scope.cid},#{scope.sid},#{scope.autoApprove})" +
+            "</foreach> ON DUPLICATE KEY UPDATE autoApprove=VALUES(autoApprove)</script>")
+    boolean insertClientScopes(Collection<? extends ClientScope> scopes);
+
+    @Delete("<script>DELETE FROM scopes WHERE cid=#{cid} AND sid IN " +
+            "<foreach collection='sids' item='sid' open='(' separator=',' close=')'>" +
+            "#{sid}</foreach></script>")
+    boolean deleteClientScopes(String cid, Collection<Long> sids);
+
+    /* ----------------------------------------------------------------------------------------------------- */
 }

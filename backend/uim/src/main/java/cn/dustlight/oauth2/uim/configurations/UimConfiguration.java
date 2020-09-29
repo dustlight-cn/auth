@@ -14,14 +14,13 @@ import cn.dustlight.oauth2.uim.mappers.AuthorityMapper;
 import cn.dustlight.oauth2.uim.mappers.ClientMapper;
 import cn.dustlight.oauth2.uim.mappers.RoleMapper;
 import cn.dustlight.oauth2.uim.mappers.UserMapper;
-import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
-import cn.dustlight.oauth2.uim.services.clients.DefaultUimClientDetailsService;
-import cn.dustlight.oauth2.uim.services.clients.UimClientDetailsService;
+import cn.dustlight.oauth2.uim.services.clients.DefaultClientService;
+import cn.dustlight.oauth2.uim.services.clients.ClientService;
 import cn.dustlight.oauth2.uim.services.code.RedisAuthorizationCodeService;
 import cn.dustlight.oauth2.uim.services.code.RedisVerificationCodeStoreService;
 import cn.dustlight.oauth2.uim.services.code.VerificationCodeStoreService;
-import cn.dustlight.oauth2.uim.services.users.DefaultUimUserDetailsService;
-import cn.dustlight.oauth2.uim.services.users.UimUserDetailsService;
+import cn.dustlight.oauth2.uim.services.users.DefaultUserService;
+import cn.dustlight.oauth2.uim.services.users.UserService;
 import cn.dustlight.validator.annotations.EnableValidator;
 import cn.dustlight.validator.generator.RandomStringCodeGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -188,11 +187,11 @@ public class UimConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public UimUserDetailsService uimUserDetailsService(@Autowired UserMapper userMapper,
-                                                       @Autowired RoleMapper roleMapper,
-                                                       @Autowired PasswordEncoder passwordEncoder,
-                                                       @Autowired UniqueGenerator<Long> idGenerator) {
-        return new DefaultUimUserDetailsService(userMapper, roleMapper, passwordEncoder, idGenerator);
+    public UserService uimUserDetailsService(@Autowired UserMapper userMapper,
+                                             @Autowired RoleMapper roleMapper,
+                                             @Autowired PasswordEncoder passwordEncoder,
+                                             @Autowired UniqueGenerator<Long> idGenerator) {
+        return new DefaultUserService(userMapper, roleMapper, passwordEncoder, idGenerator);
     }
 
     @Bean
@@ -211,7 +210,7 @@ public class UimConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public UimClientDetailsService uimClientDetailsService(@Autowired ClientMapper mapper) {
-        return new DefaultUimClientDetailsService(mapper);
+    public ClientService uimClientDetailsService(@Autowired ClientMapper mapper) {
+        return new DefaultClientService(mapper);
     }
 }

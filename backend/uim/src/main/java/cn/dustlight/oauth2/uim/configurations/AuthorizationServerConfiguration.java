@@ -2,8 +2,8 @@ package cn.dustlight.oauth2.uim.configurations;
 
 import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
 import cn.dustlight.oauth2.uim.handlers.convert.UimAccessTokenConverter;
-import cn.dustlight.oauth2.uim.services.clients.UimClientDetailsService;
-import cn.dustlight.oauth2.uim.services.users.UimUserDetailsService;
+import cn.dustlight.oauth2.uim.services.clients.ClientService;
+import cn.dustlight.oauth2.uim.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -18,7 +18,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
-    public UimUserDetailsService userDetailsService;
+    public UserService userDetailsService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -27,7 +27,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private TokenStore uimTokenStore;
 
     @Autowired
-    private UimClientDetailsService clientDetailsService;
+    private ClientService clientDetailsService;
 
     private UimAccessTokenConverter uimAccessTokenConverter = new UimAccessTokenConverter();
 

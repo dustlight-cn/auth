@@ -8,7 +8,6 @@ public class DefaultRole implements Role {
     private Long rid;
     private String roleName;
     private String roleDescription;
-    private Collection<String> authorities;
 
     @Override
     public Long getRoleId() {
@@ -35,11 +34,6 @@ public class DefaultRole implements Role {
         return null;
     }
 
-    @Override
-    public Collection<String> getAuthorities() {
-        return authorities;
-    }
-
     public Long getRid() {
         return rid;
     }
@@ -54,9 +48,5 @@ public class DefaultRole implements Role {
 
     public void setRoleDescription(String roleDescription) {
         this.roleDescription = roleDescription;
-    }
-
-    public void setAuthorities(Collection<String> authorities) {
-        this.authorities = authorities;
     }
 }

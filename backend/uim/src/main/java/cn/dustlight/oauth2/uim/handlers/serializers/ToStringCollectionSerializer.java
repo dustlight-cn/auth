@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.entities.ser;
+package cn.dustlight.oauth2.uim.handlers.serializers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonToken;

@@ -3,7 +3,7 @@ package cn.dustlight.oauth2.uim.controllers.users;
 import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.results.QueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
-import cn.dustlight.oauth2.uim.services.users.UimUserDetailsService;
+import cn.dustlight.oauth2.uim.services.users.UserService;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.core.RestfulStorage;
 import org.apache.commons.logging.Log;
@@ -26,7 +26,7 @@ public class DefaultUserExtendController implements UserExtendController {
     protected final Log logger = LogFactory.getLog(this.getClass());
 
     @Autowired
-    protected UimUserDetailsService userDetailsService;
+    protected UserService userDetailsService;
 
     @Autowired
     protected RestfulStorage storage;

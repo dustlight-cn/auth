@@ -1,7 +1,6 @@
 package cn.dustlight.oauth2.uim.handlers;
 
 import cn.dustlight.oauth2.uim.mappers.AuthorityMapper;
-import cn.dustlight.oauth2.uim.services.AuthorityDetailsMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;

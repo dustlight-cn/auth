@@ -13,8 +13,12 @@ import java.util.Date;
  */
 public interface UserRole extends Role, Serializable {
 
+    /**
+     * 获取角色权限
+     *
+     * @return 角色权限
+     */
     @JsonIgnore
-    @Override
     Collection<String> getAuthorities();
 
     /**

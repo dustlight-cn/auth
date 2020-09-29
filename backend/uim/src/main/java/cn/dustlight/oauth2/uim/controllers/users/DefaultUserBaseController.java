@@ -3,7 +3,7 @@ package cn.dustlight.oauth2.uim.controllers.users;
 import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultUserRole;
 import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
-import cn.dustlight.oauth2.uim.services.users.UimUserDetailsService;
+import cn.dustlight.oauth2.uim.services.users.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class DefaultUserBaseController implements UserBaseController {
     protected AuthenticationManager authenticationManager;
 
     @Autowired
-    protected UimUserDetailsService userDetailsService;
+    protected UserService userDetailsService;
 
     @Override
     public UimUser getSession() {

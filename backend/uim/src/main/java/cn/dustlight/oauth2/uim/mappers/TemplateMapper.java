@@ -1,6 +1,6 @@
-package cn.dustlight.oauth2.uim.services;
+package cn.dustlight.oauth2.uim.mappers;
 
-import cn.dustlight.oauth2.uim.entities.Template;
+import cn.dustlight.oauth2.uim.entities.v1.templates.Template;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ import java.util.Collection;
 @CacheNamespace
 @Service
 @Mapper
-public interface TemplateManagerMapper {
+public interface TemplateMapper {
 
     @Select("SELECT name FROM templates")
     Collection<String> getTemplatesName();
