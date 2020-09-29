@@ -1,7 +1,7 @@
 package cn.dustlight.oauth2.uim.mappers;
 
-import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUimUser;
-import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUser;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -32,26 +32,26 @@ public interface UserMapper {
                     property = "roles",
                     many = @Many(select = "cn.dustlight.oauth2.uim.mappers.RoleMapper.listUserRoles"))
     })
-    DefaultUimUser selectUserByUsernameOrEmail(String uoe);
+    DefaultUser selectUserByUsernameOrEmail(String uoe);
 
     @Select("SELECT * FROM users WHERE uid=#{uid}")
     @ResultMap("User")
-    DefaultUimUser selectUser(Long uid);
+    DefaultUser selectUser(Long uid);
 
     @Select({"<script>SELECT * FROM users WHERE uid IN ",
             "<foreach collection='uids' item='uid' open='(' separator=',' close=')'>#{uid}</foreach>",
             "</script>"})
-    Collection<DefaultPublicUimUser> selectUsersPublic(@Param("uids") Collection<Long> uids);
+    Collection<DefaultPublicUser> selectUsersPublic(@Param("uids") Collection<Long> uids);
 
     @Select({"<script>SELECT * FROM users WHERE username IN ",
             "<foreach collection='usernames' item='username' open='(' separator=',' close=')'>#{username}</foreach>",
             "</script>"})
-    Collection<DefaultUimUser> selectUsersByUsername(@Param("usernames") Collection<String> usernames);
+    Collection<DefaultUser> selectUsersByUsername(@Param("usernames") Collection<String> usernames);
 
     @Select({"<script>SELECT * FROM users WHERE uid IN ",
             "<foreach collection='uids' item='uid' open='(' separator=',' close=')'>#{uid}</foreach>",
             "</script>"})
-    Collection<DefaultUimUser> selectUsersByUid(@Param("usernames") Collection<Long> uids);
+    Collection<DefaultUser> selectUsersByUid(@Param("usernames") Collection<Long> uids);
 
     @Select("SELECT COUNT(uid) FROM users")
     int count();
@@ -62,7 +62,7 @@ public interface UserMapper {
             "<if test='limit'> LIMIT #{limit}<if test='offset'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")
     @ResultMap("User")
-    Collection<DefaultUimUser> listUsers(String orderBy, Integer offset, Integer limit);
+    Collection<DefaultUser> listUsers(String orderBy, Integer offset, Integer limit);
 
     @Select("SELECT count(uid) FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})")
     int countSearch(String keywords);
@@ -73,14 +73,14 @@ public interface UserMapper {
             "<if test='limit'> LIMIT #{limit}<if test='offset'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")
     @ResultMap("User")
-    Collection<DefaultUimUser> searchUsers(String keywords, String orderBy, Integer offset, Integer limit);
+    Collection<DefaultUser> searchUsers(String keywords, String orderBy, Integer offset, Integer limit);
 
     @Select("<script>SELECT users.* FROM users," +
             "(SELECT uid FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})" +
             "<if test='orderBy'> ORDER BY ${orderBy}</if>" +
             "<if test='limit'> LIMIT #{limit}<if test='offset'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")
-    Collection<DefaultPublicUimUser> searchPublicUsers(String keywords, String orderBy, Integer offset, Integer limit);
+    Collection<DefaultPublicUser> searchPublicUsers(String keywords, String orderBy, Integer offset, Integer limit);
 
     @Update("UPDATE users SET password=#{password} WHERE uid=#{uid}")
     boolean updatePassword(Long uid, String password);

@@ -4,8 +4,8 @@ import cn.dustlight.generator.Generator;
 import cn.dustlight.generator.UniqueGenerator;
 import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultUserRole;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
-import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUimUser;
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.oauth2.uim.mappers.RoleMapper;
 import cn.dustlight.oauth2.uim.mappers.UserMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -67,10 +67,10 @@ public class MapperTest {
         }
 
         Assert.isTrue(roleMapper.insertUserRoles(id, roles), "insert user role fail!");
-        UimUser user = userMapper.selectUserByUsernameOrEmail(username);
+        User user = userMapper.selectUserByUsernameOrEmail(username);
         Assert.notNull(user, "select user fail!");
         logger.info(objectMapper.writeValueAsString(user));
-        Collection<DefaultPublicUimUser> users = userMapper.selectUsersPublic(Arrays.asList(0L, id));
+        Collection<DefaultPublicUser> users = userMapper.selectUsersPublic(Arrays.asList(0L, id));
         logger.info(objectMapper.writeValueAsString(users));
     }
 
@@ -111,7 +111,7 @@ public class MapperTest {
     @Test
     public void listUser(@Autowired UserMapper userMapper) throws JsonProcessingException {
         int count = userMapper.count();
-        Collection<? extends UimUser>
+        Collection<? extends User>
                 coll1 = userMapper.listUsers("-createdAt", 0, 1),
                 coll2 = userMapper.listUsers("-createdAt", 1, 1);
         logger.info("Count: " + count);
@@ -123,7 +123,7 @@ public class MapperTest {
     public void searchUser(@Autowired UserMapper userMapper) throws JsonProcessingException {
         String keywords = "ee";
 
-        Collection<? extends UimUser>
+        Collection<? extends User>
                 users = userMapper.searchUsers(keywords, "-createdAt", 0, 1),
                 pubUsers = userMapper.searchPublicUsers(keywords, "-createdAt", 0, 1);
         int count = userMapper.countSearch(keywords);

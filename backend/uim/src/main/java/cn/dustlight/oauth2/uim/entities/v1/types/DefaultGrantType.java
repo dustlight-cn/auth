@@ -1,7 +1,10 @@
 package cn.dustlight.oauth2.uim.entities.v1.types;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Date;
 
+@Schema(name = "GrantType")
 public class DefaultGrantType implements GrantType {
 
     private Long tid;

@@ -2,7 +2,7 @@ package cn.dustlight.oauth2.uim.controllers.users;
 
 import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultUserRole;
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.oauth2.uim.services.users.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,10 +29,10 @@ public class DefaultUserBaseController implements UserBaseController {
     protected UserService userDetailsService;
 
     @Override
-    public UimUser getSession() {
+    public User getSession() {
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        UimUser cache = (UimUser) authentication.getPrincipal();
-        UimUser snapshot = userDetailsService.loadUser(cache.getUid());
+        User cache = (User) authentication.getPrincipal();
+        User snapshot = userDetailsService.loadUser(cache.getUid());
         logger.debug(String.format("用户: [%s] 访问会话信息", snapshot.getUsername()));
         return snapshot;
     }
@@ -65,14 +65,14 @@ public class DefaultUserBaseController implements UserBaseController {
     }
 
     @Override
-    public UimUser getUser(Long uid) {
+    public User getUser(Long uid) {
         boolean flag = SecurityContextHolder.getContext().getAuthentication().getAuthorities().
                 contains(new SimpleGrantedAuthority("READ_USER_ANY"));
-        UimUser user = null;
+        User user = null;
         if (flag) {
             user = userDetailsService.loadUser(uid);
         } else {
-            Collection<UimUser> collection = userDetailsService.loadPublicUserByUid(Arrays.asList(uid));
+            Collection<User> collection = userDetailsService.loadPublicUserByUid(Arrays.asList(uid));
             if (collection != null && collection.size() > 0)
                 user = collection.iterator().next();
         }

@@ -1,5 +1,8 @@
 package cn.dustlight.oauth2.uim.entities.v1.scopes;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.util.Date;
 
 /**
@@ -12,6 +15,7 @@ public interface Scope {
      *
      * @return
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     Long getSid();
 
     /**

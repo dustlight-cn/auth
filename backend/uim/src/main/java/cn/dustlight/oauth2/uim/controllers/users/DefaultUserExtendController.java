@@ -2,7 +2,7 @@ package cn.dustlight.oauth2.uim.controllers.users;
 
 import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.results.QueryResults;
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.oauth2.uim.services.users.UserService;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.core.RestfulStorage;
@@ -32,7 +32,7 @@ public class DefaultUserExtendController implements UserExtendController {
     protected RestfulStorage storage;
 
     @Override
-    public QueryResults<? extends UimUser, Integer> getUsers(String query, Integer offset, Integer limit, Collection<String> order) {
+    public QueryResults<? extends User, Integer> getUsers(String query, Integer offset, Integer limit, Collection<String> order) {
         boolean flag = SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("READ_USER_ANY"));
         if (flag) {

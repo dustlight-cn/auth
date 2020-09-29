@@ -19,7 +19,7 @@ public interface Role extends Serializable {
      * @return 角色id
      */
     @JsonSerialize(using = ToStringSerializer.class)
-    Long getRoleId();
+    Long getRid();
 
     /**
      * 获取角色名

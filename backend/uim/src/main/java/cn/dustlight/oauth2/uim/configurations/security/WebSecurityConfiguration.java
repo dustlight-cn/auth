@@ -1,6 +1,7 @@
-package cn.dustlight.oauth2.uim.configurations;
+package cn.dustlight.oauth2.uim.configurations.security;
 
 import cn.dustlight.oauth2.uim.Constants;
+import cn.dustlight.oauth2.uim.configurations.Properties;
 import cn.dustlight.oauth2.uim.handlers.UimHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -14,10 +15,10 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 @EnableWebSecurity
-public class UimWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    public UimProperties uimProperties;
+    public Properties properties;
 
     @Autowired
     public UimHandler uimHandler;
@@ -31,7 +32,7 @@ public class UimWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        String[] publicPaths = uimProperties.getPublicPaths();
+        String[] publicPaths = properties.getPublicPaths();
         Logger.getLogger(getClass().getName()).info("Public paths: " + Arrays.toString(publicPaths));
 
         http.authorizeRequests()
@@ -44,7 +45,7 @@ public class UimWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(((httpServletRequest, httpServletResponse, e) -> uimHandler.handleAccessDenied(httpServletRequest, httpServletResponse, e)))
         ;
 
-        if (uimProperties.isCsrfEnabled())
+        if (properties.isCsrfEnabled())
             http.csrf();
         else
             http.csrf().disable();

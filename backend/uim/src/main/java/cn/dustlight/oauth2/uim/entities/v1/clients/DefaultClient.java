@@ -7,6 +7,7 @@ import cn.dustlight.oauth2.uim.entities.v1.types.GrantType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,9 +16,10 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-public class DefaultUimClient implements UimClient {
+@Schema(name = "Client")
+public class DefaultClient implements Client {
 
-    private static final Log logger = LogFactory.getLog(DefaultUimClient.class.getName());
+    private static final Log logger = LogFactory.getLog(DefaultClient.class.getName());
 
     private String cid, secret, name, description, redirectUri, additionalInformation;
     private Date createdAt, updatedAt;

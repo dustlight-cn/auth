@@ -57,7 +57,7 @@ public class UimUserApprovalHandler extends ApprovalStoreUserApprovalHandler imp
         if (authorizationRequest.isApproved() &&
                 (scope = authorizationRequest.getScope()) != null &&
                 !scope.isEmpty()) {
-            Collection<String> authorities = mapper.listScopeAuthorities(scope);
+            Collection<String> authorities = mapper.listScopeAuthoritiesByScopeNames(scope);
             Set<GrantedAuthority> au = new HashSet<>();
             au.addAll(authorizationRequest.getAuthorities());
             au.addAll(AuthorityUtils.createAuthorityList(authorities.toArray(new String[0])));

@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.configurations;
+package cn.dustlight.oauth2.uim.configurations.security;
 
 import cn.dustlight.oauth2.uim.handlers.expression.UimUserExpressionMethods;
 import org.aopalliance.intercept.MethodInvocation;
@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecurityExpressionHandler;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class UimMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
+public class MethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {

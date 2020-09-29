@@ -1,8 +1,10 @@
 package cn.dustlight.oauth2.uim.entities.v1.roles;
 
-import java.util.Collection;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Date;
 
+@Schema(name = "Role")
 public class DefaultRole implements Role {
 
     private Long rid;
@@ -10,7 +12,7 @@ public class DefaultRole implements Role {
     private String roleDescription;
 
     @Override
-    public Long getRoleId() {
+    public Long getRid() {
         return rid;
     }
 
@@ -32,10 +34,6 @@ public class DefaultRole implements Role {
     @Override
     public Date getUpdatedAt() {
         return null;
-    }
-
-    public Long getRid() {
-        return rid;
     }
 
     public void setRid(Long rid) {

@@ -1,7 +1,10 @@
 package cn.dustlight.oauth2.uim.entities.v1.scopes;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Date;
 
+@Schema(name = "ClientScope")
 public class DefaultClientScope implements ClientScope {
 
     private Long cid, sid;

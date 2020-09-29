@@ -36,7 +36,7 @@ public interface AuthorityMapper {
             "<foreach collection='authorities' item='authority' separator=','>" +
             "(#{authority.aid},#{authority.authorityName},#{authority.authorityDescription})" +
             "</foreach> ON DUPLICATE KEY UPDATE authorityName=VALUES(authorityName),authorityDescription=VALUES(authorityDescription)</script>")
-    boolean insertAuthorities(Collection<Authority> authorities);
+    boolean insertAuthorities(Collection<? extends Authority> authorities);
 
     @Delete("DELETE FROM authorities WHERE aid=#{aid}")
     boolean deleteAuthority(Long aid);
@@ -54,6 +54,16 @@ public interface AuthorityMapper {
             "WHERE ra.rid=#{rid} AND ra.aid=a.aid")
     Collection<String> listRoleAuthorities(Long rid);
 
+    @Insert("<script>INSERT IGNORE INTO role_authority (rid,aid) VALUES " +
+            "<foreach collection='aids' item='aid' separator=','>" +
+            "(#{rid},#{aid})</foreach></script>")
+    boolean insertRoleAuthorities(Long rid, Collection<Long> aids);
+
+    @Delete("<script>DELETE FROM role_authority WHERE rid=#{rid} AND aid IN " +
+            "<foreach collection='aids' item='aid' open='(' separator=',' close=')'>" +
+            "#{aid}</foreach></script>")
+    boolean deleteRoleAuthorities(Long rid, Collection<Long> aids);
+
     /* ------------------------------------------------------------------------------------------------ */
 
     /* ScopeAuthority */
@@ -62,7 +72,21 @@ public interface AuthorityMapper {
             "(SELECT sid FROM scopes WHERE name IN " +
             "<foreach collection='scopeNames' item='scopeName' separator=',' open='(' close=')'>#{scopeName}</foreach>" +
             ")</script>")
-    Collection<String> listScopeAuthorities(Collection<String> scopeNames);
+    Collection<String> listScopeAuthoritiesByScopeNames(Collection<String> scopeNames);
+
+    @Select("SELECT authorityName FROM scope_authority AS sa,authorities AS a " +
+            "WHERE sa.sid=#{sid} AND sa.aid=a.aid")
+    Collection<String> listScopeAuthorities(Long sid);
+
+    @Insert("<script>INSERT IGNORE INTO scope_authority (sid,aid) VALUES " +
+            "<foreach collection='aids' item='aid' separator=','>" +
+            "(#{sid},#{aid})</foreach></script>")
+    boolean insertScopeAuthorities(Long sid, Collection<Long> aids);
+
+    @Delete("<script>DELETE FROM scope_authority WHERE sid=#{sid} AND aid IN " +
+            "<foreach collection='aids' item='aid' open='(' separator=',' close=')'>" +
+            "#{aid}</foreach></script>")
+    boolean deleteScopeAuthorities(Long sid, Collection<Long> aids);
 
     /* ------------------------------------------------------------------------------------------------ */
 

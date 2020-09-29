@@ -16,7 +16,7 @@ import java.util.Date;
 /**
  * 用户详情
  */
-public interface UimUser extends UserDetails {
+public interface User extends UserDetails {
 
     /**
      * 获取用户UID

@@ -1,26 +1,15 @@
 package cn.dustlight.oauth2.uim.configurations;
 
-import cn.dustlight.generator.UniqueGenerator;
 import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
 import cn.dustlight.oauth2.uim.handlers.DefaultUimHandler;
 import cn.dustlight.oauth2.uim.handlers.UimHandler;
 import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
 import cn.dustlight.oauth2.uim.handlers.code.DefaultVerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.oauth2.uim.handlers.email.EmailCodeSender;
 import cn.dustlight.oauth2.uim.handlers.email.EmailSenderHandler;
 import cn.dustlight.oauth2.uim.mappers.AuthorityMapper;
-import cn.dustlight.oauth2.uim.mappers.ClientMapper;
-import cn.dustlight.oauth2.uim.mappers.RoleMapper;
-import cn.dustlight.oauth2.uim.mappers.UserMapper;
-import cn.dustlight.oauth2.uim.services.clients.DefaultClientService;
-import cn.dustlight.oauth2.uim.services.clients.ClientService;
-import cn.dustlight.oauth2.uim.services.code.RedisAuthorizationCodeService;
-import cn.dustlight.oauth2.uim.services.code.RedisVerificationCodeStoreService;
-import cn.dustlight.oauth2.uim.services.code.VerificationCodeStoreService;
-import cn.dustlight.oauth2.uim.services.users.DefaultUserService;
-import cn.dustlight.oauth2.uim.services.users.UserService;
 import cn.dustlight.validator.annotations.EnableValidator;
 import cn.dustlight.validator.generator.RandomStringCodeGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,7 +23,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,7 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
-import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -55,12 +42,12 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-@EnableConfigurationProperties(UimProperties.class)
+@EnableConfigurationProperties(Properties.class)
 @EnableValidator
 @EnableTransactionManagement
 @EnableRedisHttpSession
 @OpenAPIDefinition(info = @Info(title = "统一身份管理 (UIM)", description = "主要包含用户管理，OAuth2应用管理等服务。", version = "1.0"))
-public class UimConfiguration {
+public class ComponentConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
@@ -70,7 +57,7 @@ public class UimConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SnowflakeIdGenerator snowflakeIdGenerator(@Autowired UimProperties properties) throws SocketException {
+    public SnowflakeIdGenerator snowflakeIdGenerator(@Autowired Properties properties) throws SocketException {
         long machineId, dataCenterId;
         if (properties.getSnowflake().getMachineId() == null) {
             StringBuilder sb = new StringBuilder();
@@ -157,18 +144,6 @@ public class UimConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public AuthorizationCodeServices authorizationCodeServices(@Autowired RedisTemplate<String, Object> redisTemplate) {
-        return new RedisAuthorizationCodeService(redisTemplate);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public VerificationCodeStoreService verificationCodeStoreService(@Autowired StringRedisTemplate redisTemplate) {
-        return new RedisVerificationCodeStoreService(redisTemplate);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
     @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
     public Authentication authentication() {
         return SecurityContextHolder.getContext().getAuthentication();
@@ -177,21 +152,12 @@ public class UimConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
-    public UimUser userDetails() {
+    public User userDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == null ||
-                !(authentication.getPrincipal() instanceof UimUser))
+                !(authentication.getPrincipal() instanceof User))
             return null;
-        return (UimUser) authentication.getPrincipal();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public UserService uimUserDetailsService(@Autowired UserMapper userMapper,
-                                             @Autowired RoleMapper roleMapper,
-                                             @Autowired PasswordEncoder passwordEncoder,
-                                             @Autowired UniqueGenerator<Long> idGenerator) {
-        return new DefaultUserService(userMapper, roleMapper, passwordEncoder, idGenerator);
+        return (User) authentication.getPrincipal();
     }
 
     @Bean
@@ -206,11 +172,5 @@ public class UimConfiguration {
     public EmailCodeSender emailCodeSender(@Autowired EmailSenderHandler sender) {
         EmailCodeSender codeSender = new EmailCodeSender(sender);
         return codeSender;
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ClientService uimClientDetailsService(@Autowired ClientMapper mapper) {
-        return new DefaultClientService(mapper);
     }
 }

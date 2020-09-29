@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * 用户公开信息
  */
-public interface PublicUimUser extends UimUser {
+public interface PublicUser extends User {
 
     @JsonIgnore
     @Override

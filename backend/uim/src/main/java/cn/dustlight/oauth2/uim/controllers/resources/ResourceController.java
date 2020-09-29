@@ -1,7 +1,7 @@
 package cn.dustlight.oauth2.uim.controllers.resources;
 
 import cn.dustlight.oauth2.uim.Constants;
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +15,6 @@ public interface ResourceController {
     @Operation(summary = "获取当前用户身份")
     @GetMapping("/user")
     @PreAuthorize("hasAuthority('READ_USER') and #oauth2.clientHasRole('READ_USER')")
-    UimUser getUser();
+    User getUser();
 
 }

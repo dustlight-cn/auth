@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.handlers.expression;
 
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import org.springframework.security.core.Authentication;
 
 /**
@@ -21,7 +21,7 @@ public class UimUserExpressionMethods {
      * @return
      */
     public boolean matchUid(Long uid) {
-        UimUser user = obtainUser();
+        User user = obtainUser();
         if (user == null)
             return false;
         return user.getUid().equals(uid);
@@ -34,16 +34,16 @@ public class UimUserExpressionMethods {
      * @return
      */
     public boolean matchUsername(String username) {
-        UimUser user = obtainUser();
+        User user = obtainUser();
         if (user == null)
             return false;
         return user.getUsername().equals(username);
     }
 
-    private UimUser obtainUser() {
+    private User obtainUser() {
         if (this.authentication == null || authentication.getPrincipal() == null ||
-                !(this.authentication.getPrincipal() instanceof UimUser))
+                !(this.authentication.getPrincipal() instanceof User))
             return null;
-        return (UimUser) this.authentication.getPrincipal();
+        return (User) this.authentication.getPrincipal();
     }
 }

@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.controllers.oauth;
 
-import cn.dustlight.oauth2.uim.entities.v1.clients.UimClient;
+import cn.dustlight.oauth2.uim.entities.v1.clients.Client;
 import cn.dustlight.oauth2.uim.entities.v1.scopes.ClientScope;
 import cn.dustlight.oauth2.uim.services.clients.ClientService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,7 +49,7 @@ public class OAuth2Controller {
         ModelAndView mv = endpoint.authorize(model, parameters, sessionStatus, principal);
 
         String clientId = parameters.get("client_id");
-        UimClient client = (UimClient) clientDetailsService.loadClientByClientId(clientId);
+        Client client = (Client) clientDetailsService.loadClientByClientId(clientId);
         String username = principal.getName();
 
         data.put("clientName", client.getClientName());

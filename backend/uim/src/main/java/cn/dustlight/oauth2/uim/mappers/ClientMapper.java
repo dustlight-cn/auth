@@ -1,6 +1,6 @@
 package cn.dustlight.oauth2.uim.mappers;
 
-import cn.dustlight.oauth2.uim.entities.v1.clients.DefaultUimClient;
+import cn.dustlight.oauth2.uim.entities.v1.clients.DefaultClient;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +14,5 @@ public interface ClientMapper {
             @Result(column = "cid", property = "types", many = @Many(select = "cn.dustlight.oauth2.uim.mappers.GrantTypeMapper.listClientGrantTypes")),
             @Result(column = "cid", property = "scopes", many = @Many(select = "cn.dustlight.oauth2.uim.mappers.ScopeMapper.listClientScopes"))
     })
-    DefaultUimClient loadClient(String clientId);
+    DefaultClient loadClient(String clientId);
 }

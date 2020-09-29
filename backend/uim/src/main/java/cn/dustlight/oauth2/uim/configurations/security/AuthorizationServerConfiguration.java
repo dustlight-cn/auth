@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.configurations;
+package cn.dustlight.oauth2.uim.configurations.security;
 
 import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
 import cn.dustlight.oauth2.uim.handlers.convert.UimAccessTokenConverter;

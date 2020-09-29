@@ -1,5 +1,6 @@
-package cn.dustlight.oauth2.uim.configurations;
+package cn.dustlight.oauth2.uim.configurations.security;
 
+import cn.dustlight.oauth2.uim.configurations.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -13,7 +14,7 @@ import java.util.logging.Logger;
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
     @Autowired
-    private UimProperties properties;
+    private Properties properties;
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {

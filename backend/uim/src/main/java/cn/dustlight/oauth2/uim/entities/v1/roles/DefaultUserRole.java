@@ -1,8 +1,11 @@
 package cn.dustlight.oauth2.uim.entities.v1.roles;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Collection;
 import java.util.Date;
 
+@Schema(name = "UserRole")
 public class DefaultUserRole implements UserRole {
 
     private Long rid;
@@ -12,7 +15,7 @@ public class DefaultUserRole implements UserRole {
     private Collection<String> authorities;
 
     @Override
-    public Long getRoleId() {
+    public Long getRid() {
         return rid;
     }
 
@@ -49,10 +52,6 @@ public class DefaultUserRole implements UserRole {
     @Override
     public boolean isExpired() {
         return expiredAt == null ? false : expiredAt.before(new Date());
-    }
-
-    public Long getRid() {
-        return rid;
     }
 
     public void setRid(Long rid) {

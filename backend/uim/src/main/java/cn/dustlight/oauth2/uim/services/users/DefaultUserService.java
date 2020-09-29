@@ -4,8 +4,8 @@ import cn.dustlight.generator.UniqueGenerator;
 import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.results.IntQueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
-import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUimUser;
-import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUser;
 import cn.dustlight.oauth2.uim.mappers.RoleMapper;
 import cn.dustlight.oauth2.uim.mappers.UserMapper;
 import cn.dustlight.oauth2.uim.utils.OrderBySqlBuilder;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.Date;
 
-public class DefaultUserService implements UserService<DefaultUimUser, DefaultPublicUimUser> {
+public class DefaultUserService implements UserService<DefaultUser, DefaultPublicUser> {
 
     private UserMapper userMapper;
     private RoleMapper roleMapper;
@@ -44,8 +44,8 @@ public class DefaultUserService implements UserService<DefaultUimUser, DefaultPu
     }
 
     @Override
-    public DefaultUimUser loadUserByUsername(String s) {
-        DefaultUimUser u = userMapper.selectUserByUsernameOrEmail(s);
+    public DefaultUser loadUserByUsername(String s) {
+        DefaultUser u = userMapper.selectUserByUsernameOrEmail(s);
         if (u == null)
             throw new UsernameNotFoundException("user not found");
         return u;
@@ -70,44 +70,44 @@ public class DefaultUserService implements UserService<DefaultUimUser, DefaultPu
     }
 
     @Override
-    public DefaultUimUser loadUser(Long uid) {
+    public DefaultUser loadUser(Long uid) {
         return userMapper.selectUser(uid);
     }
 
     @Override
-    public Collection<DefaultPublicUimUser> loadPublicUserByUid(Collection<Long> uidArray) {
+    public Collection<DefaultPublicUser> loadPublicUserByUid(Collection<Long> uidArray) {
         return userMapper.selectUsersPublic(uidArray);
     }
 
     @Override
-    public Collection<DefaultUimUser> loadUsersByUsername(Collection<String> usernames) {
+    public Collection<DefaultUser> loadUsersByUsername(Collection<String> usernames) {
         return userMapper.selectUsersByUsername(usernames);
     }
 
     @Override
-    public Collection<DefaultUimUser> loadUsers(Collection<Long> uids) {
+    public Collection<DefaultUser> loadUsers(Collection<Long> uids) {
         return userMapper.selectUsersByUid(uids);
     }
 
     @Override
-    public IntQueryResults<DefaultUimUser> listUsers(Collection<String> orderBy, Integer offset, Integer limit) {
-        IntQueryResults<DefaultUimUser> result = new IntQueryResults<>();
+    public IntQueryResults<DefaultUser> listUsers(Collection<String> orderBy, Integer offset, Integer limit) {
+        IntQueryResults<DefaultUser> result = new IntQueryResults<>();
         result.setData(userMapper.listUsers(orderBySqlBuilder.build(orderBy), offset, limit));
         result.setCount(userMapper.count());
         return result;
     }
 
     @Override
-    public IntQueryResults<DefaultUimUser> searchUsers(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
-        IntQueryResults<DefaultUimUser> result = new IntQueryResults<>();
+    public IntQueryResults<DefaultUser> searchUsers(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
+        IntQueryResults<DefaultUser> result = new IntQueryResults<>();
         result.setData(userMapper.searchUsers(keywords, orderBySqlBuilder.build(orderBy), offset, limit));
         result.setCount(userMapper.countSearch(keywords));
         return result;
     }
 
     @Override
-    public IntQueryResults<DefaultPublicUimUser> searchPublicUsers(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
-        IntQueryResults<DefaultPublicUimUser> result = new IntQueryResults<>();
+    public IntQueryResults<DefaultPublicUser> searchPublicUsers(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
+        IntQueryResults<DefaultPublicUser> result = new IntQueryResults<>();
         result.setData(userMapper.searchPublicUsers(keywords, orderBySqlBuilder.build(orderBy), offset, limit));
         result.setCount(userMapper.countSearch(keywords));
         return result;

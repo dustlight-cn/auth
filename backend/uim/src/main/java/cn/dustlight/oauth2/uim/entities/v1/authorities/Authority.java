@@ -1,5 +1,8 @@
 package cn.dustlight.oauth2.uim.entities.v1.authorities;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,6 +16,7 @@ public interface Authority extends Serializable {
      *
      * @return
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     Long getAid();
 
     /**

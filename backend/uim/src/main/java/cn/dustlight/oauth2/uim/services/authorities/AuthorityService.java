@@ -22,7 +22,7 @@ public interface AuthorityService {
      * @param aids 权限id集合
      * @return
      */
-    Collection<? extends Authority> selectAuthorities(Collection<Long> aids);
+    Collection<? extends Authority> getAuthorities(Collection<Long> aids);
 
     /**
      * 获取权限
@@ -30,7 +30,7 @@ public interface AuthorityService {
      * @param aid 权限id
      * @return
      */
-    Authority selectAuthority(Long aid);
+    Authority getAuthority(Long aid);
 
     /**
      * 插入权限
@@ -38,26 +38,26 @@ public interface AuthorityService {
      * @param name        权限名
      * @param description 权限描述
      */
-    void insertAuthority(String name, String description);
+    void createAuthority(String name, String description);
 
     /**
      * 插入权限
      *
      * @param authorities 权限信息集合
      */
-    void insertAuthorities(Collection<Authority> authorities);
+    void createAuthorities(Collection<? extends Authority> authorities);
 
     /**
      * 删除权限
      *
      * @param aid 权限id
      */
-    void deleteAuthority(Long aid);
+    void removeAuthority(Long aid);
 
     /**
      * 删除权限
      *
      * @param aids 权限id集合
      */
-    void deleteAuthorities(Collection<Long> aids);
+    void removeAuthorities(Collection<Long> aids);
 }

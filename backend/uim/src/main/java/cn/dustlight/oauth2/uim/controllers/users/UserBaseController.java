@@ -1,7 +1,7 @@
 package cn.dustlight.oauth2.uim.controllers.users;
 
 import cn.dustlight.oauth2.uim.Constants;
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.validator.annotations.CodeParam;
 import cn.dustlight.validator.annotations.CodeValue;
 import cn.dustlight.validator.annotations.VerifyCode;
@@ -26,7 +26,7 @@ public interface UserBaseController {
     @Operation(summary = "获取登录用户信息", description = "获取当前会话信息")
     @GetMapping("session")
     @PreAuthorize("isAuthenticated()")
-    UimUser getSession();
+    User getSession();
 
     /**
      * 创建会话（登入）
@@ -54,7 +54,7 @@ public interface UserBaseController {
      */
     @Operation(summary = "获取用户信息")
     @GetMapping("user/{uid}")
-    UimUser getUser(@PathVariable Long uid);
+    User getUser(@PathVariable Long uid);
 
     /**
      * 创建用户

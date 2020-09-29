@@ -3,7 +3,7 @@ package cn.dustlight.oauth2.uim.configurations;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "dustlight.uim")
-public class UimProperties {
+public class Properties {
 
     private String[] publicPaths = {};
     private String[] resourcePaths = {};

@@ -2,8 +2,8 @@ package cn.dustlight.oauth2.uim.services.users;
 
 import cn.dustlight.oauth2.uim.entities.results.IntQueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
-import cn.dustlight.oauth2.uim.entities.v1.users.PublicUimUser;
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.PublicUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ import java.util.Date;
  * @param <T> 用户信息实体
  * @param <V> 用户公开信息实体
  */
-public interface UserService<T extends UimUser, V extends PublicUimUser> extends UserDetailsService {
+public interface UserService<T extends User, V extends PublicUser> extends UserDetailsService {
     /**
      * 创建用户
      *

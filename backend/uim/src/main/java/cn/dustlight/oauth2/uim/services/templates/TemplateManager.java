@@ -1,7 +1,7 @@
 package cn.dustlight.oauth2.uim.services.templates;
 
 import cn.dustlight.generator.UniqueGenerator;
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.oauth2.uim.mappers.TemplateMapper;
 import cn.dustlight.sender.core.Template;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class TemplateManager implements cn.dustlight.sender.core.TemplateManager
     protected UniqueGenerator<Long> snowflake;
 
     @Autowired
-    UimUser user;
+    User user;
 
     @Override
     public Collection<String> getNames() throws IOException {

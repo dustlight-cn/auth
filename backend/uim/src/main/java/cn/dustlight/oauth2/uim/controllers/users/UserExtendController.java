@@ -2,7 +2,7 @@ package cn.dustlight.oauth2.uim.controllers.users;
 
 import cn.dustlight.oauth2.uim.Constants;
 import cn.dustlight.oauth2.uim.entities.results.QueryResults;
-import cn.dustlight.oauth2.uim.entities.v1.users.UimUser;
+import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.validator.annotations.CodeParam;
 import cn.dustlight.validator.annotations.CodeValue;
 import cn.dustlight.validator.annotations.VerifyCode;
@@ -26,9 +26,9 @@ public interface UserExtendController {
 
     @Operation(summary = "查找用户")
     @GetMapping("users")
-    QueryResults<? extends UimUser, ? extends Number> getUsers(@RequestParam(required = false, value = "q") String query,
-                                                               @RequestParam Integer offset, @RequestParam Integer limit,
-                                                               @RequestParam(required = false) Collection<String> order);
+    QueryResults<? extends User, ? extends Number> getUsers(@RequestParam(required = false, value = "q") String query,
+                                                            @RequestParam Integer offset, @RequestParam Integer limit,
+                                                            @RequestParam(required = false) Collection<String> order);
 
     /**
      * 更新用户密码

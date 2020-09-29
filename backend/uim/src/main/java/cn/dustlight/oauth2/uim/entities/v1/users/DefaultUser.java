@@ -1,6 +1,7 @@
 package cn.dustlight.oauth2.uim.entities.v1.users;
 
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
@@ -11,7 +12,8 @@ import java.util.LinkedHashSet;
 /**
  * 默认用户详情实体
  */
-public class DefaultUimUser implements UimUser {
+@Schema(name = "User")
+public class DefaultUser implements User {
 
     private Long uid;
     private String username;

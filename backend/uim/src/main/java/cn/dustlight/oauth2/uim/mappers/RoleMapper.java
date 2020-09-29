@@ -37,7 +37,7 @@ public interface RoleMapper {
             "<foreach collection='roles' item='role' separator=','>" +
             "(#{role.rid},#{role.roleName},#{role.roleDescription})" +
             "</foreach> ON DUPLICATE KEY UPDATE roleName=VALUES(roleName),roleDescription=VALUES(roleDescription)</script>")
-    boolean insertRoles(Collection<Role> roles);
+    boolean insertRoles(Collection<? extends Role> roles);
 
     @Delete("DELETE FROM roles WHERE rid=#{rid}")
     boolean deleteRole(Long rid);

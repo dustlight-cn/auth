@@ -1,7 +1,10 @@
 package cn.dustlight.oauth2.uim.entities.v1.authorities;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Date;
 
+@Schema(name = "Authority")
 public class DefaultAuthority implements Authority {
 
     private Long aid;
