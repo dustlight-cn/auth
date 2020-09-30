@@ -15,6 +15,7 @@ import java.util.Collection;
 @Service
 @Mapper
 public interface ScopeMapper {
+
     /* ----------------------------------------------------------------------------------------------------- */
 
     /* Scope */
@@ -22,7 +23,7 @@ public interface ScopeMapper {
     @Select("SELECT * FROM scopes")
     Collection<DefaultScope> listScopes();
 
-    @Select("SELECT * FROM scopes WHERE sid=#{sid}")
+    @Select("SELECT * FROM scopes WHERE sid=#{sid} LIMIT 1")
     DefaultScope selectScope(Long sid);
 
     @Select("<script>SELECT * FROM scopes WHERE sid IN " +
@@ -59,22 +60,22 @@ public interface ScopeMapper {
     @Select("SELECT scopes.name FROM scopes,client_scope WHERE client_scope.cid=#{cid} AND client_scopes.sid=scopes.sid")
     Collection<String> listClientScopeNames(String cid);
 
-    @Select("SELECT scopes.sid FROM scopes,client_scope WHERE client_scope.cid=#{cid} AND client_scopes.sid=scopes.sid")
+    @Select("SELECT sid FROM client_scope WHERE cid=#{cid}")
     Collection<Long> listClientScopeIds(String cid);
 
-    @Insert("<script>INSERT INTO scopes (cid,sid,autoApprove) VALUES " +
+    @Insert("<script>INSERT INTO client_scope (cid,sid,autoApprove) VALUES " +
             "<foreach collection='sids' item='sid' separator=','>" +
             "(#{cid},#{sid},#{autoApprove})" +
             "</foreach> ON DUPLICATE KEY UPDATE autoApprove=VALUES(autoApprove)</script>")
     boolean insertClientScopeByScopeIds(String cid, Collection<Long> sids, boolean autoApprove);
 
-    @Insert("<script>INSERT INTO scopes (cid,sid,autoApprove) VALUES " +
+    @Insert("<script>INSERT INTO client_scope (cid,sid,autoApprove) VALUES " +
             "<foreach collection='scopes' item='scope' separator=','>" +
             "(#{scope.cid},#{scope.sid},#{scope.autoApprove})" +
             "</foreach> ON DUPLICATE KEY UPDATE autoApprove=VALUES(autoApprove)</script>")
     boolean insertClientScopes(Collection<? extends ClientScope> scopes);
 
-    @Delete("<script>DELETE FROM scopes WHERE cid=#{cid} AND sid IN " +
+    @Delete("<script>DELETE FROM client_scope WHERE cid=#{cid} AND sid IN " +
             "<foreach collection='sids' item='sid' open='(' separator=',' close=')'>" +
             "#{sid}</foreach></script>")
     boolean deleteClientScopes(String cid, Collection<Long> sids);

@@ -1,14 +1,16 @@
 package cn.dustlight.oauth2.uim.configurations;
 
+import cn.dustlight.generator.Generator;
+import cn.dustlight.generator.UniqueGenerator;
 import cn.dustlight.generator.snowflake.SnowflakeIdGenerator;
 import cn.dustlight.oauth2.uim.handlers.DefaultUimHandler;
 import cn.dustlight.oauth2.uim.handlers.UimHandler;
 import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
-import cn.dustlight.oauth2.uim.handlers.code.DefaultVerificationCodeGenerator;
-import cn.dustlight.oauth2.uim.handlers.code.VerificationCodeGenerator;
 import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.oauth2.uim.handlers.email.EmailCodeSender;
 import cn.dustlight.oauth2.uim.handlers.email.EmailSenderHandler;
+import cn.dustlight.oauth2.uim.handlers.generator.RandomStringGenerator;
+import cn.dustlight.oauth2.uim.handlers.generator.UniqueLongToStringGenerator;
 import cn.dustlight.oauth2.uim.mappers.AuthorityMapper;
 import cn.dustlight.validator.annotations.EnableValidator;
 import cn.dustlight.validator.generator.RandomStringCodeGenerator;
@@ -92,9 +94,9 @@ public class ComponentConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public VerificationCodeGenerator verificationCodeGenerator() {
-        return new DefaultVerificationCodeGenerator();
+    @ConditionalOnMissingBean(name = "randomStringGenerator")
+    public Generator<String> randomStringGenerator() {
+        return new RandomStringGenerator();
     }
 
     @Bean
@@ -165,6 +167,21 @@ public class ComponentConfiguration {
         RandomStringCodeGenerator generator = new RandomStringCodeGenerator();
         generator.setChars("1234567890".toCharArray());
         generator.setLength(6);
+        return generator;
+    }
+
+    @Bean
+    public Generator<String> clientSecretGenerator() {
+        RandomStringGenerator generator = new RandomStringGenerator();
+        generator.setChars("0123456789abcdef".toCharArray());
+        generator.setLength(40);
+        return generator;
+    }
+
+    @Bean
+    public UniqueGenerator<String> clientIdGenerator(@Autowired UniqueGenerator<Long> longUniqueGenerator) {
+        UniqueLongToStringGenerator generator = new UniqueLongToStringGenerator(longUniqueGenerator);
+        generator.setHex("0123456789abcdef".toCharArray());
         return generator;
     }
 

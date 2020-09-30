@@ -1,5 +1,6 @@
 package cn.dustlight.oauth2.uim.configurations;
 
+import cn.dustlight.generator.Generator;
 import cn.dustlight.generator.UniqueGenerator;
 import cn.dustlight.oauth2.uim.mappers.*;
 import cn.dustlight.oauth2.uim.services.authorities.AuthorityService;
@@ -48,8 +49,12 @@ public class ServicesConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ClientService clientService(@Autowired ClientMapper mapper) {
-        return new DefaultClientService(mapper);
+    public ClientService clientService(@Autowired ClientMapper mapper,
+                                       @Autowired ScopeMapper scopeMapper,
+                                       @Autowired GrantTypeMapper grantTypeMapper,
+                                       @Autowired UniqueGenerator<String> clientIdGenerator,
+                                       @Autowired Generator<String> clientSecretGenerator) {
+        return new DefaultClientService(mapper, scopeMapper, grantTypeMapper, clientIdGenerator, clientSecretGenerator);
     }
 
     @Bean

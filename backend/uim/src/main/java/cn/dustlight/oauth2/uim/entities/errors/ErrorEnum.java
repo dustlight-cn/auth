@@ -22,28 +22,36 @@ public enum ErrorEnum {
     RESOURCE_NOT_FOUND(2000, "resource not found"),
     EMAIL_NOT_FOUND(2001, "email not found"),
     USER_NOT_FOUND(2002, "user not found"),
+    CLIENT_NOT_FOUND(2003, "client not found"),
 
     RESOURCE_EXISTS(3000, "resource already exists"),
     EMAIL_EXISTS(3001, "email already exists"),
-    USER_EXISTS(3001, "user already exists"),
+    USER_EXISTS(3002, "user already exists"),
+    CLIENT_EXISTS(3003, "client already exists"),
 
     CREATE_RESOURCE_FAIL(4000, "fail to create resource"),
     CREATE_USER_FAIL(4001, "fail to create user"),
     CREATE_ROLE_FAIL(4002, "fail to create role"),
     CREATE_AUTHORITY_FAIL(4003, "fail to create authority"),
     CREATE_SCOPE_FAIL(4004, "fail to create scope"),
+    CREATE_CLIENT_FAIL(4005, "fail to create client"),
+    CREATE_GRANT_TYPE_FAIL(4006, "fail to create grant type"),
 
     UPDATE_RESOURCE_FAIL(5000, "fail to update resource"),
     UPDATE_USER_FAIL(5001, "fail to update user"),
     UPDATE_ROLE_FAIL(5002, "fail to update role"),
     UPDATE_AUTHORITY_FAIL(5003, "fail to update authority"),
     UPDATE_SCOPE_FAIL(5004, "fail to update scope"),
+    UPDATE_CLIENT_FAIL(5005, "fail to update client"),
+    UPDATE_GRANT_TYPE_FAIL(5006, "fail to update grant type"),
 
     DELETE_RESOURCE_FAIL(6000, "fail to delete resource"),
     DELETE_USER_FAIL(6001, "fail to delete user"),
     DELETE_ROLE_FAIL(6002, "fail to delete role"),
     DELETE_AUTHORITY_FAIL(6003, "fail to delete authority"),
-    DELETE_SCOPE_FAIL(6004, "fail to delete scope");
+    DELETE_SCOPE_FAIL(6004, "fail to delete scope"),
+    DELETE_CLIENT_FAIL(6005, "fail to delete client"),
+    DELETE_GRANT_TYPE_FAIL(6006, "fail to delete grant type");
 
     private ErrorDetails details;
 

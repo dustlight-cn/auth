@@ -26,7 +26,7 @@ public interface RoleMapper {
             "#{rid}</foreach></script>")
     Collection<DefaultRole> selectRoles(Collection<Long> rids);
 
-    @Select("SELECT * FROM roles WHERE rid=#{rid}")
+    @Select("SELECT * FROM roles WHERE rid=#{rid} LIMIT 1")
     DefaultRole selectRole(Long rid);
 
     @Insert("INSERT INTO roles (rid,roleName,roleDescription) VALUES (#{rid},#{roleName},#{roleDescription}) " +

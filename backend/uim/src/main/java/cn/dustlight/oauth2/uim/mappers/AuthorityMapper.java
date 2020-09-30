@@ -20,7 +20,7 @@ public interface AuthorityMapper {
     @Select("SELECT * FROM authorities")
     Collection<DefaultAuthority> listAuthorities();
 
-    @Select("SELECT * FROM authorities WHERE aid=#{aid}")
+    @Select("SELECT * FROM authorities WHERE aid=#{aid} LIMIT 1")
     DefaultAuthority selectAuthority(Long aid);
 
     @Select("<script>SELECT * FROM authorities WHERE aid IN " +

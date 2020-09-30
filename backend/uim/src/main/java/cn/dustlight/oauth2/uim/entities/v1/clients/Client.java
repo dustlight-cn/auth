@@ -1,6 +1,7 @@
 package cn.dustlight.oauth2.uim.entities.v1.clients;
 
 import cn.dustlight.oauth2.uim.entities.v1.scopes.ClientScope;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -24,4 +25,16 @@ public interface Client extends ClientDetails {
     Date getUpdatedAt();
 
     Collection<ClientScope> getScopes();
+
+    @JsonIgnore
+    @Override
+    boolean isAutoApprove(String s);
+
+    @JsonIgnore
+    @Override
+    boolean isScoped();
+
+    @JsonIgnore
+    @Override
+    boolean isSecretRequired();
 }

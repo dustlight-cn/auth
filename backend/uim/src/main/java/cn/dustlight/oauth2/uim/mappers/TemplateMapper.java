@@ -14,7 +14,7 @@ public interface TemplateMapper {
     @Select("SELECT name FROM templates")
     Collection<String> getTemplatesName();
 
-    @Select("SELECT * FROM templates where name=#{name}")
+    @Select("SELECT * FROM templates where name=#{name} LIMIT 1")
     Template getTemplate(String name);
 
     @Insert("INSERT INTO templates (name,uid,title,content) VALUES (#{name},#{uid},#{title},#{content}) ON DUPLICATE KEY UPDATE uid=#{uid},title=#{title},content=#{content}")

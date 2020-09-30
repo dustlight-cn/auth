@@ -14,13 +14,14 @@ import java.util.Collection;
 @Mapper
 public interface GrantTypeMapper {
 
+    /* ----------------------------------------------------------------------------------------------------- */
+
+    /* GrantType */
+
     @Select("SELECT * FROM types")
     Collection<DefaultGrantType> listGrantTypes();
 
-    @Select("SELECT types.* FROM types,client_type WHERE client_type.cid=#{cid} AND client_type.tid=types.tid")
-    Collection<DefaultGrantType> listClientGrantTypes(String cid);
-
-    @Select("SELECT * FROM types WHERE tid=#{tid}")
+    @Select("SELECT * FROM types WHERE tid=#{tid} LIMIT 1")
     DefaultGrantType selectGrantType(Long tid);
 
     @Select("<script>SELECT * FROM types WHERE tid IN " +
@@ -36,7 +37,7 @@ public interface GrantTypeMapper {
             "<foreach collection='types' item='type' separator=','>" +
             "(#{type.tid},#{type.name},#{type.description})" +
             "</foreach> ON DUPLICATE KEY UPDATE name=VALUES(name),description=VALUES(description)</script>")
-    boolean insertTypes(Collection<GrantType> types);
+    boolean insertTypes(Collection<? extends GrantType> types);
 
     @Delete("DELETE FROM types WHERE tid=#{tid}")
     boolean deleteType(Long tid);
@@ -45,4 +46,24 @@ public interface GrantTypeMapper {
             "<foreach collection='tids' item='tid' open='(' separator=',' close=')'>" +
             "#{tid}</foreach></script>")
     boolean deleteTypes(Collection<Long> tids);
+
+    /* ----------------------------------------------------------------------------------------------------- */
+
+    /* ClientGrantType */
+
+    @Select("SELECT types.* FROM types,client_type WHERE client_type.cid=#{cid} AND client_type.tid=types.tid")
+    Collection<DefaultGrantType> listClientGrantTypes(String cid);
+
+    @Insert("<script>INSERT IGNORE INTO client_type (cid,tid) VALUES " +
+            "<foreach collection='tids' item='tid' separator=','>" +
+            "(#{cid},#{tid})</foreach></script>")
+    boolean insertClientGrantTypes(String cid, Collection<Long> tids);
+
+    @Delete("<script>DELETE FROM client_type WHERE cid=#{cid} AND tid IN " +
+            "<foreach collection='tids' item='tid' open='(' separator=',' close=')'>" +
+            "#{tid}</foreach></script>")
+    boolean deleteClientGrantTypes(String cid, Collection<Long> tids);
+
+    /* ----------------------------------------------------------------------------------------------------- */
+
 }

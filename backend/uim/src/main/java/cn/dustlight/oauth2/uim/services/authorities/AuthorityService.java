@@ -12,7 +12,7 @@ public interface AuthorityService {
     /**
      * 获取全部权限
      *
-     * @return
+     * @return 权限集合
      */
     Collection<? extends Authority> listAuthorities();
 
@@ -20,7 +20,7 @@ public interface AuthorityService {
      * 获取权限
      *
      * @param aids 权限id集合
-     * @return
+     * @return 权限集合
      */
     Collection<? extends Authority> getAuthorities(Collection<Long> aids);
 
@@ -28,12 +28,12 @@ public interface AuthorityService {
      * 获取权限
      *
      * @param aid 权限id
-     * @return
+     * @return 权限
      */
     Authority getAuthority(Long aid);
 
     /**
-     * 插入权限
+     * 创建权限
      *
      * @param name        权限名
      * @param description 权限描述
@@ -41,7 +41,7 @@ public interface AuthorityService {
     void createAuthority(String name, String description);
 
     /**
-     * 插入权限
+     * 创建权限
      *
      * @param authorities 权限信息集合
      */

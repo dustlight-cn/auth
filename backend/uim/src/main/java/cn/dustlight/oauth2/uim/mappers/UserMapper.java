@@ -25,7 +25,7 @@ public interface UserMapper {
                        Date unlockedAt,
                        boolean enabled);
 
-    @Select("SELECT * FROM users WHERE username=#{uoe} OR email=#{uoe}")
+    @Select("SELECT * FROM users WHERE username=#{uoe} OR email=#{uoe} LIMIT 1")
     @Results(id = "User", value = {
             @Result(column = "uid", property = "uid"),
             @Result(column = "uid",
@@ -34,7 +34,7 @@ public interface UserMapper {
     })
     DefaultUser selectUserByUsernameOrEmail(String uoe);
 
-    @Select("SELECT * FROM users WHERE uid=#{uid}")
+    @Select("SELECT * FROM users WHERE uid=#{uid} LIMIT 1")
     @ResultMap("User")
     DefaultUser selectUser(Long uid);
 
@@ -51,7 +51,7 @@ public interface UserMapper {
     @Select({"<script>SELECT * FROM users WHERE uid IN ",
             "<foreach collection='uids' item='uid' open='(' separator=',' close=')'>#{uid}</foreach>",
             "</script>"})
-    Collection<DefaultUser> selectUsersByUid(@Param("usernames") Collection<Long> uids);
+    Collection<DefaultUser> selectUsersByUid(@Param("uids") Collection<Long> uids);
 
     @Select("SELECT COUNT(uid) FROM users")
     int count();

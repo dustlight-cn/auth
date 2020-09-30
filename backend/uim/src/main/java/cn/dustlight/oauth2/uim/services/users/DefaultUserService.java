@@ -65,7 +65,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
             if (roles != null && roles.size() > 0 && !roleMapper.insertUserRoles(id, roles))
                 ErrorEnum.CREATE_ROLE_FAIL.details("fail to insert user roles").throwException();
         } catch (DuplicateKeyException e) {
-            ErrorEnum.USER_EXISTS.details(e.getMessage()).throwException();
+            ErrorEnum.USER_EXISTS.throwException();
         }
     }
 
