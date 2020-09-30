@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@Tag(name = "权限管理业务", description = "权限的增删改查")
+@Tag(name = "权限管理", description = "权限的增删改查。")
 @RequestMapping(value = Constants.V1.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public interface AuthorityController<T extends Authority> {
 

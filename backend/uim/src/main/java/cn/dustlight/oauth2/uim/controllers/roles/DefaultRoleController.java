@@ -2,8 +2,11 @@ package cn.dustlight.oauth2.uim.controllers.roles;
 
 import cn.dustlight.generator.UniqueGenerator;
 import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultRole;
+import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultUserRole;
 import cn.dustlight.oauth2.uim.entities.v1.roles.Role;
 import cn.dustlight.oauth2.uim.services.roles.RoleService;
+import cn.dustlight.oauth2.uim.services.users.UserService;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +17,9 @@ public class DefaultRoleController implements RoleController<DefaultRole> {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    protected UserService userService;
 
     @Autowired
     private UniqueGenerator<Long> idGenerator;
@@ -51,5 +57,20 @@ public class DefaultRoleController implements RoleController<DefaultRole> {
     @Override
     public void deleteRoleAuthorities(Long roleId, Collection<Long> authorityId) {
         roleService.removeRoleAuthorities(roleId, authorityId);
+    }
+
+    @Override
+    public Collection<String> getUserRoles(Long uid) {
+        return userService.getRoles(uid);
+    }
+
+    @Override
+    public void setUserRoles(Long uid, @RequestBody Collection<DefaultUserRole> roles) {
+        userService.addRoles(uid, roles);
+    }
+
+    @Override
+    public void deleteUserRoles(Long uid, Collection<Long> id) {
+        userService.removeRoles(uid, id);
     }
 }

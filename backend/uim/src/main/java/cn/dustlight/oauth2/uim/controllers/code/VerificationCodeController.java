@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = Constants.V1.API_ROOT)
-@Tag(name = "验证码业务",
-        description = "负责验证码相关业务。")
+@Tag(name = "验证码",
+        description = "验证码相关业务。")
 public interface VerificationCodeController {
 
     @Operation(summary = "获取图形验证码", description = "用于基础验证及邮箱验证之前。")

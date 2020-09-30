@@ -8,7 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Tag(name = "资源业务")
+@Tag(name = "资源")
 @RequestMapping(value = "/api/res", produces = Constants.ContentType.APPLICATION_JSON)
 public interface ResourceController {
 

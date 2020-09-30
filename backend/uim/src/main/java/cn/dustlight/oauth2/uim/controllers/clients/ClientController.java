@@ -41,8 +41,8 @@ public interface ClientController {
                         @RequestParam String redirectUri,
                         @RequestParam Collection<Long> scopes,
                         @RequestParam Collection<Long> grantTypes,
-                        @RequestParam Integer accessTokenValidity,
-                        @RequestParam Integer refreshTokenValidity,
-                        @RequestParam String additionalInformation,
-                        @RequestParam Integer status);
+                        @RequestParam(required = false, defaultValue = "7200") Integer accessTokenValidity,
+                        @RequestParam(required = false, defaultValue = "86400") Integer refreshTokenValidity,
+                        @RequestParam(required = false) String additionalInformation,
+                        @RequestParam(required = false, defaultValue = "0") Integer status);
 }

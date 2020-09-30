@@ -2,7 +2,6 @@ package cn.dustlight.oauth2.uim.controllers.users;
 
 import cn.dustlight.oauth2.uim.Constants;
 import cn.dustlight.oauth2.uim.entities.results.QueryResults;
-import cn.dustlight.oauth2.uim.entities.v1.roles.DefaultUserRole;
 import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.validator.annotations.CodeParam;
 import cn.dustlight.validator.annotations.CodeValue;
@@ -21,10 +20,83 @@ import java.util.Collection;
 @RestController
 @RequestMapping(value = Constants.V1.API_ROOT,
         produces = Constants.ContentType.APPLICATION_JSON)
-@Tag(name = "用户拓展业务",
-        description = "负责用户搜索、信息修改、密码更改、头像更新等业务。")
-public interface UserExtendController {
+@Tag(name = "用户及会话管理",
+        description = "包括登入登出、注册注销、信息查询更新等。")
+public interface UserController {
 
+    /**
+     * 获取当前会话信息
+     *
+     * @return
+     */
+    @Operation(summary = "获取登录用户信息", description = "获取当前会话信息")
+    @GetMapping("session")
+    @PreAuthorize("isAuthenticated()")
+    User getSession();
+
+    /**
+     * 创建会话（登入）
+     *
+     * @param login    登入账号
+     * @param password 密码
+     */
+    @Operation(summary = "登入", description = "创建会话")
+    @PostMapping("session")
+    void createSession(@RequestParam String login, @RequestParam String password);
+
+    /**
+     * 销毁会话（登出）
+     */
+    @Operation(summary = "登出", description = "销毁当前会话")
+    @DeleteMapping("session")
+    @PreAuthorize("isAuthenticated()")
+    void deleteSession();
+
+    /**
+     * 获取用户
+     *
+     * @param uid 用户id
+     * @return
+     */
+    @Operation(summary = "获取用户信息")
+    @GetMapping("user/{uid}")
+    User getUser(@PathVariable Long uid);
+
+    /**
+     * 创建用户
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @param email    邮箱（自动注入）
+     * @param code     验证码
+     */
+    @Operation(summary = "注册用户", description = "创建新用户，用户名和邮箱不可重复。")
+    @PostMapping("user")
+    @VerifyCode("registration")
+    void createUser(@RequestParam String username, @RequestParam String password,
+                    @Parameter(hidden = true) @CodeParam("registration") String email,
+                    @RequestParam @CodeValue("registration") String code);
+
+    /**
+     * 删除用户
+     *
+     * @param uid 用户id
+     */
+    @Operation(summary = "注销用户", description = "销毁用户。注意，此方法将删除用户。")
+    @DeleteMapping("user/{uid}")
+    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('DELETE_USER') or hasAuthority('DELETE_USER')")
+    void deleteUser(@PathVariable Long uid);
+
+
+    /**
+     * 查找用户
+     *
+     * @param query
+     * @param offset
+     * @param limit
+     * @param order
+     * @return
+     */
     @Operation(summary = "查找用户")
     @GetMapping("users")
     QueryResults<? extends User, ? extends Number> getUsers(@RequestParam(required = false, value = "q") String query,
@@ -97,18 +169,4 @@ public interface UserExtendController {
     @GetMapping("user/{uid}/avatar")
     void getAvatar(@PathVariable Long uid, @RequestParam(required = false) Integer size, @RequestParam(required = false) Long t);
 
-    @Operation(summary = "获取用户角色")
-    @GetMapping("user/{uid}/roles")
-    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('READ_USER') or hasAnyAuthority('READ_USER_ANY')")
-    Collection<String> getUserRoles(@PathVariable Long uid);
-
-    @Operation(summary = "修改或添加用户角色")
-    @PutMapping("user/{uid}/roles")
-    @PreAuthorize("hasAnyAuthority('GRANT_USER')")
-    void setUserRoles(@PathVariable Long uid, @org.springframework.web.bind.annotation.RequestBody Collection<DefaultUserRole> roles);
-
-    @Operation(summary = "删除用户角色")
-    @DeleteMapping("user/{uid}/roles")
-    @PreAuthorize("hasAnyAuthority('GRANT_USER')")
-    void deleteUserRoles(@PathVariable Long uid, @RequestParam Collection<Long> id);
 }
