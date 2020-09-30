@@ -29,32 +29,18 @@ public interface RoleController<T extends Role> {
     @PreAuthorize("hasAnyAuthority('DELETE_ROLE')")
     void deleteRoles(@RequestParam Collection<Long> id);
 
-    @Operation(summary = "获取角色权限")
-    @GetMapping("role/{id}/authorities")
-    Collection<String> getRoleAuthorities(@PathVariable Long id);
-
-    @Operation(summary = "修改或添加角色权限")
-    @PutMapping("role/{roleId}/authorities")
-    @PreAuthorize("hasAnyAuthority('WRITE_ROLE')")
-    void setRoleAuthorities(@PathVariable Long roleId, @RequestParam Collection<Long> authorityId);
-
-    @Operation(summary = "删除角色权限")
-    @DeleteMapping("role/{roleId}/authorities")
-    @PreAuthorize("hasAnyAuthority('WRITE_ROLE')")
-    void deleteRoleAuthorities(@PathVariable Long roleId, @RequestParam Collection<Long> authorityId);
-
     @Operation(summary = "获取用户角色")
-    @GetMapping("user/{uid}/roles")
+    @GetMapping("users/{uid}/roles")
     @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('READ_USER') or hasAnyAuthority('READ_USER_ANY')")
     Collection<String> getUserRoles(@PathVariable Long uid);
 
     @Operation(summary = "修改或添加用户角色")
-    @PutMapping("user/{uid}/roles")
-    @PreAuthorize("hasAnyAuthority('GRANT_USER')")
+    @PutMapping("users/{uid}/roles")
+    @PreAuthorize("hasAnyAuthority('WRITE_USER_ROLE')")
     void setUserRoles(@PathVariable Long uid, @org.springframework.web.bind.annotation.RequestBody Collection<DefaultUserRole> roles);
 
     @Operation(summary = "删除用户角色")
-    @DeleteMapping("user/{uid}/roles")
-    @PreAuthorize("hasAnyAuthority('GRANT_USER')")
+    @DeleteMapping("users/{uid}/roles")
+    @PreAuthorize("hasAnyAuthority('WRITE_USER_ROLE')")
     void deleteUserRoles(@PathVariable Long uid, @RequestParam Collection<Long> id);
 }

@@ -154,7 +154,7 @@ public class ComponentConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
-    public User userDetails() {
+    public User user() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == null ||
                 !(authentication.getPrincipal() instanceof User))

@@ -59,7 +59,7 @@ public interface UserController {
      * @return
      */
     @Operation(summary = "获取用户信息")
-    @GetMapping("user/{uid}")
+    @GetMapping("users/{uid}")
     User getUser(@PathVariable Long uid);
 
     /**
@@ -71,7 +71,7 @@ public interface UserController {
      * @param code     验证码
      */
     @Operation(summary = "注册用户", description = "创建新用户，用户名和邮箱不可重复。")
-    @PostMapping("user")
+    @PostMapping("users")
     @VerifyCode("registration")
     void createUser(@RequestParam String username, @RequestParam String password,
                     @Parameter(hidden = true) @CodeParam("registration") String email,
@@ -83,8 +83,8 @@ public interface UserController {
      * @param uid 用户id
      */
     @Operation(summary = "注销用户", description = "销毁用户。注意，此方法将删除用户。")
-    @DeleteMapping("user/{uid}")
-    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('DELETE_USER') or hasAuthority('DELETE_USER')")
+    @DeleteMapping("users/{uid}")
+    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('DELETE_USER') or hasAuthority('DELETE_USER_ANY')")
     void deleteUser(@PathVariable Long uid);
 
 
@@ -111,7 +111,7 @@ public interface UserController {
      * @param password 新密码
      */
     @Operation(summary = "更新用户密码")
-    @PutMapping("user/{uid}/password")
+    @PutMapping("users/{uid}/password")
     @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
     void updatePassword(@PathVariable Long uid, @RequestParam String password);
 
@@ -123,7 +123,7 @@ public interface UserController {
      * @param email 新邮箱（自动注入）
      */
     @Operation(summary = "更新用户邮箱")
-    @PutMapping("user/{uid}/email")
+    @PutMapping("users/{uid}/email")
     @VerifyCode("email")
     @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
     void updateEmail(@PathVariable Long uid,
@@ -137,7 +137,7 @@ public interface UserController {
      * @param gender 性别
      */
     @Operation(summary = "更新用户性别")
-    @PutMapping("user/{uid}/gender")
+    @PutMapping("users/{uid}/gender")
     @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
     void updateGender(@PathVariable Long uid, @RequestParam int gender);
 
@@ -154,7 +154,7 @@ public interface UserController {
                             schema = @Schema(type = "string", format = "binary")
                     )
             ))
-    @PutMapping(value = "user/{uid}/avatar", consumes = "image/*")
+    @PutMapping(value = "users/{uid}/avatar", consumes = "image/*")
     @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
     void updateAvatar(@PathVariable Long uid);
 
@@ -166,7 +166,7 @@ public interface UserController {
      * @param t    时间戳
      */
     @Operation(summary = "获取用户头像")
-    @GetMapping("user/{uid}/avatar")
+    @GetMapping("users/{uid}/avatar")
     void getAvatar(@PathVariable Long uid, @RequestParam(required = false) Integer size, @RequestParam(required = false) Long t);
 
 }

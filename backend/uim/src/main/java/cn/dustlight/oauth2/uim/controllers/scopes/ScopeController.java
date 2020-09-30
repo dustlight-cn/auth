@@ -27,18 +27,4 @@ public interface ScopeController<T extends Scope> {
     @DeleteMapping("scopes")
     @PreAuthorize("hasAnyAuthority('DELETE_SCOPE')")
     void deleteScopes(@RequestParam Collection<Long> id);
-
-    @Operation(summary = "获取授权作用域权限")
-    @GetMapping("scope/{id}/authorities")
-    Collection<String> getScopeAuthorities(@PathVariable Long id);
-
-    @Operation(summary = "修改或添加授权作用域权限")
-    @PutMapping("scope/{scopeId}/authorities")
-    @PreAuthorize("hasAnyAuthority('WRITE_SCOPE')")
-    void setScopeAuthorities(@PathVariable Long scopeId, @RequestParam Collection<Long> authorityId);
-
-    @Operation(summary = "删除授权作用域权限")
-    @DeleteMapping("scope/{scopeId}/authorities")
-    @PreAuthorize("hasAnyAuthority('WRITE_SCOPE')")
-    void deleteScopeAuthorities(@PathVariable Long scopeId, @RequestParam Collection<Long> authorityId);
 }

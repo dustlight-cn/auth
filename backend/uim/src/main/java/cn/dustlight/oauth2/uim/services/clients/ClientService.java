@@ -24,6 +24,14 @@ public interface ClientService extends ClientDetailsService {
     Client loadClientByClientId(String cid);
 
     /**
+     * 获取应用（无密码）
+     *
+     * @param cid 应用ID
+     * @return 应用（无密码）
+     */
+    Client loadClientWithoutSecret(String cid);
+
+    /**
      * 列举应用
      *
      * @param orderBy 排序

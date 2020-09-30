@@ -14,7 +14,6 @@ import cn.dustlight.oauth2.uim.mappers.GrantTypeMapper;
 import cn.dustlight.oauth2.uim.mappers.ScopeMapper;
 import cn.dustlight.oauth2.uim.utils.OrderBySqlBuilder;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +41,19 @@ public class DefaultClientService implements ClientService {
     }
 
     @Override
-    public Client loadClientByClientId(String s) throws ClientRegistrationException {
-        Client details = clientMapper.loadClient(s);
+    public Client loadClientByClientId(String cid) {
+        Client details = clientMapper.loadClient(cid);
         if (details == null)
             throw new NoSuchClientException("client not found");
+        return details;
+    }
+
+    @Override
+    public Client loadClientWithoutSecret(String cid) {
+        DefaultClient details = clientMapper.loadClient(cid);
+        if (details == null)
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        details.setClientSecret(null);
         return details;
     }
 

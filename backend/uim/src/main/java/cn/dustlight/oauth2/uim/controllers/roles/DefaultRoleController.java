@@ -45,21 +45,6 @@ public class DefaultRoleController implements RoleController<DefaultRole> {
     }
 
     @Override
-    public Collection<String> getRoleAuthorities(Long id) {
-        return roleService.listRoleAuthorities(id);
-    }
-
-    @Override
-    public void setRoleAuthorities(Long roleId, Collection<Long> authorityId) {
-        roleService.createRoleAuthorities(roleId, authorityId);
-    }
-
-    @Override
-    public void deleteRoleAuthorities(Long roleId, Collection<Long> authorityId) {
-        roleService.removeRoleAuthorities(roleId, authorityId);
-    }
-
-    @Override
     public Collection<String> getUserRoles(Long uid) {
         return userService.getRoles(uid);
     }

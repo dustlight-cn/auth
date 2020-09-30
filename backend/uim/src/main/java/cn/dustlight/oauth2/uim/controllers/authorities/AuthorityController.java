@@ -27,4 +27,33 @@ public interface AuthorityController<T extends Authority> {
     @DeleteMapping("authorities")
     @PreAuthorize("hasAnyAuthority('DELETE_AUTHORITY')")
     void deleteAuthorities(@RequestParam Collection<Long> id);
+
+    @Operation(summary = "获取授权作用域权限")
+    @GetMapping("scopes/{sid}/authorities")
+    Collection<String> getScopeAuthorities(@PathVariable("sid") Long sid);
+
+    @Operation(summary = "修改或添加授权作用域权限")
+    @PutMapping("scopes/{sid}/authorities")
+    @PreAuthorize("hasAnyAuthority('WRITE_SCOPE')")
+    void setScopeAuthorities(@PathVariable("sid") Long sid, @RequestParam Collection<Long> authorityId);
+
+    @Operation(summary = "删除授权作用域权限")
+    @DeleteMapping("scopes/{sid}/authorities")
+    @PreAuthorize("hasAnyAuthority('WRITE_SCOPE')")
+    void deleteScopeAuthorities(@PathVariable("sid") Long sid, @RequestParam Collection<Long> authorityId);
+
+    @Operation(summary = "获取角色权限")
+    @GetMapping("roles/{rid}/authorities")
+    Collection<String> getRoleAuthorities(@PathVariable("rid") Long rid);
+
+    @Operation(summary = "修改或添加角色权限")
+    @PutMapping("roles/{rid}/authorities")
+    @PreAuthorize("hasAnyAuthority('WRITE_ROLE')")
+    void setRoleAuthorities(@PathVariable("rid") Long rid, @RequestParam Collection<Long> authorityId);
+
+    @Operation(summary = "删除角色权限")
+    @DeleteMapping("roles/{rid}/authorities")
+    @PreAuthorize("hasAnyAuthority('WRITE_ROLE')")
+    void deleteRoleAuthorities(@PathVariable("rid") Long rid, @RequestParam Collection<Long> authorityId);
+
 }

@@ -37,19 +37,4 @@ public class DefaultScopeController implements ScopeController<DefaultScope> {
     public void deleteScopes(Collection<Long> id) {
         scopeService.removeScopes(id);
     }
-
-    @Override
-    public Collection<String> getScopeAuthorities(Long id) {
-        return scopeService.listScopeAuthorities(id);
-    }
-
-    @Override
-    public void setScopeAuthorities(Long scopeId, Collection<Long> authorityId) {
-        scopeService.createScopeAuthorities(scopeId, authorityId);
-    }
-
-    @Override
-    public void deleteScopeAuthorities(Long scopeId, Collection<Long> authorityId) {
-        scopeService.removeScopeAuthorities(scopeId, authorityId);
-    }
 }

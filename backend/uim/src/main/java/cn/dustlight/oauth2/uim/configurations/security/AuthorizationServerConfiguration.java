@@ -1,7 +1,7 @@
 package cn.dustlight.oauth2.uim.configurations.security;
 
 import cn.dustlight.oauth2.uim.handlers.UimUserApprovalHandler;
-import cn.dustlight.oauth2.uim.handlers.convert.UimAccessTokenConverter;
+import cn.dustlight.oauth2.uim.handlers.converters.UimAccessTokenConverter;
 import cn.dustlight.oauth2.uim.services.clients.ClientService;
 import cn.dustlight.oauth2.uim.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

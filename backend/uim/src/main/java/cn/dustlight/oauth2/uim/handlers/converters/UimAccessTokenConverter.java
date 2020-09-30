@@ -1,4 +1,4 @@
-package cn.dustlight.oauth2.uim.handlers.convert;
+package cn.dustlight.oauth2.uim.handlers.converters;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
