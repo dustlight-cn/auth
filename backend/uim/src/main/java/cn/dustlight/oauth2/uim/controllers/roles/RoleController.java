@@ -32,7 +32,7 @@ public interface RoleController<T extends Role> {
     @Operation(summary = "获取用户角色")
     @GetMapping("users/{uid}/roles")
     @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('READ_USER') or hasAnyAuthority('READ_USER_ANY')")
-    Collection<String> getUserRoles(@PathVariable Long uid);
+    Collection<? extends Role> getUserRoles(@PathVariable Long uid);
 
     @Operation(summary = "修改或添加用户角色")
     @PutMapping("users/{uid}/roles")

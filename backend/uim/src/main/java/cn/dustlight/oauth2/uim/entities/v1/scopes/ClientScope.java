@@ -9,10 +9,6 @@ public interface ClientScope extends Scope {
     @JsonIgnore
     Long getCid();
 
-    @JsonIgnore
-    @Override
-    Long getSid();
-
     boolean isAutoApprove();
 
     @JsonIgnore

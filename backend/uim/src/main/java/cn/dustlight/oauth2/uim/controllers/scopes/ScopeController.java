@@ -27,4 +27,34 @@ public interface ScopeController<T extends Scope> {
     @DeleteMapping("scopes")
     @PreAuthorize("hasAnyAuthority('DELETE_SCOPE')")
     void deleteScopes(@RequestParam Collection<Long> id);
+
+    @Operation(summary = "获取应用授权作用域")
+    @GetMapping("clients/{cid}/scopes")
+    @PreAuthorize("hasAuthority('READ_CLIENT_ANY')")
+    Collection<? extends Scope> getClientScopes(@PathVariable("cid") String cid);
+
+    @Operation(summary = "添加应用授权作用域")
+    @PutMapping("clients/{cid}/scopes")
+    @PreAuthorize("hasAuthority('WRITE_CLIENT_ANY')")
+    void addClientScopes(@PathVariable("cid") String cid, @RequestParam("sid") Collection<Long> sid);
+
+    @Operation(summary = "删除应用授权作用域")
+    @DeleteMapping("clients/{cid}/scopes")
+    @PreAuthorize("hasAuthority('WRITE_CLIENT_ANY')")
+    void removeClientScopes(@PathVariable("cid") String cid, @RequestParam("sid") Collection<Long> sid);
+
+    @Operation(summary = "获取应用授权作用域")
+    @GetMapping("users/{uid}/clients/{cid}/scopes")
+    @PreAuthorize("#user.matchUid(#uid) or hasAuthority('READ_CLIENT_ANY')")
+    Collection<? extends Scope> getUserClientScopes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid);
+
+    @Operation(summary = "添加应用授权作用域")
+    @PutMapping("users/{uid}/clients/{cid}/scopes")
+    @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('WRITE_CLIENT_ANY')")
+    void addUserClientScopes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("sid") Collection<Long> sid);
+
+    @Operation(summary = "删除应用授权作用域")
+    @DeleteMapping("users/{uid}/clients/{cid}/scopes")
+    @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('WRITE_CLIENT_ANY')")
+    void removeUserClientScopes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("sid") Collection<Long> sid);
 }

@@ -45,7 +45,7 @@ public class DefaultRoleController implements RoleController<DefaultRole> {
     }
 
     @Override
-    public Collection<String> getUserRoles(Long uid) {
+    public Collection<? extends Role> getUserRoles(Long uid) {
         return userService.getRoles(uid);
     }
 

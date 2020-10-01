@@ -4,6 +4,7 @@ import cn.dustlight.generator.UniqueGenerator;
 import cn.dustlight.oauth2.uim.Constants;
 import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.results.IntQueryResults;
+import cn.dustlight.oauth2.uim.entities.v1.roles.Role;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
 import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUser;
 import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUser;
@@ -164,8 +165,8 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     }
 
     @Override
-    public Collection<String> getRoles(Long uid) {
-        return roleMapper.listUserRoleNames(uid);
+    public Collection<? extends Role> getRoles(Long uid) {
+        return roleMapper.listUserRoles(uid);
     }
 
     @Override

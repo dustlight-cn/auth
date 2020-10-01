@@ -1,6 +1,7 @@
 package cn.dustlight.oauth2.uim.services.users;
 
 import cn.dustlight.oauth2.uim.entities.results.IntQueryResults;
+import cn.dustlight.oauth2.uim.entities.v1.roles.Role;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
 import cn.dustlight.oauth2.uim.entities.v1.users.PublicUser;
 import cn.dustlight.oauth2.uim.entities.v1.users.User;
@@ -168,7 +169,7 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      * @param uid 用户uid
      * @return
      */
-    Collection<String> getRoles(Long uid);
+    Collection<? extends Role> getRoles(Long uid);
 
     /**
      * 更新用户解锁时间
