@@ -55,7 +55,7 @@ dustlight:
     resource-paths:
       - /u/res/**
     storage:
-      base-url: https://res.dustlight.cn/
+      base-url: ${STORAGE_BASE_URL}
       prefix: uim/upload/
   storage:
     tencent:

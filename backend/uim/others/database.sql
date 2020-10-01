@@ -1,23 +1,3 @@
--- MySQL dump 10.13  Distrib 5.7.30, for Linux (x86_64)
---
--- Host: 192.168.199.218    Database: uim
--- ------------------------------------------------------
--- Server version	8.0.21
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `authorities`
---
 
 DROP TABLE IF EXISTS `authorities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -39,7 +19,7 @@ CREATE TABLE `authorities` (
 
 LOCK TABLES `authorities` WRITE;
 /*!40000 ALTER TABLE `authorities` DISABLE KEYS */;
-INSERT INTO `authorities` VALUES (0,'READ_USER','读取用户信息','2020-09-14 23:59:57','2020-09-17 16:20:43'),(1,'WRITE_USER','修改用户信息','2020-09-14 23:59:57','2020-09-17 16:20:43'),(2,'READ_USER_ANY','读取任意用户信息','2020-09-15 00:15:11','2020-09-17 16:20:43'),(3,'WRITE_USER_ANY','修改任意用户信息','2020-09-15 00:15:11','2020-09-17 16:20:43'),(4,'CREATE_USER','创建用户','2020-09-15 00:15:11','2020-09-15 00:15:11'),(5,'DELETE_USER','删除用户','2020-09-15 00:15:11','2020-09-15 00:15:11'),(6,'GRANT_USER','修改用户权限','2020-09-15 00:15:11','2020-09-15 00:15:11'),(7,'QUERY_USER','查询用户','2020-09-15 00:15:11','2020-09-15 00:15:11');
+INSERT INTO `authorities` VALUES (0,'READ_USER','读取用户','2020-09-14 23:59:57','2020-09-30 10:57:04'),(1,'WRITE_USER','修改用户','2020-09-14 23:59:57','2020-09-30 10:57:04'),(2,'READ_USER_ANY','读取任意用户','2020-09-15 00:15:11','2020-09-30 10:57:04'),(3,'WRITE_USER_ANY','修改任意用户','2020-09-15 00:15:11','2020-09-30 10:57:04'),(5,'DELETE_USER','删除用户','2020-09-15 00:15:11','2020-09-15 00:15:11'),(6,'DELETE_USER_ANY','删除任意用户','2020-09-30 10:57:04','2020-09-30 10:57:04'),(100,'WRITE_AUTHORITY','修改权限','2020-09-29 04:31:26','2020-09-29 04:31:26'),(101,'DELETE_AUTHORITY','删除权限','2020-09-29 04:31:26','2020-09-29 04:31:26'),(200,'WRITE_ROLE','修改角色','2020-09-29 05:28:48','2020-09-29 05:28:48'),(201,'DELETE_ROLE','删除角色','2020-09-29 05:28:48','2020-09-29 05:28:48'),(202,'WRITE_USER_ROLE','修改用户角色','2020-09-30 11:04:03','2020-09-30 11:04:03'),(300,'WRITE_SCOPE','修改授权作用域','2020-09-29 05:46:08','2020-09-29 05:46:08'),(301,'DELETE_SCOPE','删除授权作用域','2020-09-29 05:46:08','2020-09-29 05:46:08'),(400,'WRITE_TYPE','修改授权模式','2020-09-30 11:05:44','2020-09-30 11:05:44'),(401,'DELETE_TYPE','删除授权模式','2020-09-30 11:05:44','2020-09-30 11:05:44'),(500,'CREATE_CLIENT','创建应用','2020-09-30 11:07:51','2020-09-30 11:07:51'),(501,'WRITE_CLIENT','修改应用','2020-09-30 11:07:51','2020-09-30 11:07:51'),(503,'WRITE_CLIENT_ANY','修改任意应用','2020-09-30 11:07:51','2020-09-30 11:07:51'),(504,'DELETE_CLIENT_ANY','删除任意应用','2020-09-30 11:07:51','2020-09-30 11:07:51'),(505,'READ_CLIENT_ANY','获取任意应用','2020-09-30 11:11:05','2020-09-30 11:11:05');
 /*!40000 ALTER TABLE `authorities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +37,7 @@ CREATE TABLE `client_authority` (
   KEY `client_authority_aid_idx` (`aid`),
   CONSTRAINT `client_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authorities` (`aid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `client_authority_cid` FOREIGN KEY (`cid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,7 +63,7 @@ CREATE TABLE `client_resource` (
   KEY `client_resource_rid_idx` (`rid`),
   CONSTRAINT `client_resource_cid` FOREIGN KEY (`cid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `client_resource_rid` FOREIGN KEY (`rid`) REFERENCES `resources` (`rid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +91,7 @@ CREATE TABLE `client_scope` (
   KEY `client_scope_cid_idx` (`cid`) /*!80000 INVISIBLE */,
   CONSTRAINT `client_scope_cid` FOREIGN KEY (`cid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `client_scope_sid` FOREIGN KEY (`sid`) REFERENCES `scopes` (`sid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +100,7 @@ CREATE TABLE `client_scope` (
 
 LOCK TABLES `client_scope` WRITE;
 /*!40000 ALTER TABLE `client_scope` DISABLE KEYS */;
-INSERT INTO `client_scope` VALUES ('a',0,NULL);
+INSERT INTO `client_scope` VALUES ('70f6aae3e699000',0,0),('70f6ccea9d99000',0,0),('70fc8fe10719000',0,0),('a',0,NULL);
 /*!40000 ALTER TABLE `client_scope` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,7 +118,7 @@ CREATE TABLE `client_type` (
   KEY `client_type_tid_idx` (`tid`),
   CONSTRAINT `client_type_cid` FOREIGN KEY (`cid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `client_type_tid` FOREIGN KEY (`tid`) REFERENCES `types` (`tid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +127,7 @@ CREATE TABLE `client_type` (
 
 LOCK TABLES `client_type` WRITE;
 /*!40000 ALTER TABLE `client_type` DISABLE KEYS */;
-INSERT INTO `client_type` VALUES ('a',0),('a',1);
+INSERT INTO `client_type` VALUES ('70f6aae3e699000',0),('70f6ccea9d99000',0),('70fc8fe10719000',0),('a',0),('70f6aae3e699000',1),('70f6ccea9d99000',1),('70fc8fe10719000',1),('a',1),('70fc8fe10719000',3);
 /*!40000 ALTER TABLE `client_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -176,7 +156,7 @@ CREATE TABLE `clients` (
   KEY `client_owner_idx` (`uid`),
   FULLTEXT KEY `client_keywords` (`name`,`description`,`redirectUri`,`cid`) /*!50100 WITH PARSER `ngram` */ ,
   CONSTRAINT `client_owner` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +165,7 @@ CREATE TABLE `clients` (
 
 LOCK TABLES `clients` WRITE;
 /*!40000 ALTER TABLE `clients` DISABLE KEYS */;
-INSERT INTO `clients` VALUES ('a',0,'a','a','a','http://localhost:8080',7200,86400,NULL,0,'2020-09-22 23:24:23','2020-09-22 23:24:23');
+INSERT INTO `clients` VALUES ('70f6aae3e699000',0,'0dc8296744aaa410db6e361c85b589dafa1dc3fa','test','test','test',7200,86400,'{}',0,'2020-09-30 10:02:28','2020-09-30 10:02:28'),('70f6ccea9d99000',0,'b6fc033e2155a19af38623dfd4626d668c24be1a','aaaa','aaaa','aaaa',7200,86400,NULL,0,'2020-09-30 10:11:46','2020-09-30 10:11:46'),('70fc8fe10719000',504135522511269888,'151567bde2085c4a0564c6f2a051ea3f0d642a17','qqqqqq','qqqqqq','qqqqqq',7200,86400,NULL,0,'2020-09-30 16:54:32','2020-09-30 16:54:32'),('a',0,'a','aa','a','http://localhost:8080',7200,86400,NULL,0,'2020-09-22 23:24:23','2020-09-30 03:56:43'),('b',0,'b','b','b','http://localhost:8080',7200,86400,NULL,0,'2020-09-30 00:19:55','2020-09-30 00:19:55');
 /*!40000 ALTER TABLE `clients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,7 +182,7 @@ CREATE TABLE `resources` (
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`rid`),
   CONSTRAINT `resources_rid` FOREIGN KEY (`rid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -238,7 +218,7 @@ CREATE TABLE `role_authority` (
 
 LOCK TABLES `role_authority` WRITE;
 /*!40000 ALTER TABLE `role_authority` DISABLE KEYS */;
-INSERT INTO `role_authority` VALUES (0,0),(4,0),(0,1),(4,1),(4,2),(4,3),(4,4),(4,5),(4,6),(4,7);
+INSERT INTO `role_authority` VALUES (0,0),(4,0),(0,1),(4,1),(4,2),(4,3),(0,5),(4,5),(4,6),(4,100),(4,101),(4,200),(4,201),(4,202),(4,300),(4,301),(4,400),(4,401),(1,500),(4,500),(1,501),(4,501),(4,503),(4,504),(4,505);
 /*!40000 ALTER TABLE `role_authority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -285,7 +265,7 @@ CREATE TABLE `scope_authority` (
   KEY `scope_authority_sid_idx` (`sid`) /*!80000 INVISIBLE */,
   CONSTRAINT `scope_authority_aid` FOREIGN KEY (`aid`) REFERENCES `authorities` (`aid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `scope_authority_sid` FOREIGN KEY (`sid`) REFERENCES `scopes` (`sid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -314,7 +294,7 @@ CREATE TABLE `scopes` (
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sid`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -344,7 +324,7 @@ CREATE TABLE `templates` (
   PRIMARY KEY (`name`),
   KEY `template_owner_idx` (`uid`),
   CONSTRAINT `template_owner` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -372,7 +352,7 @@ CREATE TABLE `types` (
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`tid`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -412,7 +392,7 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES (0,0,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,1,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,2,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,3,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,4,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(503694347777703936,0,'2020-09-16 12:26:42','2020-09-16 12:25:04','2020-09-16 12:25:43'),(503694347777703936,1,'2020-09-16 12:26:42','2020-09-16 12:25:04','2020-09-16 12:25:43'),(503694347777703936,2,'2020-09-16 12:26:42','2020-09-16 12:25:04','2020-09-16 12:25:43'),(504135522511269888,0,NULL,'2020-09-17 16:55:41','2020-09-17 16:55:41'),(505966692622970880,0,NULL,'2020-09-22 18:12:06','2020-09-22 18:12:06'),(505970177499770880,0,NULL,'2020-09-22 18:25:57','2020-09-22 18:25:57');
+INSERT INTO `user_role` VALUES (0,0,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,1,NULL,'2020-09-29 08:02:44','2020-09-29 08:02:44'),(0,2,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,3,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(0,4,NULL,'2020-09-16 12:23:32','2020-09-16 12:23:32'),(504135522511269888,0,NULL,'2020-09-17 16:55:41','2020-09-17 16:55:41'),(504135522511269888,1,NULL,'2020-09-30 16:54:11','2020-09-30 16:54:11');
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -440,7 +420,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`),
   FULLTEXT KEY `user_keywords` (`username`,`email`,`nickname`) /*!50100 WITH PARSER `ngram` */ 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -449,7 +429,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (0,'root','$2a$10$XBQXZQLQg.s5/8JO/HdSXe7GpAxqgyglzywvZ4nZZPPnhNZhcyhLq','-','ROOT',00,NULL,NULL,NULL,1,'2020-09-15 00:27:10','2020-09-17 03:44:07'),(1,'root1','root1','-1','ROOT1',00,NULL,NULL,NULL,1,'2020-09-15 00:28:10','2020-09-16 16:45:54'),(2,'root2','root2','-2','ROOT2',00,NULL,NULL,NULL,1,'2020-09-15 00:29:10','2020-09-16 16:45:54'),(3,'root3','root3','-3','ROOT3',00,NULL,NULL,NULL,1,'2020-09-15 00:30:10','2020-09-16 16:45:54'),(503694347777703936,'ee-84e0-d20a8cb6b447','$2a$10$ixV4Wx5TZqAAbnyibaMBreNUtJAtwA2Jx1ROwBiL3XRo/ew.vJ7iK','ee-84e0-d20a8cb6b447','ZTmfey',00,'2020-09-16 11:47:36',NULL,NULL,1,'2020-09-16 11:42:37','2020-09-16 11:42:37'),(504135522511269888,'hansin','$2a$10$GP57XrnKif0JriZlHCyu2OwfMvB3/VpOUEZPvvAnleVOPYpvMR79e','hansin@dustlight.cn','hansin',00,NULL,NULL,NULL,1,'2020-09-17 16:55:41','2020-09-22 20:13:50'),(505966692622970880,'845612500','$2a$10$4D/p8ANABGJ5OvLfTYYMZuoqz4Fyu8eJoAoVdYdZtZKXngmnId/zS','845612500@qq.com','845612500',01,NULL,NULL,NULL,1,'2020-09-22 18:12:06','2020-09-22 18:13:26'),(505970177499770880,'lbgzs2010','$2a$10$kySdeEvbrRXdpt07KRkpn.8/jxmLCgTxz91lAAWlvuQDIu4VGSJW.','lbgzs2010@live.cn','lbgzs2010',00,NULL,NULL,NULL,1,'2020-09-22 18:25:57','2020-09-22 18:25:57');
+INSERT INTO `users` VALUES (0,'root','$2a$10$XBQXZQLQg.s5/8JO/HdSXe7GpAxqgyglzywvZ4nZZPPnhNZhcyhLq','-','ROOT',00,NULL,NULL,NULL,1,'2020-09-15 00:27:10','2020-09-17 03:44:07'),(1,'root1','root1','-1','ROOT1',00,NULL,NULL,NULL,1,'2020-09-15 00:28:10','2020-09-16 16:45:54'),(2,'root2','root2','-2','ROOT2',00,NULL,NULL,NULL,1,'2020-09-15 00:29:10','2020-09-16 16:45:54'),(3,'root3','root3','-3','ROOT3',00,NULL,NULL,NULL,1,'2020-09-15 00:30:10','2020-09-16 16:45:54'),(504135522511269888,'hansin','$2a$10$GP57XrnKif0JriZlHCyu2OwfMvB3/VpOUEZPvvAnleVOPYpvMR79e','hansin@dustlight.cn','hansin',00,NULL,NULL,NULL,1,'2020-09-17 16:55:41','2020-09-22 20:13:50');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -462,4 +442,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-29  9:12:55
+-- Dump completed on 2020-10-01 19:55:32

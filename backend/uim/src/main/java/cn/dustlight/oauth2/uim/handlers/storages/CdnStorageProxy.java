@@ -56,7 +56,7 @@ public class CdnStorageProxy implements RestfulStorage {
 
     @Override
     public String generateGetUrl(String key, Long expiration) throws IOException {
-        if (baseUrl == null)
+        if (baseUrl == null || baseUrl.length() == 0)
             return storage.generateGetUrl(prefix + key, expiration);
         return simpleUrl ? baseUrl + prefix + key :
                 baseUrl + URI.create(storage.generateGetUrl(prefix + key, expiration)).getRawPath();
