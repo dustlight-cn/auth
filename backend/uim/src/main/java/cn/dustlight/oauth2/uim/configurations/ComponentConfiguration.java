@@ -11,7 +11,9 @@ import cn.dustlight.oauth2.uim.handlers.email.EmailCodeSender;
 import cn.dustlight.oauth2.uim.handlers.email.EmailSenderHandler;
 import cn.dustlight.oauth2.uim.handlers.generator.RandomStringGenerator;
 import cn.dustlight.oauth2.uim.handlers.generator.UniqueLongToStringGenerator;
+import cn.dustlight.oauth2.uim.handlers.storages.CdnStorageProxy;
 import cn.dustlight.oauth2.uim.mappers.AuthorityMapper;
+import cn.dustlight.storage.core.RestfulStorage;
 import cn.dustlight.validator.annotations.EnableValidator;
 import cn.dustlight.validator.generator.RandomStringCodeGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -189,5 +191,14 @@ public class ComponentConfiguration {
     public EmailCodeSender emailCodeSender(@Autowired EmailSenderHandler sender) {
         EmailCodeSender codeSender = new EmailCodeSender(sender);
         return codeSender;
+    }
+
+    @Bean
+    public CdnStorageProxy cdnStorage(@Autowired RestfulStorage tencentStorage,
+                                      @Autowired Properties properties) {
+        CdnStorageProxy cdnStorageProxy = new CdnStorageProxy(tencentStorage, properties.getStorage().getBaseUrl());
+        cdnStorageProxy.setSimpleUrl(true);
+        cdnStorageProxy.setPrefix(properties.getStorage().getPrefix());
+        return cdnStorageProxy;
     }
 }

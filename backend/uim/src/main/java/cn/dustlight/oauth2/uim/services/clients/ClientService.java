@@ -115,6 +115,15 @@ public interface ClientService extends ClientDetailsService {
     User getOwner(String cid);
 
     /**
+     * 判断应用是否属于用户
+     *
+     * @param cid 应用id
+     * @param uid 用户id
+     * @return
+     */
+    boolean isOwner(String cid, Long uid);
+
+    /**
      * 更新应用密钥
      *
      * @param cid 应用ID

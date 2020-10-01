@@ -10,6 +10,7 @@ import cn.dustlight.storage.core.RestfulStorage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
@@ -36,6 +37,7 @@ public class DefaultUserController implements UserController {
     @Autowired
     protected UserService userService;
 
+    @Qualifier("cdnStorage")
     @Autowired
     protected RestfulStorage storage;
 
@@ -147,14 +149,13 @@ public class DefaultUserController implements UserController {
             String redirectUrl = storage.generatePutUrl(key, Permission.WRITABLE, 1000 * 60 * 60L); // 生成签名上传URL
             response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
             response.setHeader("Location", redirectUrl);
-            logger.info("Redirect avatar");
         } catch (IOException e) {
-            ErrorEnum.UPDATE_RESOURCE_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.UPDATE_USER_FAIL.details(e.getMessage()).throwException();
         }
     }
 
     @Override
-    public void getAvatar(Long uid, Integer size, Long t) {
+    public void getAvatar(Long uid) {
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletResponse response = attributes.getResponse();
@@ -162,7 +163,7 @@ public class DefaultUserController implements UserController {
             String key = generateAvatarKey(uid);
             if (!storage.isExist(key))
                 ErrorEnum.RESOURCE_NOT_FOUND.throwException();
-            String redirectUrl = storage.generateGetUrl(key, 1000 * 60 * 60L); // 生成签名下载URL
+            String redirectUrl = storage.generateGetUrl(key, 1000 * 60 * 60L); // 生成下载URL
             response.setStatus(HttpStatus.FOUND.value());
             response.setHeader("Location", redirectUrl);
         } catch (IOException e) {
@@ -171,6 +172,6 @@ public class DefaultUserController implements UserController {
     }
 
     protected String generateAvatarKey(Object id) {
-        return String.format("uim-test/upload/%s/avatar", id);
+        return String.format("users/%s/avatar", id);
     }
 }

@@ -15,7 +15,7 @@ public class TencentCosConfiguration {
 
     @Bean
     @ConditionalOnProperty("dustlight.storage.tencent.cos.enabled")
-    public TencentCloudObjectStorage create(@Autowired TencentCosProperties properties) {
+    public TencentCloudObjectStorage tencentStorage(@Autowired TencentCosProperties properties) {
         COSCredentials cred = new BasicCOSCredentials(properties.getSecretId(), properties.getSecretKey());
         Region region = new Region(properties.getRegion());
         ClientConfig clientConfig = new ClientConfig(region);

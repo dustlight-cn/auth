@@ -54,24 +54,24 @@ public class Properties {
     }
 
     public static class Storage {
-        private String storageBaseUrl = null;
-        private String storagePath = "dustlight/uim/upload/";
+        private String baseUrl = null;
+        private String prefix = "uim/upload/";
         private Long defaultExpiration = 1000L * 60 * 15L;
 
-        public String getStorageBaseUrl() {
-            return storageBaseUrl;
+        public String getBaseUrl() {
+            return baseUrl;
         }
 
-        public void setStorageBaseUrl(String storageBaseUrl) {
-            this.storageBaseUrl = storageBaseUrl;
+        public void setBaseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
         }
 
-        public String getStoragePath() {
-            return storagePath;
+        public String getPrefix() {
+            return prefix;
         }
 
-        public void setStoragePath(String storagePath) {
-            this.storagePath = storagePath;
+        public void setPrefix(String prefix) {
+            this.prefix = prefix;
         }
 
         public Long getDefaultExpiration() {
@@ -84,7 +84,7 @@ public class Properties {
     }
 
     public static class SnowflakeConfiguration {
-        public Long machineId,dataCenterId,startTimestamp;
+        public Long machineId, dataCenterId, startTimestamp;
 
         public Long getMachineId() {
             return machineId;

@@ -4,9 +4,17 @@ import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.results.QueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.clients.Client;
 import cn.dustlight.oauth2.uim.services.clients.ClientService;
+import cn.dustlight.storage.core.Permission;
+import cn.dustlight.storage.core.RestfulStorage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -15,6 +23,10 @@ public class DefaultClientController implements ClientController {
 
     @Autowired
     private ClientService clientService;
+
+    @Qualifier("cdnStorage")
+    @Autowired
+    private RestfulStorage storage;
 
     @Override
     public QueryResults<? extends Client, ? extends Number> getClients(String keywords, Collection<String> order, Integer offset, Integer limit) {
@@ -79,6 +91,38 @@ public class DefaultClientController implements ClientController {
     }
 
     @Override
+    public void getClientLogo(String cid) {
+        try {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            HttpServletResponse response = attributes.getResponse();
+
+            String key = generateLogoKey(cid);
+            if (!storage.isExist(key))
+                ErrorEnum.RESOURCE_NOT_FOUND.throwException();
+            String redirectUrl = storage.generateGetUrl(key, 1000 * 60 * 60L); // 生成下载URL
+            response.setStatus(HttpStatus.FOUND.value());
+            response.setHeader("Location", redirectUrl);
+        } catch (IOException e) {
+            ErrorEnum.RESOURCE_NOT_FOUND.details(e.getMessage()).throwException();
+        }
+    }
+
+    @Override
+    public void updateClientLogo(String cid) {
+        try {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            HttpServletResponse response = attributes.getResponse();
+
+            String key = generateLogoKey(cid);
+            String redirectUrl = storage.generatePutUrl(key, Permission.WRITABLE, 1000 * 60 * 60L); // 生成签名上传URL
+            response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
+            response.setHeader("Location", redirectUrl);
+        } catch (IOException e) {
+            ErrorEnum.UPDATE_CLIENT_FAIL.details(e.getMessage()).throwException();
+        }
+    }
+
+    @Override
     public QueryResults<? extends Client, ? extends Number> getClients(Long uid, String keywords, Collection<String> order, Integer offset, Integer limit) {
         if (keywords == null || keywords.length() == 0)
             return clientService.list(uid, order, offset, limit);
@@ -126,5 +170,24 @@ public class DefaultClientController implements ClientController {
     @Override
     public void updateClientRedirectUri(Long uid, String cid, String redirectUri) {
         clientService.updateRedirectUri(cid, uid, redirectUri);
+    }
+
+    @Override
+    public void getClientLogo(Long uid, String cid) {
+        if (!clientService.isOwner(cid, uid))
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        getClientLogo(cid);
+    }
+
+    @Override
+    public void updateClientLogo(Long uid, String cid) {
+        if (!clientService.isOwner(cid, uid))
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        updateClientLogo(cid);
+    }
+
+
+    protected String generateLogoKey(Object id) {
+        return String.format("clients/%s/logo", id);
     }
 }

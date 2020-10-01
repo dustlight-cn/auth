@@ -3,6 +3,8 @@ package cn.dustlight.oauth2.uim.entities.v1.users;
 import cn.dustlight.oauth2.uim.handlers.serializers.ToStringCollectionSerializer;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -63,6 +65,8 @@ public interface User extends UserDetails {
      *
      * @return 角色集合
      */
+    @JsonProperty("roles")
+    @Schema(name = "roles")
     Collection<UserRole> getUserRoles();
 
     /**

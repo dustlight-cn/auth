@@ -52,8 +52,8 @@ public class OAuth2Controller {
         Client client = (Client) clientDetailsService.loadClientByClientId(clientId);
         String username = principal.getName();
 
-        data.put("clientName", client.getClientName());
-        data.put("description", client.getClientDescription());
+        data.put("clientName", client.getName());
+        data.put("description", client.getDescription());
         data.put("clientId", client.getClientId());
         data.put("createdAt", client.getCreatedAt());
         data.put("updatedAt", client.getUpdatedAt());

@@ -2,6 +2,7 @@ package cn.dustlight.oauth2.uim.services.clients;
 
 import cn.dustlight.generator.Generator;
 import cn.dustlight.generator.UniqueGenerator;
+import cn.dustlight.oauth2.uim.Constants;
 import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.results.IntQueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.clients.Client;
@@ -14,9 +15,12 @@ import cn.dustlight.oauth2.uim.mappers.GrantTypeMapper;
 import cn.dustlight.oauth2.uim.mappers.ScopeMapper;
 import cn.dustlight.oauth2.uim.utils.OrderBySqlBuilder;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.util.Collection;
 
 public class DefaultClientService implements ClientService {
@@ -42,10 +46,10 @@ public class DefaultClientService implements ClientService {
 
     @Override
     public Client loadClientByClientId(String cid) {
-        Client details = clientMapper.loadClient(cid);
+        DefaultClient details = clientMapper.loadClient(cid);
         if (details == null)
-            throw new NoSuchClientException("client not found");
-        return details;
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        return autoSetLogo(details);
     }
 
     @Override
@@ -54,13 +58,13 @@ public class DefaultClientService implements ClientService {
         if (details == null)
             ErrorEnum.CLIENT_NOT_FOUND.throwException();
         details.setClientSecret(null);
-        return details;
+        return autoSetLogo(details);
     }
 
     @Override
     public IntQueryResults<? extends Client> list(Collection<String> orderBy, Integer offset, Integer limit) {
         IntQueryResults<DefaultClient> results = new IntQueryResults<>();
-        results.setData(clientMapper.listClients(orderBySqlBuilder.build(orderBy), offset, limit));
+        results.setData(autoSetLogo(clientMapper.listClients(orderBySqlBuilder.build(orderBy), offset, limit)));
         results.setCount(clientMapper.countClients());
         return results;
     }
@@ -68,7 +72,7 @@ public class DefaultClientService implements ClientService {
     @Override
     public IntQueryResults<? extends Client> list(Long uid, Collection<String> orderBy, Integer offset, Integer limit) {
         IntQueryResults<DefaultClient> results = new IntQueryResults<>();
-        results.setData(clientMapper.listUserClients(uid, orderBySqlBuilder.build(orderBy), offset, limit));
+        results.setData(autoSetLogo(clientMapper.listUserClients(uid, orderBySqlBuilder.build(orderBy), offset, limit)));
         results.setCount(clientMapper.countUserClients(uid));
         return results;
     }
@@ -76,7 +80,7 @@ public class DefaultClientService implements ClientService {
     @Override
     public IntQueryResults<? extends Client> search(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
         IntQueryResults<DefaultClient> results = new IntQueryResults<>();
-        results.setData(clientMapper.searchClients(keywords, orderBySqlBuilder.build(orderBy), offset, limit));
+        results.setData(autoSetLogo(clientMapper.searchClients(keywords, orderBySqlBuilder.build(orderBy), offset, limit)));
         results.setCount(clientMapper.countSearchClients(keywords));
         return results;
     }
@@ -84,7 +88,7 @@ public class DefaultClientService implements ClientService {
     @Override
     public IntQueryResults<? extends Client> search(String keywords, Long uid, Collection<String> orderBy, Integer offset, Integer limit) {
         IntQueryResults<DefaultClient> results = new IntQueryResults<>();
-        results.setData(clientMapper.searchUserClients(uid, keywords, orderBySqlBuilder.build(orderBy), offset, limit));
+        results.setData(autoSetLogo(clientMapper.searchUserClients(uid, keywords, orderBySqlBuilder.build(orderBy), offset, limit)));
         results.setCount(clientMapper.countSearchUserClients(uid, keywords));
         return results;
     }
@@ -136,6 +140,11 @@ public class DefaultClientService implements ClientService {
     @Override
     public User getOwner(String cid) {
         return clientMapper.getClientOwner(cid);
+    }
+
+    @Override
+    public boolean isOwner(String cid, Long uid) {
+        return clientMapper.isClientOwner(cid, uid);
     }
 
     @Override
@@ -304,5 +313,28 @@ public class DefaultClientService implements ClientService {
             ErrorEnum.CLIENT_NOT_FOUND.throwException();
         if (!grantTypeMapper.deleteClientGrantTypes(cid, tids))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to delete client grant types").throwException();
+    }
+
+
+    public <T extends DefaultClient> T autoSetLogo(T client) {
+        if (client == null)
+            return null;
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        URI uri = URI.create(request.getRequestURL().toString());
+        URI avatar = URI.create(String.format("%sclients/%s/logo", Constants.V1.API_ROOT, client.getClientId()));
+        client.setLogo(uri.resolve(avatar).toASCIIString());
+        return client;
+    }
+
+    public <C extends Collection<? extends DefaultClient>> C autoSetLogo(C clients) {
+        if (clients == null)
+            return null;
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        URI uri = URI.create(request.getRequestURL().toString());
+        for (DefaultClient client : clients) {
+            URI avatar = URI.create(String.format("%sclients/%s/logo", Constants.V1.API_ROOT, client.getClientId()));
+            client.setLogo(uri.resolve(avatar).toASCIIString());
+        }
+        return clients;
     }
 }

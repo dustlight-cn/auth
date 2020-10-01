@@ -1,6 +1,7 @@
 package cn.dustlight.oauth2.uim.services.users;
 
 import cn.dustlight.generator.UniqueGenerator;
+import cn.dustlight.oauth2.uim.Constants;
 import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.results.IntQueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.roles.UserRole;
@@ -9,11 +10,17 @@ import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUser;
 import cn.dustlight.oauth2.uim.mappers.RoleMapper;
 import cn.dustlight.oauth2.uim.mappers.UserMapper;
 import cn.dustlight.oauth2.uim.utils.OrderBySqlBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 
@@ -23,6 +30,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     private RoleMapper roleMapper;
     private PasswordEncoder passwordEncoder;
     private UniqueGenerator<Long> idGenerator;
+    private static final Log logger = LogFactory.getLog(DefaultUserService.class.getName());
 
     private OrderBySqlBuilder orderBySqlBuilder = OrderBySqlBuilder.create
             ("uid", "createdAt", "updatedAt", "accountExpiredAt", "credentialsExpiredAt", "unlockedAt");
@@ -48,7 +56,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
         DefaultUser u = userMapper.selectUserByUsernameOrEmail(s);
         if (u == null)
             throw new UsernameNotFoundException("user not found");
-        return u;
+        return autoSetAvatar(u);
     }
 
     @Transactional
@@ -71,28 +79,28 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     @Override
     public DefaultUser loadUser(Long uid) {
-        return userMapper.selectUser(uid);
+        return autoSetAvatar(userMapper.selectUser(uid));
     }
 
     @Override
     public Collection<DefaultPublicUser> loadPublicUserByUid(Collection<Long> uidArray) {
-        return userMapper.selectUsersPublic(uidArray);
+        return autoSetAvatar(userMapper.selectUsersPublic(uidArray));
     }
 
     @Override
     public Collection<DefaultUser> loadUsersByUsername(Collection<String> usernames) {
-        return userMapper.selectUsersByUsername(usernames);
+        return autoSetAvatar(userMapper.selectUsersByUsername(usernames));
     }
 
     @Override
     public Collection<DefaultUser> loadUsers(Collection<Long> uids) {
-        return userMapper.selectUsersByUid(uids);
+        return autoSetAvatar(userMapper.selectUsersByUid(uids));
     }
 
     @Override
     public IntQueryResults<DefaultUser> listUsers(Collection<String> orderBy, Integer offset, Integer limit) {
         IntQueryResults<DefaultUser> result = new IntQueryResults<>();
-        result.setData(userMapper.listUsers(orderBySqlBuilder.build(orderBy), offset, limit));
+        result.setData(autoSetAvatar(userMapper.listUsers(orderBySqlBuilder.build(orderBy), offset, limit)));
         result.setCount(userMapper.count());
         return result;
     }
@@ -100,7 +108,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     @Override
     public IntQueryResults<DefaultUser> searchUsers(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
         IntQueryResults<DefaultUser> result = new IntQueryResults<>();
-        result.setData(userMapper.searchUsers(keywords, orderBySqlBuilder.build(orderBy), offset, limit));
+        result.setData(autoSetAvatar(userMapper.searchUsers(keywords, orderBySqlBuilder.build(orderBy), offset, limit)));
         result.setCount(userMapper.countSearch(keywords));
         return result;
     }
@@ -108,7 +116,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     @Override
     public IntQueryResults<DefaultPublicUser> searchPublicUsers(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
         IntQueryResults<DefaultPublicUser> result = new IntQueryResults<>();
-        result.setData(userMapper.searchPublicUsers(keywords, orderBySqlBuilder.build(orderBy), offset, limit));
+        result.setData(autoSetAvatar(userMapper.searchPublicUsers(keywords, orderBySqlBuilder.build(orderBy), offset, limit)));
         result.setCount(userMapper.countSearch(keywords));
         return result;
     }
@@ -188,5 +196,27 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     public void deleteUsers(Collection<Long> uids) {
         if (!userMapper.deleteUsers(uids))
             ErrorEnum.DELETE_USER_FAIL.throwException();
+    }
+
+    public <T extends DefaultUser> T autoSetAvatar(T user) {
+        if (user == null)
+            return null;
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        URI uri = URI.create(request.getRequestURL().toString());
+        URI avatar = URI.create(String.format("%susers/%d/avatar", Constants.V1.API_ROOT, user.getUid()));
+        user.setAvatar(uri.resolve(avatar).toASCIIString());
+        return user;
+    }
+
+    public <C extends Collection<? extends DefaultUser>> C autoSetAvatar(C users) {
+        if (users == null)
+            return null;
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        URI uri = URI.create(request.getRequestURL().toString());
+        for (DefaultUser user : users) {
+            URI avatar = URI.create(String.format("%susers/%d/avatar", Constants.V1.API_ROOT, user.getUid()));
+            user.setAvatar(uri.resolve(avatar).toASCIIString());
+        }
+        return users;
     }
 }

@@ -21,7 +21,7 @@ public class DefaultClient implements Client {
 
     private static final Log logger = LogFactory.getLog(DefaultClient.class.getName());
 
-    private String cid, secret, name, description, redirectUri, additionalInformation;
+    private String cid, secret, name, description, logo, redirectUri, additionalInformation;
     private Date createdAt, updatedAt;
     private Integer accessTokenValidity, refreshTokenValidity, status;
     private Long uid;
@@ -32,13 +32,18 @@ public class DefaultClient implements Client {
     private ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public String getClientName() {
+    public String getName() {
         return name;
     }
 
     @Override
-    public String getClientDescription() {
+    public String getDescription() {
         return description;
+    }
+
+    @Override
+    public String getLogo() {
+        return logo;
     }
 
     @Override
@@ -183,11 +188,11 @@ public class DefaultClient implements Client {
         this.uid = uid;
     }
 
-    public void setClientName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setClientDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -238,6 +243,10 @@ public class DefaultClient implements Client {
                 logger.warn("Set additional information error", e);
             }
         }
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 
     public void setStatus(Integer status) {

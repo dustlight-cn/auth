@@ -21,7 +21,7 @@ spring:
     host: ${SMTP_HOST:smtp.exmail.qq.com}
     username: ${SMTP_USER}
     password: ${SMTP_PASS}
-# 日志输出 cn.dustlight.oauth2.uim.mappers
+# 日志输出
 logging:
   level:
     cn:
@@ -57,7 +57,8 @@ dustlight:
     resource-paths:
       - /api/res/**
     storage:
-      storage-base-url: https://res.dustlight.cn/
+      base-url: https://res.dustlight.cn/
+      prefix: uim/upload/
   storage:
     tencent:
       cos:

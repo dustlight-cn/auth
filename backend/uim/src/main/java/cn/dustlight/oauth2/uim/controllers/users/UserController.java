@@ -161,12 +161,10 @@ public interface UserController {
     /**
      * 获取用户头像
      *
-     * @param uid  用户id
-     * @param size 图片尺寸
-     * @param t    时间戳
+     * @param uid 用户id
      */
     @Operation(summary = "获取用户头像")
     @GetMapping("users/{uid}/avatar")
-    void getAvatar(@PathVariable Long uid, @RequestParam(required = false) Integer size, @RequestParam(required = false) Long t);
+    void getAvatar(@PathVariable Long uid);
 
 }

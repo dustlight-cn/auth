@@ -4,6 +4,9 @@ import cn.dustlight.oauth2.uim.Constants;
 import cn.dustlight.oauth2.uim.entities.results.QueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.clients.Client;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -91,6 +94,17 @@ public interface ClientController {
     @PreAuthorize("hasAuthority('WRITE_CLIENT_ANY')")
     void updateClientRefreshTokenValidity(@PathVariable("cid") String cid, @RequestParam("refreshTokenValidity") Integer refreshTokenValidity);
 
+    @Operation(summary = "获取应用Logo")
+    @GetMapping("clients/{cid}/logo")
+    void getClientLogo(@PathVariable("cid") String cid);
+
+    @Operation(summary = "更新应用Logo",
+            requestBody = @RequestBody(required = true, content = @Content(mediaType = "image/*", schema = @Schema(type = "string", format = "binary")))
+    )
+    @PutMapping("clients/{cid}/logo")
+    @PreAuthorize("hasAuthority('WRITE_CLIENT_ANY')")
+    void updateClientLogo(@PathVariable("cid") String cid);
+
     /* ---------------------------------------------------------------------------------------- */
 
     /* 开发者权限 */
@@ -151,6 +165,17 @@ public interface ClientController {
     @PutMapping("users/{uid}/clients/{cid}/redirect")
     @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('WRITE_CLIENT_ANY')")
     void updateClientRedirectUri(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("redirectUri") String redirectUri);
+
+    @Operation(summary = "获取用户应用Logo")
+    @GetMapping("users/{uid}/clients/{cid}/logo")
+    void getClientLogo(@PathVariable("uid") Long uid, @PathVariable("cid") String cid);
+
+    @Operation(summary = "更新用户应用Logo",
+            requestBody = @RequestBody(required = true, content = @Content(mediaType = "image/*", schema = @Schema(type = "string", format = "binary")))
+    )
+    @PutMapping("users/{uid}/clients/{cid}/logo")
+    @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('WRITE_CLIENT_ANY')")
+    void updateClientLogo(@PathVariable("uid") Long uid, @PathVariable("cid") String cid);
 
     /* ---------------------------------------------------------------------------------------- */
 
