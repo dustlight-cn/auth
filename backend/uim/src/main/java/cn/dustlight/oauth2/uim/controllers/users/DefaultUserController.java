@@ -51,12 +51,13 @@ public class DefaultUserController implements UserController {
     }
 
     @Override
-    public void createSession(String login, String password) {
+    public User createSession(String login, String password) {
         try {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password);
             Authentication authentication = authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             logger.debug(String.format("用户: [%s] 创建会话", authentication.getName()));
+            return (User) authentication.getPrincipal();
         } catch (InternalAuthenticationServiceException e) {
             this.logger.error("An internal error occurred while trying to authenticate the user.", e);
             SecurityContextHolder.clearContext();
@@ -69,6 +70,7 @@ public class DefaultUserController implements UserController {
             SecurityContextHolder.clearContext();
             ErrorEnum.SIGN_IN_FAIL.details(e.getMessage()).throwException();
         }
+        return null;
     }
 
     @Override
@@ -96,13 +98,14 @@ public class DefaultUserController implements UserController {
     }
 
     @Override
-    public void createUser(String username, String password, String email, String code) {
+    public User createUser(String username, String password, String email, String code) {
         DefaultUserRole defaultRole = new DefaultUserRole();
         defaultRole.setRoleName("User");
         userService.createUser(username, password, email, username, 0,
                 Arrays.asList(defaultRole), null, null, null,
                 true);
         logger.debug(String.format("创建用户: [%s] 邮箱：[%s]", username, email));
+        return userService.loadUserByUsername(username);
     }
 
     @Override

@@ -42,7 +42,7 @@ public interface UserController {
      */
     @Operation(summary = "登入", description = "创建会话")
     @PostMapping("session")
-    void createSession(@RequestParam String login, @RequestParam String password);
+    User createSession(@RequestParam String login, @RequestParam String password);
 
     /**
      * 销毁会话（登出）
@@ -73,7 +73,7 @@ public interface UserController {
     @Operation(summary = "注册用户", description = "创建新用户，用户名和邮箱不可重复。")
     @PostMapping("users")
     @VerifyCode("registration")
-    void createUser(@RequestParam String username, @RequestParam String password,
+    User createUser(@RequestParam String username, @RequestParam String password,
                     @Parameter(hidden = true) @CodeParam("registration") String email,
                     @RequestParam @CodeValue("registration") String code);
 

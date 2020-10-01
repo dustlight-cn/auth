@@ -14,6 +14,8 @@ import cn.dustlight.oauth2.uim.services.roles.DefaultRoleService;
 import cn.dustlight.oauth2.uim.services.roles.RoleService;
 import cn.dustlight.oauth2.uim.services.scopes.DefaultScopeService;
 import cn.dustlight.oauth2.uim.services.scopes.ScopeService;
+import cn.dustlight.oauth2.uim.services.types.DefaultGrantTypeService;
+import cn.dustlight.oauth2.uim.services.types.GrantTypeService;
 import cn.dustlight.oauth2.uim.services.users.DefaultUserService;
 import cn.dustlight.oauth2.uim.services.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,5 +80,12 @@ public class ServicesConfiguration {
                                      @Autowired AuthorityMapper authorityMapper,
                                      @Autowired UniqueGenerator<Long> generator) {
         return new DefaultScopeService(generator, scopeMapper, authorityMapper);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public GrantTypeService grantTypeService(@Autowired GrantTypeMapper grantTypeMapper,
+                                             @Autowired UniqueGenerator<Long> generator) {
+        return new DefaultGrantTypeService(grantTypeMapper, generator);
     }
 }

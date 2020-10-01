@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 public class SimpleEmailConfiguration {
 
     @Bean
-    public SimpleEmailSender createSimpleEmailSender() {
+    public SimpleEmailSender simpleEmailSender() {
         return new SimpleEmailSender();
     }
 }
