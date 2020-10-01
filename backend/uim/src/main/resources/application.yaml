@@ -28,9 +28,6 @@ logging:
       dustlight:
         oauth2:
           uim:
-            mappers:
-              GrantTypeMapper: debug
-              ClientMapper: debug
             controllers:
               code:
                 DefaultVerificationCodeController: debug
@@ -46,16 +43,17 @@ mybatis:
 # SpringDoc
 springdoc:
   api-docs:
-    path: /api/v1
+    path: /u/v1
   swagger-ui:
-    path: /api/doc/
+    path: /u/doc/
+
 # 应用配置
 dustlight:
   uim:
     public-paths:
-      - /api/doc/**
+      - /u/doc/**
     resource-paths:
-      - /api/res/**
+      - /u/res/**
     storage:
       base-url: https://res.dustlight.cn/
       prefix: uim/upload/

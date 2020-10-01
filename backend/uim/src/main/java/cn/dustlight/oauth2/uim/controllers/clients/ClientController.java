@@ -25,7 +25,7 @@ public interface ClientController {
     @Operation(summary = "查询应用")
     @GetMapping("clients")
     @PreAuthorize("hasAuthority('READ_CLIENT_ANY')")
-    QueryResults<? extends Client, ? extends Number> getClients(@RequestParam(required = false) String keywords,
+    QueryResults<? extends Client, ? extends Number> getClients(@RequestParam(required = false, name = "q") String keywords,
                                                                 @RequestParam(required = false) Collection<String> order,
                                                                 @RequestParam(required = false) Integer offset,
                                                                 @RequestParam(required = false) Integer limit);
@@ -113,7 +113,7 @@ public interface ClientController {
     @GetMapping("users/{uid}/clients")
     @PreAuthorize("#user.matchUid(#uid) or hasAuthority('READ_CLIENT_ANY')")
     QueryResults<? extends Client, ? extends Number> getClients(@PathVariable("uid") Long uid,
-                                                                @RequestParam(required = false) String keywords,
+                                                                @RequestParam(required = false, name = "q") String keywords,
                                                                 @RequestParam(required = false) Collection<String> order,
                                                                 @RequestParam(required = false) Integer offset,
                                                                 @RequestParam(required = false) Integer limit);

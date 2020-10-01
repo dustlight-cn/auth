@@ -17,8 +17,11 @@ import cn.dustlight.storage.core.RestfulStorage;
 import cn.dustlight.validator.annotations.EnableValidator;
 import cn.dustlight.validator.generator.RandomStringCodeGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -50,7 +53,17 @@ import java.util.Enumeration;
 @EnableValidator
 @EnableTransactionManagement
 @EnableRedisHttpSession
-@OpenAPIDefinition(info = @Info(title = "统一身份管理 (UIM)", description = "主要包含用户管理，OAuth2应用管理等服务。", version = "1.0"))
+@OpenAPIDefinition(
+        info = @Info(
+                title = "统一身份管理服务",
+                description = "提供身份管理服务以及OAuth2授权服务。身份管理服务包含用户管理、角色管理、权限管理等，OAuth2授权服务包含应用管理、应用授权模式与授权作用域管理等。",
+                version = "1.0.0",
+                contact = @Contact(name = "Hansin1997",
+                        email = "845612500@qq.com"),
+                license = @License(name = "MIT License", url = "https://github.com/Hansin1997/Dustlight/raw/master/LICENSE")
+        ),
+        externalDocs = @ExternalDocumentation(description = "Source Code", url = "https://github.com/Hansin1997/Dustlight")
+)
 public class ComponentConfiguration {
 
     @Bean

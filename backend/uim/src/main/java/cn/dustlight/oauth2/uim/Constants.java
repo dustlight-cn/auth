@@ -7,7 +7,7 @@ public final class Constants {
     /**
      * 全局接口根路径
      */
-    public static final String API_ROOT = "/api/";
+    public static final String API_ROOT = "/u/";
     /**
      * 当前版本号
      */
