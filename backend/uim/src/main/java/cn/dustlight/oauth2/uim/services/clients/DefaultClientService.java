@@ -9,12 +9,14 @@ import cn.dustlight.oauth2.uim.entities.v1.clients.Client;
 import cn.dustlight.oauth2.uim.entities.v1.clients.DefaultClient;
 import cn.dustlight.oauth2.uim.entities.v1.scopes.Scope;
 import cn.dustlight.oauth2.uim.entities.v1.types.GrantType;
+import cn.dustlight.oauth2.uim.entities.v1.users.PublicUser;
 import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import cn.dustlight.oauth2.uim.mappers.ClientMapper;
 import cn.dustlight.oauth2.uim.mappers.GrantTypeMapper;
 import cn.dustlight.oauth2.uim.mappers.ScopeMapper;
 import cn.dustlight.oauth2.uim.utils.OrderBySqlBuilder;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -28,6 +30,7 @@ public class DefaultClientService implements ClientService {
     private ClientMapper clientMapper;
     private ScopeMapper scopeMapper;
     private GrantTypeMapper grantTypeMapper;
+    private PasswordEncoder passwordEncoder;
 
     private UniqueGenerator<String> idGenerator;
     private Generator<String> secretGenerator;
@@ -36,12 +39,14 @@ public class DefaultClientService implements ClientService {
             ("uid", "cid", "createdAt", "name", "updatedAt", "accessTokenValidity", "refreshTokenValidity", "status");
 
     public DefaultClientService(ClientMapper clientMapper, ScopeMapper scopeMapper, GrantTypeMapper grantTypeMapper,
-                                UniqueGenerator<String> idGenerator, Generator<String> secretGenerator) {
+                                UniqueGenerator<String> idGenerator, Generator<String> secretGenerator,
+                                PasswordEncoder passwordEncoder) {
         this.clientMapper = clientMapper;
         this.scopeMapper = scopeMapper;
         this.grantTypeMapper = grantTypeMapper;
         this.idGenerator = idGenerator;
         this.secretGenerator = secretGenerator;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -100,7 +105,7 @@ public class DefaultClientService implements ClientService {
         String id = idGenerator.generate();
         String secret = secretGenerator.generate();
         try {
-            if (!clientMapper.insertClient(id, uid, secret, name, description, redirectUri,
+            if (!clientMapper.insertClient(id, uid, passwordEncoder.encode(secret), name, description, redirectUri,
                     accessTokenValidity, refreshTokenValidity, additionalInformation, status))
                 ErrorEnum.CREATE_CLIENT_FAIL.throwException();
             if (!scopeMapper.insertClientScopeByScopeIds(id, scopes, false))
@@ -110,9 +115,10 @@ public class DefaultClientService implements ClientService {
         } catch (DuplicateKeyException e) {
             ErrorEnum.CLIENT_EXISTS.throwException();
         }
-        Client result = clientMapper.loadClient(id);
+        DefaultClient result = clientMapper.loadClient(id);
         if (result == null)
             ErrorEnum.CREATE_CLIENT_FAIL.throwException();
+        result.setClientSecret(secret);
         return result;
     }
 
@@ -122,7 +128,7 @@ public class DefaultClientService implements ClientService {
         String id = idGenerator.generate();
         String secret = secretGenerator.generate();
         try {
-            if (!clientMapper.insertClientDefault(id, uid, secret, name, description, redirectUri))
+            if (!clientMapper.insertClientDefault(id, uid, passwordEncoder.encode(secret), name, description, redirectUri))
                 ErrorEnum.CREATE_CLIENT_FAIL.throwException();
             if (!scopeMapper.insertClientScopeByScopeIds(id, scopes, false))
                 ErrorEnum.CREATE_SCOPE_FAIL.details("fail to insert client scopes").throwException();
@@ -131,15 +137,21 @@ public class DefaultClientService implements ClientService {
         } catch (DuplicateKeyException e) {
             ErrorEnum.CLIENT_EXISTS.throwException();
         }
-        Client result = clientMapper.loadClient(id);
+        DefaultClient result = clientMapper.loadClient(id);
         if (result == null)
             ErrorEnum.CREATE_CLIENT_FAIL.throwException();
+        result.setClientSecret(secret);
         return result;
     }
 
     @Override
     public User getOwner(String cid) {
         return clientMapper.getClientOwner(cid);
+    }
+
+    @Override
+    public PublicUser getOwnerPublic(String cid) {
+        return clientMapper.getClientOwnerPublic(cid);
     }
 
     @Override
@@ -150,7 +162,7 @@ public class DefaultClientService implements ClientService {
     @Override
     public String updateSecret(String cid) {
         String secret = secretGenerator.generate();
-        if (!clientMapper.updateClientSecret(cid, secret))
+        if (!clientMapper.updateClientSecret(cid, passwordEncoder.encode(secret)))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to update client secret").throwException();
         return secret;
     }
@@ -158,7 +170,7 @@ public class DefaultClientService implements ClientService {
     @Override
     public String updateSecret(String cid, Long uid) {
         String secret = secretGenerator.generate();
-        if (!clientMapper.updateUserClientSecret(cid, uid, secret))
+        if (!clientMapper.updateUserClientSecret(cid, uid, passwordEncoder.encode(secret)))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to update client secret").throwException();
         return secret;
     }

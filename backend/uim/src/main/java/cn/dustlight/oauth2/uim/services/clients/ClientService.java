@@ -4,6 +4,7 @@ import cn.dustlight.oauth2.uim.entities.results.IntQueryResults;
 import cn.dustlight.oauth2.uim.entities.v1.clients.Client;
 import cn.dustlight.oauth2.uim.entities.v1.scopes.Scope;
 import cn.dustlight.oauth2.uim.entities.v1.types.GrantType;
+import cn.dustlight.oauth2.uim.entities.v1.users.PublicUser;
 import cn.dustlight.oauth2.uim.entities.v1.users.User;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
@@ -113,6 +114,14 @@ public interface ClientService extends ClientDetailsService {
      * @return 用户
      */
     User getOwner(String cid);
+
+    /**
+     * 获取应用所属用户
+     *
+     * @param cid 应用ID
+     * @return 用户
+     */
+    PublicUser getOwnerPublic(String cid);
 
     /**
      * 判断应用是否属于用户

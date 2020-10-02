@@ -76,7 +76,7 @@ public interface Client extends ClientDetails {
      *
      * @return
      */
-    Collection<ClientScope> getScopes();
+    Collection<? extends ClientScope> getScopes();
 
     @JsonIgnore
     @Override
@@ -89,6 +89,10 @@ public interface Client extends ClientDetails {
     @JsonIgnore
     @Override
     boolean isSecretRequired();
+
+    @JsonIgnore
+    @Override
+    Set<String> getScope();
 
     @ArraySchema(schema = @Schema(type = "string"))
     @JsonSerialize(using = ToStringCollectionSerializer.class)

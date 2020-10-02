@@ -1,6 +1,7 @@
 package cn.dustlight.oauth2.uim.mappers;
 
 import cn.dustlight.oauth2.uim.entities.v1.clients.DefaultClient;
+import cn.dustlight.oauth2.uim.entities.v1.users.DefaultPublicUser;
 import cn.dustlight.oauth2.uim.entities.v1.users.DefaultUser;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
@@ -76,6 +77,9 @@ public interface ClientMapper {
 
     @Select("SELECT users.* FROM users,clients WHERE clients.cid=#{cid} AND clients.uid=users.uid LIMIT 1")
     DefaultUser getClientOwner(String cid);
+
+    @Select("SELECT users.* FROM users,clients WHERE clients.cid=#{cid} AND clients.uid=users.uid LIMIT 1")
+    DefaultPublicUser getClientOwnerPublic(String cid);
 
     /* --------------------------------------------------------------------------------------------------------- */
 

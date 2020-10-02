@@ -1,21 +1,41 @@
 package cn.dustlight.oauth2.uim.controllers.oauth;
 
+import cn.dustlight.oauth2.uim.Constants;
+import cn.dustlight.oauth2.uim.entities.errors.ErrorEnum;
 import cn.dustlight.oauth2.uim.entities.v1.clients.Client;
 import cn.dustlight.oauth2.uim.entities.v1.scopes.ClientScope;
 import cn.dustlight.oauth2.uim.services.clients.ClientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
+import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.web.authentication.www.BasicAuthenticationConverter;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.*;
 
@@ -23,15 +43,24 @@ import java.util.*;
  * 覆盖 '/oauth/authorize' ，返回Json数据。
  */
 @RestController
-@Tag(name = "OAuth2 相关业务", description = "OAuth2授权、Token发放。")
+@SecurityScheme(name = "basicAuth", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER, scheme = "basic")
+@RequestMapping(path = Constants.V1.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
+@Tag(name = "OAuth2 相关业务", description = "OAuth2授权、Token颁发。")
 @SessionAttributes({"authorizationRequest", "org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint.ORIGINAL_AUTHORIZATION_REQUEST"})
 public class OAuth2Controller {
 
-    @Autowired
-    private AuthorizationEndpoint endpoint;
+    private static final Log logger = LogFactory.getLog(OAuth2Controller.class.getName());
+
+    private static final BasicAuthenticationConverter basicConverter = new BasicAuthenticationConverter();
 
     @Autowired
-    private ClientService clientDetailsService;
+    private AuthorizationEndpoint authorizationEndpoint;
+
+    @Autowired
+    private TokenEndpoint tokenEndpoint;
+
+    @Autowired
+    private ClientService clientService;
 
     @Autowired
     private ApprovalStore approvalStore;
@@ -39,69 +68,117 @@ public class OAuth2Controller {
     @Autowired
     private TokenStore uimTokenStore;
 
-    @RequestMapping(
-            value = {"/oauth/authorize"},
-            method = RequestMethod.GET,
-            produces = "application/json;charset=utf-8"
-    )
-    public Map authorize(Map<String, Object> model, @RequestParam Map<String, String> parameters, SessionStatus sessionStatus, Principal principal) {
-        Map<String, Object> data = new HashMap<>();
-        ModelAndView mv = endpoint.authorize(model, parameters, sessionStatus, principal);
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-        String clientId = parameters.get("client_id");
-        Client client = (Client) clientDetailsService.loadClientByClientId(clientId);
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Operation(summary = "预授权", description = "获取应用信息")
+    @PostMapping("oauth/authorization")
+    public OAuth2Client authorize(@Parameter(hidden = true) @RequestParam Map<String, String> parameters,
+                                  @RequestParam("client_id") String clientId,
+                                  @RequestParam(value = "response_type", defaultValue = "code") String responseType,
+                                  @RequestParam(value = "redirect_uri", required = false) String redirectUri,
+                                  @RequestParam(value = "scope", required = false) Collection<String> scopes,
+                                  @RequestParam(value = "state", required = false) String state,
+                                  Map<String, Object> model,
+                                  SessionStatus sessionStatus,
+                                  Principal principal) {
+
+        ModelAndView mv = authorizationEndpoint.authorize(model, parameters, sessionStatus, principal);
+
+        Client client = clientService.loadClientWithoutSecret(clientId);
+        OAuth2Client result = new OAuth2Client();
         String username = principal.getName();
 
-        data.put("clientName", client.getName());
-        data.put("description", client.getDescription());
-        data.put("clientId", client.getClientId());
-        data.put("createdAt", client.getCreatedAt());
-        data.put("updatedAt", client.getUpdatedAt());
+        result.setName(client.getName());
+        result.setClientId(client.getClientId());
+        result.setDescription(client.getDescription());
+        result.setCreatedAt(client.getCreatedAt());
+        result.setUpdatedAt(client.getUpdatedAt());
+        result.setStatus(client.getStatus());
+        result.setLogo(client.getLogo());
+        result.setUser(clientService.getOwnerPublic(clientId));
+
         if (mv.getView() instanceof RedirectView) {
             RedirectView redirectView = (RedirectView) mv.getView();
-            data.put("redirect_uri", redirectView.getUrl());
-            data.put("isApproved", true);
+            result.setApproved(true);
+            result.setRedirect(redirectView.getUrl());
         } else {
             AuthorizationRequest authorizationRequest = (AuthorizationRequest) model.get("authorizationRequest");
-            Set<String> requestScopes = authorizationRequest.getScope();
+
+            Set<String> approvedScopes = new LinkedHashSet<>(); // 已授权的Scopes
+            Set<String> requestScopes = authorizationRequest.getScope(); // 请求授权的Scope
+            Set<OAuth2ClientScope> resultScopes = new LinkedHashSet<>();
+
+            /* 获取已授权的Scopes */
             Collection<Approval> approvals = approvalStore.getApprovals(username, clientId);
-            Collection<ClientScope> scopeDes = client.getScopes();
-            Map<String, ClientScope> scopeMap = new LinkedHashMap<>();
-            for (ClientScope clientScope : scopeDes)
-                scopeMap.put(clientScope.getName(), clientScope);
-            Map<String, Map<String, Object>> scopes = new LinkedHashMap<>();
-            for (String s : requestScopes) {
-                Map<String, Object> m = new LinkedHashMap<>();
-                scopes.put(s, m);
-                m.put("details", scopeMap.get(s));
+            for (Approval approval : approvals)
+                if (approval.isCurrentlyActive())
+                    approvedScopes.add(approval.getScope());
+
+            for (ClientScope clientScope : client.getScopes()) {
+                if (clientScope == null)
+                    continue;
+                if (requestScopes.contains(clientScope.getName())) {
+                    OAuth2ClientScope oAuth2ClientScope = OAuth2ClientScope.from(clientScope);
+                    if (approvedScopes.contains(clientScope.getName()))
+                        oAuth2ClientScope.setApproved(true);
+                    resultScopes.add(oAuth2ClientScope);
+                }
             }
-            for (Approval approval : approvals) {
-                if (approval.isApproved() && scopes.containsKey(approval.getScope()))
-                    scopes.get(approval.getScope()).put("approved", true);
-            }
-            Collection<OAuth2AccessToken> tokens = uimTokenStore.findTokensByClientId(client.getClientId());
-            if (tokens != null)
-                data.put("userNumber", tokens.size());
-            if (client.getRegisteredRedirectUri() != null && !client.getRegisteredRedirectUri().isEmpty()) {
-                String[] nicknameArr = client.getRegisteredRedirectUri().toArray(new String[0]);
-                if (nicknameArr != null)
-                    data.put("nickname", nicknameArr[0]);
-            }
-            data.put("username", client.getClientSecret()); // 并不是真的ClientSecret，只是Mapper查询时用username存放于次
-            data.put("scopes", scopes);
-            data.put("isApproved", false);
+
+            result.setScopes(resultScopes);
+            result.setApproved(false);
+//            Collection<OAuth2AccessToken> tokens = uimTokenStore.findTokensByClientId(client.getClientId());
+//            if (tokens != null)
+//                data.put("userNumber", tokens.size());
         }
-        return data;
+        return result;
     }
 
-    @RequestMapping(
-            value = {"/oauth/authorize"},
-            method = {RequestMethod.POST},
-            params = {"user_oauth_approval"},
-            produces = "application/json;charset=utf-8"
-    )
-    public String approveOrDeny(@RequestParam Map<String, String> approvalParameters, Map<String, ?> model, SessionStatus sessionStatus, Principal principal) {
-        RedirectView view = (RedirectView) endpoint.approveOrDeny(approvalParameters, model, sessionStatus, principal);
+    @Operation(summary = "授权")
+    @DeleteMapping("oauth/authorization")
+    public String approveOrDeny(@RequestParam("approved") boolean approved,
+                                @RequestParam("scope") Set<String> scopes,
+                                Map<String, Object> model,
+                                SessionStatus sessionStatus,
+                                Principal principal) {
+        Map<String, String> approvalParameters = new LinkedHashMap<>();
+        approvalParameters.put("user_oauth_approval", approved ? "true" : "false");
+        for (String scope : scopes)
+            if (scope.startsWith("scope."))
+                approvalParameters.put(scope, "true");
+            else
+                approvalParameters.put("scope." + scope, "true");
+
+        RedirectView view = (RedirectView) authorizationEndpoint.approveOrDeny(approvalParameters, model, sessionStatus, principal);
         return view.getUrl();
+    }
+
+    @Operation(summary = "颁发令牌", security = @SecurityRequirement(name = "basicAuth"))
+    @PostMapping("oauth/token")
+    public ResponseEntity<OAuth2AccessToken> grantToken(@RequestParam(value = "code") String code,
+                                                        @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
+                                                        @RequestParam(value = "redirect_uri", required = false) String redirectUri,
+                                                        @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
+                                                        HttpServletRequest request) throws HttpRequestMethodNotSupportedException {
+
+        UsernamePasswordAuthenticationToken clientPrincipal = basicConverter.convert(request);
+        String clientName = clientPrincipal.getName();
+        String clientSecret = clientPrincipal.getCredentials() == null ? null : clientPrincipal.getCredentials().toString();
+
+        Client client = clientService.loadClientByClientId(clientName);
+        if (client == null)
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if ((clientSecret == null || client.getClientSecret() == null) && clientSecret != client.getClientSecret() ||
+                !passwordEncoder.matches(clientSecret, client.getClientSecret()))
+            ErrorEnum.OAUTH_ERROR.details("client secret incorrect").throwException();
+
+        OAuth2Request oAuth2Request = new OAuth2Request(parameters, clientName, null, true, null, null, null, null, null);
+        OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(oAuth2Request, null);
+
+        return tokenEndpoint.postAccessToken(oAuth2Authentication, parameters);
     }
 }

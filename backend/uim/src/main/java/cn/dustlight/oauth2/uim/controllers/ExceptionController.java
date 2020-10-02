@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.common.exceptions.ClientAuthenticationException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +43,13 @@ public class ExceptionController {
     @ExceptionHandler(AuthenticationException.class)
     public ErrorDetails onAuthenticationException(AuthenticationException e, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return ErrorEnum.SIGN_IN_FAIL.details(e.getMessage());
+        return ErrorEnum.UNAUTHORIZED.details(e.getMessage());
+    }
+
+    @ExceptionHandler(ClientAuthenticationException.class)
+    public ErrorDetails onClientAuthenticationException(ClientAuthenticationException e, HttpServletRequest request, HttpServletResponse response) {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return ErrorEnum.OAUTH_ERROR.details(e.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)

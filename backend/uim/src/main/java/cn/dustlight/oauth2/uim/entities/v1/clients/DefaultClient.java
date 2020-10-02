@@ -26,7 +26,7 @@ public class DefaultClient implements Client {
     private Integer accessTokenValidity, refreshTokenValidity, status;
     private Long uid;
     private Collection<Resource> resources;
-    private Collection<ClientScope> scopes;
+    private Collection<? extends ClientScope> scopes;
     private Collection<GrantType> types;
     private Collection<Authority> authorities;
     private ObjectMapper mapper = new ObjectMapper();
@@ -67,7 +67,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public Collection<ClientScope> getScopes() {
+    public Collection<? extends ClientScope> getScopes() {
         return scopes;
     }
 
@@ -243,6 +243,10 @@ public class DefaultClient implements Client {
                 logger.warn("Set additional information error", e);
             }
         }
+    }
+
+    public void setScopes(Collection<? extends ClientScope> scopes) {
+        this.scopes = scopes;
     }
 
     public void setLogo(String logo) {

@@ -55,8 +55,10 @@ public class ServicesConfiguration {
                                        @Autowired ScopeMapper scopeMapper,
                                        @Autowired GrantTypeMapper grantTypeMapper,
                                        @Autowired UniqueGenerator<String> clientIdGenerator,
-                                       @Autowired Generator<String> clientSecretGenerator) {
-        return new DefaultClientService(mapper, scopeMapper, grantTypeMapper, clientIdGenerator, clientSecretGenerator);
+                                       @Autowired Generator<String> clientSecretGenerator,
+                                       @Autowired PasswordEncoder passwordEncoder) {
+        return new DefaultClientService(mapper, scopeMapper, grantTypeMapper, clientIdGenerator,
+                clientSecretGenerator, passwordEncoder);
     }
 
     @Bean

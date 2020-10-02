@@ -35,8 +35,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         String[] publicPaths = properties.getPublicPaths();
         Logger.getLogger(getClass().getName()).info("Public paths: " + Arrays.toString(publicPaths));
 
-        http.authorizeRequests()
-                .antMatchers(Constants.V1.API_ROOT + "**", "/oauth/**").permitAll()
+        http
+                .authorizeRequests()
+                .antMatchers(Constants.V1.API_ROOT + "**").permitAll()
                 .antMatchers(publicPaths).permitAll()
                 .anyRequest().authenticated()
                 .and()
