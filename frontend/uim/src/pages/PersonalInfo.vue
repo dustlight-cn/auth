@@ -14,7 +14,12 @@
 
 <script>
   export default {
-    name: "PersonalInfo"
+    name: "PersonalInfo",
+    mounted() {
+      this.$api.getSession()
+        .then((user) => console.log(user))
+        .catch(e => console.error(e))
+    }
   }
 </script>
 

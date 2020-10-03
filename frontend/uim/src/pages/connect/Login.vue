@@ -3,7 +3,8 @@
     <!-- 宽窗口 -->
     <q-page class="flex flex-center gt-xs">
       <q-form
-        @submit="login" class="full-width shadow-2 q-pa-md rounded-borders" style="max-width: 600px">
+        @submit="login" class="full-width shadow-2 q-pa-md rounded-borders"
+        style="max-width: 599px">
         <div class="q-gutter-md">
           <div class="text-h4">{{$tt(this,"title")}}</div>
           <q-input
