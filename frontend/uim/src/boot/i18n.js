@@ -6,6 +6,7 @@ import EN_US from '../assets/lang/en-us.json'
 
 // 告诉Vue使用我们的Vue包:
 Vue.use(VueI18n)
+Vue.prototype.$tt = (ctx, key) => ctx.$t(ctx.$options.name + "." + key)
 export default ({app, Vue}) => {
   // 在应用中设置i18n实例;
   // 我们通过这样做将它注入到根组件;

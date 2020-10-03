@@ -1,3 +1,21 @@
 {
- "title": "Dustlight"
+  "title": "Dustlight",
+  "Login": {
+    "title": "Login",
+    "login": "Login",
+    "signUp": "Sign Up",
+    "forgotPassword": "forgot password?",
+    "account": "Account",
+    "accountHint": "Your username or email",
+    "password": "Password",
+    "passwordHint": "Your password"
+  },
+  "PersonalInfo": {
+    "title": "Personal Information",
+    "subtitle": "Your personal information, such as nickname and avatar"
+  },
+  "menus": {
+    "home": "Home",
+    "account": "Account"
+  }
 }

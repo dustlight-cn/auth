@@ -1,3 +1,24 @@
 {
-  "title": "光尘"
+  "title": "光尘",
+  "Login": {
+    "title": "登录",
+    "login": "登录",
+    "signUp": "注册",
+    "forgotPassword": "忘记密码?",
+    "account": "账号",
+    "accountHint": "您的用户名或账号",
+    "password": "密码",
+    "passwordHint": "您的密码"
+  },
+  "PersonalInfo": {
+    "title": "个人信息",
+    "subtitle": "您的基本信息，例如昵称和头像"
+  },
+  "menus": {
+    "home": "首页",
+    "account": "个人信息"
+  },
+  "Edit": {
+    "title": "编辑"
+  }
 }
