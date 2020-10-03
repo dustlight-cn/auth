@@ -18,18 +18,23 @@
 ## 快速部署
 ### 准备工作
 在进行服务部署之前，请检查是否满足以下条件：
-* Docker *服务部署需要在Docker上进行部署。*
-* MySQL *服务使用MySQL数据库进行数据持久化。[数据库初始化SQL](backend/uim/others/database.sql)*
-* Redis *服务使用Redis来实现分布式Session以及Token、验证码的存储。*
-* STMP账号 *服务在某些情况可能需要发送电子邮件，例如用户注册时。*
-* 腾讯云对象储存(COS) *服务使用腾讯云COS保存用户头像和应用Logo等静态文件。*
+* Docker            *服务部署需要在Docker上进行部署。*
+* MySQL             *服务使用MySQL数据库进行数据持久化。[数据库初始化SQL](backend/uim/others/database.sql)*
+* Redis             *服务使用Redis来实现分布式Session以及Token、验证码的存储。*
+* STMP账号            *服务在某些情况可能需要发送电子邮件，例如用户注册时。*
+* 腾讯云对象储存(COS)  *服务使用腾讯云COS保存用户头像和应用Logo等静态文件。*
 
 ### 获取镜像
-> docker pull ccr.ccs.tencentyun.com/dustlight/uim:latest
-### 创建容器
-> docker create --name uim -p 8080:8080 -e MYSQL_HOST={数据库地址} -e MYSQL_PORT=3306 ... ccr.ccs.tencentyun.com/dustlight/uim:latest
+```bash
+docker pull ccr.ccs.tencentyun.com/dustlight/uim:latest
+```
 
-*环境变量列表*
+### 创建容器
+```bash
+docker create --name uim -p 8080:8080 -e MYSQL_HOST={数据库地址} -e MYSQL_PORT=3306 ... ccr.ccs.tencentyun.com/dustlight/uim:latest
+```
+
+**环境变量列表：**
 
 | 变量名 | 描述 | 默认值|
 | :----: | :----: | :----: |
@@ -42,7 +47,7 @@
 | MYSQL_PASS | 数据库密码 | - |
 | REDIS_HOST | Redis服务器地址 | redis |
 | REDIS_PORT | Redis端口 | 6379 |
-| SMTP_HOST | SMTP服务器地址 | - |
+| SMTP_HOST | SMTP服务器地址 | smtp.exmail.qq.com |
 | SMTP_USER | SMTP账号 | - |
 | SMTP_PASS | SMTP端口 | - |
 | TENCENT_COS_SECRET_ID | 腾讯云COS SecretId | - |
@@ -51,14 +56,19 @@
 | TENCENT_COS_REGION | 腾讯云COS 地区 | - |
 | STORAGE_BASE_URL | 静态资源基础URL，若为空默认使用腾讯云URL | - |
 ### 启动容器
-> docker start uim
+```bash
+docker start uim
+```
 
 ### 查看日志
-> docker logs uim
+```bash
+docker logs 
+```
 
 ### 查看API
-> http://{YOUR_HOST}:8080/u/doc/
-
+```http
+http://{YOUR_HOST}:8080/u/doc/
+```
 将"{YOUR_HOST}"替换成docker宿主机地址后，使用浏览器打开地址即可查看API。
 ## 目录
 - [root](.) 根目录
