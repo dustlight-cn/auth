@@ -5,8 +5,8 @@ spring:
     port: ${REDIS_PORT:6379}
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/${MYSQL_DB:uim}?characterEncoding=${MYSQL_CHARSET:utf8}&useSSL=${MYSQL_SSL:false}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASS}
+    username: ${MYSQL_USER:}
+    password: ${MYSQL_PASS:}
     hikari:
       connection-timeout: 30000
       idle-timeout: 600000
@@ -19,8 +19,8 @@ spring:
     add-mappings: false
   mail:
     host: ${SMTP_HOST:smtp.exmail.qq.com}
-    username: ${SMTP_USER}
-    password: ${SMTP_PASS}
+    username: ${SMTP_USER:}
+    password: ${SMTP_PASS:}
 # 日志输出
 logging:
   level:
@@ -55,14 +55,14 @@ dustlight:
     resource-paths:
       - /u/v1/res/**
     storage:
-      base-url: ${STORAGE_BASE_URL}
+      base-url: ${STORAGE_BASE_URL:}
       prefix: uim/upload/
   storage:
     tencent:
       cos:
         enabled: true
-        secret-id: ${TENCENT_COS_SECRET_ID}
-        secret-key: ${TENCENT_COS_SECRET_KEY}
-        bucket: ${TENCENT_COS_BUCKET}
-        region: ${TENCENT_COS_REGION}
+        secret-id: ${TENCENT_COS_SECRET_ID:}
+        secret-key: ${TENCENT_COS_SECRET_KEY:}
+        bucket: ${TENCENT_COS_BUCKET:}
+        region: ${TENCENT_COS_REGION:}
         http-protocol: https
