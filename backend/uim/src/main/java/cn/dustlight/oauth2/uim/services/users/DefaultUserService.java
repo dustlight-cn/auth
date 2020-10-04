@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 public class DefaultUserService implements UserService<DefaultUser, DefaultPublicUser> {
 
@@ -32,6 +33,11 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     private PasswordEncoder passwordEncoder;
     private UniqueGenerator<Long> idGenerator;
     private static final Log logger = LogFactory.getLog(DefaultUserService.class.getName());
+
+    /* 表单正则 */
+    private Pattern usernamePattern;
+    private Pattern emailPattern;
+    private Pattern passwordPattern;
 
     private OrderBySqlBuilder orderBySqlBuilder = OrderBySqlBuilder.create
             ("uid", "createdAt", "updatedAt", "accountExpiredAt", "credentialsExpiredAt", "unlockedAt");
@@ -65,6 +71,12 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     public void createUser(String username, String password, String email, String nickname, int gender,
                            Collection<UserRole> roles, Date accountExpiredAt, Date credentialsExpiredAt, Date unlockedAt, boolean enabled) {
         Long id = idGenerator.generate();
+        if (usernamePattern != null && !usernamePattern.matcher(username).matches())
+            ErrorEnum.USERNAME_INVALID.throwException();
+        if (passwordPattern != null && !passwordPattern.matcher(password).matches())
+            ErrorEnum.PASSWORD_INVALID.throwException();
+        if (emailPattern != null && !emailPattern.matcher(email).matches())
+            ErrorEnum.EMAIL_INVALID.throwException();
         try {
             // 先创建用户
             if (!userMapper.insertUser(id, username, encodePassword(password), email, nickname, gender,
@@ -124,12 +136,18 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     @Override
     public void updatePassword(Long uid, String password) {
+        if (passwordPattern != null && !passwordPattern.matcher(password).matches())
+            ErrorEnum.PASSWORD_INVALID.throwException();
         if (!userMapper.updatePassword(uid, password))
             ErrorEnum.UPDATE_USER_FAIL.details("fail to update password").throwException();
     }
 
     @Override
     public void updatePasswordByEmail(String email, String password) {
+        if (passwordPattern != null && !passwordPattern.matcher(password).matches())
+            ErrorEnum.PASSWORD_INVALID.throwException();
+        if (emailPattern != null && !emailPattern.matcher(email).matches())
+            ErrorEnum.EMAIL_INVALID.throwException();
         if (!userMapper.updatePasswordByEmail(email, encodePassword(password)))
             ErrorEnum.UPDATE_USER_FAIL.details("fail to update password by email").throwException();
     }
@@ -148,6 +166,8 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     @Override
     public void updateEmail(Long uid, String email) {
+        if (emailPattern != null && !emailPattern.matcher(email).matches())
+            ErrorEnum.EMAIL_INVALID.throwException();
         if (!userMapper.updateEmail(uid, email))
             ErrorEnum.UPDATE_USER_FAIL.details("fail to update email").throwException();
     }
@@ -220,4 +240,75 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
         }
         return users;
     }
+
+    /* --------------------------------------------------------------------------------------------------- */
+
+    public void setEmailPattern(Pattern emailPattern) {
+        this.emailPattern = emailPattern;
+    }
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public void setIdGenerator(UniqueGenerator<Long> idGenerator) {
+        this.idGenerator = idGenerator;
+    }
+
+    public void setPasswordPattern(Pattern passwordPattern) {
+        this.passwordPattern = passwordPattern;
+    }
+
+    public void setRoleMapper(RoleMapper roleMapper) {
+        this.roleMapper = roleMapper;
+    }
+
+    public void setUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
+    public void setUsernamePattern(Pattern usernamePattern) {
+        this.usernamePattern = usernamePattern;
+    }
+
+    public void setOrderBySqlBuilder(OrderBySqlBuilder orderBySqlBuilder) {
+        this.orderBySqlBuilder = orderBySqlBuilder;
+    }
+
+    public static Log getLogger() {
+        return logger;
+    }
+
+    public OrderBySqlBuilder getOrderBySqlBuilder() {
+        return orderBySqlBuilder;
+    }
+
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
+
+    public Pattern getEmailPattern() {
+        return emailPattern;
+    }
+
+    public Pattern getPasswordPattern() {
+        return passwordPattern;
+    }
+
+    public Pattern getUsernamePattern() {
+        return usernamePattern;
+    }
+
+    public RoleMapper getRoleMapper() {
+        return roleMapper;
+    }
+
+    public UniqueGenerator<Long> getIdGenerator() {
+        return idGenerator;
+    }
+
+    public UserMapper getUserMapper() {
+        return userMapper;
+    }
+    /* --------------------------------------------------------------------------------------------------- */
 }

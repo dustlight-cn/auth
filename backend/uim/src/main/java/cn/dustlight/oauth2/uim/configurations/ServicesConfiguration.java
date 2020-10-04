@@ -26,6 +26,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 
+import java.util.regex.Pattern;
+
 public class ServicesConfiguration {
 
     @Bean
@@ -45,8 +47,19 @@ public class ServicesConfiguration {
     public UserService userService(@Autowired UserMapper userMapper,
                                    @Autowired RoleMapper roleMapper,
                                    @Autowired PasswordEncoder passwordEncoder,
-                                   @Autowired UniqueGenerator<Long> idGenerator) {
-        return new DefaultUserService(userMapper, roleMapper, passwordEncoder, idGenerator);
+                                   @Autowired UniqueGenerator<Long> idGenerator,
+                                   @Autowired Properties properties) {
+        Properties.PatternProperties patternProperties = properties.getPattern();
+        DefaultUserService userService = new DefaultUserService(userMapper, roleMapper, passwordEncoder, idGenerator);
+        if (patternProperties != null) {
+            if (patternProperties.getUsername() != null)
+                userService.setUsernamePattern(Pattern.compile(patternProperties.getUsername()));
+            if (patternProperties.getPassword() != null)
+                userService.setPasswordPattern(Pattern.compile(patternProperties.getPassword()));
+            if (patternProperties.getEmail() != null)
+                userService.setEmailPattern(Pattern.compile(patternProperties.getEmail()));
+        }
+        return userService;
     }
 
     @Bean
