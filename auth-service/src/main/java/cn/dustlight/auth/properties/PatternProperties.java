@@ -1,4 +1,4 @@
-package cn.dustlight.auth.configurations;
+package cn.dustlight.auth.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

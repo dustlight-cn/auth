@@ -1,4 +1,4 @@
-package cn.dustlight.auth.mapper;
+package cn.dustlight.auth.mappers;
 
 import cn.dustlight.auth.entities.ClientScope;
 import cn.dustlight.auth.entities.DefaultClientScope;

@@ -1,4 +1,4 @@
-package cn.dustlight.auth.mapper;
+package cn.dustlight.auth.mappers;
 
 import cn.dustlight.auth.entities.Authority;
 import cn.dustlight.auth.entities.DefaultAuthority;

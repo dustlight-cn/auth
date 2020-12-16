@@ -3,8 +3,8 @@ package cn.dustlight.auth.services;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.Scope;
 import cn.dustlight.auth.generator.UniqueGenerator;
-import cn.dustlight.auth.mapper.AuthorityMapper;
-import cn.dustlight.auth.mapper.ScopeMapper;
+import cn.dustlight.auth.mappers.AuthorityMapper;
+import cn.dustlight.auth.mappers.ScopeMapper;
 
 import java.util.Collection;
 

@@ -1,0 +1,26 @@
+mysql:
+  host: "instance-2"
+  port: 30010
+  db: uim
+  charset: "utf8"
+  ssl: false
+  username: "root"
+  password: "123456"
+redis:
+  host: "instance-2"
+  port: 30020
+
+spring:
+  datasource:
+    url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}
+    username: ${mysql.username}
+    password: ${mysql.password}
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      maximum-pool-size: 3
+      minimum-idle: 1
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}

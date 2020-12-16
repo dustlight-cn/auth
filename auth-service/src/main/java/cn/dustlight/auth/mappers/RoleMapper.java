@@ -1,4 +1,4 @@
-package cn.dustlight.auth.mapper;
+package cn.dustlight.auth.mappers;
 
 import cn.dustlight.auth.entities.DefaultRole;
 import cn.dustlight.auth.entities.DefaultUserRole;
@@ -57,7 +57,7 @@ public interface RoleMapper {
             @Result(column = "rid", property = "rid"),
             @Result(column = "rid",
                     property = "authorities",
-                    many = @Many(select = "cn.dustlight.oauth2.uim.mappers.AuthorityMapper.listRoleAuthorities"))
+                    many = @Many(select = "cn.dustlight.auth.mappers.AuthorityMapper.listRoleAuthorities"))
     })
     Collection<DefaultUserRole> listUserRoles(Long uid);
 

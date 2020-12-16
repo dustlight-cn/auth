@@ -1,4 +1,4 @@
-package cn.dustlight.auth.mapper;
+package cn.dustlight.auth.mappers;
 
 import cn.dustlight.auth.entities.DefaultClient;
 import cn.dustlight.auth.entities.DefaultPublicUser;
@@ -47,8 +47,8 @@ public interface ClientMapper {
     @Select("SELECT * FROM clients WHERE cid=#{clientId} LIMIT 1")
     @Results(id = "Client", value = {
             @Result(column = "cid", property = "cid"),
-            @Result(column = "cid", property = "types", many = @Many(select = "cn.dustlight.oauth2.uim.mappers.GrantTypeMapper.listClientGrantTypes")),
-            @Result(column = "cid", property = "scopes", many = @Many(select = "cn.dustlight.oauth2.uim.mappers.ScopeMapper.listClientScopes"))
+            @Result(column = "cid", property = "types", many = @Many(select = "cn.dustlight.auth.mappers.GrantTypeMapper.listClientGrantTypes")),
+            @Result(column = "cid", property = "scopes", many = @Many(select = "cn.dustlight.auth.mappers.ScopeMapper.listClientScopes"))
     })
     DefaultClient loadClient(String clientId);
 

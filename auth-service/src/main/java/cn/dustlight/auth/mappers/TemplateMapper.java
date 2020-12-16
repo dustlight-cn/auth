@@ -1,4 +1,4 @@
-package cn.dustlight.auth.mapper;
+package cn.dustlight.auth.mappers;
 
 import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
 import org.apache.ibatis.annotations.*;

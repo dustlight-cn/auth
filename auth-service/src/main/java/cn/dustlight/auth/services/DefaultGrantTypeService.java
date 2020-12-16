@@ -3,7 +3,7 @@ package cn.dustlight.auth.services;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.GrantType;
 import cn.dustlight.auth.generator.UniqueGenerator;
-import cn.dustlight.auth.mapper.GrantTypeMapper;
+import cn.dustlight.auth.mappers.GrantTypeMapper;
 
 import java.util.Collection;
 

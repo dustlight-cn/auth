@@ -3,8 +3,8 @@ package cn.dustlight.auth.services;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.Role;
 import cn.dustlight.auth.generator.UniqueGenerator;
-import cn.dustlight.auth.mapper.AuthorityMapper;
-import cn.dustlight.auth.mapper.RoleMapper;
+import cn.dustlight.auth.mappers.AuthorityMapper;
+import cn.dustlight.auth.mappers.RoleMapper;
 
 import java.util.Collection;
 

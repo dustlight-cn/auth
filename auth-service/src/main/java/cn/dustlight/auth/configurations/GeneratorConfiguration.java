@@ -5,6 +5,7 @@ import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.generator.others.RandomStringGenerator;
 import cn.dustlight.auth.generator.others.UniqueLongToStringGenerator;
 import cn.dustlight.auth.generator.snowflake.SnowflakeIdGenerator;
+import cn.dustlight.auth.properties.SnowflakeProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

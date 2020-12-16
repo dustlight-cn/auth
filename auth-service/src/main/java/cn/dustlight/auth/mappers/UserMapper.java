@@ -1,4 +1,4 @@
-package cn.dustlight.auth.mapper;
+package cn.dustlight.auth.mappers;
 
 import cn.dustlight.auth.entities.DefaultPublicUser;
 import cn.dustlight.auth.entities.DefaultUser;
@@ -30,7 +30,7 @@ public interface UserMapper {
             @Result(column = "uid", property = "uid"),
             @Result(column = "uid",
                     property = "roles",
-                    many = @Many(select = "cn.dustlight.oauth2.uim.mappers.RoleMapper.listUserRoles"))
+                    many = @Many(select = "cn.dustlight.auth.mappers.RoleMapper.listUserRoles"))
     })
     DefaultUser selectUserByUsernameOrEmail(String uoe);
 
