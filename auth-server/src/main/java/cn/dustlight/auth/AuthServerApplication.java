@@ -1,25 +1,21 @@
 package cn.dustlight.auth;
 
-//import cn.dustlight.auth.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @SpringBootApplication
-@RestController
-public class AuthServerApplication {
+@EnableWebSecurity
+public class AuthServerApplication extends WebSecurityConfigurerAdapter {
 
     public static void main(String[] args) {
         SpringApplication.run(AuthServerApplication.class, args);
     }
 
-//    @Autowired
-//    UserService<?, ?> userService;
-//
-//    @GetMapping("/")
-//    public Object index() {
-//        return userService.listUsers(null, null, null);
-//    }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.formLogin();
+    }
 }

@@ -1,12 +1,13 @@
 package cn.dustlight.auth.services;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.code.RandomValueAuthorizationCodeServices;
 
 import java.time.Duration;
 
-public class RedisAuthorizationCodeService extends RandomValueAuthorizationCodeServices {
+public class RedisAuthorizationCodeService extends RandomValueAuthorizationCodeServices implements InitializingBean {
 
     private String keyPrefix = "auth_code:";
     private RedisTemplate<String, Object> redisTemplate;
@@ -51,5 +52,10 @@ public class RedisAuthorizationCodeService extends RandomValueAuthorizationCodeS
 
     public long getDuration() {
         return duration;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        redisTemplate.afterPropertiesSet();
     }
 }

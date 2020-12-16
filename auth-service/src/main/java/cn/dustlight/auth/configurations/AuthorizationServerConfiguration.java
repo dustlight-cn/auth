@@ -1,5 +1,6 @@
 package cn.dustlight.auth.configurations;
 
+import cn.dustlight.auth.services.AuthApprovalHandler;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.AuthAccessTokenConverter;
@@ -18,8 +19,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
         GeneratorConfiguration.class,
         ServicesConfiguration.class,
         AuthMethodSecurityConfiguration.class,
-        PasswordConfiguration.class,
-        AuthApprovalHandlerConfiguration.class})
+        PasswordConfiguration.class})
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
@@ -29,14 +29,13 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private ClientService clientService;
 
     @Autowired
-    private AuthApprovalHandlerConfiguration.AuthApprovalHandler authApprovalHandler;
+    private AuthApprovalHandler authApprovalHandler;
 
     @Autowired
     private AuthorizationCodeServices authorizationCodeServices;
 
     @Autowired
     private TokenStore authTokenStore;
-
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {

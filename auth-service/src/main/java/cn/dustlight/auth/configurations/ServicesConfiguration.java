@@ -10,11 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 
 import java.util.regex.Pattern;
 
@@ -80,25 +76,5 @@ public class ServicesConfiguration {
     public GrantTypeService grantTypeService(@Autowired GrantTypeMapper grantTypeMapper,
                                              @Autowired UniqueGenerator<Long> generator) {
         return new DefaultGrantTypeService(grantTypeMapper, generator);
-    }
-
-    @Bean("authorizationCodeServices")
-    @ConditionalOnMissingBean(name = "authorizationCodeServices")
-    public AuthorizationCodeServices authorizationCodeServices(@Autowired RedisConnectionFactory factory,
-                                                               @Autowired AuthorizationCodeProperties properties) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(factory);
-        redisTemplate.setKeySerializer(RedisSerializer.string());
-        redisTemplate.setValueSerializer(RedisSerializer.java());
-        redisTemplate.setHashKeySerializer(RedisSerializer.string());
-        redisTemplate.setHashValueSerializer(RedisSerializer.java());
-        RedisAuthorizationCodeService instance = new RedisAuthorizationCodeService(redisTemplate);
-        if (properties != null) {
-            if (properties.getDuration() != null)
-                instance.setDuration(properties.getDuration());
-            if (properties.getKeyPrefix() != null)
-                instance.setKeyPrefix(properties.getKeyPrefix());
-        }
-        return instance;
     }
 }

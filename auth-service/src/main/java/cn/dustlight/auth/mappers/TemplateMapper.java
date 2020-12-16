@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-@CacheNamespace
 @Service
 @Mapper
 public interface TemplateMapper {
@@ -15,10 +14,13 @@ public interface TemplateMapper {
     Collection<String> getTemplatesName();
 
     @Select("SELECT * FROM templates where name=#{name} LIMIT 1")
-    Template getTemplate(String name);
+    Template getTemplate(@Param("name") String name);
 
     @Insert("INSERT INTO templates (name,uid,title,content) VALUES (#{name},#{uid},#{title},#{content}) ON DUPLICATE KEY UPDATE uid=#{uid},title=#{title},content=#{content}")
-    boolean setTemplate(String name, Long uid, String title, String content);
+    boolean setTemplate(@Param("name") String name,
+                        @Param("uid") Long uid,
+                        @Param("title") String title,
+                        @Param("content") String content);
 
     @Select("SELECT * FROM templates")
     Collection<Template> getTemplates();

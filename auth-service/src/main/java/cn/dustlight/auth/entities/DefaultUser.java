@@ -8,9 +8,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
-/**
- * 默认用户详情实体
- */
 @Schema(name = "User")
 public class DefaultUser implements User {
 

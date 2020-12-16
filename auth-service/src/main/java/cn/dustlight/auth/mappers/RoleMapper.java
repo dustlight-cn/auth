@@ -24,28 +24,30 @@ public interface RoleMapper {
     @Select("<script>SELECT * FROM roles WHERE rid IN " +
             "<foreach collection='rids' item='rid' open='(' separator=',' close=')'>" +
             "#{rid}</foreach></script>")
-    Collection<DefaultRole> selectRoles(Collection<Long> rids);
+    Collection<DefaultRole> selectRoles(@Param("rids") Collection<Long> rids);
 
     @Select("SELECT * FROM roles WHERE rid=#{rid} LIMIT 1")
-    DefaultRole selectRole(Long rid);
+    DefaultRole selectRole(@Param("rid") Long rid);
 
     @Insert("INSERT INTO roles (rid,roleName,roleDescription) VALUES (#{rid},#{roleName},#{roleDescription}) " +
             "ON DUPLICATE KEY UPDATE roleName=VALUES(roleName),roleDescription=VALUES(roleDescription)")
-    boolean insertRole(Long rid, String roleName, String roleDescription);
+    boolean insertRole(@Param("rid") Long rid,
+                       @Param("roleName") String roleName,
+                       @Param("roleDescription") String roleDescription);
 
     @Insert("<script>INSERT INTO roles (rid,roleName,roleDescription) VALUES " +
             "<foreach collection='roles' item='role' separator=','>" +
             "(#{role.rid},#{role.roleName},#{role.roleDescription})" +
             "</foreach> ON DUPLICATE KEY UPDATE roleName=VALUES(roleName),roleDescription=VALUES(roleDescription)</script>")
-    boolean insertRoles(Collection<? extends Role> roles);
+    boolean insertRoles(@Param("roles") Collection<? extends Role> roles);
 
     @Delete("DELETE FROM roles WHERE rid=#{rid}")
-    boolean deleteRole(Long rid);
+    boolean deleteRole(@Param("rid") Long rid);
 
     @Delete("<script>DELETE FROM roles WHERE rid IN " +
             "<foreach collection='rids' item='rid' open='(' separator=',' close=')'>" +
             "#{rid}</foreach></script>")
-    boolean deleteRoles(Collection<Long> rids);
+    boolean deleteRoles(@Param("rids") Collection<Long> rids);
 
     /* ----------------------------------------------------------------------------------------------------- */
 
@@ -59,20 +61,22 @@ public interface RoleMapper {
                     property = "authorities",
                     many = @Many(select = "cn.dustlight.auth.mappers.AuthorityMapper.listRoleAuthorities"))
     })
-    Collection<DefaultUserRole> listUserRoles(Long uid);
+    Collection<DefaultUserRole> listUserRoles(@Param("uid") Long uid);
 
     @Select("SELECT roleName FROM user_role AS ur,roles AS r " +
             "WHERE ur.uid=#{uid} AND ur.rid=r.rid")
-    Collection<String> listUserRoleNames(Long uid);
+    Collection<String> listUserRoleNames(@Param("uid") Long uid);
 
     @Select("SELECT r.rid FROM user_role AS ur,roles AS r " +
             "WHERE ur.uid=#{uid} AND ur.rid=r.rid")
-    Collection<Long> listUserRoleIds(Long uid);
+    Collection<Long> listUserRoleIds(@Param("uid") Long uid);
 
     @Insert("<script>INSERT INTO user_role (uid,rid,expiredAt) VALUES " +
             "<foreach collection='roles' item='role' separator=','>(#{uid},#{role},#{expiredAt})</foreach>" +
             "ON DUPLICATE KEY UPDATE expiredAt=#{expiredAt}</script>")
-    boolean insertUserRolesByRoleIds(Long uid, Collection<Long> roles, Date expiredAt);
+    boolean insertUserRolesByRoleIds(@Param("uid") Long uid,
+                                     @Param("roles") Collection<Long> roles,
+                                     @Param("expiredAt") Date expiredAt);
 
     @Insert("<script>INSERT INTO user_role (uid,rid,expiredAt) VALUES " +
             "<foreach collection='roles' item='role' separator=','>(#{uid},<choose>" +
@@ -80,26 +84,31 @@ public interface RoleMapper {
             "<otherwise>(SELECT rid FROM roles WHERE roleName=#{role.roleName} LIMIT 1)</otherwise>" + // 不存在则查询
             "</choose>,#{role.expiredAt})</foreach>" +
             " ON DUPLICATE KEY UPDATE expiredAt=VALUES(expiredAt)</script>")
-    <T extends UserRole> boolean insertUserRoles(Long uid, Collection<T> roles);
+    <T extends UserRole> boolean insertUserRoles(@Param("uid") Long uid,
+                                                 @Param("roles") Collection<T> roles);
 
     @Insert("<script>INSERT INTO user_role (uid,rid,expiredAt) " +
             "(SELECT #{uid} as uid,rid,#{expiredAt} as expiredAt FROM roles WHERE roleName IN " +
             "<foreach collection='roleNames' item='roleName' separator=',' open='(' close=')'>#{roleName}</foreach>)" +
             "ON DUPLICATE KEY UPDATE expiredAt=#{expiredAt}</script>")
-    boolean insertUserRolesByRoleNames(Long uid, Collection<String> roleNames, Date expiredAt);
+    boolean insertUserRolesByRoleNames(@Param("uid") Long uid,
+                                       @Param("roleNames") Collection<String> roleNames,
+                                       @Param("expiredAt") Date expiredAt);
 
     @Delete("<script>DELETE FROM user_role WHERE uid=#{uid} AND rid IN " +
             "<foreach collection='roles' item='role' separator=',' open='(' close=')'>" +
             "#{role}" +
             "</foreach></script>")
-    boolean deleteUserRolesByRoleIds(Long uid, Collection<Long> roles);
+    boolean deleteUserRolesByRoleIds(@Param("uid") Long uid,
+                                     @Param("roles") Collection<Long> roles);
 
     @Delete("<script>DELETE FROM user_role WHERE uid=#{uid} AND rid IN " +
             "(SELECT rid FROM roles WHERE roleName IN " +
             "<foreach collection='roleNames' item='roleName' separator=',' open='(' close=')'>" +
             "#{roleName}" +
             "</foreach>)</script>")
-    boolean deleteUserRolesByRoleNames(Long uid, Collection<String> roleNames);
+    boolean deleteUserRolesByRoleNames(@Param("uid") Long uid,
+                                       @Param("roleNames") Collection<String> roleNames);
 
     /* ----------------------------------------------------------------------------------------------------- */
 }
