@@ -1,0 +1,78 @@
+package cn.dustlight.auth.configurations;
+
+import cn.dustlight.auth.generator.Generator;
+import cn.dustlight.auth.generator.UniqueGenerator;
+import cn.dustlight.auth.mapper.*;
+import cn.dustlight.auth.services.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.regex.Pattern;
+
+@EnableConfigurationProperties(PatternProperties.class)
+public class ServicesConfiguration {
+
+    @Bean
+    @ConditionalOnMissingBean
+    public UserService userService(@Autowired UserMapper userMapper,
+                                   @Autowired RoleMapper roleMapper,
+                                   @Autowired PasswordEncoder passwordEncoder,
+                                   @Autowired UniqueGenerator<Long> idGenerator,
+                                   @Autowired PatternProperties properties) {
+        DefaultUserService userService = new DefaultUserService(userMapper, roleMapper, passwordEncoder, idGenerator);
+        if (properties != null) {
+            if (properties.getUsername() != null)
+                userService.setUsernamePattern(Pattern.compile(properties.getUsername()));
+            if (properties.getPassword() != null)
+                userService.setPasswordPattern(Pattern.compile(properties.getPassword()));
+            if (properties.getEmail() != null)
+                userService.setEmailPattern(Pattern.compile(properties.getEmail()));
+        }
+        return userService;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ClientService clientService(@Autowired ClientMapper mapper,
+                                       @Autowired ScopeMapper scopeMapper,
+                                       @Autowired GrantTypeMapper grantTypeMapper,
+                                       @Autowired UniqueGenerator<String> clientIdGenerator,
+                                       @Autowired Generator<String> clientSecretGenerator,
+                                       @Autowired PasswordEncoder passwordEncoder) {
+        return new DefaultClientService(mapper, scopeMapper, grantTypeMapper, clientIdGenerator,
+                clientSecretGenerator, passwordEncoder);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AuthorityService authorityService(@Autowired AuthorityMapper mapper,
+                                             @Autowired UniqueGenerator<Long> generator) {
+        return new DefaultAuthorityService(mapper, generator);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public RoleService roleService(@Autowired RoleMapper roleMapper,
+                                   @Autowired AuthorityMapper authorityMapper,
+                                   @Autowired UniqueGenerator<Long> generator) {
+        return new DefaultRoleService(generator, roleMapper, authorityMapper);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ScopeService scopeService(@Autowired ScopeMapper scopeMapper,
+                                     @Autowired AuthorityMapper authorityMapper,
+                                     @Autowired UniqueGenerator<Long> generator) {
+        return new DefaultScopeService(generator, scopeMapper, authorityMapper);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public GrantTypeService grantTypeService(@Autowired GrantTypeMapper grantTypeMapper,
+                                             @Autowired UniqueGenerator<Long> generator) {
+        return new DefaultGrantTypeService(grantTypeMapper, generator);
+    }
+}

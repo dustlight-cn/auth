@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  cn.dustlight.auth.configurations.PasswordConfiguration,\
+  cn.dustlight.auth.configurations.GeneratorConfiguration,\
+  cn.dustlight.auth.configurations.ServicesConfiguration
