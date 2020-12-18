@@ -17,6 +17,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 @EnableAuthorizationServer
 @Import({TokenStoreConfiguration.class,
@@ -44,9 +46,18 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
+
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
+
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {
-        security.checkTokenAccess("isAuthenticated()");
+        security.checkTokenAccess("isFullyAuthenticated()")
+                .tokenKeyAccess("isFullyAuthenticated()")
+                .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(authenticationEntryPoint);
     }
 
     @Override
@@ -60,6 +71,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .accessTokenConverter(AuthAccessTokenConverter.instance)
                 .tokenStore(authTokenStore)
                 .authorizationCodeServices(authorizationCodeServices)
-                .authenticationManager(authenticationManager);
+                .authenticationManager(authenticationManager)
+        ;
     }
 }
