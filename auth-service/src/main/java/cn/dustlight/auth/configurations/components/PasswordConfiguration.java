@@ -1,4 +1,4 @@
-package cn.dustlight.auth.configurations;
+package cn.dustlight.auth.configurations.components;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

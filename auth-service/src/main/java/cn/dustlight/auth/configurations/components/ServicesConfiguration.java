@@ -1,4 +1,4 @@
-package cn.dustlight.auth.configurations;
+package cn.dustlight.auth.configurations.components;
 
 import cn.dustlight.auth.generator.Generator;
 import cn.dustlight.auth.generator.UniqueGenerator;

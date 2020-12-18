@@ -1,4 +1,4 @@
-package cn.dustlight.auth.configurations;
+package cn.dustlight.auth.configurations.security;
 
 import cn.dustlight.auth.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-@EnableResourceServer
+//@EnableResourceServer
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
     @Autowired

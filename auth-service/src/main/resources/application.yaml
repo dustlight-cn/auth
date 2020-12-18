@@ -35,8 +35,12 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
 
-#dustlight:
-#  storage:
-#    tencent:
-#      cos:
-#        enabled: true
+dustlight:
+  storage:
+    tencent:
+      cos:
+        enabled: true
+#        secret-id: ${dustlight.storage.tencent.cos.secret-id}
+#        secret-key: ${dustlight.storage.tencent.cos.secret-key}
+#        bucket: ${dustlight.storage.tencent.cos.bucket}
+#        region: ${dustlight.storage.tencent.cos.region}

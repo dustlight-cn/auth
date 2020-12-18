@@ -1,4 +1,4 @@
-package cn.dustlight.auth.configurations;
+package cn.dustlight.auth.configurations.components;
 
 import cn.dustlight.auth.properties.AuthorizationCodeProperties;
 import cn.dustlight.auth.services.RedisAuthorizationCodeService;

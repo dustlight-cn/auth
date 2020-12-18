@@ -27,6 +27,11 @@
             <artifactId>tencent-cloud-object-storage</artifactId>
         </dependency>
 
+        <!-- 验证码 -->
+        <dependency>
+            <groupId>cn.dustlight.captcha</groupId>
+            <artifactId>captcha-core</artifactId>
+        </dependency>
         <!-- ==================================================================== -->
 
         <!-- Mybatis -->
