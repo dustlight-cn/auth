@@ -1,4 +1,4 @@
-package cn.dustlight.auth.configurations;
+package cn.dustlight.auth.configurations.security;
 
 import cn.dustlight.auth.ErrorDetails;
 import cn.dustlight.auth.ErrorEnum;

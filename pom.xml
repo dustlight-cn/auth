@@ -53,7 +53,7 @@
             <!-- Captcha -->
             <dependency>
                 <groupId>cn.dustlight.captcha</groupId>
-                <artifactId>captca-core</artifactId>
+                <artifactId>captcha-core</artifactId>
                 <version>${captcha.version}</version>
             </dependency>
 

@@ -1,4 +1,4 @@
-package cn.dustlight.auth.configurations;
+package cn.dustlight.auth.configurations.security;
 
 import cn.dustlight.auth.util.UserExpressionMethods;
 import org.aopalliance.intercept.MethodInvocation;

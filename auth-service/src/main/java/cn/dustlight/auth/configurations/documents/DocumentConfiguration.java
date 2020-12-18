@@ -1,11 +1,14 @@
-package cn.dustlight.auth.configurations;
+package cn.dustlight.auth.configurations.documents;
 
 import cn.dustlight.auth.util.Constants;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -19,5 +22,7 @@ import io.swagger.v3.oas.annotations.info.License;
         ),
         externalDocs = @ExternalDocumentation(description = "View on Github", url = "https://github.com/Hansin1997/auth")
 )
+@SecurityScheme(name = "Client Credentials", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER, scheme = "basic")
+@SecurityScheme(name = "Access Token", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER, paramName = "access_token")
 public class DocumentConfiguration {
 }

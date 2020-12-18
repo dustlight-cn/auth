@@ -9,12 +9,7 @@ import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.util.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.OAuthFlow;
-import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,12 +41,8 @@ import java.util.*;
  * 覆盖 '/oauth/authorize' ，返回Json数据。
  */
 @RestController
-@SecurityScheme(name = "basicAuth", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER, scheme = "basic")
-@SecurityScheme(name = "OAuth2", type = SecuritySchemeType.OAUTH2, flows = @OAuthFlows(
-        clientCredentials = @OAuthFlow(tokenUrl = Constants.API_ROOT + "/oauth/token")
-))
 @RequestMapping(path = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@Tag(name = "OAuth2 相关业务", description = "OAuth2授权、Token颁发。")
+@Tag(name = "OAuth2 相关业务", description = "负责OAuth2 应用授权、Token颁发等。")
 @SessionAttributes({"authorizationRequest", "org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint.ORIGINAL_AUTHORIZATION_REQUEST"})
 public class OAuth2Controller {
 
@@ -90,7 +81,6 @@ public class OAuth2Controller {
                                   Principal principal) {
 
         ModelAndView mv = authorizationEndpoint.authorize(model, parameters, sessionStatus, principal);
-
         Client client = clientService.loadClientWithoutSecret(clientId);
         OAuth2Client result = new OAuth2Client();
         String username = principal.getName();
@@ -157,14 +147,15 @@ public class OAuth2Controller {
         return view.getUrl();
     }
 
-    @Operation(summary = "颁发令牌", security = @SecurityRequirement(name = "basicAuth"))
+    @Operation(summary = "颁发令牌", security = @SecurityRequirement(name = "Client Credentials"))
     @PostMapping("oauth/token")
     public ResponseEntity<OAuth2AccessToken> grantToken(@RequestParam(value = "code", required = false) String code,
                                                         @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
                                                         @RequestParam(value = "redirect_uri", required = false) String redirectUri,
+                                                        @RequestParam(value = "username", required = false) String username,
+                                                        @RequestParam(value = "password", required = false) String password,
                                                         @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
                                                         HttpServletRequest request) throws HttpRequestMethodNotSupportedException {
-
         UsernamePasswordAuthenticationToken clientPrincipal = basicConverter.convert(request);
         if (clientPrincipal == null)
             ErrorEnum.UNAUTHORIZED.throwException();
