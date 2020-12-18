@@ -12,4 +12,9 @@ public class AuthException extends RuntimeException {
     public ErrorDetails getErrorDetails() {
         return errorDetails;
     }
+
+    @Override
+    public String toString() {
+        return errorDetails == null ? super.toString() : errorDetails.toString();
+    }
 }
