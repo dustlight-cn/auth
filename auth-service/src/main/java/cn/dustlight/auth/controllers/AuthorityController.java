@@ -53,25 +53,25 @@ public class AuthorityController {
     @PreAuthorize("hasAnyAuthority('DELETE_AUTHORITY')")
     @DeleteMapping("authorities")
     @Operation(summary = "删除权限")
-    public void deleteAuthorities(@RequestParam Collection<Long> id) {
+    public void deleteAuthorities(@RequestBody Collection<Long> id) {
         authorityService.removeAuthorities(id);
     }
 
-    @GetMapping("client/{cid}/authorities")
+    @GetMapping("clients/{cid}/authorities")
     @Operation(summary = "获取授权作用域权限")
     public Collection<String> getClientAuthorities(@PathVariable("cid") String cid) {
         return clientService.listAuthorities(cid);
     }
 
     @PreAuthorize("hasAnyAuthority('WRITE_SCOPE')")
-    @PutMapping("client/{cid}/authorities")
+    @PutMapping("clients/{cid}/authorities")
     @Operation(summary = "修改或添加授权作用域权限")
     public void setClientAuthorities(@PathVariable("cid") String cid, @RequestParam Collection<Long> authorityId) {
         clientService.addAuthorities(cid, authorityId);
     }
 
     @PreAuthorize("hasAnyAuthority('WRITE_SCOPE')")
-    @DeleteMapping("client/{cid}/authorities")
+    @DeleteMapping("clients/{cid}/authorities")
     @Operation(summary = "删除授权作用域权限")
     public void deleteClientAuthorities(@PathVariable("cid") String cid, @RequestParam Collection<Long> authorityId) {
         clientService.removeAuthorities(cid, authorityId);

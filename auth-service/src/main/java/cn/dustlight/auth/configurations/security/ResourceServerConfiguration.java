@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-//@EnableResourceServer
+@EnableResourceServer
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
     @Autowired
@@ -20,7 +20,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-        resources.stateless(true);
+        resources.stateless(false);
         resources.accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint);
     }
@@ -29,12 +29,25 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers(Constants.API_ROOT + "/users", Constants.API_ROOT + "/users/**")
+                .antMatchers(
+                        Constants.API_ROOT + "/users/**",
+                        Constants.API_ROOT + "/authorities",
+                        Constants.API_ROOT + "/authorities/**",
+                        Constants.API_ROOT + "/roles",
+                        Constants.API_ROOT + "/roles/**",
+                        Constants.API_ROOT + "/clients",
+                        Constants.API_ROOT + "/clients/**",
+                        Constants.API_ROOT + "/types",
+                        Constants.API_ROOT + "/types/**",
+                        Constants.API_ROOT + "/scopes",
+                        Constants.API_ROOT + "/scopes/**")
                 .authenticated()
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                .csrf().disable()
         ;
     }
 
