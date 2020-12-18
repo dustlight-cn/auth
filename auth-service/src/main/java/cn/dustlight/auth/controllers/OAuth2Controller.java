@@ -7,10 +7,12 @@ import cn.dustlight.auth.entities.OAuth2Client;
 import cn.dustlight.auth.entities.OAuth2ClientScope;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.util.Constants;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;

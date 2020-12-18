@@ -1,4 +1,4 @@
-package cn.dustlight.auth.controllers.users;
+package cn.dustlight.auth.controllers;
 
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.DefaultUserRole;
@@ -11,12 +11,14 @@ import cn.dustlight.captcha.annotations.CodeValue;
 import cn.dustlight.captcha.annotations.VerifyCode;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.core.RestfulStorage;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ import java.util.Collection;
 @Tag(name = "用户及会话管理",
         description = "包括登入登出、注册注销、信息查询更新等。")
 @RestController
-public class DefaultUserController {
+public class UserController {
 
     protected final Log logger = LogFactory.getLog(this.getClass());
 
