@@ -32,6 +32,14 @@
             <groupId>cn.dustlight.captcha</groupId>
             <artifactId>captcha-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.dustlight.captcha</groupId>
+            <artifactId>redis-store</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.dustlight.captcha</groupId>
+            <artifactId>email-sender</artifactId>
+        </dependency>
         <!-- ==================================================================== -->
 
         <!-- Mybatis -->

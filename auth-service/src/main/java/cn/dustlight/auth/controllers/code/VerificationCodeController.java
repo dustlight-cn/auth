@@ -27,7 +27,8 @@ public interface VerificationCodeController {
     @SendCode(value = "registration",
             sender = @Sender("emailCodeSender"),
             parameters = {
-                    @Parameter(name = "template", value = "register")
+                    @Parameter(name = "SUBJECT", value = "邮箱注册"),
+                    @Parameter(name = "TEMPLATE", value = "mail/EmailCode.html")
             })
     void createRegistrationCode(@RequestParam(name = "code") @CodeValue String targetCode,
                                 @io.swagger.v3.oas.annotations.Parameter(hidden = true) @CodeValue("registration") String code,
@@ -39,7 +40,8 @@ public interface VerificationCodeController {
     @SendCode(value = "email",
             sender = @Sender("emailCodeSender"),
             parameters = {
-                    @Parameter(name = "template", value = "register")
+                    @Parameter(name = "SUBJECT", value = "更换注册邮箱"),
+                    @Parameter(name = "TEMPLATE", value = "mail/EmailCode.html")
             })
     void createEmailCode(@RequestParam(name = "code") @CodeValue String targetCode,
                          @io.swagger.v3.oas.annotations.Parameter(hidden = true) @CodeValue("email") String code,

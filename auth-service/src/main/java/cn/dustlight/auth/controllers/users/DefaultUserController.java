@@ -4,20 +4,31 @@ import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.User;
 import cn.dustlight.auth.services.UserService;
+import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.util.QueryResults;
+import cn.dustlight.captcha.annotations.CodeParam;
+import cn.dustlight.captcha.annotations.CodeValue;
+import cn.dustlight.captcha.annotations.VerifyCode;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.core.RestfulStorage;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -26,8 +37,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
+@RequestMapping(value = Constants.API_ROOT,
+        produces = Constants.ContentType.APPLICATION_JSON)
+@Tag(name = "用户及会话管理",
+        description = "包括登入登出、注册注销、信息查询更新等。")
 @RestController
-public class DefaultUserController implements UserController {
+public class DefaultUserController {
 
     protected final Log logger = LogFactory.getLog(this.getClass());
 
@@ -41,7 +56,9 @@ public class DefaultUserController implements UserController {
     @Autowired
     protected RestfulStorage storage;
 
-    @Override
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("session")
+    @Operation(summary = "获取登录用户信息", description = "获取当前会话信息")
     public User getSession() {
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         User cache = (User) authentication.getPrincipal();
@@ -50,8 +67,9 @@ public class DefaultUserController implements UserController {
         return snapshot;
     }
 
-    @Override
-    public User createSession(String login, String password) {
+    @PostMapping("session")
+    @Operation(summary = "登入", description = "创建会话")
+    public User createSession(@RequestParam String login, @RequestParam String password) {
         try {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password);
             Authentication authentication = authenticationManager.authenticate(token);
@@ -73,14 +91,17 @@ public class DefaultUserController implements UserController {
         return null;
     }
 
-    @Override
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("session")
+    @Operation(summary = "登出", description = "销毁当前会话")
     public void deleteSession() {
         logger.debug(String.format("用户: [%s] 销毁会话", SecurityContextHolder.getContext().getAuthentication().getName()));
         SecurityContextHolder.clearContext();
     }
 
-    @Override
-    public User getUser(Long uid) {
+    @GetMapping("users/{uid}")
+    @Operation(summary = "获取用户信息")
+    public User getUser(@PathVariable Long uid) {
         boolean flag = SecurityContextHolder.getContext().getAuthentication().getAuthorities().
                 contains(new SimpleGrantedAuthority("READ_USER_ANY"));
         User user = null;
@@ -97,8 +118,13 @@ public class DefaultUserController implements UserController {
         return user;
     }
 
-    @Override
-    public User createUser(String username, String password, String email, String code) {
+    @VerifyCode("registration")
+    @PostMapping("users")
+    @Operation(summary = "注册用户", description = "创建新用户，用户名和邮箱不可重复。")
+    public User createUser(@RequestParam String username,
+                           @RequestParam String password,
+                           @CodeParam("registration") @Parameter(hidden = true) String email,
+                           @CodeValue("registration") @RequestParam String code) {
         DefaultUserRole defaultRole = new DefaultUserRole();
         defaultRole.setRoleName("User");
         userService.createUser(username, password, email, username, 0,
@@ -108,14 +134,20 @@ public class DefaultUserController implements UserController {
         return userService.loadUserByUsername(username);
     }
 
-    @Override
-    public void deleteUser(Long uid) {
+    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('DELETE_USER') or hasAuthority('DELETE_USER_ANY')")
+    @DeleteMapping("users/{uid}")
+    @io.swagger.v3.oas.annotations.Operation(summary = "注销用户", description = "销毁用户。注意，此方法将删除用户。")
+    public void deleteUser(@PathVariable Long uid) {
         userService.deleteUsers(Arrays.asList(uid));
         logger.debug(String.format("删除用户: [%s] ", uid));
     }
 
-    @Override
-    public QueryResults<? extends User> getUsers(String query, Integer offset, Integer limit, Collection<String> order) {
+    @GetMapping("users")
+    @Operation(summary = "查找用户")
+    public QueryResults<? extends User> getUsers(@RequestParam(required = false, value = "q") String query,
+                                                 @RequestParam(required = false) Integer offset,
+                                                 @RequestParam(required = false) Integer limit,
+                                                 @RequestParam(required = false) Collection<String> order) {
         boolean flag = SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("READ_USER_ANY"));
         if (flag) {
@@ -127,23 +159,38 @@ public class DefaultUserController implements UserController {
         return userService.searchPublicUsers(query, order, offset, limit);
     }
 
-    @Override
-    public void updatePassword(Long uid, String password) {
+    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
+    @PutMapping("users/{uid}/password")
+    @Operation(summary = "更新用户密码")
+    public void updatePassword(@PathVariable Long uid, @RequestParam String password) {
         userService.updatePassword(uid, password);
     }
 
-    @Override
-    public void updateEmail(Long uid, String code, String email) {
+    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
+    @VerifyCode("email")
+    @PutMapping("users/{uid}/email")
+    @Operation(summary = "更新用户邮箱")
+    public void updateEmail(@PathVariable Long uid, @CodeValue("email") @RequestParam String code, @CodeParam("email") @Parameter(hidden = true) String email) {
         userService.updateEmail(uid, email);
     }
 
-    @Override
-    public void updateGender(Long uid, int gender) {
+    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
+    @PutMapping("users/{uid}/gender")
+    @Operation(summary = "更新用户性别")
+    public void updateGender(@PathVariable Long uid, @RequestParam int gender) {
         userService.updateGender(uid, gender);
     }
 
-    @Override
-    public void updateAvatar(Long uid) {
+    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
+    @PutMapping(value = "users/{uid}/avatar", consumes = "image/*")
+    @Operation(summary = "更新用户头像", requestBody = @RequestBody(
+            required = true,
+            content = @Content(
+                    mediaType = "image/*",
+                    schema = @Schema(type = "string", format = "binary")
+            )
+    ))
+    public void updateAvatar(@PathVariable Long uid) {
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletResponse response = attributes.getResponse();
@@ -157,8 +204,9 @@ public class DefaultUserController implements UserController {
         }
     }
 
-    @Override
-    public void getAvatar(Long uid) {
+    @GetMapping("users/{uid}/avatar")
+    @Operation(summary = "获取用户头像")
+    public void getAvatar(@PathVariable Long uid) {
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletResponse response = attributes.getResponse();
