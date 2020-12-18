@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
-public class AuthServerApplication {
+public class AuthServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AuthServerApplication.class, args);
+        SpringApplication.run(AuthServiceApplication.class, args);
     }
 
     @RequestMapping("/test")
