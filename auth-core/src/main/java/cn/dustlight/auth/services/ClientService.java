@@ -344,4 +344,56 @@ public interface ClientService extends ClientDetailsService {
      * @param tids 授权模式ID集合
      */
     void removeGrantTypes(String cid, Long uid, Collection<Long> tids);
+
+
+    /**
+     * 列举应用权限
+     *
+     * @param cid 应用ID
+     * @return 权限集合
+     */
+    Collection<String> listAuthorities(String cid);
+
+    /**
+     * 列举应用权限
+     *
+     * @param cid 应用ID
+     * @param uid 用户ID
+     * @return 权限集合
+     */
+    Collection<String> listAuthorities(String cid, Long uid);
+
+    /**
+     * 为应用添加权限
+     *
+     * @param cid  应用ID
+     * @param aids 权限ID集合
+     */
+    void addAuthorities(String cid, Collection<Long> aids);
+
+    /**
+     * 为应用添加权限
+     *
+     * @param cid  应用ID
+     * @param uid  用户ID
+     * @param aids 权限ID集合
+     */
+    void addAuthorities(String cid, Long uid, Collection<Long> aids);
+
+    /**
+     * 删除应用权限
+     *
+     * @param cid  应用ID
+     * @param aids 权限ID集合
+     */
+    void removeAuthorities(String cid, Collection<Long> aids);
+
+    /**
+     * 删除应用权限
+     *
+     * @param cid  应用ID
+     * @param uid  用户ID
+     * @param aids 权限ID集合
+     */
+    void removeAuthorities(String cid, Long uid, Collection<Long> aids);
 }

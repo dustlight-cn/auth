@@ -24,7 +24,7 @@ public class DefaultClient implements Client {
     private Collection<Resource> resources;
     private Collection<? extends ClientScope> scopes;
     private Collection<GrantType> types;
-    private Collection<Authority> authorities;
+    private Collection<String> authorities;
     private ObjectMapper mapper = new ObjectMapper();
 
     @Override
@@ -129,7 +129,7 @@ public class DefaultClient implements Client {
         if (authorities == null || authorities.size() == 0)
             return Collections.emptySet();
         Collection<GrantedAuthority> result = new LinkedHashSet<>(authorities.size());
-        authorities.forEach(authority -> result.add(new SimpleGrantedAuthority(authority.getAuthorityName())));
+        authorities.forEach(authority -> result.add(new SimpleGrantedAuthority(authority)));
         return result;
     }
 
@@ -260,7 +260,7 @@ public class DefaultClient implements Client {
         this.resources = resources;
     }
 
-    public void setAuthorities(Collection<Authority> authorities) {
+    public void setAuthorities(Collection<String> authorities) {
         this.authorities = authorities;
     }
 }

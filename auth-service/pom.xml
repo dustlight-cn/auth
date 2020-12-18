@@ -21,6 +21,14 @@
 
         <!-- ==================================================================== -->
 
+        <!-- 对象储存 -->
+        <dependency>
+            <groupId>cn.dustlight.storage</groupId>
+            <artifactId>tencent-cloud-object-storage</artifactId>
+        </dependency>
+
+        <!-- ==================================================================== -->
+
         <!-- Mybatis -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -67,6 +75,15 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

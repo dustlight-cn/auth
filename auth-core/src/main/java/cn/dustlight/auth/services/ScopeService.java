@@ -62,35 +62,4 @@ public interface ScopeService {
      */
     void removeScopes(Collection<Long> sids);
 
-    /**
-     * 获取授权作用域权限
-     *
-     * @param sid 授权作用域id
-     * @return 授权作用域权限
-     */
-    Collection<String> listScopeAuthorities(Long sid);
-
-    /**
-     * 获取授权作用域权限
-     *
-     * @param scopeNames 授权作用域名集合
-     * @return 权作用域权限
-     */
-    Collection<String> listScopeAuthorities(Collection<String> scopeNames);
-
-    /**
-     * 创建授权作用域权限
-     *
-     * @param sid  授权作用域id
-     * @param aids 权限id集合
-     */
-    void createScopeAuthorities(Long sid, Collection<Long> aids);
-
-    /**
-     * 删除授权作用域权限
-     *
-     * @param sid  授权作用域id
-     * @param aids 权限id集合
-     */
-    void removeScopeAuthorities(Long sid, Collection<Long> aids);
 }

@@ -25,8 +25,11 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <captcha.version>0.0.1</captcha.version>
+        <storage.version>0.0.3</storage.version>
+
         <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
-        <spring-doc.version>1.5.1</spring-doc.version>
+        <spring-doc.version>1.5.2</spring-doc.version>
         <spring-boot-mybatis.version>2.1.3</spring-boot-mybatis.version>
         <spring-security-oauth2.version>2.3.4.RELEASE</spring-security-oauth2.version>
     </properties>
@@ -46,6 +49,20 @@
                 <groupId>cn.dustlight.auth</groupId>
                 <artifactId>auth-service</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <!-- Captcha -->
+            <dependency>
+                <groupId>cn.dustlight.captcha</groupId>
+                <artifactId>captca-core</artifactId>
+                <version>${captcha.version}</version>
+            </dependency>
+
+            <!-- Storage -->
+            <dependency>
+                <groupId>cn.dustlight.storage</groupId>
+                <artifactId>tencent-cloud-object-storage</artifactId>
+                <version>${storage.version}</version>
             </dependency>
 
             <!-- MyBatis -->

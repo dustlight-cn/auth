@@ -4,6 +4,7 @@ import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.*;
 import cn.dustlight.auth.generator.Generator;
 import cn.dustlight.auth.generator.UniqueGenerator;
+import cn.dustlight.auth.mappers.AuthorityMapper;
 import cn.dustlight.auth.mappers.ClientMapper;
 import cn.dustlight.auth.mappers.GrantTypeMapper;
 import cn.dustlight.auth.mappers.ScopeMapper;
@@ -20,6 +21,7 @@ public class DefaultClientService implements ClientService {
     private final ClientMapper clientMapper;
     private final ScopeMapper scopeMapper;
     private final GrantTypeMapper grantTypeMapper;
+    private final AuthorityMapper authorityMapper;
     private final PasswordEncoder passwordEncoder;
 
     private final UniqueGenerator<String> idGenerator;
@@ -28,10 +30,11 @@ public class DefaultClientService implements ClientService {
     private final OrderBySqlBuilder orderBySqlBuilder = OrderBySqlBuilder.create
             ("uid", "cid", "createdAt", "name", "updatedAt", "accessTokenValidity", "refreshTokenValidity", "status");
 
-    public DefaultClientService(ClientMapper clientMapper, ScopeMapper scopeMapper, GrantTypeMapper grantTypeMapper,
+    public DefaultClientService(ClientMapper clientMapper, AuthorityMapper authorityMapper, ScopeMapper scopeMapper, GrantTypeMapper grantTypeMapper,
                                 UniqueGenerator<String> idGenerator, Generator<String> secretGenerator,
                                 PasswordEncoder passwordEncoder) {
         this.clientMapper = clientMapper;
+        this.authorityMapper = authorityMapper;
         this.scopeMapper = scopeMapper;
         this.grantTypeMapper = grantTypeMapper;
         this.idGenerator = idGenerator;
@@ -316,4 +319,45 @@ public class DefaultClientService implements ClientService {
         if (!grantTypeMapper.deleteClientGrantTypes(cid, tids))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to delete client grant types").throwException();
     }
+
+    @Override
+    public Collection<String> listAuthorities(String cid) {
+        return authorityMapper.listClientAuthorities(cid);
+    }
+
+    @Override
+    public Collection<String> listAuthorities(String cid, Long uid) {
+        if (!clientMapper.isClientOwner(cid, uid))
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        return authorityMapper.listClientAuthorities(cid);
+    }
+
+    @Override
+    public void addAuthorities(String cid, Collection<Long> aids) {
+        if (!authorityMapper.insertClientAuthorities(cid, aids))
+            ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to insert client authorities").throwException();
+    }
+
+    @Override
+    public void addAuthorities(String cid, Long uid, Collection<Long> aids) {
+        if (!clientMapper.isClientOwner(cid, uid))
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if (!authorityMapper.insertClientAuthorities(cid, aids))
+            ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to insert client authorities").throwException();
+    }
+
+    @Override
+    public void removeAuthorities(String cid, Collection<Long> aids) {
+        if (!authorityMapper.deleteClientAuthorities(cid, aids))
+            ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to delete client authorities").throwException();
+    }
+
+    @Override
+    public void removeAuthorities(String cid, Long uid, Collection<Long> aids) {
+        if (!clientMapper.isClientOwner(cid, uid))
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if (!authorityMapper.deleteClientAuthorities(cid, aids))
+            ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to delete client authorities").throwException();
+    }
+
 }

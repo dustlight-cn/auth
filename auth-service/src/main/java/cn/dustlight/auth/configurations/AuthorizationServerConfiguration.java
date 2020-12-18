@@ -1,11 +1,11 @@
 package cn.dustlight.auth.configurations;
 
-import cn.dustlight.auth.services.AuthApprovalHandler;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.AuthAccessTokenConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -15,11 +15,13 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 @EnableAuthorizationServer
+@EnableWebSecurity
 @Import({TokenStoreConfiguration.class,
-        GeneratorConfiguration.class,
         ServicesConfiguration.class,
         AuthMethodSecurityConfiguration.class,
-        PasswordConfiguration.class})
+        DocumentConfiguration.class,
+        ResourceServerConfiguration.class,
+        HandlerConfiguration.class})
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
@@ -27,9 +29,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Autowired
     private ClientService clientService;
-
-    @Autowired
-    private AuthApprovalHandler authApprovalHandler;
 
     @Autowired
     private AuthorizationCodeServices authorizationCodeServices;
@@ -52,7 +51,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         endpoints.userDetailsService(userService)
                 .accessTokenConverter(AuthAccessTokenConverter.instance)
                 .tokenStore(authTokenStore)
-                .authorizationCodeServices(authorizationCodeServices)
-                .userApprovalHandler(authApprovalHandler);
+                .authorizationCodeServices(authorizationCodeServices);
     }
 }

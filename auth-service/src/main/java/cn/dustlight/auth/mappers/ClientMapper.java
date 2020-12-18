@@ -53,7 +53,8 @@ public interface ClientMapper {
     @Results(id = "Client", value = {
             @Result(column = "cid", property = "cid"),
             @Result(column = "cid", property = "types", many = @Many(select = "cn.dustlight.auth.mappers.GrantTypeMapper.listClientGrantTypes")),
-            @Result(column = "cid", property = "scopes", many = @Many(select = "cn.dustlight.auth.mappers.ScopeMapper.listClientScopes"))
+            @Result(column = "cid", property = "scopes", many = @Many(select = "cn.dustlight.auth.mappers.ScopeMapper.listClientScopes")),
+            @Result(column = "cid", property = "authorities", many = @Many(select = "cn.dustlight.auth.mappers.AuthorityMapper.listClientAuthorities"))
     })
     DefaultClient loadClient(@Param("clientId") String clientId);
 

@@ -10,11 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.regex.Pattern;
 
+@EnableTransactionManagement
 @EnableConfigurationProperties({PatternProperties.class, AuthorizationCodeProperties.class})
+@Import({GeneratorConfiguration.class,
+        PasswordConfiguration.class})
 public class ServicesConfiguration {
 
     @Bean("userService")
@@ -39,12 +44,13 @@ public class ServicesConfiguration {
     @Bean("clientService")
     @ConditionalOnMissingBean(name = "clientService")
     public ClientService clientService(@Autowired ClientMapper mapper,
+                                       @Autowired AuthorityMapper authorityMapper,
                                        @Autowired ScopeMapper scopeMapper,
                                        @Autowired GrantTypeMapper grantTypeMapper,
                                        @Autowired UniqueGenerator<String> clientIdGenerator,
                                        @Autowired Generator<String> clientSecretGenerator,
                                        @Autowired PasswordEncoder passwordEncoder) {
-        return new DefaultClientService(mapper, scopeMapper, grantTypeMapper, clientIdGenerator,
+        return new DefaultClientService(mapper, authorityMapper, scopeMapper, grantTypeMapper, clientIdGenerator,
                 clientSecretGenerator, passwordEncoder);
     }
 

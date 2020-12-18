@@ -67,30 +67,21 @@ public interface AuthorityMapper {
 
     /* ------------------------------------------------------------------------------------------------ */
 
-    /* ScopeAuthority */
+    /* ClientAuthority */
 
-    @Select("<script>SELECT * FROM authorities as a,scope_authority as sa WHERE a.aid=sa.aid AND sa.sid IN " +
-            "(SELECT sid FROM scopes WHERE name IN " +
-            "<foreach collection='scopeNames' item='scopeName' separator=',' open='(' close=')'>#{scopeName}</foreach>" +
-            ")</script>")
-    Collection<String> listScopeAuthoritiesByScopeNames(@Param("scopeNames") Collection<String> scopeNames);
+    @Select("SELECT authorityName FROM client_authority AS ca,authorities AS a " +
+            "WHERE ca.cid=#{cid} AND ca.aid=a.aid")
+    Collection<String> listClientAuthorities(@Param("cid") String cid);
 
-    @Select("SELECT authorityName FROM scope_authority AS sa,authorities AS a " +
-            "WHERE sa.sid=#{sid} AND sa.aid=a.aid")
-    Collection<String> listScopeAuthorities(@Param("sid") Long sid);
-
-    @Insert("<script>INSERT IGNORE INTO scope_authority (sid,aid) VALUES " +
+    @Insert("<script>INSERT IGNORE INTO client_authority (cid,aid) VALUES " +
             "<foreach collection='aids' item='aid' separator=','>" +
-            "(#{sid},#{aid})</foreach></script>")
-    boolean insertScopeAuthorities(@Param("sid") Long sid,
-                                   @Param("aids") Collection<Long> aids);
+            "(#{cid},#{aid})</foreach></script>")
+    boolean insertClientAuthorities(@Param("cid") String cid,
+                                    @Param("aids") Collection<Long> aids);
 
-    @Delete("<script>DELETE FROM scope_authority WHERE sid=#{sid} AND aid IN " +
+    @Delete("<script>DELETE FROM client_authority WHERE cid=#{cid} AND aid IN " +
             "<foreach collection='aids' item='aid' open='(' separator=',' close=')'>" +
             "#{aid}</foreach></script>")
-    boolean deleteScopeAuthorities(@Param("sid") Long sid,
-                                   @Param("aids") Collection<Long> aids);
-
-    /* ------------------------------------------------------------------------------------------------ */
-
+    boolean deleteClientAuthorities(@Param("cid") String cid,
+                                    @Param("aids") Collection<Long> aids);
 }

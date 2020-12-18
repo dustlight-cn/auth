@@ -1,16 +1,14 @@
 package cn.dustlight.auth.configurations;
 
 import cn.dustlight.auth.properties.AuthorizationCodeProperties;
-import cn.dustlight.auth.services.AuthApprovalHandler;
-import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.RedisAuthorizationCodeService;
-import cn.dustlight.auth.services.ScopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -24,14 +22,12 @@ public class TokenStoreConfiguration {
         return new RedisTokenStore(redisConnectionFactory);
     }
 
-    @Bean("authApprovalHandler")
-    @ConditionalOnMissingBean(name = "authApprovalHandler")
-    public AuthApprovalHandler authApprovalHandler(@Autowired ScopeService scopeService,
-                                                   @Autowired ClientService clientService,
-                                                   @Autowired TokenStore authTokenStore) {
+    @Bean("authApprovalStore")
+    @ConditionalOnMissingBean(name = "authApprovalStore")
+    public ApprovalStore authApprovalStore(@Autowired TokenStore authTokenStore) {
         TokenApprovalStore approvalStore = new TokenApprovalStore();
         approvalStore.setTokenStore(authTokenStore);
-        return new AuthApprovalHandler(scopeService, clientService, approvalStore);
+        return approvalStore;
     }
 
     @Bean("authorizationCodeServices")

@@ -60,26 +60,4 @@ public class DefaultScopeService implements ScopeService {
         if (!scopeMapper.deleteScopes(sids))
             ErrorEnum.DELETE_SCOPE_FAIL.throwException();
     }
-
-    @Override
-    public Collection<String> listScopeAuthorities(Long sid) {
-        return authorityMapper.listScopeAuthorities(sid);
-    }
-
-    @Override
-    public Collection<String> listScopeAuthorities(Collection<String> scopeNames) {
-        return authorityMapper.listScopeAuthoritiesByScopeNames(scopeNames);
-    }
-
-    @Override
-    public void createScopeAuthorities(Long sid, Collection<Long> aids) {
-        if (!authorityMapper.insertScopeAuthorities(sid, aids))
-            ErrorEnum.CREATE_SCOPE_FAIL.throwException();
-    }
-
-    @Override
-    public void removeScopeAuthorities(Long sid, Collection<Long> aids) {
-        if (!authorityMapper.deleteScopeAuthorities(sid, aids))
-            ErrorEnum.DELETE_SCOPE_FAIL.throwException();
-    }
 }
