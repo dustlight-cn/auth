@@ -18,7 +18,6 @@
     <modules>
         <module>auth-core</module>
         <module>auth-service</module>
-        <module>auth-server</module>
     </modules>
 
     <properties>
