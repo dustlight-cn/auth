@@ -24,6 +24,10 @@ spring:
   redis:
     host: ${redis.host}
     port: ${redis.port}
+  mail:
+    host: ${smtp.host:smtp.exmail.qq.com}
+    username: ${smtp.user}
+    password: ${smtp.pass}
   mvc:
     throw-exception-if-no-handler-found: true
   resources:
@@ -34,8 +38,11 @@ springdoc:
     path: /v3/api-doc
   swagger-ui:
     path: /swagger-ui
-
 dustlight:
+  captcha:
+    default:
+      store:
+        name: redisCodeStore
   storage:
     tencent:
       cos:
@@ -44,3 +51,6 @@ dustlight:
 #        secret-key: ${dustlight.storage.tencent.cos.secret-key}
 #        bucket: ${dustlight.storage.tencent.cos.bucket}
 #        region: ${dustlight.storage.tencent.cos.region}
+logging:
+  level:
+    cn.dustlight.*: debug

@@ -3,6 +3,7 @@ package cn.dustlight.auth.controllers;
 import cn.dustlight.auth.AuthException;
 import cn.dustlight.auth.ErrorDetails;
 import cn.dustlight.auth.ErrorEnum;
+import cn.dustlight.captcha.CaptchaException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,13 @@ public class ExceptionController {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         logger.debug(e.getErrorDetails().getMessage(), e);
         return e.getErrorDetails();
+    }
+
+    @ExceptionHandler(CaptchaException.class)
+    public ErrorDetails onCaptchaException(CaptchaException e, HttpServletRequest request, HttpServletResponse response) {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        logger.debug(e.getMessage(), e);
+        return ErrorEnum.CODE_INVALID.details(e.getMessage());
     }
 
     @ExceptionHandler(AuthenticationException.class)

@@ -7,7 +7,7 @@ public class PatternProperties {
 
     private String username = "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})+$",
             email = "^([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})$",
-            password = "^([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})$";
+            password = null;
 
     public String getUsername() {
         return username;
