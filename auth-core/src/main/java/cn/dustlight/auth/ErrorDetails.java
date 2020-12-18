@@ -59,4 +59,13 @@ public class ErrorDetails {
     public void throwException() throws AuthException {
         throw authException;
     }
+
+    @Override
+    public String toString() {
+        return "ErrorDetails{" +
+                "message='" + message + '\'' +
+                ", code=" + code +
+                ", details='" + details + '\'' +
+                '}';
+    }
 }
