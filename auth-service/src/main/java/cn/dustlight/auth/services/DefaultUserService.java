@@ -16,6 +16,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.Date;
@@ -55,6 +56,8 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     @Override
     public DefaultUser loadUserByUsername(String s) {
+        if (!StringUtils.hasText(s))
+            ErrorEnum.USERNAME_INVALID.throwException();
         DefaultUser u = userMapper.selectUserByUsernameOrEmail(s);
         if (u == null)
             throw new UsernameNotFoundException("user not found");
