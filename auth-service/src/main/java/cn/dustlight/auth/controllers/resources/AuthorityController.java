@@ -1,4 +1,4 @@
-package cn.dustlight.auth.controllers;
+package cn.dustlight.auth.controllers.resources;
 
 import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.entities.Authority;
@@ -8,6 +8,7 @@ import cn.dustlight.auth.services.AuthorityService;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.RoleService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "权限管理", description = "权限的增删改查。")
+@Tag(name = "Resource - Authority", description = "权限的增删改查。")
+@SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class AuthorityController {
 

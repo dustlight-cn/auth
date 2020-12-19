@@ -1,4 +1,4 @@
-package cn.dustlight.auth.controllers;
+package cn.dustlight.auth.controllers.resources;
 
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.DefaultUserRole;
@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.apache.commons.logging.Log;
@@ -25,9 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -39,17 +37,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
-@RequestMapping(value = Constants.API_ROOT,
-        produces = Constants.ContentType.APPLICATION_JSON)
-@Tag(name = "用户及会话管理",
-        description = "包括登入登出、注册注销、信息查询更新等。")
 @RestController
+@Tag(name = "Resource - User", description = "用户增删改查、信息更新。")
+@SecurityRequirement(name = "Access Token")
+@RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class UserController {
 
     protected final Log logger = LogFactory.getLog(this.getClass());
-
-    @Autowired
-    protected AuthenticationManager authenticationManager;
 
     @Autowired
     protected UserService userService;
@@ -57,49 +51,6 @@ public class UserController {
     @Qualifier("authStorage")
     @Autowired
     protected RestfulStorage storage;
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("session")
-    @Operation(summary = "获取登录用户信息", description = "获取当前会话信息")
-    public User getSession() {
-        UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        User cache = (User) authentication.getPrincipal();
-        User snapshot = userService.loadUser(cache.getUid());
-        logger.debug(String.format("用户: [%s] 访问会话信息", snapshot.getUsername()));
-        return snapshot;
-    }
-
-    @PostMapping("session")
-    @Operation(summary = "登入", description = "创建会话")
-    public User createSession(@RequestParam String login, @RequestParam String password) {
-        try {
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password);
-            Authentication authentication = authenticationManager.authenticate(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.debug(String.format("用户: [%s] 创建会话", authentication.getName()));
-            return (User) authentication.getPrincipal();
-        } catch (InternalAuthenticationServiceException e) {
-            this.logger.error("An internal error occurred while trying to authenticate the user.", e);
-            SecurityContextHolder.clearContext();
-            ErrorEnum.SIGN_IN_FAIL.details(e.getMessage()).throwException();
-        } catch (AuthenticationException e) {
-            SecurityContextHolder.clearContext();
-            ErrorEnum.SIGN_IN_FAIL.details(e.getMessage()).throwException();
-        } catch (Exception e) {
-            this.logger.error("An unknown error occurred while trying to authenticate the user.", e);
-            SecurityContextHolder.clearContext();
-            ErrorEnum.SIGN_IN_FAIL.details(e.getMessage()).throwException();
-        }
-        return null;
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("session")
-    @Operation(summary = "登出", description = "销毁当前会话")
-    public void deleteSession() {
-        logger.debug(String.format("用户: [%s] 销毁会话", SecurityContextHolder.getContext().getAuthentication().getName()));
-        SecurityContextHolder.clearContext();
-    }
 
     @GetMapping("users/{uid}")
     @Operation(summary = "获取用户信息")

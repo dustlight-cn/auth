@@ -11,6 +11,9 @@ import java.util.Set;
 
 public class OAuth2Client extends DefaultClient {
 
+    /**
+     * 授权回调，如果应用已授权，redirect不为。
+     */
     private String redirect;
     private boolean approved;
     private PublicUser user;

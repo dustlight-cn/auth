@@ -1,4 +1,4 @@
-package cn.dustlight.auth.controllers;
+package cn.dustlight.auth.controllers.resources;
 
 import cn.dustlight.auth.entities.DefaultScope;
 import cn.dustlight.auth.entities.Scope;
@@ -8,6 +8,7 @@ import cn.dustlight.auth.services.ScopeService;
 import cn.dustlight.auth.util.Constants;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@Tag(name = "授权作用域管理", description = "授权作用域的增删改查。")
+@Tag(name = "Resource - Scope", description = "授权作用域的增删改查。")
+@SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class ScopeController {
 

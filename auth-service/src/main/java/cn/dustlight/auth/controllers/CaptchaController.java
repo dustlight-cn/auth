@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 
+@Tag(name = "Captcha", description = "验证码相关业务。")
 @RestController
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@Tag(name = "验证码",
-        description = "验证码相关业务。")
 public class CaptchaController {
 
     private final Log logger = LogFactory.getLog(this.getClass());

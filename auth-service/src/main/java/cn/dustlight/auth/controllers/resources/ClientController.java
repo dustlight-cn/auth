@@ -1,4 +1,4 @@
-package cn.dustlight.auth.controllers;
+package cn.dustlight.auth.controllers.resources;
 
 
 import cn.dustlight.auth.util.Constants;
@@ -9,6 +9,7 @@ import cn.dustlight.auth.util.QueryResults;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.core.RestfulStorage;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,8 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "应用管理业务", description = "应用的增删改查")
+@Tag(name = "Resource - Client", description = "应用的增删改查")
+@SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class ClientController {
 

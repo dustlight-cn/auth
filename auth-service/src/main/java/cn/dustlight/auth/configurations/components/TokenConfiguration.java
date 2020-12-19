@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
-public class TokenStoreConfiguration {
+public class TokenConfiguration {
 
     @Bean("authTokenStore")
     @ConditionalOnMissingBean(name = "authTokenStore")
