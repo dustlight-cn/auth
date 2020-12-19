@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.common.exceptions.ClientAuthenticationException;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -53,8 +53,8 @@ public class ExceptionController {
         return ErrorEnum.UNAUTHORIZED.details(e.getMessage());
     }
 
-    @ExceptionHandler(ClientAuthenticationException.class)
-    public ErrorDetails onClientAuthenticationException(ClientAuthenticationException e, HttpServletRequest request, HttpServletResponse response) {
+    @ExceptionHandler(OAuth2Exception.class)
+    public ErrorDetails onClientAuthenticationException(OAuth2Exception e, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         logger.debug(e.getMessage(), e);
         return ErrorEnum.OAUTH_ERROR.details(e.getMessage());

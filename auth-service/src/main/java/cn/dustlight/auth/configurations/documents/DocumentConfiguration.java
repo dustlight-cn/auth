@@ -23,6 +23,6 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
         externalDocs = @ExternalDocumentation(description = "View on Github", url = "https://github.com/Hansin1997/auth")
 )
 @SecurityScheme(name = "Client Credentials", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER, scheme = "basic")
-@SecurityScheme(name = "Access Token", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER, paramName = "access_token")
+@SecurityScheme(name = "Access Token", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.QUERY, paramName = "access_token")
 public class DocumentConfiguration {
 }

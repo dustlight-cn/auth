@@ -1,6 +1,5 @@
 package cn.dustlight.auth.controllers;
 
-import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.Client;
 import cn.dustlight.auth.entities.ClientScope;
 import cn.dustlight.auth.entities.OAuth2Client;
@@ -10,53 +9,34 @@ import cn.dustlight.auth.util.Constants;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
-import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.web.authentication.www.BasicAuthenticationConverter;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.*;
 
-/**
- * 覆盖 '/oauth/authorize' ，返回Json数据。
- */
+@Tag(name = "OAuth", description = "负责 OAuth2 应用授权。")
 @RestController
 @RequestMapping(path = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@Tag(name = "OAuth2 相关业务", description = "负责OAuth2 应用授权、Token颁发等。")
 @SessionAttributes({"authorizationRequest", "org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint.ORIGINAL_AUTHORIZATION_REQUEST"})
 public class OAuth2Controller {
 
     private static final Log logger = LogFactory.getLog(OAuth2Controller.class.getName());
 
-    private static final BasicAuthenticationConverter basicConverter = new BasicAuthenticationConverter();
-
     @Autowired
     private AuthorizationEndpoint authorizationEndpoint;
-
-    @Autowired
-    private TokenEndpoint tokenEndpoint;
 
     @Autowired
     private ClientService clientService;
@@ -66,9 +46,6 @@ public class OAuth2Controller {
 
     @Autowired
     private TokenStore authTokenStore;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Operation(summary = "预授权", description = "获取应用信息")
     @PostMapping("oauth/authorization")
@@ -147,33 +124,5 @@ public class OAuth2Controller {
 
         RedirectView view = (RedirectView) authorizationEndpoint.approveOrDeny(approvalParameters, model, sessionStatus, principal);
         return view.getUrl();
-    }
-
-    @Operation(summary = "颁发令牌", security = @SecurityRequirement(name = "Client Credentials"))
-    @PostMapping("oauth/token")
-    public ResponseEntity<OAuth2AccessToken> grantToken(@RequestParam(value = "code", required = false) String code,
-                                                        @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
-                                                        @RequestParam(value = "redirect_uri", required = false) String redirectUri,
-                                                        @RequestParam(value = "username", required = false) String username,
-                                                        @RequestParam(value = "password", required = false) String password,
-                                                        @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
-                                                        HttpServletRequest request) throws HttpRequestMethodNotSupportedException {
-        UsernamePasswordAuthenticationToken clientPrincipal = basicConverter.convert(request);
-        if (clientPrincipal == null)
-            ErrorEnum.UNAUTHORIZED.throwException();
-        String clientName = clientPrincipal.getName();
-        String clientSecret = clientPrincipal.getCredentials() == null ? null : clientPrincipal.getCredentials().toString();
-
-        Client client = clientService.loadClientByClientId(clientName);
-        if (client == null)
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
-        if ((clientSecret == null || client.getClientSecret() == null) && clientSecret != client.getClientSecret() ||
-                !passwordEncoder.matches(clientSecret, client.getClientSecret()))
-            ErrorEnum.OAUTH_ERROR.details("client secret incorrect").throwException();
-
-        OAuth2Request oAuth2Request = new OAuth2Request(parameters, clientName, null, true, null, null, null, null, null);
-        OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(oAuth2Request, null);
-
-        return tokenEndpoint.postAccessToken(oAuth2Authentication, parameters);
     }
 }

@@ -1,4 +1,4 @@
-package cn.dustlight.auth.controllers;
+package cn.dustlight.auth.controllers.resources;
 
 import cn.dustlight.auth.entities.DefaultRole;
 import cn.dustlight.auth.entities.DefaultUserRole;
@@ -9,6 +9,7 @@ import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.Constants;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@Tag(name = "角色管理", description = "角色的增删改查。")
+@Tag(name = "Resource - Role", description = "角色的增删改查。")
+@SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class RoleController {
 
