@@ -18,29 +18,32 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
 
+    public static final String[] resources = {
+            Constants.API_ROOT + "/users/**",
+            Constants.API_ROOT + "/authorities",
+            Constants.API_ROOT + "/authorities/**",
+            Constants.API_ROOT + "/roles",
+            Constants.API_ROOT + "/roles/**",
+            Constants.API_ROOT + "/clients",
+            Constants.API_ROOT + "/clients/**",
+            Constants.API_ROOT + "/types",
+            Constants.API_ROOT + "/types/**",
+            Constants.API_ROOT + "/scopes",
+            Constants.API_ROOT + "/scopes/**"
+    };
+
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-        resources.stateless(false);
+        resources.stateless(true);
         resources.accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint);
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http
+        http.requestMatchers().antMatchers(resources).and()
                 .authorizeRequests()
-                .antMatchers(
-                        Constants.API_ROOT + "/users/**",
-                        Constants.API_ROOT + "/authorities",
-                        Constants.API_ROOT + "/authorities/**",
-                        Constants.API_ROOT + "/roles",
-                        Constants.API_ROOT + "/roles/**",
-                        Constants.API_ROOT + "/clients",
-                        Constants.API_ROOT + "/clients/**",
-                        Constants.API_ROOT + "/types",
-                        Constants.API_ROOT + "/types/**",
-                        Constants.API_ROOT + "/scopes",
-                        Constants.API_ROOT + "/scopes/**")
+                .antMatchers(resources)
                 .authenticated()
                 .and()
                 .exceptionHandling()
@@ -50,5 +53,4 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .csrf().disable()
         ;
     }
-
 }

@@ -71,7 +71,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .accessTokenConverter(AuthAccessTokenConverter.instance)
                 .tokenStore(authTokenStore)
                 .authorizationCodeServices(authorizationCodeServices)
-                .authenticationManager(authenticationManager)
-        ;
+                .authenticationManager(authenticationManager);
     }
 }
