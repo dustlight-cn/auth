@@ -6,7 +6,6 @@ import cn.dustlight.auth.configurations.components.ServicesConfiguration;
 import cn.dustlight.auth.configurations.components.TokenConfiguration;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.UserService;
-import cn.dustlight.auth.util.AuthAccessTokenConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +17,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.OAuth2RequestValidator;
 import org.springframework.security.oauth2.provider.TokenGranter;
@@ -75,7 +73,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.userDetailsService(userService)
-                .accessTokenConverter(AuthAccessTokenConverter.instance)
                 .tokenStore(authTokenStore)
                 .authorizationCodeServices(authorizationCodeServices)
                 .authenticationManager(authenticationManager);

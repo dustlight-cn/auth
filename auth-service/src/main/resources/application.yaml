@@ -21,6 +21,9 @@ spring:
       max-lifetime: 1800000
       maximum-pool-size: 3
       minimum-idle: 1
+    initialization-mode: always
+    schema: classpath:scheme.sql
+    data: classpath:data.sql
   redis:
     host: ${redis.host}
     port: ${redis.port}
