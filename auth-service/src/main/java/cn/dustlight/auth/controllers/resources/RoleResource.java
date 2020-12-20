@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@Tag(name = "Resource - Role", description = "角色的增删改查。")
+@Tag(name = "Role", description = "角色的增删改查。")
 @SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-public class RoleController {
+public class RoleResource {
 
     @Autowired
     private RoleService roleService;

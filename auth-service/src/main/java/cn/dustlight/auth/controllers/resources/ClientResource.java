@@ -1,6 +1,5 @@
 package cn.dustlight.auth.controllers.resources;
 
-
 import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.Client;
@@ -31,10 +30,10 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "Resource - Client", description = "应用的增删改查")
+@Tag(name = "Client", description = "应用的增删改查")
 @SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-public class ClientController {
+public class ClientResource {
 
     @Autowired
     private ClientService clientService;
