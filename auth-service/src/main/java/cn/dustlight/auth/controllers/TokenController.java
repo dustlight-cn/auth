@@ -25,6 +25,7 @@ import org.springframework.security.oauth2.common.exceptions.*;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.authentication.www.BasicAuthenticationConverter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +53,9 @@ public class TokenController {
     private TokenGranter tokenGranter;
 
     @Autowired
+    private TokenStore tokenStore;
+
+    @Autowired
     private AuthorizationServerTokenServices authorizationServerTokenServices;
 
     @Autowired
@@ -63,9 +67,9 @@ public class TokenController {
     private static final BasicAuthenticationConverter basicConverter = new BasicAuthenticationConverter();
 
     @Operation(summary = "颁发默认令牌")
-    @PostMapping(value = "oauth/token_default")
-    public ResponseEntity<OAuth2AccessToken> grantDefaultToken(@RequestParam("username") String username,
-                                                               @RequestParam("password") String password) {
+    @PostMapping(value = "token")
+    public ResponseEntity<OAuth2AccessToken> grantToken(@RequestParam("username") String username,
+                                                        @RequestParam("password") String password) {
         Authentication userAuth = new UsernamePasswordAuthenticationToken(username, password);
         userAuth = authenticationManager.authenticate(userAuth);
         if (userAuth == null || !userAuth.isAuthenticated()) {
@@ -76,6 +80,19 @@ public class TokenController {
         OAuth2Request request = tokenRequest.createOAuth2Request(defaultClient);
         OAuth2AccessToken token = authorizationServerTokenServices.createAccessToken(new OAuth2Authentication(request, userAuth));
         return getResponse(token);
+    }
+
+    @Operation(summary = "删除令牌", security = @SecurityRequirement(name = "Access Token"))
+    @DeleteMapping(value = "token")
+    public void deleteToken(OAuth2Authentication oAuth2Authentication) {
+        if (oAuth2Authentication == null)
+            ErrorEnum.UNAUTHORIZED.throwException();
+        OAuth2AccessToken accessToken = authorizationServerTokenServices.getAccessToken(oAuth2Authentication);
+        if (accessToken != null) {
+            if (accessToken.getRefreshToken() != null)
+                tokenStore.removeRefreshToken(accessToken.getRefreshToken());
+            tokenStore.removeAccessToken(accessToken);
+        }
     }
 
     @Operation(summary = "颁发令牌", security = @SecurityRequirement(name = "Client Credentials"))
