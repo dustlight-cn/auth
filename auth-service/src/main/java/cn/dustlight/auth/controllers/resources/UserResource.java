@@ -41,7 +41,7 @@ import java.util.Collection;
 @Tag(name = "User", description = "用户增删改查、信息更新。")
 @SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-public class UserController {
+public class UserResource {
 
     protected final Log logger = LogFactory.getLog(this.getClass());
 
@@ -120,10 +120,10 @@ public class UserController {
         return userService.searchPublicUsers(query, order, offset, limit);
     }
 
-    @PreAuthorize("#oauth2.hasAnyScope('write:user')")
+    @PreAuthorize("#oauth2.hasAnyScope('write:user') and (#oauth2.client or hasAuthority('WRITE_USER'))")
     @PutMapping("users/{uid}/password")
     @Operation(summary = "更新用户密码", description = "更新用户的密码。" +
-            "权限：应用拥有 'WRITE_USER_ANY' 权限。")
+            "权限：应用拥有 'write:user' 授权作用域。")
     public void updatePassword(@PathVariable Long uid, @RequestParam String password) {
         userService.updatePassword(uid, password);
     }
