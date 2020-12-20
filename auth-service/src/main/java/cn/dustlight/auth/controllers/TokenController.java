@@ -32,8 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-@Tag(name = "Token", description = "负责 Token 颁发。")
-@SecurityRequirement(name = "Client Credentials")
+@Tag(name = "Token", description = "Token 颁发。")
 @RestController
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class TokenController {
@@ -63,7 +62,6 @@ public class TokenController {
 
     private static final BasicAuthenticationConverter basicConverter = new BasicAuthenticationConverter();
 
-
     @Operation(summary = "颁发默认令牌")
     @PostMapping(value = "oauth/token_default")
     public ResponseEntity<OAuth2AccessToken> grantDefaultToken(@RequestParam("username") String username,
@@ -80,7 +78,7 @@ public class TokenController {
         return getResponse(token);
     }
 
-    @Operation(summary = "颁发令牌")
+    @Operation(summary = "颁发令牌", security = @SecurityRequirement(name = "Client Credentials"))
     @PostMapping("oauth/token")
     public ResponseEntity<OAuth2AccessToken> grantToken(@RequestParam(value = "code", required = false) String code,
                                                         @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
@@ -102,7 +100,6 @@ public class TokenController {
         if ((clientSecret == null || client.getClientSecret() == null) && clientSecret != client.getClientSecret() ||
                 !passwordEncoder.matches(clientSecret, client.getClientSecret()))
             ErrorEnum.OAUTH_ERROR.details("client secret incorrect").throwException();
-
 
         String clientId = clientName;
         ClientDetails authenticatedClient = client;
