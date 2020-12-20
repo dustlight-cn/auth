@@ -38,7 +38,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @RestController
-@Tag(name = "Resource - User", description = "用户增删改查、信息更新。")
+@Tag(name = "User", description = "用户增删改查、信息更新。")
 @SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class UserController {
@@ -52,11 +52,13 @@ public class UserController {
     @Autowired
     protected RestfulStorage storage;
 
+    @PreAuthorize("#oauth2.hasAnyScope('read:user')")
     @GetMapping("users/{uid}")
-    @Operation(summary = "获取用户信息")
+    @Operation(summary = "获取用户信息", description = "获取用户的信息。" +
+            "权限：应用需要 'read:user' 授权作用域。（若用户拥有 'READ_USER' 权限，可获取用户完整信息。）")
     public User getUser(@PathVariable Long uid) {
         boolean flag = SecurityContextHolder.getContext().getAuthentication().getAuthorities().
-                contains(new SimpleGrantedAuthority("READ_USER_ANY"));
+                contains(new SimpleGrantedAuthority("READ_USER"));
         User user = null;
         if (flag) {
             user = userService.loadUser(uid);
@@ -71,13 +73,15 @@ public class UserController {
         return user;
     }
 
-    @VerifyCode("registration")
+    @PreAuthorize("#oauth2.clientHasRole('CREATE_USER') and (#oauth2.client or hasAuthority('CREATE_USER'))")
     @PostMapping("users")
-    @Operation(summary = "注册用户", description = "创建新用户，用户名和邮箱不可重复。")
-    public User createUser(@RequestParam String username,
-                           @RequestParam String password,
-                           @CodeParam("registration") @Parameter(hidden = true) String email,
-                           @CodeValue("registration") @RequestParam String code) {
+    @Operation(summary = "注册用户", description = "创建新用户，用户名和邮箱不可重复。" +
+            "权限：" +
+            "1、应用拥有 'CREATE_USER' 权限。" +
+            "2、用户拥有 'CREATE_USER' 权限。")
+    public User createUser(@RequestParam(name = "username") String username,
+                           @RequestParam(name = "password") String password,
+                           @RequestParam(name = "email") String email) {
         DefaultUserRole defaultRole = new DefaultUserRole();
         defaultRole.setRoleName("User");
         userService.createUser(username, password, email, username, 0,
@@ -87,22 +91,26 @@ public class UserController {
         return userService.loadUserByUsername(username);
     }
 
-    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('DELETE_USER') or hasAuthority('DELETE_USER_ANY')")
+    @PreAuthorize("#oauth2.clientHasRole('DELETE_USER') and (#oauth2.client or hasAuthority('DELETE_USER') or #user.matchUid(#uid))")
     @DeleteMapping("users/{uid}")
-    @io.swagger.v3.oas.annotations.Operation(summary = "注销用户", description = "销毁用户。注意，此方法将删除用户。")
+    @io.swagger.v3.oas.annotations.Operation(summary = "注销用户", description = "删除用户。权限：" +
+            "1、应用拥有 'DELETE_USER' 权限。" +
+            "2、用户拥有 'DELETE_USER' 权限，或者 'uid' 为用户所属。")
     public void deleteUser(@PathVariable Long uid) {
         userService.deleteUsers(Arrays.asList(uid));
         logger.debug(String.format("删除用户: [%s] ", uid));
     }
 
+    @PreAuthorize("#oauth2.hasAnyScope('read:user')")
     @GetMapping("users")
-    @Operation(summary = "查找用户")
+    @Operation(summary = "查找用户", description = "查询或者列出用户（取决于有无关键字）。" +
+            "权限：应用拥有 'read:user' 授权作用域。（若用户拥有 'READ_USER' 权限，可获取用户完整信息。）")
     public QueryResults<? extends User> getUsers(@RequestParam(required = false, value = "q") String query,
                                                  @RequestParam(required = false) Integer offset,
                                                  @RequestParam(required = false) Integer limit,
                                                  @RequestParam(required = false) Collection<String> order) {
         boolean flag = SecurityContextHolder.getContext().getAuthentication() != null &&
-                SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("READ_USER_ANY"));
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("READ_USER"));
         if (flag) {
             if (query != null && query.length() > 0)
                 return userService.searchUsers(query, order, offset, limit);
@@ -112,9 +120,10 @@ public class UserController {
         return userService.searchPublicUsers(query, order, offset, limit);
     }
 
-    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
+    @PreAuthorize("#oauth2.hasAnyScope('write:user')")
     @PutMapping("users/{uid}/password")
-    @Operation(summary = "更新用户密码")
+    @Operation(summary = "更新用户密码", description = "更新用户的密码。" +
+            "权限：应用拥有 'WRITE_USER_ANY' 权限。")
     public void updatePassword(@PathVariable Long uid, @RequestParam String password) {
         userService.updatePassword(uid, password);
     }

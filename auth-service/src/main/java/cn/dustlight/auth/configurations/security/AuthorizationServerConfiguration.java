@@ -20,7 +20,9 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.OAuth2RequestValidator;
 import org.springframework.security.oauth2.provider.TokenGranter;
+import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.endpoint.RedirectResolver;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -106,7 +108,19 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Bean
     @ConditionalOnMissingBean
+    public RedirectResolver redirectResolver(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
+        return configurer.getRedirectResolver();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public OAuth2RequestValidator oAuth2RequestValidator(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
         return configurer.getOAuth2RequestValidator();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public UserApprovalHandler userApprovalHandler(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
+        return configurer.getUserApprovalHandler();
     }
 }
