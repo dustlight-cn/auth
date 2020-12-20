@@ -58,21 +58,22 @@ public class TokenController {
     @Autowired
     private OAuth2RequestFactory oAuth2RequestFactory;
 
-    private static final BasicAuthenticationConverter basicConverter = new BasicAuthenticationConverter();
-
     @Autowired
     private OAuth2RequestValidator oAuth2RequestValidator;
+
+    private static final BasicAuthenticationConverter basicConverter = new BasicAuthenticationConverter();
+
 
     @Operation(summary = "颁发默认令牌")
     @PostMapping(value = "oauth/token_default")
     public ResponseEntity<OAuth2AccessToken> grantDefaultToken(@RequestParam("username") String username,
                                                                @RequestParam("password") String password) {
-        Client defaultClient = clientService.loadClientByClientId("default");
         Authentication userAuth = new UsernamePasswordAuthenticationToken(username, password);
         userAuth = authenticationManager.authenticate(userAuth);
         if (userAuth == null || !userAuth.isAuthenticated()) {
             throw new InvalidGrantException("Could not authenticate user: " + username);
         }
+        Client defaultClient = clientService.loadClientByClientId("default");
         TokenRequest tokenRequest = new TokenRequest(null, defaultClient.getClientId(), defaultClient.getScope(), null);
         OAuth2Request request = tokenRequest.createOAuth2Request(defaultClient);
         OAuth2AccessToken token = authorizationServerTokenServices.createAccessToken(new OAuth2Authentication(request, userAuth));
