@@ -2,6 +2,7 @@ package cn.dustlight.auth.configurations.security;
 
 import cn.dustlight.auth.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -29,8 +30,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
             Constants.API_ROOT + "/types",
             Constants.API_ROOT + "/types/**",
             Constants.API_ROOT + "/scopes",
-            Constants.API_ROOT + "/scopes/**",
-            Constants.API_ROOT + "/oauth/authorization"
+            Constants.API_ROOT + "/scopes/**"
     };
 
     @Override
@@ -42,9 +42,12 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.requestMatchers().antMatchers(resources).and()
+        http.requestMatchers()
+                .antMatchers(HttpMethod.DELETE, Constants.API_ROOT + "/token")
+                .antMatchers(Constants.API_ROOT + "/oauth/authorization")
+                .antMatchers(resources).and()
                 .authorizeRequests()
-                .antMatchers(resources)
+                .anyRequest()
                 .authenticated()
                 .and()
                 .exceptionHandling()
