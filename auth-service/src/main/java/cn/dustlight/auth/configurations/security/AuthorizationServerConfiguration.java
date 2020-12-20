@@ -21,6 +21,7 @@ import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.OAuth2RequestValidator;
 import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -89,6 +90,12 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @ConditionalOnMissingBean
     public TokenGranter tokenGranter(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
         return configurer.getTokenGranter();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AuthorizationServerTokenServices authorizationServerTokenServices(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
+        return configurer.getTokenServices();
     }
 
     @Bean

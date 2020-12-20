@@ -5,11 +5,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class PasswordConfiguration {
+public class ComponentsConfiguration {
 
     @Bean("passwordEncoder")
     @ConditionalOnMissingBean(name = "passwordEncoder")
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

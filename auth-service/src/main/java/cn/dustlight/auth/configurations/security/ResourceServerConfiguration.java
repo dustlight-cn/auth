@@ -34,8 +34,8 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-        resources.stateless(true);
-        resources.accessDeniedHandler(accessDeniedHandler)
+        resources.stateless(true)
+                .accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint);
     }
 
