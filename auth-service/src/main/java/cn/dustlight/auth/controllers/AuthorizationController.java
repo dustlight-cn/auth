@@ -9,6 +9,7 @@ import cn.dustlight.auth.util.Constants;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.apache.commons.logging.Log;
@@ -30,10 +31,11 @@ import java.util.*;
 @Tag(name = "OAuth", description = "负责 OAuth2 应用授权。")
 @RestController
 @RequestMapping(path = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
+@SecurityRequirement(name = "Access Token")
 @SessionAttributes({"authorizationRequest", "org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint.ORIGINAL_AUTHORIZATION_REQUEST"})
-public class OAuth2Controller {
+public class AuthorizationController {
 
-    private static final Log logger = LogFactory.getLog(OAuth2Controller.class.getName());
+    private static final Log logger = LogFactory.getLog(AuthorizationController.class.getName());
 
     @Autowired
     private AuthorizationEndpoint authorizationEndpoint;

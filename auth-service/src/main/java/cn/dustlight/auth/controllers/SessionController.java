@@ -17,10 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-@Tag(name = "Session", description = "登录、注销等。")
-@RestController
-@RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
+//
+//@Tag(name = "Session", description = "登录、注销等。")
+//@RestController
+//@RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class SessionController {
 
     protected final Log logger = LogFactory.getLog(this.getClass());
