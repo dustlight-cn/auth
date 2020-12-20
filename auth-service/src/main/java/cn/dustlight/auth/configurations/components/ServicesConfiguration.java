@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 @EnableTransactionManagement
 @EnableConfigurationProperties({PatternProperties.class, AuthorizationCodeProperties.class})
 @Import({GeneratorConfiguration.class,
-        PasswordConfiguration.class})
+        ComponentsConfiguration.class})
 public class ServicesConfiguration {
 
     @Bean("userService")

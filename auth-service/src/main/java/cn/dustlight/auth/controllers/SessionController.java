@@ -73,4 +73,5 @@ public class SessionController {
         logger.debug(String.format("用户: [%s] 销毁会话", SecurityContextHolder.getContext().getAuthentication().getName()));
         SecurityContextHolder.clearContext();
     }
+
 }
