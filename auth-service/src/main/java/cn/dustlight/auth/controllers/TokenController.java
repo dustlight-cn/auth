@@ -38,6 +38,7 @@ import java.util.*;
 @Tag(name = "Token", description = "Token 颁发。")
 @RestController
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
+@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class TokenController {
 
     private final Log logger = LogFactory.getLog(getClass());

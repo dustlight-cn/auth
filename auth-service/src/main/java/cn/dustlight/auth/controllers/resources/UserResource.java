@@ -41,6 +41,7 @@ import java.util.Collection;
 @Tag(name = "Users", description = "用户增删改查、信息更新。")
 @SecurityRequirement(name = "AccessToken")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
+@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class UserResource {
 
     protected final Log logger = LogFactory.getLog(this.getClass());

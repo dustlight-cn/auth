@@ -44,6 +44,7 @@ import java.util.*;
 @RestController
 @RequestMapping(path = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 @SecurityRequirement(name = "AccessToken")
+@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class AuthorizationController {
 
     static final String AUTHORIZATION_REQUEST_ATTR_NAME = "authorizationRequest";

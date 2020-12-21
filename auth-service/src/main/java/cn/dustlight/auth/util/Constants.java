@@ -11,4 +11,9 @@ public final class Constants {
     public static class ContentType {
         public static final String APPLICATION_JSON = "application/json; charset=" + CHARSET;
     }
+
+    public final static class CrossOrigin {
+        public static final String origin = "*";
+        public static final String allowCredentials = "true";
+    }
 }

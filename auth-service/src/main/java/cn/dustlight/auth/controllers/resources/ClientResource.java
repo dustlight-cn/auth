@@ -33,6 +33,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Clients", description = "应用的增删改查")
 @SecurityRequirement(name = "AccessToken")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
+@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class ClientResource {
 
     @Autowired
