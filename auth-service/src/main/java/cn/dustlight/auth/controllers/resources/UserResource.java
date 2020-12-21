@@ -39,7 +39,7 @@ import java.util.Collection;
 
 @RestController
 @Tag(name = "Users", description = "用户增删改查、信息更新。")
-@SecurityRequirement(name = "Access Token")
+@SecurityRequirement(name = "AccessToken")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class UserResource {
 
