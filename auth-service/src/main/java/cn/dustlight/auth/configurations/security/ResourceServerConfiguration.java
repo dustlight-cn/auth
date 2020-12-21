@@ -45,6 +45,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
         http.requestMatchers()
                 .antMatchers(HttpMethod.DELETE, Constants.API_ROOT + "/token")
                 .antMatchers(HttpMethod.GET, Constants.API_ROOT + "/user")
+                .antMatchers(HttpMethod.PUT, Constants.API_ROOT + "/user/**")
                 .antMatchers(Constants.API_ROOT + "/oauth/authorization")
                 .antMatchers(resources).and()
                 .authorizeRequests()
