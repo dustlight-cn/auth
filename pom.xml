@@ -44,21 +44,19 @@
     <dependencyManagement>
         <dependencies>
 
-            <!-- Auth Core -->
+            <!-- Auth -->
             <dependency>
                 <groupId>cn.dustlight.auth</groupId>
                 <artifactId>auth-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
-            <!-- Auth Service -->
             <dependency>
                 <groupId>cn.dustlight.auth</groupId>
                 <artifactId>auth-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- Captcha -->
+            <!-- CAPTCHA -->
             <dependency>
                 <groupId>cn.dustlight.captcha</groupId>
                 <artifactId>captcha</artifactId>
@@ -103,8 +101,6 @@
                 <artifactId>springdoc-openapi-common</artifactId>
                 <version>${spring-doc.version}</version>
             </dependency>
-
-            <!-- Spring Doc UI -->
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
