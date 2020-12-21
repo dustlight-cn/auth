@@ -95,15 +95,15 @@ public class TokenController {
         }
     }
 
-    @Operation(summary = "颁发令牌", security = @SecurityRequirement(name = "Client Credentials"))
+    @Operation(summary = "颁发 OAuth2 令牌", security = @SecurityRequirement(name = "Client Credentials"))
     @PostMapping("oauth/token")
-    public ResponseEntity<OAuth2AccessToken> grantToken(@RequestParam(value = "code", required = false) String code,
-                                                        @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
-                                                        @RequestParam(value = "redirect_uri", required = false) String redirectUri,
-                                                        @RequestParam(value = "username", required = false) String username,
-                                                        @RequestParam(value = "password", required = false) String password,
-                                                        @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
-                                                        HttpServletRequest request) {
+    public ResponseEntity<OAuth2AccessToken> grantOAuthToken(@RequestParam(value = "code", required = false) String code,
+                                                             @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
+                                                             @RequestParam(value = "redirect_uri", required = false) String redirectUri,
+                                                             @RequestParam(value = "username", required = false) String username,
+                                                             @RequestParam(value = "password", required = false) String password,
+                                                             @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
+                                                             HttpServletRequest request) {
 
         UsernamePasswordAuthenticationToken clientPrincipal = basicConverter.convert(request);
         if (clientPrincipal == null)

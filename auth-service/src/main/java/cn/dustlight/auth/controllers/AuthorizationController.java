@@ -88,14 +88,14 @@ public class AuthorizationController {
      */
     @Operation(summary = "获取应用授权", description = "获取包含应用信息、所属用户信息、回调地址以及是否已授权。")
     @GetMapping("oauth/authorization")
-    public AuthorizationResponse authorize(@Parameter(hidden = true) @RequestParam Map<String, String> parameters,
-                                           @RequestParam("client_id") String clientId,
-                                           @RequestParam(value = "response_type", defaultValue = "code") String responseType,
-                                           @RequestParam(value = "redirect_uri", required = false) String redirectUri,
-                                           @RequestParam(value = "scope", required = false) Collection<String> scopes,
-                                           @RequestParam(value = "state", required = false) String state,
-                                           HttpServletRequest httpServletRequest,
-                                           Principal principal) {
+    public AuthorizationResponse getAuthorization(@Parameter(hidden = true) @RequestParam Map<String, String> parameters,
+                                                  @RequestParam("client_id") String clientId,
+                                                  @RequestParam(value = "response_type", defaultValue = "code") String responseType,
+                                                  @RequestParam(value = "redirect_uri", required = false) String redirectUri,
+                                                  @RequestParam(value = "scope", required = false) Collection<String> scopes,
+                                                  @RequestParam(value = "state", required = false) String state,
+                                                  HttpServletRequest httpServletRequest,
+                                                  Principal principal) {
         try {
             AuthorizationRequest authorizationRequest = oAuth2RequestFactory.createAuthorizationRequest(parameters);
 
@@ -163,10 +163,10 @@ public class AuthorizationController {
 
     @Operation(summary = "创建应用授权")
     @PostMapping("oauth/authorization")
-    public AuthorizationResponse approveOrDeny(@RequestParam("approved") boolean approved,
-                                               @RequestParam("scope") Set<String> scopes,
-                                               HttpServletRequest httpServletRequest,
-                                               Principal principal) {
+    public AuthorizationResponse createAuthorization(@RequestParam("approved") boolean approved,
+                                                     @RequestParam("scope") Set<String> scopes,
+                                                     HttpServletRequest httpServletRequest,
+                                                     Principal principal) {
         Map<String, String> approvalParameters = new LinkedHashMap<>();
         approvalParameters.put("user_oauth_approval", approved ? "true" : "false");
         for (String scope : scopes)

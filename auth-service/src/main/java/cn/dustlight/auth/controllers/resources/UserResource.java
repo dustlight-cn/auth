@@ -38,7 +38,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @RestController
-@Tag(name = "User", description = "用户增删改查、信息更新。")
+@Tag(name = "Users", description = "用户增删改查、信息更新。")
 @SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class UserResource {
@@ -102,12 +102,12 @@ public class UserResource {
     }
 
     @PreAuthorize("#oauth2.hasAnyScope('read:user')")
-    @GetMapping("users")
+    @GetMapping(value = "users")
     @Operation(summary = "查找用户", description = "查询或者列出用户（取决于有无关键字）。" +
             "权限：应用拥有 'read:user' 授权作用域。（若用户拥有 'READ_USER' 权限，可获取用户完整信息。）")
     public QueryResults<? extends User> getUsers(@RequestParam(required = false, value = "q") String query,
                                                  @RequestParam(required = false) Integer offset,
-                                                 @RequestParam(required = false) Integer limit,
+                                                 @RequestParam(required = true, defaultValue = "10") Integer limit,
                                                  @RequestParam(required = false) Collection<String> order) {
         boolean flag = SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("READ_USER"));
