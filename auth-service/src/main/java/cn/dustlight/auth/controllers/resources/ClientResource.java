@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "Client", description = "应用的增删改查")
+@Tag(name = "Clients", description = "应用的增删改查")
 @SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class ClientResource {

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 
-@Tag(name = "Captcha", description = "验证码相关业务。")
+@Tag(name = "CAPTCHA", description = "验证码相关业务。")
 @RestController
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class CaptchaController {
@@ -34,7 +34,9 @@ public class CaptchaController {
     @VerifyCode
     @PostMapping("code/registration")
     @Operation(summary = "获取邮箱注册验证码", description = "发送验证码到邮箱，用于注册。")
-    public void createRegistrationCode(@CodeValue @RequestParam(name = "code") String targetCode, @CodeValue("registration") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code, @RequestParam @CodeParam("registration") String email) {
+    public void createRegistrationCode(@CodeValue @RequestParam(name = "code") String targetCode,
+                                       @CodeValue("registration") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code,
+                                       @RequestParam @CodeParam(value = "registration", name = "email") String email) {
         logger.debug(String.format("消费图像验证码：%s\t发送邮箱注册验证码：%s\t邮箱：%s", targetCode, code, email));
     }
 
@@ -45,7 +47,9 @@ public class CaptchaController {
     @VerifyCode
     @PostMapping("code/email")
     @Operation(summary = "获取邮箱更改验证码", description = "发送验证码到邮箱，用于更改邮箱。")
-    public void createEmailCode(@CodeValue @RequestParam(name = "code") String targetCode, @CodeValue("email") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code, @RequestParam @CodeParam("email") String email) {
+    public void createEmailCode(@CodeValue @RequestParam(name = "code") String targetCode,
+                                @CodeValue("email") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code,
+                                @RequestParam @CodeParam("email") String email) {
         logger.debug(String.format("消费图像验证码：%s\t发送更新邮箱验证码：%s\t邮箱：%s", targetCode, code, email));
     }
 

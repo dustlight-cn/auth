@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@Tag(name = "Scope", description = "授权作用域的增删改查。")
+@Tag(name = "Scopes", description = "授权作用域的增删改查。")
 @SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class ScopeResource {

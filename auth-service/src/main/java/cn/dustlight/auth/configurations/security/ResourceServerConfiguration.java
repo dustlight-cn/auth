@@ -44,6 +44,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     public void configure(HttpSecurity http) throws Exception {
         http.requestMatchers()
                 .antMatchers(HttpMethod.DELETE, Constants.API_ROOT + "/token")
+                .antMatchers(HttpMethod.GET, Constants.API_ROOT + "/user")
                 .antMatchers(Constants.API_ROOT + "/oauth/authorization")
                 .antMatchers(resources).and()
                 .authorizeRequests()

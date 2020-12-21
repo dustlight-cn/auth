@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Collection;
 
 @RestController
-@Tag(name = "GrantType", description = "授权模式的增删改查。")
+@Tag(name = "GrantTypes", description = "授权模式的增删改查。")
 @SecurityRequirement(name = "Access Token")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 public class GrantTypeResource {
