@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 @Tag(name = "CAPTCHA", description = "验证码相关业务。")
 @RestController
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
+@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class CaptchaController {
 
     private final Log logger = LogFactory.getLog(this.getClass());
