@@ -5,6 +5,8 @@ import cn.dustlight.auth.entities.Client;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.util.Constants;
 
+import cn.dustlight.captcha.annotations.CodeValue;
+import cn.dustlight.captcha.annotations.VerifyCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -66,10 +68,12 @@ public class TokenController {
 
     private static final BasicAuthenticationConverter basicConverter = new BasicAuthenticationConverter();
 
+    @VerifyCode
     @Operation(summary = "颁发默认令牌")
     @PostMapping(value = "token")
     public ResponseEntity<OAuth2AccessToken> grantToken(@RequestParam("username") String username,
-                                                        @RequestParam("password") String password) {
+                                                        @RequestParam("password") String password,
+                                                        @RequestParam("code") @CodeValue String code) {
         Authentication userAuth = new UsernamePasswordAuthenticationToken(username, password);
         userAuth = authenticationManager.authenticate(userAuth);
         if (userAuth == null || !userAuth.isAuthenticated()) {
@@ -82,7 +86,7 @@ public class TokenController {
         return getResponse(token);
     }
 
-    @Operation(summary = "删除令牌", security = @SecurityRequirement(name = "Access Token"))
+    @Operation(summary = "删除令牌", security = @SecurityRequirement(name = "AccessToken"))
     @DeleteMapping(value = "token")
     public void deleteToken(OAuth2Authentication oAuth2Authentication) {
         if (oAuth2Authentication == null)
@@ -95,7 +99,7 @@ public class TokenController {
         }
     }
 
-    @Operation(summary = "颁发 OAuth2 令牌", security = @SecurityRequirement(name = "Client Credentials"))
+    @Operation(summary = "颁发 OAuth2 令牌", security = @SecurityRequirement(name = "ClientCredentials"))
     @PostMapping("oauth/token")
     public ResponseEntity<OAuth2AccessToken> grantOAuthToken(@RequestParam(value = "code", required = false) String code,
                                                              @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,

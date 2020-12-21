@@ -39,7 +39,7 @@ public class UserController {
     @GetMapping(value = "user")
     @Operation(summary = "获取当前用户信息",
             description = "获取当前用户信息。权限：应用需要 'read:user' 授权作用域。",
-            security = @SecurityRequirement(name = "Access Token"))
+            security = @SecurityRequirement(name = "AccessToken"))
     public User getUser(OAuth2Authentication oAuth2Authentication) {
         if (!(oAuth2Authentication.getPrincipal() instanceof User))
             ErrorEnum.UNAUTHORIZED.details("Principal is not User").throwException();
@@ -51,7 +51,7 @@ public class UserController {
     @PostMapping("user")
     @Operation(summary = "用户自助注册",
             description = "通过邮箱验证码自助注册账号。",
-            security = @SecurityRequirement(name = "Access Token"))
+            security = @SecurityRequirement(name = "AccessToken"))
     public User createUser(@RequestParam("username") String username,
                            @RequestParam("password") String password,
                            @RequestParam("code") @CodeValue("Register") String code,
@@ -69,7 +69,7 @@ public class UserController {
     @PutMapping("user/password")
     @Operation(summary = "更改用户密码",
             description = "通过原密码更改密码。",
-            security = @SecurityRequirement(name = "Access Token"))
+            security = @SecurityRequirement(name = "AccessToken"))
     public void updatePassword(OAuth2Authentication oAuth2Authentication,
                                @RequestParam("oldPassword") String oldPassword,
                                @RequestParam("newPassword") String newPassword) {
@@ -85,7 +85,7 @@ public class UserController {
     @PutMapping("password")
     @Operation(summary = "邮箱重置密码",
             description = "通过邮箱验证码重置密码。",
-            security = @SecurityRequirement(name = "Access Token"))
+            security = @SecurityRequirement(name = "AccessToken"))
     public void updatePasswordWithEmail(@RequestParam("password") String password,
                                         @RequestParam("code") @CodeValue("ResetPasswordByEmail") String code,
                                         @CodeParam(value = "ResetPasswordByEmail", name = "email") String email) {
@@ -98,7 +98,7 @@ public class UserController {
     @PutMapping("user/email")
     @Operation(summary = "更改邮箱",
             description = "更改用户邮箱，需要输入密码。",
-            security = @SecurityRequirement(name = "Access Token"))
+            security = @SecurityRequirement(name = "AccessToken"))
     public void updateEmail(OAuth2Authentication oAuth2Authentication,
                             @RequestParam("password") String password,
                             @CodeValue("ChangeEmail") @RequestParam("code") String code,

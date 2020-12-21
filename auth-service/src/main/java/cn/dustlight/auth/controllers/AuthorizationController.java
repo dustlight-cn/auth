@@ -43,7 +43,7 @@ import java.util.*;
 @Tag(name = "Authorization", description = "OAuth2 应用授权。")
 @RestController
 @RequestMapping(path = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@SecurityRequirement(name = "Access Token")
+@SecurityRequirement(name = "AccessToken")
 public class AuthorizationController {
 
     static final String AUTHORIZATION_REQUEST_ATTR_NAME = "authorizationRequest";
@@ -176,7 +176,7 @@ public class AuthorizationController {
                 approvalParameters.put("scope." + scope, "true");
 
         if (!(principal instanceof Authentication)) {
-            throw new InsufficientAuthenticationException("User must be authenticated with Spring Security before authorizing an access token.");
+            throw new InsufficientAuthenticationException("User must be authenticated with Spring Security before authorizing an AccessToken.");
         }
         HttpSession session = httpServletRequest.getSession(false);
         AuthorizationRequest authorizationRequest;
