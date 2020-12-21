@@ -1,0 +1,52 @@
+{
+  "name": "@dustlight/auth-ui",
+  "version": "0.0.1-aplha",
+  "description": "UI for auth-service",
+  "productName": "auth-ui",
+  "author": "Hansin1997 <hansin@dustlight.cn>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dustlight-cn/auth.git"
+  },
+  "keywords": [
+    "authorization",
+    "auth-ui"
+  ],
+  "bugs": {
+    "url": "https://github.com/dustlight-cn/auth/issues"
+  },
+  "homepage": "https://github.com/dustlight-cn/auth#readme",
+  "dependencies": {
+    "@quasar/extras": "^1.0.0",
+    "@vue/composition-api": "^0.6.4",
+    "axios": "^0.18.1",
+    "core-js": "^3.6.5",
+    "quasar": "^1.0.0",
+    "vue-i18n": "^8.0.0",
+    "@dustlight/auth-client-axios": "0.0.1-aplha"
+  },
+  "devDependencies": {
+    "@quasar/app": "^2.0.0",
+    "@types/node": "^10.17.15"
+  },
+  "browserslist": [
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
+  ],
+  "engines": {
+    "node": ">= 10.18.1",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
+}
