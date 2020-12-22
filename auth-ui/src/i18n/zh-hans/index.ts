@@ -18,6 +18,7 @@ export default {
   "SignIn": {
     "title": "登录",
     "signIn": "登录",
+    "error": "登录失败",
     "signUp": "注册",
     "forgotPassword": "忘记密码?",
     "account": "账号",

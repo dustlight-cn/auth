@@ -54,7 +54,7 @@ dustlight:
       store:
         name: redisCodeStore
     recaptcha:
-      default-secret: "6LeaYxAaAAAAAIUqh3H2GTjBMVOjq8i4mm1nOy8I"
+      default-secret: "6Lcp1xAaAAAAAJh6jmR8oWjEiqwGgbBTS7BnDpbX"
       default-parameter-name: "g-recaptcha-response"
   storage:
     tencent:

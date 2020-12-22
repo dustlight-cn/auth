@@ -1,5 +1,8 @@
 <template>
   <q-page padding>
+
+    <re-captcha ref="captcha" v-model="model.recaptch"/>
+
     <!-- 宽窗口 -->
     <q-page class="flex flex-center gt-xs">
       <q-form
@@ -26,12 +29,12 @@
             lazy-rules
             :rules="rule.password"
           />
-          <re-captcha v-model="model.recaptch"/>
           <div class="q-mb-md flex">
             <q-btn :label="$tt(this,'signUp')" @click="signUp" flat color="accent" class="q-ml-sm"/>
             <q-space/>
             <q-btn :label="$tt(this,'forgotPassword')" @click="forgotPassword" flat color="accent" class="q-ml-sm"/>
-            <q-btn :disable="notVerify" :loading="isBusy" :label="$tt(this,'signIn')" type="submit"
+
+            <q-btn type="submit" :loading="isBusy" :label="$tt(this,'signIn')"
                    color="accent" class="q-ml-sm"/>
           </div>
         </div>
@@ -65,12 +68,11 @@
             lazy-rules
             :rules="rule.password"
           />
-          <re-captcha v-model="model.recaptch"/>
           <div class="flex q-gutter-sm">
             <q-btn :label="$tt(this,'signUp')" @click="signUp" flat color="accent" class="q-ml-sm"/>
             <q-space/>
             <q-btn :label="$tt(this,'forgotPassword')" @click="forgotPassword" flat color="accent" class="q-ml-sm"/>
-            <q-btn :disable="notVerify" :loading="isBusy" :label="$tt(this,'signIn')" type="submit" color="accent"
+            <q-btn :loading="isBusy" :label="$tt(this,'signIn')" type="submit" color="accent"
                    class="q-ml-sm"/>
           </div>
         </div>
@@ -108,13 +110,16 @@ export default {
   }
   ,
   methods: {
-    verify() {
-
+    verify(cb) {
+      if (this.notVerify) {
+        this.$refs.captcha.$emit("execute", cb)
+        return false;
+      }
       return true;
     }
     ,
     signIn() {
-      if (!this.verify())
+      if (!this.verify(this.signIn))
         return;
       this.isBusy = true
       this.$tokenApi.grantToken(this.model.account, this.model.password, this.model.recaptch)
@@ -138,8 +143,7 @@ export default {
      * @param token : Access Token
      */
     onSignInSuccess(token) {
-      token.expiredAt = new Date(new Date() + token.expires_in);
-      this.$q.sessionStorage.set("token", token);
+      this.$s.storeToken(token);
       location.href = this.$route.query.redirect_uri ? this.$route.query.redirect_uri : ""
     }
     ,
@@ -148,12 +152,12 @@ export default {
      * @param e
      */
     onSignInFail(e) {
-      this.$root.$emit("reloadCaptcha")
+      this.$refs.captcha.$emit("reload")
       this.model.password = ""
-      let title = this.$t("error");
+      let title = this.$tt(this, "error");
       let msg = e.message
       if (e.response != null && e.response.data != null) {
-        title = e.response.data.message || title
+        // title = e.response.data.message || title
         msg = e.response.data.details || msg
       }
       this.$q.dialog({
