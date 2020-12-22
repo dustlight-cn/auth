@@ -5,7 +5,8 @@ import cn.dustlight.auth.entities.Client;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.util.Constants;
 
-import cn.dustlight.captcha.annotations.CodeValue;
+import cn.dustlight.captcha.annotations.Store;
+import cn.dustlight.captcha.annotations.Verifier;
 import cn.dustlight.captcha.annotations.VerifyCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,7 +39,7 @@ import java.util.*;
 @Tag(name = "Token", description = "Token 颁发。")
 @RestController
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
+@CrossOrigin(origins = Constants.CrossOrigin.origin, allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class TokenController {
 
     private final Log logger = LogFactory.getLog(getClass());
@@ -69,12 +70,12 @@ public class TokenController {
 
     private static final BasicAuthenticationConverter basicConverter = new BasicAuthenticationConverter();
 
-    @VerifyCode
+    @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
     @Operation(summary = "颁发默认令牌")
     @PostMapping(value = "token")
     public ResponseEntity<OAuth2AccessToken> grantToken(@RequestParam("username") String username,
                                                         @RequestParam("password") String password,
-                                                        @RequestParam("code") @CodeValue String code) {
+                                                        @RequestParam("g-recaptcha-response") String recaptchaResponse) {
         Authentication userAuth = new UsernamePasswordAuthenticationToken(username, password);
         userAuth = authenticationManager.authenticate(userAuth);
         if (userAuth == null || !userAuth.isAuthenticated()) {

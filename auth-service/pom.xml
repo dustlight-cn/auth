@@ -34,6 +34,10 @@
         </dependency>
         <dependency>
             <groupId>cn.dustlight.captcha</groupId>
+            <artifactId>recaptcha</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.dustlight.captcha</groupId>
             <artifactId>redis-store</artifactId>
         </dependency>
         <dependency>
