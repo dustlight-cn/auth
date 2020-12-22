@@ -25,7 +25,7 @@ import java.util.Arrays;
 @RestController
 @Tag(name = "User", description = "获取当前用户信息，用户注册。")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
+@CrossOrigin(origins = Constants.CrossOrigin.origin, allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class UserController {
 
     private final Log logger = LogFactory.getLog(getClass());
