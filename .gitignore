@@ -6,6 +6,8 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+*/openapitools.json
+
 ### STS ###
 .apt_generated
 .classpath
