@@ -5,6 +5,8 @@ import {
 import {BASE_PATH} from '@dustlight/auth-client-axios/base'
 import {boot} from "quasar/wrappers";
 
+export * from '@dustlight/auth-client-axios'
+
 declare module 'vue/types/vue' {
   interface Vue {
     $userApi: UsersApi;

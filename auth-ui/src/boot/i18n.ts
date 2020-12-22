@@ -3,6 +3,7 @@ import messages from 'src/i18n';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
+
 declare module 'vue/types/vue' {
   interface Vue {
     i18n: VueI18n;
@@ -10,6 +11,7 @@ declare module 'vue/types/vue' {
 }
 
 Vue.use(VueI18n);
+Vue.prototype.$tt = (ctx: Vue, key: string) => ctx.$t(ctx.$options.name + "." + key)
 
 export const i18n = new VueI18n({
   locale: "zh-hans",

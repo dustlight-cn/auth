@@ -23,7 +23,10 @@ module.exports = configure(function (/* ctx */) {
       'composition-api',
       'i18n',
       'axios',
-      'auth-client-axios'
+      'auth-client-axios',
+      'menus',
+      'util',
+      'config'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -98,7 +101,8 @@ module.exports = configure(function (/* ctx */) {
       // Quasar plugins
       plugins: [
         'LocalStorage',
-        'SessionStorage'
+        'SessionStorage',
+        'Dialog'
       ]
     },
 

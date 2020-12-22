@@ -19,39 +19,14 @@
           <i18n path="title"/>
         </q-toolbar-title>
       </q-toolbar>
-
-      <!-- 顶部导航栏 -->
-      <q-tabs v-model="tab" v-if="!left">
-        <transition
-          appear
-          enter-active-class="animated fadeIn"
-          v-for="(menu,i) in this.$menus.main" :key="i"
-        >
-          <q-route-tab :name="menu.title" :to="menu.link" :label="$t('menus.' + menu.title)"/>
-        </transition>
-      </q-tabs>
     </q-header>
-
-    <!-- 侧边导航栏 -->
-    <q-drawer show-if-above v-model="left" side="left" bordered>
-      <q-tabs v-model="tab" vertical>
-        <transition
-          appear
-          enter-active-class="animated fadeIn"
-          v-for="(menu,i) in this.$menus.main" :key="i"
-        >
-          <q-route-tab :name="menu.title" :to="menu.link" :label="$t('menus.' + menu.title)"
-                       :icon="menu.icon"/>
-        </transition>
-      </q-tabs>
-    </q-drawer>
 
     <q-page-container>
       <transition
         appear
         enter-active-class="animated fadeIn"
       >
-        <router-view/>
+        <router-view @setSubtitle="setSubtitle"/>
       </transition>
     </q-page-container>
 
@@ -66,16 +41,18 @@
 
 <script>
 export default {
-  name: 'MainLayout',
+  name: 'ChildLayout',
   data() {
     return {
       left: false,
       tab: "home",
-      user: {}
+      subtitle: ""
     }
   },
-  mounted() {
-
+  methods: {
+    setSubtitle(subtitle) {
+      this.subtitle = subtitle
+    }
   }
 }
 </script>

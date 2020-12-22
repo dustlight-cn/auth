@@ -1,6 +1,6 @@
 {
   "name": "@dustlight/auth-client-axios",
-  "version": "0.0.1-aplha",
+  "version": "0.0.1-aplha-1",
   "description": "client sdk for auth-service",
   "main": "index.ts",
   "scripts": {

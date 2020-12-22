@@ -136,16 +136,10 @@ export interface AuthorizationClient {
     authorities?: Array<string>;
     /**
      * 
-     * @type {string}
+     * @type {Set<string>}
      * @memberof AuthorizationClient
      */
-    clientSecret?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof AuthorizationClient
-     */
-    refreshTokenValiditySeconds?: number;
+    registeredRedirectUri?: Set<string>;
     /**
      * 
      * @type {number}
@@ -154,10 +148,16 @@ export interface AuthorizationClient {
     accessTokenValiditySeconds?: number;
     /**
      * 
-     * @type {Set<string>}
+     * @type {number}
      * @memberof AuthorizationClient
      */
-    registeredRedirectUri?: Set<string>;
+    refreshTokenValiditySeconds?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuthorizationClient
+     */
+    clientSecret?: string;
     /**
      * 
      * @type {string}
@@ -241,16 +241,28 @@ export interface AuthorizationResponse {
 export interface Client {
     /**
      * 
+     * @type {string}
+     * @memberof Client
+     */
+    name?: string;
+    /**
+     * 
      * @type {number}
      * @memberof Client
      */
     status?: number;
     /**
      * 
-     * @type {Array<ClientScope>}
+     * @type {string}
      * @memberof Client
      */
-    scopes?: Array<ClientScope>;
+    description?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof Client
+     */
+    authorities?: Array<string>;
     /**
      * 
      * @type {string}
@@ -259,10 +271,10 @@ export interface Client {
     logo?: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<ClientScope>}
      * @memberof Client
      */
-    authorities?: Array<string>;
+    scopes?: Array<ClientScope>;
     /**
      * 
      * @type {number}
@@ -274,13 +286,7 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
-    description?: string;
+    updatedAt?: string;
     /**
      * 
      * @type {string}
@@ -289,22 +295,40 @@ export interface Client {
     createdAt?: string;
     /**
      * 
-     * @type {string}
+     * @type {Set<string>}
      * @memberof Client
      */
-    updatedAt?: string;
+    grantTypes?: Set<string>;
     /**
      * 
      * @type {Set<string>}
      * @memberof Client
      */
-    resources?: Set<string>;
+    redirectUri?: Set<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof Client
+     */
+    accessTokenValidity?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Client
+     */
+    refreshTokenValidity?: number;
     /**
      * 
      * @type {string}
      * @memberof Client
      */
     cid?: string;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof Client
+     */
+    resources?: Set<string>;
     /**
      * 
      * @type {string}
@@ -317,30 +341,6 @@ export interface Client {
      * @memberof Client
      */
     extra?: { [key: string]: object; };
-    /**
-     * 
-     * @type {number}
-     * @memberof Client
-     */
-    refreshTokenValidity?: number;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    grantTypes?: Set<string>;
-    /**
-     * 
-     * @type {number}
-     * @memberof Client
-     */
-    accessTokenValidity?: number;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    redirectUri?: Set<string>;
 }
 /**
  * 
@@ -356,18 +356,6 @@ export interface ClientScope {
     autoApprove?: boolean;
     /**
      * 
-     * @type {number}
-     * @memberof ClientScope
-     */
-    sid?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof ClientScope
-     */
-    subtitle?: string;
-    /**
-     * 
      * @type {string}
      * @memberof ClientScope
      */
@@ -378,6 +366,18 @@ export interface ClientScope {
      * @memberof ClientScope
      */
     description?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ClientScope
+     */
+    sid?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ClientScope
+     */
+    subtitle?: string;
 }
 /**
  * 
@@ -427,6 +427,30 @@ export interface OAuth2AccessToken {
      * @type {string}
      * @memberof OAuth2AccessToken
      */
+    value?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    expiration?: string;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof OAuth2AccessToken
+     */
+    scope?: Set<string>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OAuth2AccessToken
+     */
+    expired?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
     tokenType?: string;
     /**
      * 
@@ -446,30 +470,6 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     expiresIn?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    value?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    expiration?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof OAuth2AccessToken
-     */
-    expired?: boolean;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof OAuth2AccessToken
-     */
-    scope?: Set<string>;
 }
 /**
  * 
@@ -507,12 +507,6 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    unlockedAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
     nickname?: string;
     /**
      * 
@@ -520,6 +514,18 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     gender?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicUser
+     */
+    unlockedAt?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PublicUser
+     */
+    enabled?: boolean;
     /**
      * 
      * @type {string}
@@ -544,12 +550,6 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     accountNonLocked?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof PublicUser
-     */
-    enabled?: boolean;
     /**
      * 
      * @type {string}
@@ -606,25 +606,25 @@ export interface Resource {
      * @type {string}
      * @memberof Resource
      */
-    rid?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Resource
-     */
     name?: string;
     /**
      * 
      * @type {string}
      * @memberof Resource
      */
-    createdAt?: string;
+    rid?: string;
     /**
      * 
      * @type {string}
      * @memberof Resource
      */
     updatedAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Resource
+     */
+    createdAt?: string;
 }
 /**
  * 
@@ -655,13 +655,13 @@ export interface Role {
      * @type {string}
      * @memberof Role
      */
-    createdAt?: string;
+    updatedAt?: string;
     /**
      * 
      * @type {string}
      * @memberof Role
      */
-    updatedAt?: string;
+    createdAt?: string;
 }
 /**
  * 
@@ -741,12 +741,6 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
     nickname?: string;
     /**
      * 
@@ -759,13 +753,25 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    accountExpiredAt?: string;
+    unlockedAt?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
     credentialsExpiredAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    accountExpiredAt?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof User
+     */
+    enabled?: boolean;
     /**
      * 
      * @type {string}
@@ -792,22 +798,16 @@ export interface User {
     accountNonLocked?: boolean;
     /**
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof User
      */
-    enabled?: boolean;
+    updatedAt?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
     createdAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    updatedAt?: string;
     /**
      * 
      * @type {Array<UserRole>}
@@ -2002,54 +2002,17 @@ export class AuthorizationApi extends BaseAPI {
 export const CAPTCHAApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 用于基础验证及邮箱验证之前。
-         * @summary 获取图形验证码
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createCommonCode: async (options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v0/code/image`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            const queryParameters = new URLSearchParams(localVarUrlObj.search);
-            for (const key in localVarQueryParameter) {
-                queryParameters.set(key, localVarQueryParameter[key]);
-            }
-            for (const key in options.query) {
-                queryParameters.set(key, options.query[key]);
-            }
-            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * 发送验证码到邮箱，用于注册。
          * @summary 获取注册邮箱验证码
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createRegistrationCode: async (code: string, email: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'code' is not null or undefined
-            if (code === null || code === undefined) {
-                throw new RequiredError('code','Required parameter code was null or undefined when calling createRegistrationCode.');
+        createRegistrationCode: async (gRecaptchaResponse: string, email: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'gRecaptchaResponse' is not null or undefined
+            if (gRecaptchaResponse === null || gRecaptchaResponse === undefined) {
+                throw new RequiredError('gRecaptchaResponse','Required parameter gRecaptchaResponse was null or undefined when calling createRegistrationCode.');
             }
             // verify required parameter 'email' is not null or undefined
             if (email === null || email === undefined) {
@@ -2067,8 +2030,8 @@ export const CAPTCHAApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (code !== undefined) {
-                localVarQueryParameter['code'] = code;
+            if (gRecaptchaResponse !== undefined) {
+                localVarQueryParameter['g-recaptcha-response'] = gRecaptchaResponse;
             }
 
             if (email !== undefined) {
@@ -2096,15 +2059,15 @@ export const CAPTCHAApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 发送验证码到邮箱，用于更改邮箱。
          * @summary 获取更换邮箱验证码
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createUpdateEmailCode: async (code: string, email: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'code' is not null or undefined
-            if (code === null || code === undefined) {
-                throw new RequiredError('code','Required parameter code was null or undefined when calling createUpdateEmailCode.');
+        createUpdateEmailCode: async (gRecaptchaResponse: string, email: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'gRecaptchaResponse' is not null or undefined
+            if (gRecaptchaResponse === null || gRecaptchaResponse === undefined) {
+                throw new RequiredError('gRecaptchaResponse','Required parameter gRecaptchaResponse was null or undefined when calling createUpdateEmailCode.');
             }
             // verify required parameter 'email' is not null or undefined
             if (email === null || email === undefined) {
@@ -2122,8 +2085,8 @@ export const CAPTCHAApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (code !== undefined) {
-                localVarQueryParameter['code'] = code;
+            if (gRecaptchaResponse !== undefined) {
+                localVarQueryParameter['g-recaptcha-response'] = gRecaptchaResponse;
             }
 
             if (email !== undefined) {
@@ -2151,15 +2114,15 @@ export const CAPTCHAApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 发送验证码到邮箱，用于更改邮箱。
          * @summary 获取重置密码邮箱验证码
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createUpdatePasswordEmailCode: async (code: string, email: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'code' is not null or undefined
-            if (code === null || code === undefined) {
-                throw new RequiredError('code','Required parameter code was null or undefined when calling createUpdatePasswordEmailCode.');
+        createUpdatePasswordEmailCode: async (gRecaptchaResponse: string, email: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'gRecaptchaResponse' is not null or undefined
+            if (gRecaptchaResponse === null || gRecaptchaResponse === undefined) {
+                throw new RequiredError('gRecaptchaResponse','Required parameter gRecaptchaResponse was null or undefined when calling createUpdatePasswordEmailCode.');
             }
             // verify required parameter 'email' is not null or undefined
             if (email === null || email === undefined) {
@@ -2177,8 +2140,8 @@ export const CAPTCHAApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (code !== undefined) {
-                localVarQueryParameter['code'] = code;
+            if (gRecaptchaResponse !== undefined) {
+                localVarQueryParameter['g-recaptcha-response'] = gRecaptchaResponse;
             }
 
             if (email !== undefined) {
@@ -2213,28 +2176,15 @@ export const CAPTCHAApiAxiosParamCreator = function (configuration?: Configurati
 export const CAPTCHAApiFp = function(configuration?: Configuration) {
     return {
         /**
-         * 用于基础验证及邮箱验证之前。
-         * @summary 获取图形验证码
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async createCommonCode(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await CAPTCHAApiAxiosParamCreator(configuration).createCommonCode(options);
-            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
-                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
-                return axios.request(axiosRequestArgs);
-            };
-        },
-        /**
          * 发送验证码到邮箱，用于注册。
          * @summary 获取注册邮箱验证码
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createRegistrationCode(code: string, email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await CAPTCHAApiAxiosParamCreator(configuration).createRegistrationCode(code, email, options);
+        async createRegistrationCode(gRecaptchaResponse: string, email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await CAPTCHAApiAxiosParamCreator(configuration).createRegistrationCode(gRecaptchaResponse, email, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -2243,13 +2193,13 @@ export const CAPTCHAApiFp = function(configuration?: Configuration) {
         /**
          * 发送验证码到邮箱，用于更改邮箱。
          * @summary 获取更换邮箱验证码
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createUpdateEmailCode(code: string, email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await CAPTCHAApiAxiosParamCreator(configuration).createUpdateEmailCode(code, email, options);
+        async createUpdateEmailCode(gRecaptchaResponse: string, email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await CAPTCHAApiAxiosParamCreator(configuration).createUpdateEmailCode(gRecaptchaResponse, email, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -2258,13 +2208,13 @@ export const CAPTCHAApiFp = function(configuration?: Configuration) {
         /**
          * 发送验证码到邮箱，用于更改邮箱。
          * @summary 获取重置密码邮箱验证码
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createUpdatePasswordEmailCode(code: string, email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await CAPTCHAApiAxiosParamCreator(configuration).createUpdatePasswordEmailCode(code, email, options);
+        async createUpdatePasswordEmailCode(gRecaptchaResponse: string, email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await CAPTCHAApiAxiosParamCreator(configuration).createUpdatePasswordEmailCode(gRecaptchaResponse, email, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -2280,46 +2230,37 @@ export const CAPTCHAApiFp = function(configuration?: Configuration) {
 export const CAPTCHAApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     return {
         /**
-         * 用于基础验证及邮箱验证之前。
-         * @summary 获取图形验证码
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createCommonCode(options?: any): AxiosPromise<void> {
-            return CAPTCHAApiFp(configuration).createCommonCode(options).then((request) => request(axios, basePath));
-        },
-        /**
          * 发送验证码到邮箱，用于注册。
          * @summary 获取注册邮箱验证码
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createRegistrationCode(code: string, email: string, options?: any): AxiosPromise<void> {
-            return CAPTCHAApiFp(configuration).createRegistrationCode(code, email, options).then((request) => request(axios, basePath));
+        createRegistrationCode(gRecaptchaResponse: string, email: string, options?: any): AxiosPromise<void> {
+            return CAPTCHAApiFp(configuration).createRegistrationCode(gRecaptchaResponse, email, options).then((request) => request(axios, basePath));
         },
         /**
          * 发送验证码到邮箱，用于更改邮箱。
          * @summary 获取更换邮箱验证码
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createUpdateEmailCode(code: string, email: string, options?: any): AxiosPromise<void> {
-            return CAPTCHAApiFp(configuration).createUpdateEmailCode(code, email, options).then((request) => request(axios, basePath));
+        createUpdateEmailCode(gRecaptchaResponse: string, email: string, options?: any): AxiosPromise<void> {
+            return CAPTCHAApiFp(configuration).createUpdateEmailCode(gRecaptchaResponse, email, options).then((request) => request(axios, basePath));
         },
         /**
          * 发送验证码到邮箱，用于更改邮箱。
          * @summary 获取重置密码邮箱验证码
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createUpdatePasswordEmailCode(code: string, email: string, options?: any): AxiosPromise<void> {
-            return CAPTCHAApiFp(configuration).createUpdatePasswordEmailCode(code, email, options).then((request) => request(axios, basePath));
+        createUpdatePasswordEmailCode(gRecaptchaResponse: string, email: string, options?: any): AxiosPromise<void> {
+            return CAPTCHAApiFp(configuration).createUpdatePasswordEmailCode(gRecaptchaResponse, email, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2332,53 +2273,42 @@ export const CAPTCHAApiFactory = function (configuration?: Configuration, basePa
  */
 export class CAPTCHAApi extends BaseAPI {
     /**
-     * 用于基础验证及邮箱验证之前。
-     * @summary 获取图形验证码
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CAPTCHAApi
-     */
-    public createCommonCode(options?: any) {
-        return CAPTCHAApiFp(this.configuration).createCommonCode(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * 发送验证码到邮箱，用于注册。
      * @summary 获取注册邮箱验证码
-     * @param {string} code 
+     * @param {string} gRecaptchaResponse 
      * @param {string} email 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CAPTCHAApi
      */
-    public createRegistrationCode(code: string, email: string, options?: any) {
-        return CAPTCHAApiFp(this.configuration).createRegistrationCode(code, email, options).then((request) => request(this.axios, this.basePath));
+    public createRegistrationCode(gRecaptchaResponse: string, email: string, options?: any) {
+        return CAPTCHAApiFp(this.configuration).createRegistrationCode(gRecaptchaResponse, email, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 发送验证码到邮箱，用于更改邮箱。
      * @summary 获取更换邮箱验证码
-     * @param {string} code 
+     * @param {string} gRecaptchaResponse 
      * @param {string} email 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CAPTCHAApi
      */
-    public createUpdateEmailCode(code: string, email: string, options?: any) {
-        return CAPTCHAApiFp(this.configuration).createUpdateEmailCode(code, email, options).then((request) => request(this.axios, this.basePath));
+    public createUpdateEmailCode(gRecaptchaResponse: string, email: string, options?: any) {
+        return CAPTCHAApiFp(this.configuration).createUpdateEmailCode(gRecaptchaResponse, email, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 发送验证码到邮箱，用于更改邮箱。
      * @summary 获取重置密码邮箱验证码
-     * @param {string} code 
+     * @param {string} gRecaptchaResponse 
      * @param {string} email 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CAPTCHAApi
      */
-    public createUpdatePasswordEmailCode(code: string, email: string, options?: any) {
-        return CAPTCHAApiFp(this.configuration).createUpdatePasswordEmailCode(code, email, options).then((request) => request(this.axios, this.basePath));
+    public createUpdatePasswordEmailCode(gRecaptchaResponse: string, email: string, options?: any) {
+        return CAPTCHAApiFp(this.configuration).createUpdatePasswordEmailCode(gRecaptchaResponse, email, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -7562,11 +7492,11 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
          * @summary 颁发默认令牌
          * @param {string} username 
          * @param {string} password 
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        grantToken: async (username: string, password: string, code: string, options: any = {}): Promise<RequestArgs> => {
+        grantToken: async (username: string, password: string, gRecaptchaResponse: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'username' is not null or undefined
             if (username === null || username === undefined) {
                 throw new RequiredError('username','Required parameter username was null or undefined when calling grantToken.');
@@ -7575,9 +7505,9 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
             if (password === null || password === undefined) {
                 throw new RequiredError('password','Required parameter password was null or undefined when calling grantToken.');
             }
-            // verify required parameter 'code' is not null or undefined
-            if (code === null || code === undefined) {
-                throw new RequiredError('code','Required parameter code was null or undefined when calling grantToken.');
+            // verify required parameter 'gRecaptchaResponse' is not null or undefined
+            if (gRecaptchaResponse === null || gRecaptchaResponse === undefined) {
+                throw new RequiredError('gRecaptchaResponse','Required parameter gRecaptchaResponse was null or undefined when calling grantToken.');
             }
             const localVarPath = `/v0/token`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7599,8 +7529,8 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
                 localVarQueryParameter['password'] = password;
             }
 
-            if (code !== undefined) {
-                localVarQueryParameter['code'] = code;
+            if (gRecaptchaResponse !== undefined) {
+                localVarQueryParameter['g-recaptcha-response'] = gRecaptchaResponse;
             }
 
 
@@ -7666,12 +7596,12 @@ export const TokenApiFp = function(configuration?: Configuration) {
          * @summary 颁发默认令牌
          * @param {string} username 
          * @param {string} password 
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async grantToken(username: string, password: string, code: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OAuth2AccessToken>> {
-            const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).grantToken(username, password, code, options);
+        async grantToken(username: string, password: string, gRecaptchaResponse: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OAuth2AccessToken>> {
+            const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).grantToken(username, password, gRecaptchaResponse, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -7714,12 +7644,12 @@ export const TokenApiFactory = function (configuration?: Configuration, basePath
          * @summary 颁发默认令牌
          * @param {string} username 
          * @param {string} password 
-         * @param {string} code 
+         * @param {string} gRecaptchaResponse 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        grantToken(username: string, password: string, code: string, options?: any): AxiosPromise<OAuth2AccessToken> {
-            return TokenApiFp(configuration).grantToken(username, password, code, options).then((request) => request(axios, basePath));
+        grantToken(username: string, password: string, gRecaptchaResponse: string, options?: any): AxiosPromise<OAuth2AccessToken> {
+            return TokenApiFp(configuration).grantToken(username, password, gRecaptchaResponse, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -7763,13 +7693,13 @@ export class TokenApi extends BaseAPI {
      * @summary 颁发默认令牌
      * @param {string} username 
      * @param {string} password 
-     * @param {string} code 
+     * @param {string} gRecaptchaResponse 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TokenApi
      */
-    public grantToken(username: string, password: string, code: string, options?: any) {
-        return TokenApiFp(this.configuration).grantToken(username, password, code, options).then((request) => request(this.axios, this.basePath));
+    public grantToken(username: string, password: string, gRecaptchaResponse: string, options?: any) {
+        return TokenApiFp(this.configuration).grantToken(username, password, gRecaptchaResponse, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
