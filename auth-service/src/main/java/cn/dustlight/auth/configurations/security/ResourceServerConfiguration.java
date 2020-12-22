@@ -49,6 +49,8 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .antMatchers(Constants.API_ROOT + "/oauth/authorization")
                 .antMatchers(resources).and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -57,6 +59,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .csrf().disable()
+                .cors()
         ;
     }
 }
