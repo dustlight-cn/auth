@@ -31,7 +31,7 @@
     </q-page-container>
 
     <q-footer class="text-black">
-      <div class="q-pa-sm text-center">
+      <div class="q-pl-sm q-pr-sm text-center">
         © Dustlight
       </div>
     </q-footer>

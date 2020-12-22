@@ -1,17 +1,17 @@
 <template>
   <q-page padding>
     <div class="flex flex-center text-h5 gt-sm">
-      {{$tt(this,"title")}}
+      {{ $tt(this, "title") }}
     </div>
     <div class="flex flex-center text-grey">
-      {{$tt(this,"subtitle")}}
+      {{ $tt(this, "subtitle") }}
     </div>
     <!-- 基础信息 -->
     <q-card bordered class="shadow-0 q-pa-md q-mt-md">
       <div class="text-h6 q-pb-md">
-        {{$tt(this,"baseInfo")}}
+        {{ $tt(this, "baseInfo") }}
         <div class="text-caption">
-          {{$tt(this,"baseInfoDesc")}}
+          {{ $tt(this, "baseInfoDesc") }}
         </div>
       </div>
       <q-list>
@@ -19,7 +19,7 @@
         <q-item v-ripple clickable>
           <q-item-section>
             <q-item-label caption>
-              {{$tt(this,"avatar")}}
+              {{ $tt(this, "avatar") }}
             </q-item-label>
           </q-item-section>
           <q-item-label>
@@ -32,9 +32,9 @@
         <q-item v-ripple clickable to="nickname">
           <q-item-section>
             <q-item-label caption>
-              {{$tt(this,"nickname")}}
+              {{ $tt(this, "nickname") }}
             </q-item-label>
-            <q-item-label>{{user.nickname}}</q-item-label>
+            <q-item-label>{{ user.nickname }}</q-item-label>
           </q-item-section>
           <q-item-label>
             <q-btn dense rounded flat icon="keyboard_arrow_right"/>
@@ -44,9 +44,9 @@
         <q-item v-ripple clickable>
           <q-item-section>
             <q-item-label caption>
-              {{$tt(this,"gender")}}
+              {{ $tt(this, "gender") }}
             </q-item-label>
-            <q-item-label>{{$t("gender." + user.gender)}}</q-item-label>
+            <q-item-label>{{ $t("gender." + user.gender) }}</q-item-label>
           </q-item-section>
           <q-item-label>
             <q-btn dense rounded flat icon="keyboard_arrow_right"/>
@@ -56,7 +56,7 @@
         <q-item v-ripple clickable>
           <q-item-section>
             <q-item-label caption>
-              {{$tt(this,"password")}}
+              {{ $tt(this, "password") }}
             </q-item-label>
             <q-item-label>******</q-item-label>
           </q-item-section>
@@ -70,9 +70,9 @@
     <!-- 联系方式 -->
     <q-card bordered class="shadow-0 q-pa-md q-mt-md">
       <div class="text-h6 q-pb-md">
-        {{$tt(this,"contact")}}
+        {{ $tt(this, "contact") }}
         <div class="text-caption">
-          {{$tt(this,"contactDesc")}}
+          {{ $tt(this, "contactDesc") }}
         </div>
       </div>
       <q-list>
@@ -80,9 +80,9 @@
         <q-item v-ripple clickable>
           <q-item-section>
             <q-item-label caption>
-              {{$tt(this,"email")}}
+              {{ $tt(this, "email") }}
             </q-item-label>
-            <q-item-label>{{user.email}}</q-item-label>
+            <q-item-label>{{ user.email }}</q-item-label>
           </q-item-section>
           <q-item-label>
             <q-btn dense rounded flat icon="keyboard_arrow_right"/>
@@ -94,9 +94,9 @@
     <!-- 其他信息 -->
     <q-card bordered class="shadow-0 q-pa-md q-mt-md">
       <div class="text-h6 q-pb-md">
-        {{$tt(this,"other")}}
+        {{ $tt(this, "other") }}
         <div class="text-caption">
-          {{$tt(this,"otherDesc")}}
+          {{ $tt(this, "otherDesc") }}
         </div>
       </div>
       <q-list>
@@ -104,20 +104,20 @@
         <q-item>
           <q-item-section>
             <q-item-label caption>
-              {{$tt(this,"username")}}
+              {{ $tt(this, "username") }}
             </q-item-label>
-            <q-item-label overline>{{user.username}}</q-item-label>
+            <q-item-label overline>{{ user.username }}</q-item-label>
           </q-item-section>
         </q-item>
         <!-- 角色 -->
         <q-item>
           <q-item-section>
             <q-item-label caption>
-              {{$tt(this,"roles")}}
+              {{ $tt(this, "roles") }}
             </q-item-label>
             <q-item-label overline>
               <q-chip v-for="(role,i) in user.roles" :key="i">
-                {{role.roleDescription}}
+                {{ role.roleDescription }}
               </q-chip>
             </q-item-label>
           </q-item-section>
@@ -126,10 +126,10 @@
         <q-item>
           <q-item-section>
             <q-item-label caption>
-              {{$tt(this,"regtime")}}
+              {{ $tt(this, "regtime") }}
             </q-item-label>
             <q-item-label overline>
-              {{$util.dateFormat(user.createdAt)}}
+              {{ $util.dateFormat(user.createdAt) }}
             </q-item-label>
           </q-item-section>
         </q-item>
@@ -150,7 +150,9 @@ export default {
     }
   },
   mounted() {
-    this.user = this.$q.sessionStorage.getItem("user") || {}
+    if (this.$s.loadToken()) {
+      this.user = this.$s.loadUser();
+    }
   }
 }
 </script>

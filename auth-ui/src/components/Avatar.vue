@@ -1,10 +1,11 @@
 <template>
   <div class="text-transform：uppercase">
-    <q-avatar v-if="error" color="grey" text-color="white" :size="size?size:32 + 'px'">
-      {{firstChar}}
+    <q-avatar v-if="error || user != null && user.uid != null && user.avatar == null" color="grey" text-color="white"
+              :size="size?size:32 + 'px'">
+      {{ firstChar }}
     </q-avatar>
-    <q-avatar v-else :size="size + 'px'">
-      <q-skeleton type="QAvatar" :size="size + 'px'" v-if="isLoading()"/>
+    <q-avatar v-else :size="size?size:32 + 'px'">
+      <q-skeleton type="QAvatar" :size="size?size:32 + 'px'" v-if="isLoading()"/>
       <q-img v-if="user && user.avatar" :src="user.avatar" @load="onLoad" @error="onError"/>
     </q-avatar>
   </div>
@@ -13,7 +14,10 @@
 <script>
 export default {
   name: 'Avatar',
-  props: ['user', 'size'],
+  props: {
+    size: Number,
+    user: Object
+  },
   data() {
     return {
       error: false,
@@ -27,7 +31,7 @@ export default {
   },
   methods: {
     isLoading() {
-      return this.user == null || this.user.avatar == null || this.loading
+      return this.user == null || this.user.uid == null || this.user.avatar != null && this.loading
     },
     onError() {
       this.error = true

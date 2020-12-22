@@ -56,7 +56,7 @@
     </q-page-container>
 
     <q-footer class="text-black">
-      <div class="q-pa-sm text-center">
+      <div class="q-pl-sm q-pr-sm text-center">
         © Dustlight
       </div>
     </q-footer>
@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import {UserApi} from "@dustlight/auth-client-axios"
+
 export default {
   name: 'MainLayout',
   data() {
@@ -75,7 +77,13 @@ export default {
     }
   },
   mounted() {
-
+    let token = this.$s.loadToken();
+    if (token) {
+      new UserApi(this.$apiCfg).getUser1().then(res => {
+        this.user = res.data
+        this.$q.sessionStorage.set("user", res.data)
+      })
+    }
   }
 }
 </script>
