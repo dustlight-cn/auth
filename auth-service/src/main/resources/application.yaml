@@ -41,19 +41,26 @@ springdoc:
     path: /v3/api-doc
   swagger-ui:
     path: /swagger-ui
+
 dustlight:
+  auth:
+    service:
+      pattern:
+        username: "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})+$"
+        email: "^\\S+@\\S+$"
+        password: "^.{6,20}$"
   captcha:
     default:
       store:
         name: redisCodeStore
+    recaptcha:
+      default-secret: "6LeaYxAaAAAAAIUqh3H2GTjBMVOjq8i4mm1nOy8I"
+      default-parameter-name: "g-recaptcha-response"
   storage:
     tencent:
       cos:
         enabled: true
-#        secret-id: ${dustlight.storage.tencent.cos.secret-id}
-#        secret-key: ${dustlight.storage.tencent.cos.secret-key}
-#        bucket: ${dustlight.storage.tencent.cos.bucket}
-#        region: ${dustlight.storage.tencent.cos.region}
+
 logging:
   level:
     cn.dustlight.*: debug

@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class PatternProperties {
 
     private String username = "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})+$",
-            email = "^([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})$",
-            password = null;
+            email = "^\\S+@\\S+$",
+            password = "^.{6,20}$";
 
     public String getUsername() {
         return username;
