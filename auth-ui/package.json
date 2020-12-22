@@ -6,7 +6,9 @@
   "author": "Hansin1997 <hansin@dustlight.cn>",
   "license": "Apache-2.0",
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "dev": "quasar dev",
+    "build": "quasar build"
   },
   "repository": {
     "type": "git",
