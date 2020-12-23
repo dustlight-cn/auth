@@ -15,6 +15,10 @@ export default {
     "notFound": "抱歉，这里空空如也。",
     "goBack": "返回"
   },
+  "AvatarButton": {
+    "signIn": "登录",
+    "signOut": "注销"
+  },
   "SignIn": {
     "title": "登录",
     "signIn": "登录",
