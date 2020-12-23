@@ -18,6 +18,8 @@
         <q-toolbar-title>
           <i18n path="title"/>
         </q-toolbar-title>
+
+        <AvatarButton/>
       </q-toolbar>
 
       <!-- 顶部导航栏 -->
@@ -65,24 +67,15 @@
 </template>
 
 <script>
-import {UserApi} from "@dustlight/auth-client-axios"
+import AvatarButton from "../components/AvatarButton";
 
 export default {
   name: 'MainLayout',
+  components: {AvatarButton},
   data() {
     return {
       left: false,
-      tab: "home",
-      user: {}
-    }
-  },
-  mounted() {
-    let token = this.$s.loadToken();
-    if (token) {
-      new UserApi(this.$apiCfg).getUser1().then(res => {
-        this.user = res.data
-        this.$q.sessionStorage.set("user", res.data)
-      })
+      tab: "home"
     }
   }
 }

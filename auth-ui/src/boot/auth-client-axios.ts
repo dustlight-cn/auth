@@ -6,6 +6,16 @@ import {SessionStorage} from "quasar";
 
 export * from '@dustlight/auth-client-axios'
 
+export interface Token {
+  access_token: string,
+  scope: string,
+  expires_in: number,
+  token_type: string,
+  expiredAt: number,
+
+  isExpired(): boolean
+}
+
 export class S {
   storeInstance: SessionStorage
 
@@ -13,17 +23,16 @@ export class S {
     this.storeInstance = storeInstance;
   }
 
-  public storeToken(token: any) {
+  public storeToken(token: Token) {
     token.expiredAt = new Date().getTime() + token.expires_in * 1000;
     this.storeInstance.set("token", token);
   }
 
-  public loadToken(): any {
-    let token = this.storeInstance.getItem("token");
-    if (token != null) { // @ts-ignore
+  public loadToken(): Token | null {
+    let token = <Token>this.storeInstance.getItem("token");
+    if (token != null) {
       token.isExpired = () => new Date().getTime() > new Date(token.expiredAt).getTime();
     }
-    // @ts-ignore
     if (token == null || token.isExpired()) {
       this.clear();
       return null;
@@ -32,6 +41,9 @@ export class S {
   }
 
   public storeUser(user: User) {
+    if (user != null) {
+      user.nickname = user.nickname || user.username;
+    }
     this.storeInstance.set("user", user);
   }
 

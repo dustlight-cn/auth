@@ -15,7 +15,7 @@
 export default {
   name: 'Avatar',
   props: {
-    size: Number,
+    size: Number | String,
     user: Object
   },
   data() {

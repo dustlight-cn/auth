@@ -151,8 +151,9 @@ export default {
   },
   mounted() {
     if (this.$s.loadToken()) {
-      this.user = this.$s.loadUser();
+      this.user = this.$s.loadUser() || {};
     }
+    this.$root.$on("onUserUpdate", (user) => this.user = user)
   }
 }
 </script>
