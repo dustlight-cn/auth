@@ -19,6 +19,10 @@ export default {
     "signIn": "登录",
     "signOut": "注销"
   },
+  "RequireAuthorization": {
+    "tips": "要查看此内容，请登录您的账号",
+    "signIn": "登录"
+  },
   "SignIn": {
     "title": "登录",
     "signIn": "登录",
@@ -26,10 +30,10 @@ export default {
     "signUp": "注册",
     "forgotPassword": "忘记密码?",
     "account": "账号",
-    "accountHint": "您的用户名或账号",
+    "accountHint": "您的用户名或邮箱",
     "password": "密码",
     "passwordHint": "您的密码",
-    "accountRule": "请输入您的账号或者邮箱，并且不可有空字符。",
+    "accountRule": "请输入您的用户名或者邮箱，并且不可有空字符。",
     "passwordRule": "请输入您的密码，密码长度在6到20之间。"
   },
   "PersonalInfo": {

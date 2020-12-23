@@ -3,18 +3,7 @@
     <q-header bordered class="bg-primary text-black" height-hint="98">
       <!-- Logo和标题 -->
       <q-toolbar>
-        <transition
-          appear
-          enter-active-class="animated rotateIn"
-        >
-          <q-btn
-            flat
-            rounded
-            dense
-            icon="img:/icons/favicon-128x128.png"
-            to="/"
-          />
-        </transition>
+        <Logo/>
         <q-toolbar-title>
           <i18n path="title"/>
         </q-toolbar-title>
@@ -58,9 +47,7 @@
     </q-page-container>
 
     <q-footer class="text-black">
-      <div class="q-pl-sm q-pr-sm text-center">
-        © Dustlight
-      </div>
+      <Footer/>
     </q-footer>
 
   </q-layout>
@@ -68,10 +55,12 @@
 
 <script>
 import AvatarButton from "../components/AvatarButton";
+import Logo from "../components/Logo";
+import Footer from "../components/Footer";
 
 export default {
   name: 'MainLayout',
-  components: {AvatarButton},
+  components: {Logo, AvatarButton, Footer},
   data() {
     return {
       left: false,

@@ -11,7 +11,7 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/',
-    component: () => import('layouts/SimpleLayout.vue'),
+    component: () => import('layouts/ConnectLayout.vue'),
     children: [
       {path: 'login', name: "login", component: () => import('pages/connect/SignIn.vue')},
       {path: 'join', name: "join", component: () => import('pages/connect/SignUp.vue')},
