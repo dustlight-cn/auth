@@ -1,7 +1,7 @@
 <template>
-  <div class="fullscreen text-center q-pa-md flex flex-center">
-    <div>
-      <div style="font-size: 30vh">
+  <div class="fullscreen text-center flex flex-center">
+    <div class="q-pa-md">
+      <div style="font-size: 25vh">
         404
       </div>
 
