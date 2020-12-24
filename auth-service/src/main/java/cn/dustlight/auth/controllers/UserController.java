@@ -111,4 +111,17 @@ public class UserController {
         if (logger.isDebugEnabled())
             logger.debug(String.format("【用户更改邮箱】 用户名：%s，邮箱：%s。", user.getUsername(), email));
     }
+
+    @GetMapping("username/{username}")
+    @Operation(summary = "检查用户名是否存在")
+    public boolean isUsernameExists(@PathVariable(name = "username") String username) {
+        return userService.isUsernameExists(username);
+    }
+
+    @GetMapping("email/{email}")
+    @Operation(summary = "检查邮箱是否存在")
+    public boolean isEmailExists(@PathVariable(name = "email") String email) {
+        return userService.isEmailExists(email);
+    }
+
 }

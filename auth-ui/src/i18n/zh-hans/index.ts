@@ -54,7 +54,9 @@ export default {
       "passwordRule": "密码长度在6到20个字符之间。",
       "email": "邮箱",
       "emailHint": "您的电子邮箱，用于网站登录与验证码接收。",
-      "emailRule": "请输入有效的邮箱地址。"
+      "emailRule": "请输入有效的邮箱地址。",
+      "usernameExists": "该用户名已被注册，请选择其他用户名。",
+      "emailExists": "该邮箱已被注册，请选择其他邮箱或者找回密码。"
     },
     "step2": {
       "title": "邮箱验证",

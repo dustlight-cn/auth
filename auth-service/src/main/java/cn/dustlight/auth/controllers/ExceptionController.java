@@ -29,7 +29,7 @@ public class ExceptionController {
     public ErrorDetails onException(Throwable e, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         logger.error(String.format("Error on path: %s, remote ip: %s", request.getContextPath(), request.getRemoteAddr()), e);
-        return ErrorEnum.UNKNOWN.getDetails();
+        return logger.isDebugEnabled() ? ErrorEnum.UNKNOWN.details(e.getMessage()) : ErrorEnum.UNKNOWN.getDetails();
     }
 
     @ExceptionHandler(AuthException.class)
@@ -88,6 +88,6 @@ public class ExceptionController {
             statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
         response.setStatus(statusCode);
         logger.debug(e.getMessage(), e);
-        return ErrorEnum.UNKNOWN.details(e.getMessage());
+        return logger.isDebugEnabled() ? ErrorEnum.UNKNOWN.details(e.getMessage()) : ErrorEnum.UNAUTHORIZED.getDetails();
     }
 }

@@ -14,7 +14,7 @@ public interface UserMapper {
 
     @Insert("INSERT INTO users (uid,username,password,email,nickname,gender,accountExpiredAt,credentialsExpiredAt,unlockedAt,enabled) VALUES" +
             "(#{uid},#{username},#{password},#{email},#{nickname},#{gender},#{accountExpiredAt},#{credentialsExpiredAt},#{unlockedAt},#{enabled})")
-    boolean insertUser(@Param("uid") Long uid,
+    Boolean insertUser(@Param("uid") Long uid,
                        @Param("username") String username,
                        @Param("password") String password,
                        @Param("email") String email,
@@ -54,7 +54,7 @@ public interface UserMapper {
     Collection<DefaultUser> selectUsersByUid(@Param("uids") Collection<Long> uids);
 
     @Select("SELECT COUNT(uid) FROM users")
-    int count();
+    Integer count();
 
     @Select("<script>SELECT users.* FROM users," +
             "(SELECT uid FROM users" +
@@ -67,7 +67,7 @@ public interface UserMapper {
                                       @Param("limit") Integer limit);
 
     @Select("SELECT count(uid) FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})")
-    int countSearch(@Param("keywords") String keywords);
+    Integer countSearch(@Param("keywords") String keywords);
 
     @Select("<script>SELECT users.* FROM users," +
             "(SELECT uid FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})" +
@@ -91,51 +91,57 @@ public interface UserMapper {
                                                     @Param("limit") Integer limit);
 
     @Update("UPDATE users SET password=#{password} WHERE uid=#{uid}")
-    boolean updatePassword(@Param("uid") Long uid,
+    Boolean updatePassword(@Param("uid") Long uid,
                            @Param("password") String password);
 
     @Update("UPDATE users SET password=#{password} WHERE email=#{email}")
-    boolean updatePasswordByEmail(@Param("email") String email,
+    Boolean updatePasswordByEmail(@Param("email") String email,
                                   @Param("password") String password);
 
     @Update("UPDATE users SET nickname=#{nickname} WHERE uid=#{uid}")
-    boolean updateNickname(@Param("uid") Long uid,
+    Boolean updateNickname(@Param("uid") Long uid,
                            @Param("nickname") String nickname);
 
     @Update("UPDATE users SET email=#{email} WHERE uid=#{uid}")
-    boolean updateEmail(@Param("uid") Long uid,
+    Boolean updateEmail(@Param("uid") Long uid,
                         @Param("email") String email);
 
     @Update("UPDATE users SET gender=#{gender} WHERE uid=#{uid}")
-    boolean updateGender(@Param("uid") Long uid,
+    Boolean updateGender(@Param("uid") Long uid,
                          @Param("gender") Integer gender);
 
     @Update("<script>UPDATE users SET enabled=#{enabled} WHERE uid IN " +
             "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
             "</script>")
-    boolean updateEnabled(@Param("uids") Collection<Long> uids,
+    Boolean updateEnabled(@Param("uids") Collection<Long> uids,
                           @Param("enabled") boolean enabled);
 
     @Update("<script>UPDATE users SET accountExpiredAt=#{accountExpiredAt} WHERE uid IN " +
             "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
             "</script>")
-    boolean updateAccountExpiredAt(@Param("uids") Collection<Long> uids,
+    Boolean updateAccountExpiredAt(@Param("uids") Collection<Long> uids,
                                    @Param("accountExpiredAt") Date accountExpiredAt);
 
     @Update("<script>UPDATE users SET credentialsExpiredAt=#{credentialsExpiredAt} WHERE uid IN " +
             "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
             "</script>")
-    boolean updateCredentialsExpiredAt(@Param("uids") Collection<Long> uids,
+    Boolean updateCredentialsExpiredAt(@Param("uids") Collection<Long> uids,
                                        @Param("credentialsExpiredAt") Date credentialsExpiredAt);
 
     @Update("<script>UPDATE users SET unlockedAt=#{unlockedAt} WHERE uid IN " +
             "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
             "</script>")
-    boolean updateUnlockedAt(@Param("uids") Collection<Long> uids,
+    Boolean updateUnlockedAt(@Param("uids") Collection<Long> uids,
                              @Param("unlockedAt") Date unlockedAt);
 
     @Delete("<script>DELETE FROM users WHERE uid IN " +
             "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
             "</script>")
-    boolean deleteUsers(@Param("uids") Collection<Long> uids);
+    Boolean deleteUsers(@Param("uids") Collection<Long> uids);
+
+    @Select("SELECT COUNT(uid) FROM users WHERE username=#{username} LIMIT 1")
+    Boolean isUsernameExists(@Param("username") String username);
+
+    @Select("SELECT COUNT(uid) FROM users WHERE email=#{email} LIMIT 1")
+    Boolean isEmailExists(@Param("email") String email);
 }

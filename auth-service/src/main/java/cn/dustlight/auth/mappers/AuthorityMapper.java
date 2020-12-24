@@ -27,7 +27,7 @@ public interface AuthorityMapper {
 
     @Insert("INSERT INTO authorities (aid,authorityName,authorityDescription) VALUES (#{aid},#{authorityName},#{authorityDescription}) " +
             "ON DUPLICATE KEY UPDATE authorityName=VALUES(authorityName),authorityDescription=VALUES(authorityDescription)")
-    boolean insertAuthority(@Param("aid") Long aid,
+    Boolean insertAuthority(@Param("aid") Long aid,
                             @Param("authorityName") String authorityName,
                             @Param("authorityDescription") String authorityDescription);
 
@@ -35,15 +35,15 @@ public interface AuthorityMapper {
             "<foreach collection='authorities' item='authority' separator=','>" +
             "(#{authority.aid},#{authority.authorityName},#{authority.authorityDescription})" +
             "</foreach> ON DUPLICATE KEY UPDATE authorityName=VALUES(authorityName),authorityDescription=VALUES(authorityDescription)</script>")
-    boolean insertAuthorities(@Param("authorities") Collection<? extends Authority> authorities);
+    Boolean insertAuthorities(@Param("authorities") Collection<? extends Authority> authorities);
 
     @Delete("DELETE FROM authorities WHERE aid=#{aid}")
-    boolean deleteAuthority(@Param("aid") Long aid);
+    Boolean deleteAuthority(@Param("aid") Long aid);
 
     @Delete("<script>DELETE FROM authorities WHERE aid IN " +
             "<foreach collection='aids' item='aid' open='(' separator=',' close=')'>" +
             "#{aid}</foreach></script>")
-    boolean deleteAuthorities(@Param("aids") Collection<Long> aids);
+    Boolean deleteAuthorities(@Param("aids") Collection<Long> aids);
 
     /* ------------------------------------------------------------------------------------------------ */
 
@@ -56,13 +56,13 @@ public interface AuthorityMapper {
     @Insert("<script>INSERT IGNORE INTO role_authority (rid,aid) VALUES " +
             "<foreach collection='aids' item='aid' separator=','>" +
             "(#{rid},#{aid})</foreach></script>")
-    boolean insertRoleAuthorities(@Param("rid") Long rid,
+    Boolean insertRoleAuthorities(@Param("rid") Long rid,
                                   @Param("aids") Collection<Long> aids);
 
     @Delete("<script>DELETE FROM role_authority WHERE rid=#{rid} AND aid IN " +
             "<foreach collection='aids' item='aid' open='(' separator=',' close=')'>" +
             "#{aid}</foreach></script>")
-    boolean deleteRoleAuthorities(@Param("rid") Long rid,
+    Boolean deleteRoleAuthorities(@Param("rid") Long rid,
                                   @Param("aids") Collection<Long> aids);
 
     /* ------------------------------------------------------------------------------------------------ */
@@ -76,12 +76,12 @@ public interface AuthorityMapper {
     @Insert("<script>INSERT IGNORE INTO client_authority (cid,aid) VALUES " +
             "<foreach collection='aids' item='aid' separator=','>" +
             "(#{cid},#{aid})</foreach></script>")
-    boolean insertClientAuthorities(@Param("cid") String cid,
+    Boolean insertClientAuthorities(@Param("cid") String cid,
                                     @Param("aids") Collection<Long> aids);
 
     @Delete("<script>DELETE FROM client_authority WHERE cid=#{cid} AND aid IN " +
             "<foreach collection='aids' item='aid' open='(' separator=',' close=')'>" +
             "#{aid}</foreach></script>")
-    boolean deleteClientAuthorities(@Param("cid") String cid,
+    Boolean deleteClientAuthorities(@Param("cid") String cid,
                                     @Param("aids") Collection<Long> aids);
 }

@@ -209,4 +209,20 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      * @param uids 用户uid集合
      */
     void deleteUsers(Collection<Long> uids);
+
+    /**
+     * 检查用户名是否存在
+     *
+     * @param username 用户名
+     * @return 用户名是否存在
+     */
+    boolean isUsernameExists(String username);
+
+    /**
+     * 检查邮箱是否存在
+     *
+     * @param email 邮箱
+     * @return 邮箱是否存在
+     */
+    boolean isEmailExists(String email);
 }

@@ -217,6 +217,20 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
             ErrorEnum.DELETE_USER_FAIL.throwException();
     }
 
+    @Override
+    public boolean isUsernameExists(String username) {
+        if (usernamePattern != null && !usernamePattern.matcher(username).matches())
+            ErrorEnum.USERNAME_INVALID.throwException();
+        return userMapper.isUsernameExists(username);
+    }
+
+    @Override
+    public boolean isEmailExists(String email) {
+        if (emailPattern != null && !emailPattern.matcher(email).matches())
+            ErrorEnum.EMAIL_INVALID.throwException();
+        return userMapper.isEmailExists(email);
+    }
+
     /* --------------------------------------------------------------------------------------------------- */
 
     public void setEmailPattern(Pattern emailPattern) {

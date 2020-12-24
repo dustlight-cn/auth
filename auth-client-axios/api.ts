@@ -259,12 +259,6 @@ export interface Client {
     description?: string;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof Client
-     */
-    authorities?: Array<string>;
-    /**
-     * 
      * @type {string}
      * @memberof Client
      */
@@ -275,6 +269,12 @@ export interface Client {
      * @memberof Client
      */
     scopes?: Array<ClientScope>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof Client
+     */
+    authorities?: Array<string>;
     /**
      * 
      * @type {number}
@@ -298,12 +298,6 @@ export interface Client {
      * @type {Set<string>}
      * @memberof Client
      */
-    grantTypes?: Set<string>;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
     redirectUri?: Set<string>;
     /**
      * 
@@ -317,6 +311,18 @@ export interface Client {
      * @memberof Client
      */
     refreshTokenValidity?: number;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof Client
+     */
+    grantTypes?: Set<string>;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof Client
+     */
+    extra?: { [key: string]: object; };
     /**
      * 
      * @type {string}
@@ -335,12 +341,6 @@ export interface Client {
      * @memberof Client
      */
     secret?: string;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof Client
-     */
-    extra?: { [key: string]: object; };
 }
 /**
  * 
@@ -368,16 +368,16 @@ export interface ClientScope {
     description?: string;
     /**
      * 
-     * @type {number}
-     * @memberof ClientScope
-     */
-    sid?: number;
-    /**
-     * 
      * @type {string}
      * @memberof ClientScope
      */
     subtitle?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ClientScope
+     */
+    sid?: number;
 }
 /**
  * 
@@ -448,6 +448,12 @@ export interface OAuth2AccessToken {
     expired?: boolean;
     /**
      * 
+     * @type {{ [key: string]: object; }}
+     * @memberof OAuth2AccessToken
+     */
+    additionalInformation?: { [key: string]: object; };
+    /**
+     * 
      * @type {string}
      * @memberof OAuth2AccessToken
      */
@@ -458,12 +464,6 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     refreshToken?: OAuth2RefreshToken;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof OAuth2AccessToken
-     */
-    additionalInformation?: { [key: string]: object; };
     /**
      * 
      * @type {number}
@@ -492,6 +492,24 @@ export interface OAuth2RefreshToken {
 export interface PublicUser {
     /**
      * 
+     * @type {string}
+     * @memberof PublicUser
+     */
+    nickname?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicUser
+     */
+    unlockedAt?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PublicUser
+     */
+    gender?: number;
+    /**
+     * 
      * @type {number}
      * @memberof PublicUser
      */
@@ -502,24 +520,6 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     avatar?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
-    nickname?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof PublicUser
-     */
-    gender?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
-    unlockedAt?: string;
     /**
      * 
      * @type {boolean}
@@ -537,7 +537,7 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    credentialsNonExpired?: boolean;
+    accountNonLocked?: boolean;
     /**
      * 
      * @type {boolean}
@@ -549,7 +549,7 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    accountNonLocked?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {string}
@@ -714,6 +714,24 @@ export interface Scope {
 export interface User {
     /**
      * 
+     * @type {string}
+     * @memberof User
+     */
+    nickname?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    unlockedAt?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    gender?: number;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof User
      */
@@ -736,24 +754,6 @@ export interface User {
      * @memberof User
      */
     email?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    nickname?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof User
-     */
-    gender?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    unlockedAt?: string;
     /**
      * 
      * @type {string}
@@ -783,7 +783,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    credentialsNonExpired?: boolean;
+    accountNonLocked?: boolean;
     /**
      * 
      * @type {boolean}
@@ -795,7 +795,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    accountNonLocked?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {string}
@@ -7828,6 +7828,92 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             };
         },
         /**
+         * 
+         * @summary 检查邮箱是否存在
+         * @param {string} email 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        isEmailExists: async (email: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'email' is not null or undefined
+            if (email === null || email === undefined) {
+                throw new RequiredError('email','Required parameter email was null or undefined when calling isEmailExists.');
+            }
+            const localVarPath = `/v0/email/{email}`
+                .replace(`{${"email"}}`, encodeURIComponent(String(email)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 检查用户名是否存在
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        isUsernameExists: async (username: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            if (username === null || username === undefined) {
+                throw new RequiredError('username','Required parameter username was null or undefined when calling isUsernameExists.');
+            }
+            const localVarPath = `/v0/username/{username}`
+                .replace(`{${"username"}}`, encodeURIComponent(String(username)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 更改用户邮箱，需要输入密码。
          * @summary 更改邮箱
          * @param {string} password 
@@ -8065,6 +8151,34 @@ export const UserApiFp = function(configuration?: Configuration) {
             };
         },
         /**
+         * 
+         * @summary 检查邮箱是否存在
+         * @param {string} email 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async isEmailExists(email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
+            const localVarAxiosArgs = await UserApiAxiosParamCreator(configuration).isEmailExists(email, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary 检查用户名是否存在
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async isUsernameExists(username: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
+            const localVarAxiosArgs = await UserApiAxiosParamCreator(configuration).isUsernameExists(username, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
          * 更改用户邮箱，需要输入密码。
          * @summary 更改邮箱
          * @param {string} password 
@@ -8141,6 +8255,26 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
             return UserApiFp(configuration).getUser1(options).then((request) => request(axios, basePath));
         },
         /**
+         * 
+         * @summary 检查邮箱是否存在
+         * @param {string} email 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        isEmailExists(email: string, options?: any): AxiosPromise<boolean> {
+            return UserApiFp(configuration).isEmailExists(email, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 检查用户名是否存在
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        isUsernameExists(username: string, options?: any): AxiosPromise<boolean> {
+            return UserApiFp(configuration).isUsernameExists(username, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 更改用户邮箱，需要输入密码。
          * @summary 更改邮箱
          * @param {string} password 
@@ -8207,6 +8341,30 @@ export class UserApi extends BaseAPI {
      */
     public getUser1(options?: any) {
         return UserApiFp(this.configuration).getUser1(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 检查邮箱是否存在
+     * @param {string} email 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public isEmailExists(email: string, options?: any) {
+        return UserApiFp(this.configuration).isEmailExists(email, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 检查用户名是否存在
+     * @param {string} username 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public isUsernameExists(username: string, options?: any) {
+        return UserApiFp(this.configuration).isUsernameExists(username, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

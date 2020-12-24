@@ -23,6 +23,7 @@
           >
             <q-form @submit="sendEmailCode" class="q-pa-md rounded-borders q-gutter-md">
               <q-input
+                debounce="500"
                 :disable="isBusy"
                 color="accent"
                 v-model="model.username"
@@ -43,6 +44,7 @@
               />
               <q-input
                 :disable="isBusy"
+                debounce="500"
                 color="accent"
                 v-model="model.email"
                 :label="$tt(this,'step1.email')"
@@ -112,6 +114,7 @@
           >
             <q-form @submit="sendEmailCode" class="q-pa-md rounded-borders q-gutter-md">
               <q-input
+                debounce="500"
                 :disable="isBusy"
                 color="accent"
                 v-model="model.username"
@@ -132,6 +135,7 @@
               />
               <q-input
                 :disable="isBusy"
+                debounce="500"
                 color="accent"
                 v-model="model.email"
                 :label="$tt(this,'step1.email')"
@@ -201,10 +205,31 @@ export default {
         code: ""
       },
       rule: {
-        username: [val => val && val.match(this.$cfg.pattern.username) || this.$tt(this, "step1.usernameRule")],
+        username: [
+          val => val && val.match(this.$cfg.pattern.username) || this.$tt(this, "step1.usernameRule"),
+          val => this.querying.username ?
+            this.querying.username :
+            (this.querying.username = this.$userApi.isUsernameExists(val)
+                .then((res) => !res.data || this.$tt(this, "step1.usernameExists"))
+                .finally(() => this.querying.username = null)
+            )
+        ]
+        ,
         password: [val => val && val.match(this.$cfg.pattern.password) || this.$tt(this, "step1.passwordRule")],
-        email: [val => val && val.match(this.$cfg.pattern.email) || this.$tt(this, "step1.emailRule")],
+        email: [
+          val => val && val.match(this.$cfg.pattern.email) || this.$tt(this, "step1.emailRule"),
+          val => this.querying.email ?
+            this.querying.email :
+            (this.querying.email = this.$userApi.isEmailExists(val)
+                .then((res) => !res.data || this.$tt(this, "step1.emailExists"))
+                .finally(() => this.querying.email = null)
+            )
+        ],
         code: [val => val && val.trim().length > 0 || this.$tt(this, "step2.codeRule")]
+      },
+      querying: {
+        username: null,
+        email: null
       }
     }
   }, methods: {

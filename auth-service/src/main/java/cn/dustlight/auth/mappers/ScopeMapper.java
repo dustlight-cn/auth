@@ -31,7 +31,7 @@ public interface ScopeMapper {
     @Insert("INSERT INTO scopes (sid,name,subtitle,description) VALUES " +
             "(#{sid},#{name},#{subtitle},#{description}) " +
             "ON DUPLICATE KEY UPDATE name=VALUES(name),subtitle=VALUES(subtitle),description=VALUES(description)")
-    boolean insertScope(@Param("sid") Long sid,
+    Boolean insertScope(@Param("sid") Long sid,
                         @Param("name") String name,
                         @Param("subtitle") String subtitle,
                         @Param("description") String description);
@@ -40,15 +40,15 @@ public interface ScopeMapper {
             "<foreach collection='scopes' item='scope' separator=','>" +
             "(#{scope.sid},#{scope.name},#{scope.subtitle},#{scope.description})" +
             "</foreach> ON DUPLICATE KEY UPDATE name=VALUES(name),subtitle=VALUES(subtitle),description=VALUES(description)</script>")
-    boolean insertScopes(@Param("scopes") Collection<? extends Scope> scopes);
+    Boolean insertScopes(@Param("scopes") Collection<? extends Scope> scopes);
 
     @Delete("DELETE FROM scopes WHERE sid=#{sid}")
-    boolean deleteScope(@Param("sid") Long sid);
+    Boolean deleteScope(@Param("sid") Long sid);
 
     @Delete("<script>DELETE FROM scopes WHERE sid IN " +
             "<foreach collection='sids' item='sid' open='(' separator=',' close=')'>" +
             "#{sid}</foreach></script>")
-    boolean deleteScopes(@Param("sids") Collection<Long> sids);
+    Boolean deleteScopes(@Param("sids") Collection<Long> sids);
 
     /* ----------------------------------------------------------------------------------------------------- */
 
@@ -67,7 +67,7 @@ public interface ScopeMapper {
             "<foreach collection='sids' item='sid' separator=','>" +
             "(#{cid},#{sid},#{autoApprove})" +
             "</foreach> ON DUPLICATE KEY UPDATE autoApprove=VALUES(autoApprove)</script>")
-    boolean insertClientScopeByScopeIds(@Param("cid") String cid,
+    Boolean insertClientScopeByScopeIds(@Param("cid") String cid,
                                         @Param("sids") Collection<Long> sids,
                                         @Param("autoApprove") boolean autoApprove);
 
@@ -75,12 +75,12 @@ public interface ScopeMapper {
             "<foreach collection='scopes' item='scope' separator=','>" +
             "(#{scope.cid},#{scope.sid},#{scope.autoApprove})" +
             "</foreach> ON DUPLICATE KEY UPDATE autoApprove=VALUES(autoApprove)</script>")
-    boolean insertClientScopes(@Param("scopes") Collection<? extends ClientScope> scopes);
+    Boolean insertClientScopes(@Param("scopes") Collection<? extends ClientScope> scopes);
 
     @Delete("<script>DELETE FROM client_scope WHERE cid=#{cid} AND sid IN " +
             "<foreach collection='sids' item='sid' open='(' separator=',' close=')'>" +
             "#{sid}</foreach></script>")
-    boolean deleteClientScopes(@Param("cid") String cid,
+    Boolean deleteClientScopes(@Param("cid") String cid,
                                @Param("sids") Collection<Long> sids);
 
     /* ----------------------------------------------------------------------------------------------------- */

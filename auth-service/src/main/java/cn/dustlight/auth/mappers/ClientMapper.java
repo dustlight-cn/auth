@@ -26,7 +26,7 @@ public interface ClientMapper {
                                           @Param("limit") Integer limit);
 
     @Select("SELECT COUNT(cid) FROM clients")
-    int countClients();
+    Integer countClients();
 
     @Select("<script>SELECT clients.* FROM clients," +
             "(SELECT cid FROM clients WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key})" +
@@ -39,7 +39,7 @@ public interface ClientMapper {
                                             @Param("limit") Integer limit);
 
     @Select("SELECT COUNT(cid) FROM clients WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key})")
-    int countSearchClients(@Param("key") String key);
+    Integer countSearchClients(@Param("key") String key);
 
     @Select("<script>SELECT * FROM clients WHERE cid IN " +
             "<foreach collection='cids' item='cid' open='(' separator=',' close=')'>" +
@@ -69,7 +69,7 @@ public interface ClientMapper {
                                               @Param("limit") Integer limit);
 
     @Select("SELECT COUNT(cid) FROM clients WHERE uid=#{uid}")
-    int countUserClients(@Param("uid") Long uid);
+    Integer countUserClients(@Param("uid") Long uid);
 
     @Select("<script>SELECT clients.* FROM clients," +
             "(SELECT cid FROM clients WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key}) AND uid=#{uid}" +
@@ -83,11 +83,11 @@ public interface ClientMapper {
                                                 @Param("limit") Integer limit);
 
     @Select("SELECT COUNT(cid) FROM clients WHERE uid=#{uid} AND MATCH(name,description,redirectUri,cid) AGAINST(#{key})")
-    int countSearchUserClients(@Param("uid") Long uid,
+    Integer countSearchUserClients(@Param("uid") Long uid,
                                @Param("key") String key);
 
     @Select("SELECT COUNT(uid) FROM clients WHERE cid=#{cid} AND uid=#{uid} LIMIT 1")
-    boolean isClientOwner(@Param("cid") String cid,
+    Boolean isClientOwner(@Param("cid") String cid,
                           @Param("uid") Long uid);
 
     @Select("SELECT users.* FROM users,clients WHERE clients.cid=#{cid} AND clients.uid=users.uid LIMIT 1")
@@ -102,7 +102,7 @@ public interface ClientMapper {
 
     @Insert("INSERT INTO clients (cid,uid,secret,name,description,redirectUri,accessTokenValidity,refreshTokenValidity,additionalInformation,status) " +
             "VALUES (#{cid},#{uid},#{secret},#{name},#{description},#{redirectUri},#{accessTokenValidity},#{refreshTokenValidity},#{additionalInformation},#{status})")
-    boolean insertClient(@Param("cid") String cid,
+    Boolean insertClient(@Param("cid") String cid,
                          @Param("uid") Long uid,
                          @Param("secret") String secret,
                          @Param("name") String name,
@@ -115,7 +115,7 @@ public interface ClientMapper {
 
     @Insert("INSERT INTO clients (cid,uid,secret,name,description,redirectUri) " +
             "VALUES (#{cid},#{uid},#{secret},#{name},#{description},#{redirectUri})")
-    boolean insertClientDefault(@Param("cid") String cid,
+    Boolean insertClientDefault(@Param("cid") String cid,
                                 @Param("uid") Long uid,
                                 @Param("secret") String secret,
                                 @Param("name") String name,
@@ -127,55 +127,55 @@ public interface ClientMapper {
     /* Update */
 
     @Update("UPDATE clients SET secret=#{secret} WHERE cid=#{cid}")
-    boolean updateClientSecret(@Param("cid") String cid,
+    Boolean updateClientSecret(@Param("cid") String cid,
                                @Param("secret") String secret);
 
     @Update("UPDATE clients SET secret=#{secret} WHERE cid=#{cid} AND uid=#{uid}")
-    boolean updateUserClientSecret(@Param("cid") String cid,
+    Boolean updateUserClientSecret(@Param("cid") String cid,
                                    @Param("uid") Long uid,
                                    @Param("secret") String secret);
 
     @Update("UPDATE clients SET name=#{name} WHERE cid=#{cid}")
-    boolean updateClientName(@Param("cid") String cid,
+    Boolean updateClientName(@Param("cid") String cid,
                              @Param("name") String name);
 
     @Update("UPDATE clients SET name=#{name} WHERE cid=#{cid} AND uid=#{uid}")
-    boolean updateUserClientName(@Param("cid") String cid,
+    Boolean updateUserClientName(@Param("cid") String cid,
                                  @Param("uid") Long uid,
                                  @Param("name") String name);
 
     @Update("UPDATE clients SET description=#{description} WHERE cid=#{cid}")
-    boolean updateClientDescription(@Param("cid") String cid,
+    Boolean updateClientDescription(@Param("cid") String cid,
                                     @Param("description") String description);
 
     @Update("UPDATE clients SET description=#{description} WHERE cid=#{cid} AND uid=#{uid}")
-    boolean updateUserClientDescription(@Param("cid") String cid,
+    Boolean updateUserClientDescription(@Param("cid") String cid,
                                         @Param("uid") Long uid,
                                         @Param("description") String description);
 
     @Update("UPDATE clients SET redirectUri=#{redirectUri} WHERE cid=#{cid}")
-    boolean updateClientRedirectUri(@Param("cid") String cid,
+    Boolean updateClientRedirectUri(@Param("cid") String cid,
                                     @Param("redirectUri") String redirectUri);
 
     @Update("UPDATE clients SET redirectUri=#{redirectUri} WHERE cid=#{cid} AND uid=#{uid}")
-    boolean updateUserClientRedirectUri(@Param("cid") String cid,
+    Boolean updateUserClientRedirectUri(@Param("cid") String cid,
                                         @Param("uid") Long uid,
                                         @Param("redirectUri") String redirectUri);
 
     @Update("UPDATE clients SET accessTokenValidity=#{accessTokenValidity} WHERE cid=#{cid}")
-    boolean updateClientAccessTokenValidity(@Param("cid") String cid,
+    Boolean updateClientAccessTokenValidity(@Param("cid") String cid,
                                             @Param("accessTokenValidity") Integer accessTokenValidity);
 
     @Update("UPDATE clients SET refreshTokenValidity=#{refreshTokenValidity} WHERE cid=#{cid}")
-    boolean updateClientRefreshTokenValidity(@Param("cid") String cid,
+    Boolean updateClientRefreshTokenValidity(@Param("cid") String cid,
                                              @Param("refreshTokenValidity") Integer refreshTokenValidity);
 
     @Update("UPDATE clients SET additionalInformation=#{additionalInformation} WHERE cid=#{cid}")
-    boolean updateClientAdditionalInformation(@Param("cid") String cid,
+    Boolean updateClientAdditionalInformation(@Param("cid") String cid,
                                               @Param("additionalInformation") String additionalInformation);
 
     @Update("UPDATE clients SET status=#{status} WHERE cid=#{cid}")
-    boolean updateClientStatus(@Param("cid") String cid,
+    Boolean updateClientStatus(@Param("cid") String cid,
                                @Param("status") Integer status);
 
     /* --------------------------------------------------------------------------------------------------------- */
@@ -185,12 +185,12 @@ public interface ClientMapper {
     @Delete("<script>DELETE FROM clients WHERE cid IN " +
             "<foreach collection='cids' item='cid' open='(' separator=',' close=')'>" +
             "#{cid}</foreach></script>")
-    boolean deleteClient(@Param("cids") Collection<String> cids);
+    Boolean deleteClient(@Param("cids") Collection<String> cids);
 
     @Delete("<script>DELETE FROM clients WHERE uid=#{uid} AND cid IN " +
             "<foreach collection='cids' item='cid' open='(' separator=',' close=')'>" +
             "#{cid}</foreach></script>")
-    boolean deleteUserClient(@Param("uid") Long uid,
+    Boolean deleteUserClient(@Param("uid") Long uid,
                              @Param("cids") Collection<String> cids);
 
     /* --------------------------------------------------------------------------------------------------------- */
