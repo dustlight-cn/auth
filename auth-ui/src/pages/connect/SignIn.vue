@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
 
-    <re-captcha ref="captcha" v-model="model.recaptch"/>
+    <re-captcha ref="captcha" v-model="model.recaptcha"/>
 
     <!-- 宽窗口 -->
     <q-page class="flex flex-center gt-xs">
@@ -94,18 +94,18 @@ export default {
       model: {
         account: "",
         password: "",
-        recaptch: ""
+        recaptcha: ""
       },
       rule: {
-        account: [val => val.match(this.$cfg.pattern.account) || this.$tt(this, "accountRule")],
-        password: [val => val.match(this.$cfg.pattern.password) || this.$tt(this, "passwordRule")]
+        account: [val => val && val.match(this.$cfg.pattern.account) || this.$tt(this, "accountRule")],
+        password: [val => val && val.match(this.$cfg.pattern.password) || this.$tt(this, "passwordRule")]
       },
       isBusy: false
     }
   },
   computed: {
     notVerify() {
-      return this.model.recaptch == null || this.model.recaptch.trim().length == 0;
+      return this.model.recaptcha == null || this.model.recaptcha.trim().length == 0;
     }
   }
   ,
@@ -122,7 +122,7 @@ export default {
       if (!this.verify(this.signIn))
         return;
       this.isBusy = true
-      this.$tokenApi.grantToken(this.model.account, this.model.password, this.model.recaptch)
+      this.$tokenApi.grantToken(this.model.account, this.model.password, this.model.recaptcha)
         .then((res) => this.onSignInSuccess(res.data))
         .catch(this.onSignInFail)
         .finally(() => {

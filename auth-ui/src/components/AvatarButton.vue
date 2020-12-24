@@ -41,6 +41,9 @@ export default {
     signOut() {
       this.$tokenApi.deleteToken()
         .finally(() => {
+          this.$q.notify({
+            message: this.$tt(this, "signOutSuccess")
+          })
           this.$s.clear();
           this.$root.$emit("onUserUpdate", {});
         })

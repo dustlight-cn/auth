@@ -46,7 +46,7 @@ dustlight:
   auth:
     service:
       pattern:
-        username: "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})+$"
+        username: "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$"
         email: "^\\S+@\\S+$"
         password: "^.{6,20}$"
   captcha:
@@ -56,6 +56,14 @@ dustlight:
     recaptcha:
       default-secret: "6Lcp1xAaAAAAAJh6jmR8oWjEiqwGgbBTS7BnDpbX"
       default-parameter-name: "g-recaptcha-response"
+    generator:
+      random-string:
+        chars: "0123456789"
+        length: 6
+    verifier:
+      string-equals:
+        trim: true
+
   storage:
     tencent:
       cos:

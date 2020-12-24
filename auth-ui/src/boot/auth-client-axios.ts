@@ -3,6 +3,7 @@ import {BASE_PATH} from '@dustlight/auth-client-axios/base'
 import {boot} from "quasar/wrappers";
 import config from "src/config";
 import {SessionStorage} from "quasar";
+import globalAxios from 'axios';
 
 export * from '@dustlight/auth-client-axios'
 
@@ -64,6 +65,8 @@ declare module 'vue/types/vue' {
     $s: S;
   }
 }
+
+globalAxios.defaults.withCredentials = true;
 
 export default boot(({Vue}) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
