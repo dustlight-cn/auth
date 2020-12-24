@@ -42,7 +42,7 @@ const tt = function (context: string | Vue | ComponentOptions<Vue>, key: string)
 Vue.use(VueI18n);
 
 export const i18n = new VueI18n({
-  locale: "en-us",
+  locale: "zh-hans",
   fallbackLocale: "zh-hans",
   messages
 });

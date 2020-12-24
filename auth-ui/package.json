@@ -2,7 +2,7 @@
   "name": "@dustlight/auth-ui",
   "version": "0.0.1-aplha",
   "description": "UI for auth-service",
-  "productName": "auth-ui",
+  "productName": "Auth-UI",
   "author": "Hansin1997 <hansin@dustlight.cn>",
   "license": "Apache-2.0",
   "scripts": {
