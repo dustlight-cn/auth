@@ -28,7 +28,7 @@ public interface GrantTypeMapper {
 
     @Insert("INSERT INTO types (tid,name,description) VALUES (#{tid},#{name},#{description}) " +
             "ON DUPLICATE KEY UPDATE name=VALUES(name),description=VALUES(description)")
-    boolean insertType(@Param("tid") Long tid,
+    Boolean insertType(@Param("tid") Long tid,
                        @Param("name") String name,
                        @Param("description") String description);
 
@@ -36,15 +36,15 @@ public interface GrantTypeMapper {
             "<foreach collection='types' item='type' separator=','>" +
             "(#{type.tid},#{type.name},#{type.description})" +
             "</foreach> ON DUPLICATE KEY UPDATE name=VALUES(name),description=VALUES(description)</script>")
-    boolean insertTypes(@Param("types") Collection<? extends GrantType> types);
+    Boolean insertTypes(@Param("types") Collection<? extends GrantType> types);
 
     @Delete("DELETE FROM types WHERE tid=#{tid}")
-    boolean deleteType(@Param("tid") Long tid);
+    Boolean deleteType(@Param("tid") Long tid);
 
     @Delete("<script>DELETE FROM types WHERE tid IN " +
             "<foreach collection='tids' item='tid' open='(' separator=',' close=')'>" +
             "#{tid}</foreach></script>")
-    boolean deleteTypes(@Param("tids") Collection<Long> tids);
+    Boolean deleteTypes(@Param("tids") Collection<Long> tids);
 
     /* ----------------------------------------------------------------------------------------------------- */
 
@@ -56,13 +56,13 @@ public interface GrantTypeMapper {
     @Insert("<script>INSERT IGNORE INTO client_type (cid,tid) VALUES " +
             "<foreach collection='tids' item='tid' separator=','>" +
             "(#{cid},#{tid})</foreach></script>")
-    boolean insertClientGrantTypes(@Param("cid") String cid,
+    Boolean insertClientGrantTypes(@Param("cid") String cid,
                                    @Param("tids") Collection<Long> tids);
 
     @Delete("<script>DELETE FROM client_type WHERE cid=#{cid} AND tid IN " +
             "<foreach collection='tids' item='tid' open='(' separator=',' close=')'>" +
             "#{tid}</foreach></script>")
-    boolean deleteClientGrantTypes(@Param("cid") String cid,
+    Boolean deleteClientGrantTypes(@Param("cid") String cid,
                                    @Param("tids") Collection<Long> tids);
 
     /* ----------------------------------------------------------------------------------------------------- */

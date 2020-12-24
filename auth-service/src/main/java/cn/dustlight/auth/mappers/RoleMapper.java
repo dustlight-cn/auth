@@ -31,7 +31,7 @@ public interface RoleMapper {
 
     @Insert("INSERT INTO roles (rid,roleName,roleDescription) VALUES (#{rid},#{roleName},#{roleDescription}) " +
             "ON DUPLICATE KEY UPDATE roleName=VALUES(roleName),roleDescription=VALUES(roleDescription)")
-    boolean insertRole(@Param("rid") Long rid,
+    Boolean insertRole(@Param("rid") Long rid,
                        @Param("roleName") String roleName,
                        @Param("roleDescription") String roleDescription);
 
@@ -39,15 +39,15 @@ public interface RoleMapper {
             "<foreach collection='roles' item='role' separator=','>" +
             "(#{role.rid},#{role.roleName},#{role.roleDescription})" +
             "</foreach> ON DUPLICATE KEY UPDATE roleName=VALUES(roleName),roleDescription=VALUES(roleDescription)</script>")
-    boolean insertRoles(@Param("roles") Collection<? extends Role> roles);
+    Boolean insertRoles(@Param("roles") Collection<? extends Role> roles);
 
     @Delete("DELETE FROM roles WHERE rid=#{rid}")
-    boolean deleteRole(@Param("rid") Long rid);
+    Boolean deleteRole(@Param("rid") Long rid);
 
     @Delete("<script>DELETE FROM roles WHERE rid IN " +
             "<foreach collection='rids' item='rid' open='(' separator=',' close=')'>" +
             "#{rid}</foreach></script>")
-    boolean deleteRoles(@Param("rids") Collection<Long> rids);
+    Boolean deleteRoles(@Param("rids") Collection<Long> rids);
 
     /* ----------------------------------------------------------------------------------------------------- */
 
@@ -74,7 +74,7 @@ public interface RoleMapper {
     @Insert("<script>INSERT INTO user_role (uid,rid,expiredAt) VALUES " +
             "<foreach collection='roles' item='role' separator=','>(#{uid},#{role},#{expiredAt})</foreach>" +
             "ON DUPLICATE KEY UPDATE expiredAt=#{expiredAt}</script>")
-    boolean insertUserRolesByRoleIds(@Param("uid") Long uid,
+    Boolean insertUserRolesByRoleIds(@Param("uid") Long uid,
                                      @Param("roles") Collection<Long> roles,
                                      @Param("expiredAt") Date expiredAt);
 
@@ -84,14 +84,14 @@ public interface RoleMapper {
             "<otherwise>(SELECT rid FROM roles WHERE roleName=#{role.roleName} LIMIT 1)</otherwise>" + // 不存在则查询
             "</choose>,#{role.expiredAt})</foreach>" +
             " ON DUPLICATE KEY UPDATE expiredAt=VALUES(expiredAt)</script>")
-    <T extends UserRole> boolean insertUserRoles(@Param("uid") Long uid,
+    <T extends UserRole> Boolean insertUserRoles(@Param("uid") Long uid,
                                                  @Param("roles") Collection<T> roles);
 
     @Insert("<script>INSERT INTO user_role (uid,rid,expiredAt) " +
             "(SELECT #{uid} as uid,rid,#{expiredAt} as expiredAt FROM roles WHERE roleName IN " +
             "<foreach collection='roleNames' item='roleName' separator=',' open='(' close=')'>#{roleName}</foreach>)" +
             "ON DUPLICATE KEY UPDATE expiredAt=#{expiredAt}</script>")
-    boolean insertUserRolesByRoleNames(@Param("uid") Long uid,
+    Boolean insertUserRolesByRoleNames(@Param("uid") Long uid,
                                        @Param("roleNames") Collection<String> roleNames,
                                        @Param("expiredAt") Date expiredAt);
 
@@ -99,7 +99,7 @@ public interface RoleMapper {
             "<foreach collection='roles' item='role' separator=',' open='(' close=')'>" +
             "#{role}" +
             "</foreach></script>")
-    boolean deleteUserRolesByRoleIds(@Param("uid") Long uid,
+    Boolean deleteUserRolesByRoleIds(@Param("uid") Long uid,
                                      @Param("roles") Collection<Long> roles);
 
     @Delete("<script>DELETE FROM user_role WHERE uid=#{uid} AND rid IN " +
@@ -107,7 +107,7 @@ public interface RoleMapper {
             "<foreach collection='roleNames' item='roleName' separator=',' open='(' close=')'>" +
             "#{roleName}" +
             "</foreach>)</script>")
-    boolean deleteUserRolesByRoleNames(@Param("uid") Long uid,
+    Boolean deleteUserRolesByRoleNames(@Param("uid") Long uid,
                                        @Param("roleNames") Collection<String> roleNames);
 
     /* ----------------------------------------------------------------------------------------------------- */
