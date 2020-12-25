@@ -69,6 +69,16 @@ export default {
       "codeRule": "请输入验证码。"
     }
   },
+  "Authorize": {
+    "require": "想要访问您的账号：",
+    "approved": "已授权",
+    "redirect": "授权完成后将跳转到",
+    "approve": "授权",
+    "cancel": "取消",
+    "developer": "开发者",
+    "createdAt": "创建时间",
+    "count": "授权用户数"
+  },
   "PersonalInfo": {
     "title": "个人信息",
     "subtitle": "您的基本信息，例如昵称和头像",

@@ -1,6 +1,7 @@
 package cn.dustlight.auth.configurations.components;
 
 import cn.dustlight.auth.properties.AuthorizationCodeProperties;
+import cn.dustlight.auth.services.EnhancedRedisTokenStore;
 import cn.dustlight.auth.services.RedisAuthorizationCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -20,6 +21,12 @@ public class TokenConfiguration {
     @ConditionalOnMissingBean(name = "authTokenStore")
     public RedisTokenStore authTokenStore(@Autowired RedisConnectionFactory redisConnectionFactory) {
         return new RedisTokenStore(redisConnectionFactory);
+    }
+
+    @Bean("enhancedTokenStore")
+    @ConditionalOnMissingBean(name = "enhancedTokenStore")
+    public EnhancedRedisTokenStore enhancedRedisTokenStore(@Autowired RedisConnectionFactory redisConnectionFactory) {
+        return new EnhancedRedisTokenStore(redisConnectionFactory);
     }
 
     @Bean("authApprovalStore")

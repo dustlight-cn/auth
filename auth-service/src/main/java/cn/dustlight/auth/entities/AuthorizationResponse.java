@@ -15,6 +15,7 @@ public class AuthorizationResponse implements Serializable {
     private AuthorizationClient client;
     private PublicUser owner;
     private String redirect;
+    private Long count;
     private boolean approved;
 
     public AuthorizationClient getClient() {
@@ -47,6 +48,14 @@ public class AuthorizationResponse implements Serializable {
 
     public void setApproved(boolean approved) {
         this.approved = approved;
+    }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
     }
 
     public static class AuthorizationClientScope extends DefaultClientScope {

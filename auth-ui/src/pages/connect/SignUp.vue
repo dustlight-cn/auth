@@ -29,6 +29,7 @@
                 :disable="isBusy"
                 color="accent"
                 v-model="model.username"
+                autocomplete="username"
                 :label="$tt(this,'step1.username')"
                 :hint="$tt(this,'step1.usernameHint')"
                 :rules="rule.username"
@@ -38,6 +39,7 @@
                 :disable="isBusy"
                 color="accent"
                 v-model="model.password"
+                autocomplete="new-password"
                 :label="$tt(this,'step1.password')"
                 :hint="$tt(this,'step1.passwordHint')"
                 type="password"
@@ -49,6 +51,7 @@
                 debounce="500"
                 color="accent"
                 v-model="model.email"
+                autocomplete="email"
                 :label="$tt(this,'step1.email')"
                 :hint="$tt(this,'step1.emailHint')"
                 type="email"
@@ -80,6 +83,7 @@
                 :disable="isBusy"
                 color="accent"
                 v-model="model.code"
+                autocomplete="off"
                 :label="$tt(this,'step2.code')"
                 :hint="$tt(this,'step2.codeHint')"
                 :rules="rule.code"
@@ -126,6 +130,7 @@
                 :disable="isBusy"
                 color="accent"
                 v-model="model.username"
+                autocomplete="username"
                 :label="$tt(this,'step1.username')"
                 :hint="$tt(this,'step1.usernameHint')"
                 :rules="rule.username"
@@ -135,6 +140,7 @@
                 :disable="isBusy"
                 color="accent"
                 v-model="model.password"
+                autocomplete="new-password"
                 :label="$tt(this,'step1.password')"
                 :hint="$tt(this,'step1.passwordHint')"
                 type="password"
@@ -146,6 +152,7 @@
                 debounce="500"
                 color="accent"
                 v-model="model.email"
+                autocomplete="email"
                 :label="$tt(this,'step1.email')"
                 :hint="$tt(this,'step1.emailHint')"
                 type="email"
@@ -177,6 +184,7 @@
                 :disable="isBusy"
                 color="accent"
                 v-model="model.code"
+                autocomplete="off"
                 :label="$tt(this,'step2.code')"
                 :hint="$tt(this,'step2.codeHint')"
                 :rules="rule.code"
@@ -287,7 +295,7 @@ export default {
         message: this.$tt(this, "success"),
         color: "positive"
       })
-      let redirect = this.$route.redirect_uri;
+      let redirect = this.$route.query.redirect_uri;
       this.$router.push(redirect ? {path: redirect} : {name: 'login'})
     },
     registerFailed(e) {

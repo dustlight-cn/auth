@@ -1,11 +1,11 @@
 <template>
   <div class="text-transform：uppercase">
     <q-avatar v-if="error || user != null && user.uid != null && user.avatar == null" color="grey" text-color="white"
-              :size="size?size:32 + 'px'">
+              :size="(size?size:32) + 'px'">
       {{ firstChar }}
     </q-avatar>
-    <q-avatar v-else :size="size?size:32 + 'px'">
-      <q-skeleton type="QAvatar" :size="size?size:32 + 'px'" v-if="isLoading()"/>
+    <q-avatar v-else :size="(size?size:32) + 'px'">
+      <q-skeleton type="QAvatar" :size="(size?size:32) + 'px'" v-if="isLoading()"/>
       <q-img v-if="user && user.avatar" :src="user.avatar" @load="onLoad" @error="onError"/>
     </q-avatar>
   </div>

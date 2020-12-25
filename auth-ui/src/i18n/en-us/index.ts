@@ -69,6 +69,16 @@ export default {
       "codeRule": "Please enter verification code, the message may be blocked as spam, please check your email carefully."
     }
   },
+  "Authorize": {
+    "require": "wants to access your account: ",
+    "approved": "Approved",
+    "redirect": "Authorizing will redirect to ",
+    "approve": "Approve",
+    "cancel": "Cancel",
+    "developer": "Developer",
+    "createdAt": "Created At",
+    "count": "Users"
+  },
   "PersonalInfo": {
     "title": "Personal Information",
     "subtitle": "Your personal information, such as nickname and avatar",

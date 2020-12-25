@@ -2,6 +2,7 @@ package cn.dustlight.auth.controllers;
 
 import cn.dustlight.auth.entities.*;
 import cn.dustlight.auth.services.ClientService;
+import cn.dustlight.auth.services.EnhancedRedisTokenStore;
 import cn.dustlight.auth.util.Constants;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,7 +45,7 @@ import java.util.*;
 @RestController
 @RequestMapping(path = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 @SecurityRequirement(name = "AccessToken")
-@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
+@CrossOrigin(origins = Constants.CrossOrigin.origin, allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class AuthorizationController {
 
     static final String AUTHORIZATION_REQUEST_ATTR_NAME = "authorizationRequest";
@@ -63,6 +64,9 @@ public class AuthorizationController {
 
     @Autowired
     private TokenStore authTokenStore;
+
+    @Autowired
+    private EnhancedRedisTokenStore enhancedRedisTokenStore;
 
     @Autowired
     private OAuth2RequestFactory oAuth2RequestFactory;
@@ -150,6 +154,7 @@ public class AuthorizationController {
             response.setClient(authorizationClient);
             response.setOwner(owner);
             response.setApproved(approved);
+            response.setCount(enhancedRedisTokenStore.countClientToken(clientId));
 
             return response;
         } catch (RuntimeException e) {

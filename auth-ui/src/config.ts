@@ -2,15 +2,31 @@ import Vue from 'vue';
 import {LocalStorage, SessionStorage} from "quasar";
 
 export interface Config {
+  /**
+   * API路径
+   */
   host: string,
+  /**
+   * 谷歌 reCAPTCHA 客户端密钥
+   */
   recaptchaKey: string,
+  /**
+   * 表单正则
+   */
   pattern: {
     username: RegExp,
     email: RegExp,
     password: RegExp,
     account: RegExp
   },
-  storage: SessionStorage | LocalStorage
+  /**
+   * 用户信息以及 Token 的存储方式
+   */
+  storage: SessionStorage | LocalStorage,
+  /**
+   * 获取用户信息的频率限制，单位毫秒
+   */
+  getUserFrequency: number
 }
 
 const config: Config = {
@@ -22,6 +38,7 @@ const config: Config = {
     password: /^.{6,20}$/,
     account: /^\S{1,20}$/
   },
-  storage: Vue.prototype.$q.localStorage
+  storage: Vue.prototype.$q.localStorage,
+  getUserFrequency: 60000 // 60秒
 }
 export default config
