@@ -1,6 +1,6 @@
 {
   "name": "@dustlight/auth-client-axios",
-  "version": "0.0.1-aplha-2",
+  "version": "0.0.1-aplha-4",
   "description": "client sdk for auth-service",
   "main": "index.ts",
   "scripts": {
@@ -15,7 +15,7 @@
     "auth-client"
   ],
   "dependencies": {
-    "axios": "^0.20.0-0"
+    "axios": "^0.18.1"
   },
   "author": "Hansin1997 <hansin@dustlight.cn>",
   "license": "Apache-2.0",

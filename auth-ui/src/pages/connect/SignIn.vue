@@ -14,6 +14,7 @@
             :disable="isBusy"
             color="accent"
             v-model="model.account"
+            autocomplete="username"
             :label="$tt(this,'account')"
             :hint="$tt(this,'accountHint')"
             :rules="rule.account"
@@ -22,6 +23,7 @@
             :disable="isBusy"
             color="accent"
             v-model="model.password"
+            autocomplete="current-password"
             :label="$tt(this,'password')"
             :hint="$tt(this,'passwordHint')"
             type="password"
@@ -48,6 +50,7 @@
             :disable="isBusy"
             filled
             v-model="model.account"
+            autocomplete="username"
             color="accent"
             :label="$tt(this,'account')"
             :hint="$tt(this,'accountHint')"
@@ -57,6 +60,7 @@
             :disable="isBusy"
             filled
             v-model="model.password"
+            autocomplete="current-password"
             color="accent"
             :label="$tt(this,'password')"
             :hint="$tt(this,'passwordHint')"
@@ -83,6 +87,15 @@ export default {
   name: "SignIn",
   components: {
     reCaptcha
+  },
+  props: {
+    onSuccess: Function,
+    redirectAfterSuccess: {
+      type: Boolean,
+      default() {
+        return true;
+      }
+    }
   },
   data() {
     return {
@@ -120,9 +133,7 @@ export default {
       this.$tokenApi.grantToken(this.model.account, this.model.password, this.model.recaptcha)
         .then((res) => this.onSignInSuccess(res.data))
         .catch(this.onSignInFail)
-        .finally(() => {
-          this.isBusy = false
-        })
+        .finally(() => this.isBusy = false);
     }
     ,
     signUp() {
@@ -143,8 +154,12 @@ export default {
         color: "positive"
       })
       this.$s.storeToken(token);
-      let redirect = this.$route.redirect_uri;
-      this.$router.push(redirect ? {path: redirect} : {name: 'Index'})
+      if (this.onSuccess != null)
+        this.onSuccess(token)
+      if (this.redirectAfterSuccess) {
+        let redirect = this.$route.query.redirect_uri;
+        this.$router.push(redirect ? {path: redirect} : {name: 'Index'})
+      }
     }
     ,
     /**
@@ -166,10 +181,6 @@ export default {
         color: "accent"
       })
     }
-  }
-  ,
-  mounted() {
-
   }
 }
 </script>

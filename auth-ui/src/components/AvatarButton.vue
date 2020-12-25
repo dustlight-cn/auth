@@ -2,10 +2,10 @@
   <require-authorization>
     <template v-slot="{user,token}">
       <q-btn rounded dense flat>
-        <Avatar :user="user"/>
+        <avatar :user="user"/>
         <q-menu v-if="user && user.uid">
           <div class="text-center q-pa-md">
-            <Avatar class="q-ma-sm" size=50 :user="user"/>
+            <avatar class="q-ma-sm" :size="avatarSize" :user="user"/>
             <div class="text-bold">{{ user.nickname }}</div>
             <div class="text-caption">{{ user.email }}</div>
           </div>
@@ -22,8 +22,8 @@
     </template>
 
     <template v-slot:unauthorized>
-      <q-btn  rounded  color="black"
-              :label="$tt($options,'signIn')"
+      <q-btn rounded color="black"
+             :label="$tt($options,'signIn')"
              :to="{name:'login',query: {redirect_uri: $route.fullPath}}"/>
     </template>
   </require-authorization>
@@ -38,6 +38,14 @@ export default {
   components: {
     Avatar, RequireAuthorization
   },
+  props: {
+    avatarSize: {
+      type: Number,
+      default() {
+        return 50;
+      }
+    }
+  },
   methods: {
     signOut() {
       this.$tokenApi.deleteToken()
@@ -46,7 +54,6 @@ export default {
             message: this.$tt(this, "signOutSuccess")
           })
           this.$s.clear();
-          this.$root.$emit("onUserUpdate", {});
         })
     }
   }
