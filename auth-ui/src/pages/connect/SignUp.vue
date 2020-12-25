@@ -56,7 +56,9 @@
                 filled
               />
               <q-stepper-navigation>
-                <q-btn :loading="isBusy" type="submit" color="accent" :label="$tt($options,'continue')"/>
+                <q-btn class="q-mr-md" :loading="isBusy" type="submit" color="accent"
+                       :label="$tt($options,'continue')"/>
+                <q-btn :to="{name: 'login'}" flat color="accent" :label="$tt($options,'signIn')"/>
               </q-stepper-navigation>
             </q-form>
           </q-step>
@@ -151,7 +153,9 @@
                 filled
               />
               <q-stepper-navigation>
-                <q-btn :loading="isBusy" type="submit" color="accent" :label="$tt($options,'continue')"/>
+                <q-btn class="q-mr-md" :loading="isBusy" type="submit" color="accent"
+                       :label="$tt($options,'continue')"/>
+                <q-btn :to="{name: 'login'}" flat color="accent" :label="$tt($options,'signIn')"/>
               </q-stepper-navigation>
             </q-form>
           </q-step>

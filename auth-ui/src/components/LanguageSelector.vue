@@ -6,7 +6,6 @@
     borderless
     emit-value
     map-options
-    options-dense
     label-color="grey"
     table-colspan="black"
     color="accent"

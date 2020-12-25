@@ -43,6 +43,7 @@ export default {
     "continue": "Next",
     "back": "Back",
     "done": "Verify And Sign In",
+    "signIn": "Sign In",
     "success": "Sign In Success",
     "error": "Sign In Failed",
     "step1": {
