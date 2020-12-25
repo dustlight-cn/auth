@@ -5,7 +5,7 @@
       <div class="flex flex-center q-mt-md">
         <q-icon name="lock" size="64px"/>
       </div>
-      <div class="flex flex-center q-mt-md text-h6">
+      <div class="flex flex-center q-mt-md text-h6 text-grey text-center">
         {{ $tt($options, "tips") }}
       </div>
       <div class="flex flex-center q-mt-lg q-mb-md">

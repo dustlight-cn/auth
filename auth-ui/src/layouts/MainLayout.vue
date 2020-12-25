@@ -46,7 +46,7 @@
       </transition>
     </q-page-container>
 
-    <q-footer class="text-black">
+    <q-footer>
       <Footer/>
     </q-footer>
 

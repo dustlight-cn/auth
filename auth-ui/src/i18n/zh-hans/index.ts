@@ -43,6 +43,7 @@ export default {
     "continue": "下一步",
     "back": "上一步",
     "done": "验证并注册",
+    "signIn": "登录",
     "success": "注册成功",
     "error": "注册失败",
     "step1": {

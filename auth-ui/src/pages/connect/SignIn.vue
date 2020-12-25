@@ -28,10 +28,9 @@
             :rules="rule.password"
           />
           <div class="q-mb-md flex">
-            <q-btn :label="$tt(this,'signUp')" @click="signUp" flat color="accent" class="q-ml-sm"/>
-            <q-space/>
             <q-btn :label="$tt(this,'forgotPassword')" @click="forgotPassword" flat color="accent" class="q-ml-sm"/>
-
+            <q-space/>
+            <q-btn :label="$tt(this,'signUp')" @click="signUp" flat color="accent" class="q-ml-sm"/>
             <q-btn type="submit" :loading="isBusy" :label="$tt(this,'signIn')"
                    color="accent" class="q-ml-sm"/>
           </div>
@@ -65,11 +64,11 @@
             :rules="rule.password"
           />
           <div class="flex q-gutter-sm">
-            <q-btn :label="$tt(this,'signUp')" @click="signUp" flat color="accent" class="q-ml-sm"/>
-            <q-space/>
-            <q-btn :label="$tt(this,'forgotPassword')" @click="forgotPassword" flat color="accent" class="q-ml-sm"/>
             <q-btn :loading="isBusy" :label="$tt(this,'signIn')" type="submit" color="accent"
                    class="q-ml-sm"/>
+            <q-space/>
+            <q-btn :label="$tt(this,'signUp')" @click="signUp" flat color="accent" class="q-ml-sm"/>
+            <q-btn :label="$tt(this,'forgotPassword')" @click="forgotPassword" flat color="accent" class="q-ml-sm"/>
           </div>
         </div>
       </q-form>

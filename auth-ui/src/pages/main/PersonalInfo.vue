@@ -1,9 +1,9 @@
 <template>
   <q-page padding>
-    <div class="flex flex-center text-h5 gt-sm">
+    <div class="flex flex-center text-h5 gt-sm text-center">
       {{ $tt($options, "title") }}
     </div>
-    <div class="flex flex-center text-grey">
+    <div class="flex flex-center text-grey text-center">
       {{ $tt($options, "subtitle") }}
     </div>
     <require-authorization v-slot="{user,token}">
