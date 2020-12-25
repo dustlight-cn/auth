@@ -7,7 +7,7 @@
         <q-toolbar-title>
           <i18n path="title"/>
         </q-toolbar-title>
-
+        <language-selector/>
         <AvatarButton/>
       </q-toolbar>
 
@@ -57,10 +57,11 @@
 import AvatarButton from "../components/AvatarButton";
 import Logo from "../components/Logo";
 import Footer from "../components/Footer";
+import LanguageSelector from "../components/LanguageSelector";
 
 export default {
   name: 'MainLayout',
-  components: {Logo, AvatarButton, Footer},
+  components: {LanguageSelector, Logo, AvatarButton, Footer},
   data() {
     return {
       left: false,

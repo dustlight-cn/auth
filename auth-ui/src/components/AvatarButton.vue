@@ -22,8 +22,9 @@
     </template>
 
     <template v-slot:unauthorized>
-      <q-btn color="accent" :to="{name:'login',query: {redirect_uri: $route.fullPath}}" dense flat
-             :label="$tt($options,'signIn')"/>
+      <q-btn  rounded  color="black"
+              :label="$tt($options,'signIn')"
+             :to="{name:'login',query: {redirect_uri: $route.fullPath}}"/>
     </template>
   </require-authorization>
 </template>

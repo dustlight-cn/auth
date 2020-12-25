@@ -2,12 +2,17 @@ import {boot} from 'quasar/wrappers';
 import messages from 'src/i18n';
 import Vue, {ComponentOptions} from 'vue';
 import VueI18n from 'vue-i18n';
+import {Quasar} from 'quasar';
 
 declare module 'vue/types/vue' {
   interface Vue {
     i18n: VueI18n;
 
     $tt(context: any, key: string): string | null;
+
+    changeLanguage(lang: string): null,
+
+    languages: string[]
   }
 }
 
@@ -51,5 +56,21 @@ export default boot(({app, Vue}) => {
   // Set i18n instance on app
   app.i18n = i18n;
   Vue.prototype.$tt = tt;
-  Vue.prototype.$options
+  Vue.prototype.languages = ['zh-hans', 'en-us'];
+  Vue.prototype.changeLanguage = (lang: string) => {
+    if (lang.startsWith('zh'))
+      lang = 'zh-hans';
+    else if (lang.startsWith('en'))
+      lang = 'en-us';
+    else {
+      console.error("Language '" + lang + "' is not support!");
+      lang = 'zh-hans';
+    }
+    import(/* webpackInclude: /(zh-hans|en-us)\.js$/ */ 'quasar/lang/' + lang)
+      .then(lang => Vue.prototype.$q.lang.set(lang.default));
+    i18n.locale = lang;
+    Vue.prototype.$q.localStorage.set("lang", lang);
+  }
+  let lang = Vue.prototype.$q.localStorage.getItem("lang") || Quasar.lang.getLocale() || 'zh-hans';
+  Vue.prototype.changeLanguage(lang);
 });

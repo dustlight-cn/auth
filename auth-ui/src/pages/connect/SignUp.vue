@@ -1,5 +1,6 @@
 <template>
   <q-page>
+    <!-- 宽窗口 -->
     <q-page class="flex flex-center gt-xs">
       <div class="full-width" style="max-width: 599px">
         <q-stepper
@@ -10,6 +11,7 @@
           animated
         >
           <div class="text-h4 q-pl-md q-pb-md">{{ $tt(this, "title") }}</div>
+          <!-- 步骤1 -->
           <q-step
             :name="1"
             :title="$tt($options,'step1.title')"
@@ -59,6 +61,7 @@
             </q-form>
           </q-step>
 
+          <!-- 步骤2 -->
           <q-step
             :name="2"
             :title="$tt($options,'step2.title')"
@@ -80,16 +83,18 @@
                 :rules="rule.code"
                 filled
               />
+              <q-stepper-navigation>
+                <q-btn :loading="isBusy" type="submit" color="accent" :label="$tt($options,'done')"/>
+                <q-btn :disable="isBusy" flat @click="step--" color="accent" :label="$tt($options,'back')"
+                       class="q-ml-sm"/>
+              </q-stepper-navigation>
             </q-form>
-            <q-stepper-navigation>
-              <q-btn :loading="isBusy" type="submit" color="accent" :label="$tt($options,'done')"/>
-              <q-btn :disable="isBusy" flat @click="step--" color="accent" :label="$tt($options,'back')"
-                     class="q-ml-sm"/>
-            </q-stepper-navigation>
           </q-step>
         </q-stepper>
       </div>
     </q-page>
+
+    <!-- 窄窗口 -->
     <q-page class="lt-sm">
       <div class="full-width">
         <q-stepper
@@ -101,6 +106,7 @@
           flat
         >
           <div class="text-h4 q-pl-md q-pb-md">{{ $tt(this, "title") }}</div>
+          <!-- 步骤1 -->
           <q-step
             :name="1"
             :title="$tt($options,'step1.title')"
@@ -150,6 +156,7 @@
             </q-form>
           </q-step>
 
+          <!-- 步骤2 -->
           <q-step
             :name="2"
             :title="$tt($options,'step2.title')"
@@ -171,12 +178,12 @@
                 :rules="rule.code"
                 filled
               />
+              <q-stepper-navigation>
+                <q-btn :loading="isBusy" type="submit" color="accent" :label="$tt($options,'done')"/>
+                <q-btn :disable="isBusy" flat @click="step--" color="accent" :label="$tt($options,'back')"
+                       class="q-ml-sm"/>
+              </q-stepper-navigation>
             </q-form>
-            <q-stepper-navigation>
-              <q-btn :loading="isBusy" type="submit" color="accent" :label="$tt($options,'done')"/>
-              <q-btn :disable="isBusy" flat @click="step--" color="accent" :label="$tt($options,'back')"
-                     class="q-ml-sm"/>
-            </q-stepper-navigation>
           </q-step>
         </q-stepper>
       </div>
@@ -264,7 +271,7 @@ export default {
     },
     register() {
       this.isBusy = true;
-      new UserApi(this.$apiCfg).createUser1(this.model.username, this.model.password, this.model.code)
+      this.$userApi.createUser1(this.model.username, this.model.password, this.model.code)
         .then(this.registerSuccess)
         .catch(this.registerFailed)
         .finally(() => {
@@ -272,6 +279,10 @@ export default {
         })
     },
     registerSuccess(res) {
+      this.$q.notify({
+        message: this.$tt(this, "success"),
+        color: "positive"
+      })
       let redirect = this.$route.redirect_uri;
       this.$router.push(redirect ? {path: redirect} : {name: 'login'})
     },
