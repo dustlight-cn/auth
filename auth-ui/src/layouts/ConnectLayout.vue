@@ -7,6 +7,7 @@
         <q-toolbar-title>
           <i18n path="title"/>
         </q-toolbar-title>
+        <language-selector/>
       </q-toolbar>
     </q-header>
 
@@ -27,12 +28,13 @@
 </template>
 
 <script>
+import LanguageSelector from '../components/LanguageSelector'
 import Logo from "../components/Logo";
 import Footer from "../components/Footer";
 
 export default {
   name: 'ConnectLayout',
-  components: {Logo, Footer},
+  components: {Logo, Footer, LanguageSelector},
   data() {
     return {
       left: false,

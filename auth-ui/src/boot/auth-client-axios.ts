@@ -2,7 +2,7 @@ import {TokenApi, Configuration, User, UserApi, UsersApi} from '@dustlight/auth-
 import {BASE_PATH} from '@dustlight/auth-client-axios/base'
 import {boot} from "quasar/wrappers";
 import config from "src/config";
-import {SessionStorage} from "quasar";
+import {LocalStorage, SessionStorage} from "quasar";
 import globalAxios from 'axios';
 
 export * from '@dustlight/auth-client-axios'
@@ -18,9 +18,9 @@ export interface Token {
 }
 
 export class S {
-  storeInstance: SessionStorage
+  storeInstance: SessionStorage | LocalStorage
 
-  constructor(storeInstance: SessionStorage) {
+  constructor(storeInstance: SessionStorage | LocalStorage) {
     this.storeInstance = storeInstance;
   }
 
@@ -73,7 +73,7 @@ globalAxios.defaults.withCredentials = true;
 export default boot(({Vue}) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 
-  Vue.prototype.$s = new S(Vue.prototype.$q.sessionStorage);
+  Vue.prototype.$s = new S(Vue.prototype.$q.localStorage);
   Vue.prototype.$apiCfg = new Configuration({
     basePath: config.host || BASE_PATH,
     apiKey: () => {

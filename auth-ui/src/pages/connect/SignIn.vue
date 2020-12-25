@@ -16,7 +16,6 @@
             v-model="model.account"
             :label="$tt(this,'account')"
             :hint="$tt(this,'accountHint')"
-            lazy-rules
             :rules="rule.account"
           />
           <q-input
@@ -26,7 +25,6 @@
             :label="$tt(this,'password')"
             :hint="$tt(this,'passwordHint')"
             type="password"
-            lazy-rules
             :rules="rule.password"
           />
           <div class="q-mb-md flex">
@@ -54,7 +52,6 @@
             color="accent"
             :label="$tt(this,'account')"
             :hint="$tt(this,'accountHint')"
-            lazy-rules
             :rules="rule.account"
           />
           <q-input
@@ -65,7 +62,6 @@
             :label="$tt(this,'password')"
             :hint="$tt(this,'passwordHint')"
             type="password"
-            lazy-rules
             :rules="rule.password"
           />
           <div class="flex q-gutter-sm">
@@ -143,8 +139,13 @@ export default {
      * @param token : Access Token
      */
     onSignInSuccess(token) {
+      this.$q.notify({
+        message: this.$tt(this, "success"),
+        color: "positive"
+      })
       this.$s.storeToken(token);
-      location.href = this.$route.query.redirect_uri ? this.$route.query.redirect_uri : ""
+      let redirect = this.$route.redirect_uri;
+      this.$router.push(redirect ? {path: redirect} : {name: 'Index'})
     }
     ,
     /**

@@ -18,7 +18,7 @@ export default {
   "AvatarButton": {
     "signIn": "登录",
     "signOut": "注销",
-    "signOutSuccess": "已注销登录"
+    "signOutSuccess": "注销成功"
   },
   "RequireAuthorization": {
     "tips": "要查看此内容，请登录您的账号",
@@ -27,6 +27,7 @@ export default {
   "SignIn": {
     "title": "登录",
     "signIn": "登录",
+    "success": "登录成功",
     "error": "登录失败",
     "signUp": "注册",
     "forgotPassword": "忘记密码?",
@@ -42,10 +43,11 @@ export default {
     "continue": "下一步",
     "back": "上一步",
     "done": "验证并注册",
+    "success": "注册成功",
     "error": "注册失败",
     "step1": {
       "title": "填写信息",
-      "caption": "填写您的用注册户名、密码以及邮箱。",
+      "caption": "填写您的用户名、密码以及邮箱。",
       "username": "用户名",
       "usernameHint": "您的用户名，用于登录网站，注册成功后不可更改。",
       "usernameRule": "用户名由字母、数字、'-' 以及 '_' 组成，必须以字母开头，且长度在6到20个之间。",
@@ -53,7 +55,7 @@ export default {
       "passwordHint": "您的密码，用于登录网站。",
       "passwordRule": "密码长度在6到20个字符之间。",
       "email": "邮箱",
-      "emailHint": "您的电子邮箱，用于网站登录与验证码接收。",
+      "emailHint": "您的电子邮箱，用于登录网站和接收验证码。",
       "emailRule": "请输入有效的邮箱地址。",
       "usernameExists": "该用户名已被注册，请选择其他用户名。",
       "emailExists": "该邮箱已被注册，请选择其他邮箱或者找回密码。"
