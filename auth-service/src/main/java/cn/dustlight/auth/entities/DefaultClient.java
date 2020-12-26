@@ -87,6 +87,7 @@ public class DefaultClient implements Client {
         return secret != null && secret.length() > 0;
     }
 
+    @JsonIgnore
     @Override
     public String getClientSecret() {
         return secret;

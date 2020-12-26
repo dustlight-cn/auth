@@ -1,5 +1,7 @@
 package cn.dustlight.auth.configurations.components;
 
+import cn.dustlight.auth.entities.DefaultPublicUser;
+import cn.dustlight.auth.entities.DefaultUser;
 import cn.dustlight.auth.generator.Generator;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.mappers.*;
@@ -24,11 +26,11 @@ public class ServicesConfiguration {
 
     @Bean("userService")
     @ConditionalOnMissingBean(name = "userService")
-    public UserService<?, ?> userService(@Autowired UserMapper userMapper,
-                                         @Autowired RoleMapper roleMapper,
-                                         @Autowired PasswordEncoder passwordEncoder,
-                                         @Autowired UniqueGenerator<Long> idGenerator,
-                                         @Autowired PatternProperties properties) {
+    public UserService<DefaultUser, DefaultPublicUser> userService(@Autowired UserMapper userMapper,
+                                                                   @Autowired RoleMapper roleMapper,
+                                                                   @Autowired PasswordEncoder passwordEncoder,
+                                                                   @Autowired UniqueGenerator<Long> idGenerator,
+                                                                   @Autowired PatternProperties properties) {
         DefaultUserService userService = new DefaultUserService(userMapper, roleMapper, passwordEncoder, idGenerator);
         if (properties != null) {
             if (properties.getUsername() != null)
@@ -43,7 +45,7 @@ public class ServicesConfiguration {
 
     @Bean("clientService")
     @ConditionalOnMissingBean(name = "clientService")
-    public ClientService clientService(@Autowired ClientMapper mapper,
+    public DefaultClientService clientService(@Autowired ClientMapper mapper,
                                        @Autowired AuthorityMapper authorityMapper,
                                        @Autowired ScopeMapper scopeMapper,
                                        @Autowired GrantTypeMapper grantTypeMapper,
