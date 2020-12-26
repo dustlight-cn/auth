@@ -1,16 +1,17 @@
 package cn.dustlight.auth.controllers.resources;
 
 import cn.dustlight.auth.ErrorEnum;
+import cn.dustlight.auth.entities.DefaultPublicUser;
+import cn.dustlight.auth.entities.DefaultUser;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.User;
+import cn.dustlight.auth.services.StorageHandler;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.util.QueryResults;
 import cn.dustlight.captcha.annotations.CodeParam;
 import cn.dustlight.captcha.annotations.CodeValue;
 import cn.dustlight.captcha.annotations.VerifyCode;
-import cn.dustlight.storage.core.Permission;
-import cn.dustlight.storage.core.RestfulStorage;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,8 +24,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,8 +31,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -41,17 +40,16 @@ import java.util.Collection;
 @Tag(name = "Users", description = "用户增删改查、信息更新。")
 @SecurityRequirement(name = "AccessToken")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
+@CrossOrigin(origins = Constants.CrossOrigin.origin, allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class UserResource {
 
     protected final Log logger = LogFactory.getLog(this.getClass());
 
     @Autowired
-    protected UserService userService;
+    protected UserService<DefaultUser, DefaultPublicUser> userService;
 
-    @Qualifier("authStorage")
     @Autowired
-    protected RestfulStorage storage;
+    protected StorageHandler storageHandler;
 
     @PreAuthorize("#oauth2.hasAnyScope('read:user')")
     @GetMapping("users/{uid}")
@@ -60,18 +58,18 @@ public class UserResource {
     public User getUser(@PathVariable Long uid) {
         boolean flag = SecurityContextHolder.getContext().getAuthentication().getAuthorities().
                 contains(new SimpleGrantedAuthority("READ_USER"));
-        User user = null;
+        DefaultUser user = null;
         if (flag) {
             user = userService.loadUser(uid);
         } else {
-            Collection<User> collection = userService.loadPublicUserByUid(Arrays.asList(uid));
+            Collection<DefaultPublicUser> collection = userService.loadPublicUserByUid(Arrays.asList(uid));
             if (collection != null && collection.size() > 0)
                 user = collection.iterator().next();
         }
         if (user == null)
             ErrorEnum.USER_NOT_FOUND.throwException();
         logger.debug(String.format("查询用户: [%s] ", user.getUsername()));
-        return user;
+        return setAvatar(user);
     }
 
     @PreAuthorize("#oauth2.clientHasRole('CREATE_USER') and (#oauth2.client or hasAuthority('CREATE_USER'))")
@@ -89,7 +87,7 @@ public class UserResource {
                 Arrays.asList(defaultRole), null, null, null,
                 true);
         logger.debug(String.format("创建用户: [%s] 邮箱：[%s]", username, email));
-        return userService.loadUserByUsername(username);
+        return setAvatar(userService.loadUserByUsername(username));
     }
 
     @PreAuthorize("#oauth2.clientHasRole('DELETE_USER') and (#oauth2.client or hasAuthority('DELETE_USER') or #user.matchUid(#uid))")
@@ -108,17 +106,17 @@ public class UserResource {
             "权限：应用拥有 'read:user' 授权作用域。（若用户拥有 'READ_USER' 权限，可获取用户完整信息。）")
     public QueryResults<? extends User> getUsers(@RequestParam(required = false, value = "q") String query,
                                                  @RequestParam(required = false) Integer offset,
-                                                 @RequestParam(required = true, defaultValue = "10") Integer limit,
+                                                 @RequestParam(defaultValue = "10") Integer limit,
                                                  @RequestParam(required = false) Collection<String> order) {
         boolean flag = SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("READ_USER"));
         if (flag) {
             if (query != null && query.length() > 0)
-                return userService.searchUsers(query, order, offset, limit);
+                return setAvatar(userService.searchUsers(query, order, offset, limit));
             else
-                return userService.listUsers(order, offset, limit);
+                return setAvatar(userService.listUsers(order, offset, limit));
         }
-        return userService.searchPublicUsers(query, order, offset, limit);
+        return setAvatar(userService.searchPublicUsers(query, order, offset, limit));
     }
 
     @PreAuthorize("#oauth2.hasAnyScope('write:user') and (#oauth2.client or hasAuthority('WRITE_USER'))")
@@ -156,12 +154,8 @@ public class UserResource {
     public void updateAvatar(@PathVariable Long uid) {
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            HttpServletResponse response = attributes.getResponse();
-
             String key = generateAvatarKey(uid);
-            String redirectUrl = storage.generatePutUrl(key, Permission.WRITABLE, 1000 * 60 * 60L); // 生成签名上传URL
-            response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
-            response.setHeader("Location", redirectUrl);
+            storageHandler.handle(key, attributes.getRequest(), attributes.getResponse());
         } catch (IOException e) {
             ErrorEnum.UPDATE_USER_FAIL.details(e.getMessage()).throwException();
         }
@@ -172,20 +166,46 @@ public class UserResource {
     public void getAvatar(@PathVariable Long uid) {
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            HttpServletResponse response = attributes.getResponse();
-
             String key = generateAvatarKey(uid);
-            if (!storage.isExist(key))
-                ErrorEnum.RESOURCE_NOT_FOUND.throwException();
-            String redirectUrl = storage.generateGetUrl(key, 1000 * 60 * 60L); // 生成下载URL
-            response.setStatus(HttpStatus.FOUND.value());
-            response.setHeader("Location", redirectUrl);
+            storageHandler.handle(key, attributes.getRequest(), attributes.getResponse(), "image/*");
         } catch (IOException e) {
             ErrorEnum.RESOURCE_NOT_FOUND.details(e.getMessage()).throwException();
         }
     }
 
     protected String generateAvatarKey(Object id) {
-        return String.format("users/%s/avatar", id);
+        return String.format(Constants.AVATAR_FORMAT, id);
+    }
+
+    public static <T extends DefaultUser> T setAvatar(T user) {
+        if (user == null)
+            return null;
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        String url = URI.create(attributes.getRequest().getRequestURL().toString())
+                .resolve(Constants.API_ROOT + "/users/" + user.getUid() + "/avatar")
+                .toASCIIString();
+        user.setAvatar(url);
+        return user;
+    }
+
+    public static <T extends DefaultUser, C extends Collection<T>> C setAvatar(C users) {
+        if (users == null)
+            return null;
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        URI uri = URI.create(attributes.getRequest().getRequestURL().toString());
+        for (T user : users) {
+            if (user == null)
+                continue;
+            String url = uri.resolve(Constants.API_ROOT + "/users/" + user.getUid() + "/avatar").toASCIIString();
+            user.setAvatar(url);
+        }
+        return users;
+    }
+
+    public static <T extends DefaultUser> QueryResults<T> setAvatar(QueryResults<T> results) {
+        if (results == null || results.getData() == null)
+            return results;
+        results.setData(setAvatar(results.getData()));
+        return results;
     }
 }

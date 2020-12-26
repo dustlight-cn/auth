@@ -1,6 +1,9 @@
 package cn.dustlight.auth.controllers;
 
 import cn.dustlight.auth.ErrorEnum;
+import cn.dustlight.auth.controllers.resources.UserResource;
+import cn.dustlight.auth.entities.DefaultPublicUser;
+import cn.dustlight.auth.entities.DefaultUser;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.User;
 import cn.dustlight.auth.services.UserService;
@@ -34,7 +37,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    protected UserService userService;
+    protected UserService<DefaultUser, DefaultPublicUser> userService;
 
     @PreAuthorize("#oauth2.hasAnyScope('read:user')")
     @GetMapping(value = "user")
@@ -44,8 +47,8 @@ public class UserController {
     public User getUser(OAuth2Authentication oAuth2Authentication) {
         if (!(oAuth2Authentication.getPrincipal() instanceof User))
             ErrorEnum.UNAUTHORIZED.details("Principal is not User").throwException();
-        User user = (User) oAuth2Authentication.getPrincipal();
-        return user;
+        DefaultUser user = (DefaultUser) oAuth2Authentication.getPrincipal();
+        return UserResource.setAvatar(user);
     }
 
     @VerifyCode("Register")
@@ -64,7 +67,7 @@ public class UserController {
                 true);
         if (logger.isDebugEnabled())
             logger.debug(String.format("【用户注册】 用户名：%s，邮箱：%s。", username, email));
-        return userService.loadUserByUsername(username);
+        return UserResource.setAvatar(userService.loadUserByUsername(username));
     }
 
     @PutMapping("user/password")

@@ -1,5 +1,7 @@
 package cn.dustlight.auth.controllers;
 
+import cn.dustlight.auth.controllers.resources.ClientResource;
+import cn.dustlight.auth.controllers.resources.UserResource;
 import cn.dustlight.auth.entities.*;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.EnhancedRedisTokenStore;
@@ -151,8 +153,8 @@ public class AuthorizationController {
                 session.setAttribute(AUTHORIZATION_REQUEST_ATTR_NAME, authorizationRequest);
                 session.setAttribute(ORIGINAL_AUTHORIZATION_REQUEST_ATTR_NAME, unmodifiableMap(authorizationRequest));
             }
-            response.setClient(authorizationClient);
-            response.setOwner(owner);
+            response.setClient(ClientResource.setLogo(authorizationClient));
+            response.setOwner(UserResource.setAvatar((DefaultPublicUser) owner));
             response.setApproved(approved);
             response.setCount(enhancedRedisTokenStore.countClientToken(clientId));
 

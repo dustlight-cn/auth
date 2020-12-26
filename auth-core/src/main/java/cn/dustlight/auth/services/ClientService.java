@@ -9,7 +9,7 @@ import java.util.Collection;
 /**
  * 应用相关service
  */
-public interface ClientService extends ClientDetailsService {
+public interface ClientService<T extends Client> extends ClientDetailsService {
 
     /**
      * 获取应用
@@ -18,7 +18,7 @@ public interface ClientService extends ClientDetailsService {
      * @return 应用
      */
     @Override
-    Client loadClientByClientId(String cid);
+    T loadClientByClientId(String cid);
 
     /**
      * 获取应用（无密码）
@@ -26,7 +26,7 @@ public interface ClientService extends ClientDetailsService {
      * @param cid 应用ID
      * @return 应用（无密码）
      */
-    Client loadClientWithoutSecret(String cid);
+    T loadClientWithoutSecret(String cid);
 
     /**
      * 列举应用
@@ -36,7 +36,7 @@ public interface ClientService extends ClientDetailsService {
      * @param limit   上限
      * @return 查询结果
      */
-    QueryResults<? extends Client> list(Collection<String> orderBy, Integer offset, Integer limit);
+    QueryResults<? extends T> list(Collection<String> orderBy, Integer offset, Integer limit);
 
     /**
      * 列举用户应用
@@ -47,7 +47,7 @@ public interface ClientService extends ClientDetailsService {
      * @param limit   上限
      * @return 查询结果
      */
-    QueryResults<? extends Client> list(Long uid, Collection<String> orderBy, Integer offset, Integer limit);
+    QueryResults<T> list(Long uid, Collection<String> orderBy, Integer offset, Integer limit);
 
     /**
      * 搜索应用
@@ -58,7 +58,7 @@ public interface ClientService extends ClientDetailsService {
      * @param limit    上限
      * @return 查询结果
      */
-    QueryResults<? extends Client> search(String keywords, Collection<String> orderBy, Integer offset, Integer limit);
+    QueryResults<T> search(String keywords, Collection<String> orderBy, Integer offset, Integer limit);
 
     /**
      * 搜索应用
@@ -70,7 +70,7 @@ public interface ClientService extends ClientDetailsService {
      * @param limit    上限
      * @return 查询结果
      */
-    QueryResults<? extends Client> search(String keywords, Long uid, Collection<String> orderBy, Integer offset, Integer limit);
+    QueryResults<T> search(String keywords, Long uid, Collection<String> orderBy, Integer offset, Integer limit);
 
     /**
      * 创建应用
@@ -87,7 +87,7 @@ public interface ClientService extends ClientDetailsService {
      * @param status                状态
      * @return Client
      */
-    Client create(Long uid, String name, String description, String redirectUri, Collection<Long> scopes, Collection<Long> grantTypes,
+    T create(Long uid, String name, String description, String redirectUri, Collection<Long> scopes, Collection<Long> grantTypes,
                   Integer accessTokenValidity, Integer refreshTokenValidity, String additionalInformation, int status);
 
     /**
@@ -101,7 +101,7 @@ public interface ClientService extends ClientDetailsService {
      * @param grantTypes  授权模式
      * @return 应用
      */
-    Client create(Long uid, String name, String description, String redirectUri, Collection<Long> scopes, Collection<Long> grantTypes);
+    T create(Long uid, String name, String description, String redirectUri, Collection<Long> scopes, Collection<Long> grantTypes);
 
     /**
      * 获取应用所属用户

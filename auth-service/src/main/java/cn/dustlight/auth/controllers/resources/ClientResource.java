@@ -1,25 +1,23 @@
 package cn.dustlight.auth.controllers.resources;
 
+import cn.dustlight.auth.entities.DefaultClient;
+import cn.dustlight.auth.services.StorageHandler;
 import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.Client;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.util.QueryResults;
-import cn.dustlight.storage.core.Permission;
-import cn.dustlight.storage.core.RestfulStorage;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -33,23 +31,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Clients", description = "应用的增删改查")
 @SecurityRequirement(name = "AccessToken")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
+@CrossOrigin(origins = Constants.CrossOrigin.origin, allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class ClientResource {
 
     @Autowired
-    private ClientService clientService;
+    private ClientService<DefaultClient> clientService;
 
-    @Qualifier("authStorage")
     @Autowired
-    private RestfulStorage storage;
+    private StorageHandler storageHandler;
 
     @PreAuthorize("hasAuthority('READ_CLIENT_ANY')")
     @GetMapping("clients")
     @Operation(summary = "查询应用")
     public QueryResults<? extends Client> getClients(@RequestParam(required = false, name = "q") String keywords, @RequestParam(required = false) Collection<String> order, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer limit) {
         if (keywords == null || keywords.length() == 0)
-            return clientService.list(order, offset, limit);
-        return clientService.search(keywords, order, offset, limit);
+            return setLogo(clientService.list(order, offset, limit));
+        return setLogo(clientService.search(keywords, order, offset, limit));
     }
 
     @PreAuthorize("hasAuthority('DELETE_CLIENT_ANY')")
@@ -63,7 +60,7 @@ public class ClientResource {
     @GetMapping("clients/{cid}")
     @Operation(summary = "获取应用")
     public Client getClient(@PathVariable("cid") String cid) {
-        return clientService.loadClientByClientId(cid);
+        return setLogo(clientService.loadClientByClientId(cid));
     }
 
     @PreAuthorize("hasAuthority('DELETE_CLIENT_ANY')")
@@ -77,7 +74,7 @@ public class ClientResource {
     @PostMapping("clients")
     @Operation(summary = "创建应用")
     public Client createClient(@RequestParam Long uid, @RequestParam String name, @RequestParam String description, @RequestParam String redirectUri, @RequestParam Collection<Long> scopes, @RequestParam Collection<Long> grantTypes, @RequestParam(required = false, defaultValue = "7200") Integer accessTokenValidity, @RequestParam(required = false, defaultValue = "86400") Integer refreshTokenValidity, @RequestParam(required = false) String additionalInformation, @RequestParam(required = false, defaultValue = "0") Integer status) {
-        return clientService.create(uid, name, description, redirectUri, scopes, grantTypes, accessTokenValidity, refreshTokenValidity, additionalInformation, status);
+        return setLogo(clientService.create(uid, name, description, redirectUri, scopes, grantTypes, accessTokenValidity, refreshTokenValidity, additionalInformation, status));
     }
 
     @PreAuthorize("hasAuthority('WRITE_CLIENT_ANY')")
@@ -134,14 +131,8 @@ public class ClientResource {
     public void getClientLogo(@PathVariable("cid") String cid) {
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            HttpServletResponse response = attributes.getResponse();
-
             String key = generateLogoKey(cid);
-            if (!storage.isExist(key))
-                ErrorEnum.RESOURCE_NOT_FOUND.throwException();
-            String redirectUrl = storage.generateGetUrl(key, 1000 * 60 * 60L); // 生成下载URL
-            response.setStatus(HttpStatus.FOUND.value());
-            response.setHeader("Location", redirectUrl);
+            storageHandler.handle(key, attributes.getRequest(), attributes.getResponse(), "image/*");
         } catch (IOException e) {
             ErrorEnum.RESOURCE_NOT_FOUND.details(e.getMessage()).throwException();
         }
@@ -153,12 +144,8 @@ public class ClientResource {
     public void updateClientLogo(@PathVariable("cid") String cid) {
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            HttpServletResponse response = attributes.getResponse();
-
             String key = generateLogoKey(cid);
-            String redirectUrl = storage.generatePutUrl(key, Permission.WRITABLE, 1000 * 60 * 60L); // 生成签名上传URL
-            response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
-            response.setHeader("Location", redirectUrl);
+            storageHandler.handle(key, attributes.getRequest(), attributes.getResponse());
         } catch (IOException e) {
             ErrorEnum.UPDATE_CLIENT_FAIL.details(e.getMessage()).throwException();
         }
@@ -169,8 +156,8 @@ public class ClientResource {
     @Operation(summary = "查询应用")
     public QueryResults<? extends Client> getClients(@PathVariable("uid") Long uid, @RequestParam(required = false, name = "q") String keywords, @RequestParam(required = false) Collection<String> order, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer limit) {
         if (keywords == null || keywords.length() == 0)
-            return clientService.list(uid, order, offset, limit);
-        return clientService.search(keywords, uid, order, offset, limit);
+            return setLogo(clientService.list(uid, order, offset, limit));
+        return setLogo(clientService.search(keywords, uid, order, offset, limit));
     }
 
     @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('DELETE_CLIENT_ANY')")
@@ -184,10 +171,10 @@ public class ClientResource {
     @GetMapping("users/{uid}/clients/{cid}")
     @Operation(summary = "获取应用")
     public Client getClient(@PathVariable("uid") Long uid, @PathVariable("cid") String cid) {
-        Client result = clientService.loadClientByClientId(cid);
+        DefaultClient result = clientService.loadClientByClientId(cid);
         if (result == null || !uid.equals(result.getUid()))
             ErrorEnum.CLIENT_NOT_FOUND.throwException();
-        return result;
+        return setLogo(result);
     }
 
     @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('DELETE_CLIENT_ANY')")
@@ -201,7 +188,7 @@ public class ClientResource {
     @PostMapping("users/{uid}/clients")
     @Operation(summary = "创建应用")
     public Client createClient(@PathVariable("uid") Long uid, @RequestParam String name, @RequestParam String description, @RequestParam String redirectUri, @RequestParam Collection<Long> scopes, @RequestParam Collection<Long> grantTypes) {
-        return clientService.create(uid, name, description, redirectUri, scopes, grantTypes);
+        return setLogo(clientService.create(uid, name, description, redirectUri, scopes, grantTypes));
     }
 
     @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('WRITE_CLIENT_ANY')")
@@ -249,8 +236,39 @@ public class ClientResource {
         updateClientLogo(cid);
     }
 
-
     protected String generateLogoKey(Object id) {
-        return String.format("clients/%s/logo", id);
+        return String.format(Constants.CLIENT_LOGO_FORMAT, id);
+    }
+
+    public static <T extends DefaultClient> T setLogo(T client) {
+        if (client == null)
+            return null;
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        String url = URI.create(attributes.getRequest().getRequestURL().toString())
+                .resolve(Constants.API_ROOT + "/clients/" + client.getClientId() + "/logo")
+                .toASCIIString();
+        client.setLogo(url);
+        return client;
+    }
+
+    public static <T extends DefaultClient, C extends Collection<T>> C setLogo(C clients) {
+        if (clients == null)
+            return null;
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        URI uri = URI.create(attributes.getRequest().getRequestURL().toString());
+        for (T client : clients) {
+            if (client == null)
+                continue;
+            String url = uri.resolve(Constants.API_ROOT + "/clients/" + client.getClientId() + "/logo").toASCIIString();
+            client.setLogo(url);
+        }
+        return clients;
+    }
+
+    public static <T extends DefaultClient> QueryResults<T> setLogo(QueryResults<T> results) {
+        if (results == null || results.getData() == null)
+            return results;
+        results.setData(setLogo(results.getData()));
+        return results;
     }
 }

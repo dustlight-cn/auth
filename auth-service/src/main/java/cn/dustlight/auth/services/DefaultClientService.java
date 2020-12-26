@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 
-public class DefaultClientService implements ClientService {
+public class DefaultClientService implements ClientService<DefaultClient> {
 
     private final ClientMapper clientMapper;
     private final ScopeMapper scopeMapper;
@@ -43,7 +43,7 @@ public class DefaultClientService implements ClientService {
     }
 
     @Override
-    public Client loadClientByClientId(String cid) {
+    public DefaultClient loadClientByClientId(String cid) {
         DefaultClient details = clientMapper.loadClient(cid);
         if (details == null)
             ErrorEnum.CLIENT_NOT_FOUND.throwException();
@@ -51,7 +51,7 @@ public class DefaultClientService implements ClientService {
     }
 
     @Override
-    public Client loadClientWithoutSecret(String cid) {
+    public DefaultClient loadClientWithoutSecret(String cid) {
         DefaultClient details = clientMapper.loadClient(cid);
         if (details == null)
             ErrorEnum.CLIENT_NOT_FOUND.throwException();
@@ -60,7 +60,7 @@ public class DefaultClientService implements ClientService {
     }
 
     @Override
-    public QueryResults<? extends Client> list(Collection<String> orderBy, Integer offset, Integer limit) {
+    public QueryResults<DefaultClient> list(Collection<String> orderBy, Integer offset, Integer limit) {
         QueryResults<DefaultClient> results = new QueryResults<>();
         results.setData(clientMapper.listClients(orderBySqlBuilder.build(orderBy), offset, limit));
         results.setCount(clientMapper.countClients());
@@ -68,7 +68,7 @@ public class DefaultClientService implements ClientService {
     }
 
     @Override
-    public QueryResults<? extends Client> list(Long uid, Collection<String> orderBy, Integer offset, Integer limit) {
+    public QueryResults<DefaultClient> list(Long uid, Collection<String> orderBy, Integer offset, Integer limit) {
         QueryResults<DefaultClient> results = new QueryResults<>();
         results.setData(clientMapper.listUserClients(uid, orderBySqlBuilder.build(orderBy), offset, limit));
         results.setCount(clientMapper.countUserClients(uid));
@@ -76,7 +76,7 @@ public class DefaultClientService implements ClientService {
     }
 
     @Override
-    public QueryResults<? extends Client> search(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
+    public QueryResults<DefaultClient> search(String keywords, Collection<String> orderBy, Integer offset, Integer limit) {
         QueryResults<DefaultClient> results = new QueryResults<>();
         results.setData(clientMapper.searchClients(keywords, orderBySqlBuilder.build(orderBy), offset, limit));
         results.setCount(clientMapper.countSearchClients(keywords));
@@ -84,7 +84,7 @@ public class DefaultClientService implements ClientService {
     }
 
     @Override
-    public QueryResults<? extends Client> search(String keywords, Long uid, Collection<String> orderBy, Integer offset, Integer limit) {
+    public QueryResults<DefaultClient> search(String keywords, Long uid, Collection<String> orderBy, Integer offset, Integer limit) {
         QueryResults<DefaultClient> results = new QueryResults<>();
         results.setData(clientMapper.searchUserClients(uid, keywords, orderBySqlBuilder.build(orderBy), offset, limit));
         results.setCount(clientMapper.countSearchUserClients(uid, keywords));
@@ -93,7 +93,7 @@ public class DefaultClientService implements ClientService {
 
     @Transactional
     @Override
-    public Client create(Long uid, String name, String description, String redirectUri, Collection<Long> scopes, Collection<Long> grantTypes,
+    public DefaultClient create(Long uid, String name, String description, String redirectUri, Collection<Long> scopes, Collection<Long> grantTypes,
                          Integer accessTokenValidity, Integer refreshTokenValidity, String additionalInformation, int status) {
         String id = idGenerator.generate();
         String secret = secretGenerator.generate();
@@ -117,7 +117,7 @@ public class DefaultClientService implements ClientService {
 
     @Transactional
     @Override
-    public Client create(Long uid, String name, String description, String redirectUri, Collection<Long> scopes, Collection<Long> grantTypes) {
+    public DefaultClient create(Long uid, String name, String description, String redirectUri, Collection<Long> scopes, Collection<Long> grantTypes) {
         String id = idGenerator.generate();
         String secret = secretGenerator.generate();
         try {

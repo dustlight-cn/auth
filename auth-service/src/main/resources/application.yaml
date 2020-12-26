@@ -46,9 +46,9 @@ spring:
 
 springdoc:
   api-docs:
-    path: /v3/api-doc
+    path: /v0/api-doc
   swagger-ui:
-    path: /swagger-ui
+    path: /v0/swagger-ui
 
 dustlight:
   auth:
@@ -71,11 +71,6 @@ dustlight:
     verifier:
       string-equals:
         trim: true
-
-  storage:
-    tencent:
-      cos:
-        enabled: true
 
 logging:
   level:
