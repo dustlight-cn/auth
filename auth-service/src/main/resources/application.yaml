@@ -11,6 +11,14 @@ redis:
   port: 30020
 
 spring:
+  application:
+    name: auth-service
+  cloud:
+    kubernetes:
+      config:
+        name: ${spring.application.name}
+      reload:
+        enabled: true
   datasource:
     url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}
     username: ${mysql.username}
