@@ -30,7 +30,7 @@
         <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
         <spring-doc.version>1.5.2</spring-doc.version>
         <spring-boot-mybatis.version>2.1.3</spring-boot-mybatis.version>
-        <spring-security-oauth2.version>2.3.4.RELEASE</spring-security-oauth2.version>
+        <spring-security-oauth2.version>2.3.6.RELEASE</spring-security-oauth2.version>
     </properties>
 
     <repositories>
