@@ -1,9 +1,10 @@
-package cn.dustlight.auth.services;
+package cn.dustlight.auth.services.resources;
 
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.entities.Authority;
 import cn.dustlight.auth.mappers.AuthorityMapper;
+import cn.dustlight.auth.services.AuthorityService;
 
 import java.util.Collection;
 

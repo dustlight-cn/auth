@@ -1,7 +1,7 @@
 package cn.dustlight.auth.controllers.resources;
 
 import cn.dustlight.auth.entities.DefaultClient;
-import cn.dustlight.auth.services.StorageHandler;
+import cn.dustlight.auth.services.storages.StorageHandler;
 import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.Client;

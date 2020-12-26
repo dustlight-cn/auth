@@ -8,6 +8,7 @@ import cn.dustlight.auth.mappers.*;
 import cn.dustlight.auth.properties.AuthorizationCodeProperties;
 import cn.dustlight.auth.properties.PatternProperties;
 import cn.dustlight.auth.services.*;
+import cn.dustlight.auth.services.resources.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -46,12 +47,12 @@ public class ServicesConfiguration {
     @Bean("clientService")
     @ConditionalOnMissingBean(name = "clientService")
     public DefaultClientService clientService(@Autowired ClientMapper mapper,
-                                       @Autowired AuthorityMapper authorityMapper,
-                                       @Autowired ScopeMapper scopeMapper,
-                                       @Autowired GrantTypeMapper grantTypeMapper,
-                                       @Autowired UniqueGenerator<String> clientIdGenerator,
-                                       @Autowired Generator<String> clientSecretGenerator,
-                                       @Autowired PasswordEncoder passwordEncoder) {
+                                              @Autowired AuthorityMapper authorityMapper,
+                                              @Autowired ScopeMapper scopeMapper,
+                                              @Autowired GrantTypeMapper grantTypeMapper,
+                                              @Autowired UniqueGenerator<String> clientIdGenerator,
+                                              @Autowired Generator<String> clientSecretGenerator,
+                                              @Autowired PasswordEncoder passwordEncoder) {
         return new DefaultClientService(mapper, authorityMapper, scopeMapper, grantTypeMapper, clientIdGenerator,
                 clientSecretGenerator, passwordEncoder);
     }

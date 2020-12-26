@@ -1,4 +1,4 @@
-package cn.dustlight.auth.services;
+package cn.dustlight.auth.services.oauth;
 
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

@@ -18,9 +18,10 @@ public class CaptchaController {
 
     private final Log logger = LogFactory.getLog(this.getClass());
 
-    @SendCode(value = "Register", sender = @Sender("emailCodeSender"), parameters = {
+    @SendCode(value = "Register", sender = @Sender("verifiedEmailSender"), parameters = {
             @Parameter(name = "SUBJECT", value = "邮箱注册"),
-            @Parameter(name = "TEMPLATE", value = "mail/EmailCode.html")
+            @Parameter(name = "TEMPLATE", value = "mail/EmailCode.html"),
+            @Parameter(name = "CHECK_EXISTS", value = "false") // 检查邮箱是否不存在
     })
     @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
     @PostMapping("code/registration")
@@ -31,7 +32,7 @@ public class CaptchaController {
         logger.debug(String.format("发送邮箱注册验证码：%s\t邮箱：%s", code, email));
     }
 
-    @SendCode(value = "ChangeEmail", sender = @Sender("emailCodeSender"), parameters = {
+    @SendCode(value = "ChangeEmail", sender = @Sender("verifiedEmailSender"), parameters = {
             @Parameter(name = "SUBJECT", value = "更换用户邮箱"),
             @Parameter(name = "TEMPLATE", value = "mail/ChangeEmail.html")
     })
@@ -44,7 +45,7 @@ public class CaptchaController {
         logger.debug(String.format("发送更新邮箱验证码：%s\t邮箱：%s", code, email));
     }
 
-    @SendCode(value = "ResetPasswordByEmail", sender = @Sender("emailCodeSender"), parameters = {
+    @SendCode(value = "ResetPasswordByEmail", sender = @Sender("verifiedEmailSender"), parameters = {
             @Parameter(name = "SUBJECT", value = "重置密码"),
             @Parameter(name = "TEMPLATE", value = "mail/ResetPasswordByEmail.html")
     })

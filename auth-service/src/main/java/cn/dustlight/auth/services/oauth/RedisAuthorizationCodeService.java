@@ -1,4 +1,4 @@
-package cn.dustlight.auth.services;
+package cn.dustlight.auth.services.oauth;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.redis.core.RedisTemplate;

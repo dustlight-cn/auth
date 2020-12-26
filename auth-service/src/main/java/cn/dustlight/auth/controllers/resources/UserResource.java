@@ -5,7 +5,7 @@ import cn.dustlight.auth.entities.DefaultPublicUser;
 import cn.dustlight.auth.entities.DefaultUser;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.User;
-import cn.dustlight.auth.services.StorageHandler;
+import cn.dustlight.auth.services.storages.StorageHandler;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.util.QueryResults;
