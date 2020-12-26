@@ -1,4 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.dustlight.oauth2.uim.client.confgurations.UimClientSecurityConfiguration,\
-  cn.dustlight.oauth2.uim.client.confgurations.OAuth2UserServiceConfiguration,\
-  cn.dustlight.oauth2.uim.client.confgurations.UimClientRestConfiguration,\
-  cn.dustlight.oauth2.uim.client.confgurations.UimClientProperties

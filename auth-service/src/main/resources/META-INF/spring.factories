@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  cn.dustlight.auth.configurations.security.AuthorizationServerConfiguration

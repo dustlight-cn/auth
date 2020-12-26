@@ -1,0 +1,82 @@
+mysql:
+  host: "instance-2"
+  port: 30010
+  db: uim
+  charset: "utf8"
+  ssl: false
+  username: "root"
+  password: "123456"
+redis:
+  host: "instance-2"
+  port: 30020
+
+spring:
+  application:
+    name: auth-service
+  cloud:
+    kubernetes:
+      config:
+        name: ${spring.application.name}
+      reload:
+        enabled: true
+  datasource:
+    url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}
+    username: ${mysql.username}
+    password: ${mysql.password}
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      maximum-pool-size: 3
+      minimum-idle: 1
+    initialization-mode: always
+    schema: classpath:scheme.sql
+    data: classpath:data.sql
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}
+  mail:
+    host: ${smtp.host:smtp.exmail.qq.com}
+    username: ${smtp.user}
+    password: ${smtp.pass}
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+
+springdoc:
+  api-docs:
+    path: /v3/api-doc
+  swagger-ui:
+    path: /swagger-ui
+
+dustlight:
+  auth:
+    service:
+      pattern:
+        username: "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$"
+        email: "^\\S+@\\S+$"
+        password: "^.{6,20}$"
+  captcha:
+    default:
+      store:
+        name: redisCodeStore
+    recaptcha:
+      default-secret: "6Lcp1xAaAAAAAJh6jmR8oWjEiqwGgbBTS7BnDpbX"
+      default-parameter-name: "g-recaptcha-response"
+    generator:
+      random-string:
+        chars: "0123456789"
+        length: 6
+    verifier:
+      string-equals:
+        trim: true
+
+  storage:
+    tencent:
+      cos:
+        enabled: true
+
+logging:
+  level:
+    cn.dustlight.*: debug
