@@ -1,4 +1,4 @@
-package cn.dustlight.auth.services;
+package cn.dustlight.auth.services.resources;
 
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.*;
@@ -8,6 +8,7 @@ import cn.dustlight.auth.mappers.AuthorityMapper;
 import cn.dustlight.auth.mappers.ClientMapper;
 import cn.dustlight.auth.mappers.GrantTypeMapper;
 import cn.dustlight.auth.mappers.ScopeMapper;
+import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.util.OrderBySqlBuilder;
 import cn.dustlight.auth.util.QueryResults;
 import org.springframework.dao.DuplicateKeyException;

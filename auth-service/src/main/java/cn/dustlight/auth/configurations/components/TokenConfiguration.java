@@ -1,8 +1,8 @@
 package cn.dustlight.auth.configurations.components;
 
 import cn.dustlight.auth.properties.AuthorizationCodeProperties;
-import cn.dustlight.auth.services.EnhancedRedisTokenStore;
-import cn.dustlight.auth.services.RedisAuthorizationCodeService;
+import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
+import cn.dustlight.auth.services.oauth.RedisAuthorizationCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

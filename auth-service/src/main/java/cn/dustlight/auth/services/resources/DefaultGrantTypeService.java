@@ -1,9 +1,10 @@
-package cn.dustlight.auth.services;
+package cn.dustlight.auth.services.resources;
 
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.GrantType;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.mappers.GrantTypeMapper;
+import cn.dustlight.auth.services.GrantTypeService;
 
 import java.util.Collection;
 

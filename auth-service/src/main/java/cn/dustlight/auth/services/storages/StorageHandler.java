@@ -1,11 +1,10 @@
-package cn.dustlight.auth.services;
+package cn.dustlight.auth.services.storages;
 
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.storage.core.Permission;
 import cn.dustlight.storage.core.RestfulStorage;
 import cn.dustlight.storage.core.Storage;
 import cn.dustlight.storage.local.LocalStorage;
-import org.apache.http.entity.ContentType;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;

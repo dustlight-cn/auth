@@ -4,7 +4,7 @@ import cn.dustlight.auth.controllers.resources.ClientResource;
 import cn.dustlight.auth.controllers.resources.UserResource;
 import cn.dustlight.auth.entities.*;
 import cn.dustlight.auth.services.ClientService;
-import cn.dustlight.auth.services.EnhancedRedisTokenStore;
+import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
 import cn.dustlight.auth.util.Constants;
 
 import io.swagger.v3.oas.annotations.Operation;

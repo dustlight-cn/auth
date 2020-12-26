@@ -1,4 +1,4 @@
-package cn.dustlight.auth.util;
+package cn.dustlight.auth.services.storages;
 
 import cn.dustlight.storage.core.RestfulStorage;
 import cn.dustlight.storage.core.StorableObject;

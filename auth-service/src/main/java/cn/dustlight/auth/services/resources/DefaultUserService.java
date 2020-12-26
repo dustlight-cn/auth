@@ -1,4 +1,4 @@
-package cn.dustlight.auth.services;
+package cn.dustlight.auth.services.resources;
 
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.DefaultPublicUser;
@@ -8,6 +8,7 @@ import cn.dustlight.auth.entities.UserRole;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.mappers.RoleMapper;
 import cn.dustlight.auth.mappers.UserMapper;
+import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.OrderBySqlBuilder;
 import cn.dustlight.auth.util.QueryResults;
 import org.apache.commons.logging.Log;
