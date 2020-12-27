@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -93,7 +94,8 @@ public class AuthorizationController {
     /**
      * @see AuthorizationEndpoint
      */
-    @Operation(summary = "获取应用授权", description = "获取包含应用信息、所属用户信息、回调地址以及是否已授权。")
+    @PreAuthorize("#oauth2.clientHasRole('AUTHORIZE')")
+    @Operation(summary = "获取应用授权", description = "获取包含应用信息、所属用户信息、回调地址以及是否已授权。应用需要 AUTHORIZE 权限。")
     @GetMapping("oauth/authorization")
     public AuthorizationResponse getAuthorization(@Parameter(hidden = true) @RequestParam Map<String, String> parameters,
                                                   @RequestParam("client_id") String clientId,
@@ -169,7 +171,8 @@ public class AuthorizationController {
         }
     }
 
-    @Operation(summary = "创建应用授权")
+    @PreAuthorize("#oauth2.clientHasRole('AUTHORIZE')")
+    @Operation(summary = "应用授权", description = "应用需要 AUTHORIZE 权限。")
     @PostMapping("oauth/authorization")
     public AuthorizationResponse createAuthorization(@RequestParam("approved") boolean approved,
                                                      @RequestParam("scope") Set<String> scopes,

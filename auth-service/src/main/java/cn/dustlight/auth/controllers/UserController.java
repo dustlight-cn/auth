@@ -41,25 +41,26 @@ public class UserController {
 
     @PreAuthorize("#oauth2.hasAnyScope('read:user')")
     @GetMapping(value = "user")
-    @Operation(summary = "获取当前用户信息",
-            description = "获取当前用户信息。权限：应用需要 'read:user' 授权作用域。",
+    @Operation(summary = "获取当前 Token 的用户信息",
+            description = "应用需要拥有 read:user 授权。",
             security = @SecurityRequirement(name = "AccessToken"))
-    public User getUser(OAuth2Authentication oAuth2Authentication) {
+    public User getTokenUser(OAuth2Authentication oAuth2Authentication) {
         if (!(oAuth2Authentication.getPrincipal() instanceof User))
             ErrorEnum.UNAUTHORIZED.details("Principal is not User").throwException();
         DefaultUser user = (DefaultUser) oAuth2Authentication.getPrincipal();
         return UserResource.setAvatar(user);
     }
 
+    @PreAuthorize("#oauth2.clientHasRole('CREATE_USER')")
     @VerifyCode("Register")
     @PostMapping("user")
-    @Operation(summary = "用户自助注册",
-            description = "通过邮箱验证码自助注册账号。",
+    @Operation(summary = "用户注册（通过邮箱验证码）",
+            description = "应用需要 CREATE_USER 权限。",
             security = @SecurityRequirement(name = "AccessToken"))
-    public User createUser(@RequestParam("username") String username,
-                           @RequestParam("password") String password,
-                           @RequestParam("code") @CodeValue("Register") String code,
-                           @Parameter(hidden = true) @CodeParam(value = "Register", name = "email") String email) {
+    public User register(@RequestParam("username") String username,
+                         @RequestParam("password") String password,
+                         @RequestParam("code") @CodeValue("Register") String code,
+                         @Parameter(hidden = true) @CodeParam(value = "Register", name = "email") String email) {
         DefaultUserRole defaultRole = new DefaultUserRole();
         defaultRole.setRoleName("User");
         userService.createUser(username, password, email, username, 0,
@@ -70,13 +71,14 @@ public class UserController {
         return UserResource.setAvatar(userService.loadUserByUsername(username));
     }
 
+    @PreAuthorize("#oauth2.clientHasRole('WRITE_USER_PASSWORD')")
     @PutMapping("user/password")
-    @Operation(summary = "更改用户密码",
-            description = "通过原密码更改密码。",
+    @Operation(summary = "通过原密码更改用户密码",
+            description = "应用需要 WRITE_USER_PASSWORD 权限。",
             security = @SecurityRequirement(name = "AccessToken"))
-    public void updatePassword(OAuth2Authentication oAuth2Authentication,
-                               @RequestParam("oldPassword") String oldPassword,
-                               @RequestParam("newPassword") String newPassword) {
+    public void resetPassword(OAuth2Authentication oAuth2Authentication,
+                              @RequestParam("oldPassword") String oldPassword,
+                              @RequestParam("newPassword") String newPassword) {
         User user = (User) oAuth2Authentication.getPrincipal();
         if (!passwordEncoder.matches(user.getPassword(), oldPassword))
             ErrorEnum.PASSWORD_INVALID.throwException();
@@ -85,28 +87,30 @@ public class UserController {
             logger.debug(String.format("【用户更改密码】 用户名：%s。", user.getUsername()));
     }
 
+    @PreAuthorize("#oauth2.clientHasRole('WRITE_USER_PASSWORD')")
     @VerifyCode("ResetPasswordByEmail")
     @PutMapping("password")
     @Operation(summary = "邮箱重置密码",
-            description = "通过邮箱验证码重置密码。",
+            description = "应用需要 WRITE_USER_PASSWORD 权限。",
             security = @SecurityRequirement(name = "AccessToken"))
-    public void updatePasswordWithEmail(@RequestParam("password") String password,
-                                        @RequestParam("code") @CodeValue("ResetPasswordByEmail") String code,
-                                        @CodeParam(value = "ResetPasswordByEmail", name = "email") String email) {
+    public void resetPasswordWithEmail(@RequestParam("password") String password,
+                                       @RequestParam("code") @CodeValue("ResetPasswordByEmail") String code,
+                                       @CodeParam(value = "ResetPasswordByEmail", name = "email") String email) {
         userService.updatePasswordByEmail(email, password);
         if (logger.isDebugEnabled())
             logger.debug(String.format("【用户通过邮箱重置密码】 邮箱：%s。", email));
     }
 
+    @PreAuthorize("#oauth2.clientHasRole('WRITE_USER_EMAIL')")
     @VerifyCode("ChangeEmail")
     @PutMapping("user/email")
-    @Operation(summary = "更改邮箱",
-            description = "更改用户邮箱，需要输入密码。",
+    @Operation(summary = "通过密码更改邮箱",
+            description = "应用需要 WRITE_USER_EMAIL 权限。",
             security = @SecurityRequirement(name = "AccessToken"))
-    public void updateEmail(OAuth2Authentication oAuth2Authentication,
-                            @RequestParam("password") String password,
-                            @CodeValue("ChangeEmail") @RequestParam("code") String code,
-                            @CodeParam(value = "ChangeEmail", name = "email") @Parameter(hidden = true) String email) {
+    public void resetEmail(OAuth2Authentication oAuth2Authentication,
+                           @RequestParam("password") String password,
+                           @CodeValue("ChangeEmail") @RequestParam("code") String code,
+                           @CodeParam(value = "ChangeEmail", name = "email") @Parameter(hidden = true) String email) {
         User user = (User) oAuth2Authentication.getPrincipal();
         if (!passwordEncoder.matches(user.getPassword(), password))
             ErrorEnum.PASSWORD_INVALID.throwException();
