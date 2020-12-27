@@ -16,7 +16,7 @@
         appear
         enter-active-class="animated fadeIn"
       >
-        <router-view @setSubtitle="setSubtitle"/>
+        <router-view/>
       </transition>
     </q-page-container>
 
@@ -34,18 +34,6 @@ import Footer from "../components/Footer";
 
 export default {
   name: 'ConnectLayout',
-  components: {Logo, Footer, LanguageSelector},
-  data() {
-    return {
-      left: false,
-      tab: "home",
-      subtitle: ""
-    }
-  },
-  methods: {
-    setSubtitle(subtitle) {
-      this.subtitle = subtitle
-    }
-  }
+  components: {Logo, Footer, LanguageSelector}
 }
 </script>
