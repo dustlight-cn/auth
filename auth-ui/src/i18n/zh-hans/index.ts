@@ -53,6 +53,9 @@ export default {
       "password": "密码",
       "passwordHint": "您的密码，用于登录网站。",
       "passwordRule": "密码长度在6到20个字符之间。",
+      "confirmPassword": "确认密码",
+      "confirmPasswordHint": "确认您的密码。",
+      "confirmPasswordRule": "两次输入的密码不一致。",
       "email": "邮箱",
       "emailHint": "您的电子邮箱，用于登录网站和接收验证码。",
       "emailRule": "请输入有效的邮箱地址。",
@@ -62,6 +65,34 @@ export default {
     "step2": {
       "title": "邮箱验证",
       "caption": "注册之前需要验证您对该邮箱的所有权。",
+      "code": "验证码",
+      "codeHint": "您收到的邮箱验证码，邮件可能会被当成垃圾邮件而被拦截，请仔细检查您的邮箱。",
+      "codeRule": "请输入验证码。"
+    }
+  },
+  "ResetPassword": {
+    "title": "找回密码",
+    "continue": "下一步",
+    "back": "上一步",
+    "done": "重置密码",
+    "success": "密码重置成功",
+    "step1": {
+      "title": "输入您的邮箱地址",
+      "caption": "请输入您的账号邮箱地址，用于接收验证码。",
+      "email": "邮箱",
+      "emailHint": "您的电子邮箱，用于接收验证码。",
+      "emailRule": "请输入有效的邮箱地址。",
+      "emailNotExists": "该邮箱未绑定任何账号。"
+    },
+    "step2": {
+      "title": "设置密码",
+      "caption": "设置您的新密码。",
+      "password": "新密码",
+      "passwordHint": "您的新密码，用于登录网站。",
+      "passwordRule": "密码长度在6到20个字符之间。",
+      "confirmPassword": "确认密码",
+      "confirmPasswordHint": "确认您的密码。",
+      "confirmPasswordRule": "两次输入的密码不一致。",
       "code": "验证码",
       "codeHint": "您收到的邮箱验证码，邮件可能会被当成垃圾邮件而被拦截，请仔细检查您的邮箱。",
       "codeRule": "请输入验证码。"

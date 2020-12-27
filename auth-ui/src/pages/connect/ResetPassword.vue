@@ -16,7 +16,7 @@
             :name="1"
             :title="$tt($options,'step1.title')"
             :caption="$tt($options,'step1.caption')"
-            done-icon="person"
+            done-icon="send"
             :done="step > 1"
             color="grey"
             done-color="black"
@@ -24,39 +24,6 @@
             :header-nav="step > 1"
           >
             <q-form @submit="sendEmailCode" class="q-pa-md rounded-borders q-gutter-md">
-              <q-input
-                debounce="1000"
-                :disable="isBusy"
-                color="accent"
-                v-model="model.username"
-                autocomplete="username"
-                :label="$tt(this,'step1.username')"
-                :hint="$tt(this,'step1.usernameHint')"
-                :rules="rule.username"
-                filled
-              />
-              <q-input
-                :disable="isBusy"
-                color="accent"
-                v-model="model.password"
-                autocomplete="new-password"
-                :label="$tt(this,'step1.password')"
-                :hint="$tt(this,'step1.passwordHint')"
-                type="password"
-                :rules="rule.password"
-                filled
-              />
-              <q-input
-                :disable="isBusy"
-                color="accent"
-                v-model="model.confirmPassword"
-                autocomplete="new-password"
-                :label="$tt(this,'step1.confirmPassword')"
-                :hint="$tt(this,'step1.confirmPasswordHint')"
-                type="password"
-                :rules="rule.confirmPassword"
-                filled
-              />
               <q-input
                 :disable="isBusy"
                 debounce="1000"
@@ -72,7 +39,6 @@
               <q-stepper-navigation>
                 <q-btn class="q-mr-md" :loading="isBusy" type="submit" color="accent"
                        :label="$tt($options,'continue')"/>
-                <q-btn :to="{name: 'login'}" flat color="accent" :label="$tt($options,'signIn')"/>
               </q-stepper-navigation>
             </q-form>
           </q-step>
@@ -89,7 +55,29 @@
             :done="step > 2"
             :header-nav="step > 2"
           >
-            <q-form @submit="register" class="q-pa-md rounded-borders q-gutter-md">
+            <q-form @submit="resetPassword" class="q-pa-md rounded-borders q-gutter-md">
+              <q-input
+                :disable="isBusy"
+                color="accent"
+                v-model="model.password"
+                autocomplete="new-password"
+                :label="$tt(this,'step2.password')"
+                :hint="$tt(this,'step2.passwordHint')"
+                type="password"
+                :rules="rule.password"
+                filled
+              />
+              <q-input
+                :disable="isBusy"
+                color="accent"
+                v-model="model.confirmPassword"
+                autocomplete="new-password"
+                :label="$tt(this,'step2.confirmPassword')"
+                :hint="$tt(this,'step2.confirmPasswordHint')"
+                type="password"
+                :rules="rule.confirmPassword"
+                filled
+              />
               <q-input
                 :disable="isBusy"
                 color="accent"
@@ -128,7 +116,7 @@
             :name="1"
             :title="$tt($options,'step1.title')"
             :caption="$tt($options,'step1.caption')"
-            done-icon="person"
+            done-icon="send"
             :done="step > 1"
             color="grey"
             done-color="black"
@@ -136,39 +124,6 @@
             :header-nav="step > 1"
           >
             <q-form @submit="sendEmailCode" class="q-pa-md rounded-borders q-gutter-md">
-              <q-input
-                debounce="1000"
-                :disable="isBusy"
-                color="accent"
-                v-model="model.username"
-                autocomplete="username"
-                :label="$tt(this,'step1.username')"
-                :hint="$tt(this,'step1.usernameHint')"
-                :rules="rule.username"
-                filled
-              />
-              <q-input
-                :disable="isBusy"
-                color="accent"
-                v-model="model.password"
-                autocomplete="new-password"
-                :label="$tt(this,'step1.password')"
-                :hint="$tt(this,'step1.passwordHint')"
-                type="password"
-                :rules="rule.password"
-                filled
-              />
-              <q-input
-                :disable="isBusy"
-                color="accent"
-                v-model="model.confirmPassword"
-                autocomplete="new-password"
-                :label="$tt(this,'step1.confirmPassword')"
-                :hint="$tt(this,'step1.confirmPasswordHint')"
-                type="password"
-                :rules="rule.confirmPassword"
-                filled
-              />
               <q-input
                 :disable="isBusy"
                 debounce="1000"
@@ -184,7 +139,6 @@
               <q-stepper-navigation>
                 <q-btn class="q-mr-md" :loading="isBusy" type="submit" color="accent"
                        :label="$tt($options,'continue')"/>
-                <q-btn :to="{name: 'login'}" flat color="accent" :label="$tt($options,'signIn')"/>
               </q-stepper-navigation>
             </q-form>
           </q-step>
@@ -201,7 +155,29 @@
             :done="step > 2"
             :header-nav="step > 2"
           >
-            <q-form @submit="register" class="q-pa-md rounded-borders q-gutter-md">
+            <q-form @submit="resetPassword" class="q-pa-md rounded-borders q-gutter-md">
+              <q-input
+                :disable="isBusy"
+                color="accent"
+                v-model="model.password"
+                autocomplete="new-password"
+                :label="$tt(this,'step2.password')"
+                :hint="$tt(this,'step2.passwordHint')"
+                type="password"
+                :rules="rule.password"
+                filled
+              />
+              <q-input
+                :disable="isBusy"
+                color="accent"
+                v-model="model.confirmPassword"
+                autocomplete="new-password"
+                :label="$tt(this,'step2.confirmPassword')"
+                :hint="$tt(this,'step2.confirmPasswordHint')"
+                type="password"
+                :rules="rule.confirmPassword"
+                filled
+              />
               <q-input
                 :disable="isBusy"
                 color="accent"
@@ -231,7 +207,7 @@
 import reCaptcha from '../../components/reCaptcha'
 
 export default {
-  name: "SignUp",
+  name: "ResetPassword",
   components: {reCaptcha},
   data() {
     return {
@@ -239,38 +215,26 @@ export default {
       isBusy: false,
       model: {
         recaptcha: null,
-        username: "",
         password: "",
         confirmPassword: "",
         email: "",
         code: ""
       },
       rule: {
-        username: [
-          val => val && val.match(this.$cfg.pattern.username) || this.$tt(this, "step1.usernameRule"),
-          val => this.querying.username ?
-            this.querying.username :
-            (this.querying.username = this.$userApi.isUsernameExists(val)
-                .then((res) => !res.data || this.$tt(this, "step1.usernameExists"))
-                .finally(() => this.querying.username = null)
-            )
-        ]
-        ,
-        password: [val => val && val.match(this.$cfg.pattern.password) || this.$tt(this, "step1.passwordRule")],
-        confirmPassword: [val => val == this.model.password || this.$tt(this, "step1.confirmPasswordRule")],
+        password: [val => val && val.match(this.$cfg.pattern.password) || this.$tt(this, "step2.passwordRule")],
+        confirmPassword: [val => val == this.model.password || this.$tt(this, "step2.confirmPasswordRule")],
         email: [
           val => val && val.match(this.$cfg.pattern.email) || this.$tt(this, "step1.emailRule"),
           val => this.querying.email ?
             this.querying.email :
             (this.querying.email = this.$userApi.isEmailExists(val)
-                .then((res) => !res.data || this.$tt(this, "step1.emailExists"))
+                .then((res) => res.data || this.$tt(this, "step1.emailNotExists"))
                 .finally(() => this.querying.email = null)
             )
         ],
         code: [val => val && val.trim().length > 0 || this.$tt(this, "step2.codeRule")]
       },
       querying: {
-        username: null,
         email: null
       }
     }
@@ -286,7 +250,7 @@ export default {
       if (!this.verify(this.sendEmailCode))
         return;
       this.isBusy = true;
-      this.$codeApi.createRegistrationCode(this.model.recaptcha, this.model.email)
+      this.$codeApi.createUpdatePasswordEmailCode(this.model.recaptcha, this.model.email)
         .then(this.sendEmailCodeSuccess)
         .catch(this.sendEmailCodeFailed)
         .finally(() => {
@@ -300,16 +264,16 @@ export default {
     sendEmailCodeFailed(e) {
 
     },
-    register() {
+    resetPassword() {
       this.isBusy = true;
-      this.$userApi.register(this.model.username, this.model.password, this.model.code)
-        .then(this.registerSuccess)
-        .catch(this.registerFailed)
+      this.$userApi.resetPasswordWithEmail(this.model.password, this.model.code)
+        .then(this.resetPasswordSuccess)
+        .catch(this.resetPasswordFailed)
         .finally(() => {
           this.isBusy = false;
         })
     },
-    registerSuccess(res) {
+    resetPasswordSuccess(res) {
       this.$q.notify({
         message: this.$tt(this, "success"),
         type: "positive"
@@ -317,7 +281,7 @@ export default {
       let redirect = this.$route.query.redirect_uri;
       this.$router.push(redirect ? {path: redirect} : {name: 'login'})
     },
-    registerFailed(e) {
+    resetPasswordFailed(e) {
       this.model.code = "";
     }
   }, computed: {

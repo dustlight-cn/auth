@@ -53,6 +53,9 @@ export default {
       "password": "Password",
       "passwordHint": "Your password.",
       "passwordRule": "The password is between 6 and 20 characters long.",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordHint": "Confirm the password.",
+      "confirmPasswordRule": "The password entered twice is inconsistent.",
       "email": "Email Address",
       "emailHint": "Your email address, which is used for website login and receive verification codes.",
       "emailRule": "Please enter a valid email address.",
@@ -62,6 +65,34 @@ export default {
     "step2": {
       "title": "Verify Email",
       "caption": "You need to verify your ownership of the email address before you sign up.",
+      "code": "Code",
+      "codeHint": "The email verification code you receive, the message may be blocked as spam, please check your email carefully.",
+      "codeRule": "Please enter verification code, the message may be blocked as spam, please check your email carefully."
+    }
+  },
+  "ResetPassword": {
+    "title": " Retrieve Password",
+    "continue": "Next",
+    "back": "Back",
+    "done": "Reset Password",
+    "success": "The password reset was successful",
+    "step1": {
+      "title": "Enter your email address",
+      "caption": "Please enter your account email address to receive the verification code.",
+      "email": "Email",
+      "emailHint": "Your email address, which is used to receive the verification code.",
+      "emailRule": "Please enter a valid email address.",
+      "emailNotExists": "The email is not bound to any accounts."
+    },
+    "step2": {
+      "title": "Reset Password",
+      "caption": "Set your new password.",
+      "password": "New Password",
+      "passwordHint": "Your new password to sign in to the website.",
+      "passwordRule": "The password is between 6 and 20 characters long.",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordHint": "Confirm the password.",
+      "confirmPasswordRule": "The password entered twice is inconsistent.",
       "code": "Code",
       "codeHint": "The email verification code you receive, the message may be blocked as spam, please check your email carefully.",
       "codeRule": "Please enter verification code, the message may be blocked as spam, please check your email carefully."
