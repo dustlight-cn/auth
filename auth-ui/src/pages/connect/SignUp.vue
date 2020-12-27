@@ -274,11 +274,7 @@ export default {
       this.step = 2;
     },
     sendEmailCodeFailed(e) {
-      this.$q.dialog({
-        title: this.$tt(this, "error"),
-        message: e.response && e.response.data && e.response.data.details || e.message,
-        color: "accent"
-      })
+
     },
     register() {
       this.isBusy = true;
@@ -292,18 +288,13 @@ export default {
     registerSuccess(res) {
       this.$q.notify({
         message: this.$tt(this, "success"),
-        color: "positive"
+        type: "positive"
       })
       let redirect = this.$route.query.redirect_uri;
       this.$router.push(redirect ? {path: redirect} : {name: 'login'})
     },
     registerFailed(e) {
       this.model.code = "";
-      this.$q.dialog({
-        title: this.$tt(this, "error"),
-        message: e.response && e.response.data && e.response.data.details || e.message,
-        color: "accent"
-      })
     }
   }, computed: {
     notVerify() {

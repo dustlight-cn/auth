@@ -1,4 +1,6 @@
 import {boot} from "quasar/wrappers";
+import Vue from "vue";
+import {AuthException} from "./auth-client-axios";
 
 class Util {
 
@@ -27,6 +29,27 @@ class Util {
     ;
     return format;
   }
+
+  public handleError(err: Error, vm: Vue, info: string) {
+    let msg = {
+      title: "Error",
+      message: "Error",
+      code: -1
+    }
+    if (err instanceof AuthException) {
+      msg.title = err.message;
+      msg.message = err.details;
+      msg.code = err.code;
+    } else {
+      msg.title = err.name;
+      msg.message = err.message;
+    }
+    Vue.prototype.$q.notify({
+      type: 'negative',
+      message: msg.title,
+      caption: (msg.message ? msg.message + " " : "") + (msg.code > 0 ? "(Error Code: " + msg.code + ")" : "")
+    })
+  }
 }
 
 declare module 'vue/types/vue' {
@@ -35,6 +58,10 @@ declare module 'vue/types/vue' {
   }
 }
 
+const util = new Util();
+
 export default boot(({Vue}) => {
-  Vue.prototype.$util = new Util();
+  Vue.prototype.$util = util;
+  Vue.config.errorHandler = util.handleError;
+  Vue.prototype.$throw = util.handleError;
 })
