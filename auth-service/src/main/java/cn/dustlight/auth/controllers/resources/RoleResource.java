@@ -22,7 +22,7 @@ import java.util.Collection;
 @Tag(name = "Roles", description = "角色的增删改查。")
 @SecurityRequirement(name = "AccessToken")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
+@CrossOrigin(origins = Constants.CrossOrigin.origin, allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class RoleResource {
 
     @Autowired
@@ -42,9 +42,9 @@ public class RoleResource {
         return roleService.getRoles(id);
     }
 
-    @PreAuthorize("hasAnyAuthority('WRITE_ROLE')")
+    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_ROLE')) and #oauth2.clientHasAnyRole('WRITE_ROLE')")
     @PutMapping("roles")
-    @Operation(summary = "修改或添加角色")
+    @Operation(summary = "修改或添加角色", description = "应用和用户需要 WRITE_ROLE 权限。")
     public void setRoles(@RequestBody Collection<DefaultRole> roles) {
         for (DefaultRole role : roles)
             if (role.getRid() == null)
@@ -52,30 +52,32 @@ public class RoleResource {
         roleService.createRoles(roles);
     }
 
-    @PreAuthorize("hasAnyAuthority('DELETE_ROLE')")
+    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_ROLE')) and #oauth2.clientHasAnyRole('WRITE_ROLE')")
     @DeleteMapping("roles")
-    @Operation(summary = "删除角色")
+    @Operation(summary = "删除角色", description = "应用和用户需要 WRITE_ROLE 权限。")
     public void deleteRoles(@RequestParam Collection<Long> id) {
         roleService.removeRoles(id);
     }
 
-    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('READ_USER') or hasAnyAuthority('READ_USER_ANY')")
+    /* ------------------------------------------------------------------------------------------------- */
+
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('READ_USER')) and #oauth2.clientHasAnyRole('READ_USER')")
     @GetMapping("users/{uid}/roles")
-    @Operation(summary = "获取用户角色")
+    @Operation(summary = "获取用户角色", description = "应用和用户（uid 为当前用户除外）需要 READ_USER 权限。")
     public Collection<? extends Role> getUserRoles(@PathVariable Long uid) {
         return userService.getRoles(uid);
     }
 
-    @PreAuthorize("hasAnyAuthority('WRITE_USER_ROLE')")
+    @PreAuthorize("(#oauth2.client or hasAnyAuthority('GRANT_USER')) and #oauth2.clientHasAnyRole('GRANT_USER')")
     @PutMapping("users/{uid}/roles")
-    @Operation(summary = "修改或添加用户角色")
+    @Operation(summary = "为用户添加角色", description = "应用和用户需要 GRANT_USER 权限。")
     public void setUserRoles(@PathVariable Long uid, @RequestBody Collection<DefaultUserRole> roles) {
         userService.addRoles(uid, roles);
     }
 
-    @PreAuthorize("hasAnyAuthority('WRITE_USER_ROLE')")
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('GRANT_USER')) and #oauth2.clientHasAnyRole('GRANT_USER')")
     @DeleteMapping("users/{uid}/roles")
-    @Operation(summary = "删除用户角色")
+    @Operation(summary = "删除用户的角色", description = "应用和用户需要 GRANT_USER 权限。")
     public void deleteUserRoles(@PathVariable Long uid, @RequestParam Collection<Long> id) {
         userService.removeRoles(uid, id);
     }

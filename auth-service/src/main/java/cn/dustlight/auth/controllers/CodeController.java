@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 
-@Tag(name = "CAPTCHA", description = "验证码相关业务。")
+@Tag(name = "Code", description = "验证码相关业务。")
 @RestController
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
 @CrossOrigin(origins = Constants.CrossOrigin.origin, allowCredentials = Constants.CrossOrigin.allowCredentials)
-public class CaptchaController {
+public class CodeController {
 
     private final Log logger = LogFactory.getLog(this.getClass());
 

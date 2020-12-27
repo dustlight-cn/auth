@@ -21,7 +21,7 @@ import java.util.Collection;
 @Tag(name = "Scopes", description = "授权作用域的增删改查。")
 @SecurityRequirement(name = "AccessToken")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
+@CrossOrigin(origins = Constants.CrossOrigin.origin, allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class ScopeResource {
 
     @Autowired
@@ -34,16 +34,16 @@ public class ScopeResource {
     private UniqueGenerator<Long> idGenerator;
 
     @GetMapping("scopes")
-    @Operation(summary = "获取授权作用域")
+    @Operation(summary = "获取授权作用域", description = "应用和用户需要 READ_CLIENT 权限。")
     public Collection<? extends Scope> getScopes(@RequestParam(required = false) Collection<Long> id) {
         if (id == null)
             return scopeService.listScopes();
         return scopeService.getScopes(id);
     }
 
-    @PreAuthorize("hasAnyAuthority('WRITE_SCOPE')")
+    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_SCOPE')) and #oauth2.clientHasAnyRole('WRITE_SCOPE')")
     @PutMapping("scopes")
-    @Operation(summary = "修改或添加授权作用域")
+    @Operation(summary = "修改或添加授权作用域", description = "应用和用户需要 WRITE_SCOPE 权限。")
     public void setScopes(@RequestBody Collection<DefaultScope> scopes) {
         for (DefaultScope scope : scopes)
             if (scope.getSid() == null)
@@ -51,51 +51,55 @@ public class ScopeResource {
         scopeService.createScopes(scopes);
     }
 
-    @PreAuthorize("hasAnyAuthority('DELETE_SCOPE')")
+    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_SCOPE')) and #oauth2.clientHasAnyRole('WRITE_SCOPE')")
     @DeleteMapping("scopes")
-    @Operation(summary = "删除授权作用域")
+    @Operation(summary = "删除授权作用域", description = "应用和用户需要 WRITE_SCOPE 权限。")
     public void deleteScopes(@RequestParam Collection<Long> id) {
         scopeService.removeScopes(id);
     }
 
-    @PreAuthorize("hasAuthority('READ_CLIENT_ANY')")
+    /* ---------------------------------------------------------------------------------------------------- */
+
+    @PreAuthorize("(#oauth2.client or hasAuthority('READ_CLIENT')) and #oauth2.clientHasAnyRole('READ_CLIENT')")
     @GetMapping("clients/{cid}/scopes")
-    @Operation(summary = "获取应用授权作用域")
+    @Operation(summary = "获取应用授权作用域", description = "应用和用户需要 READ_CLIENT 权限。")
     public Collection<? extends Scope> getClientScopes(@PathVariable("cid") String cid) {
         return clientService.listScopes(cid);
     }
 
-    @PreAuthorize("hasAuthority('WRITE_CLIENT_ANY')")
+    @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @PutMapping("clients/{cid}/scopes")
-    @Operation(summary = "添加应用授权作用域")
+    @Operation(summary = "添加应用授权作用域", description = "应用和用户需要 WRITE_CLIENT 权限。")
     public void addClientScopes(@PathVariable("cid") String cid, @RequestParam("sid") Collection<Long> sid) {
         clientService.addScopes(cid, sid);
     }
 
-    @PreAuthorize("hasAuthority('WRITE_CLIENT_ANY')")
+    @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @DeleteMapping("clients/{cid}/scopes")
-    @Operation(summary = "删除应用授权作用域")
+    @Operation(summary = "删除应用授权作用域", description = "应用和用户需要 WRITE_CLIENT 权限。")
     public void removeClientScopes(@PathVariable("cid") String cid, @RequestParam("sid") Collection<Long> sid) {
         clientService.removeScopes(cid, sid);
     }
 
-    @PreAuthorize("#user.matchUid(#uid) or hasAuthority('READ_CLIENT_ANY')")
+    /* --------------------------------------------------------- */
+
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('READ_CLIENT')) and #oauth2.clientHasAnyRole('READ_CLIENT')")
     @GetMapping("users/{uid}/clients/{cid}/scopes")
-    @Operation(summary = "获取应用授权作用域")
+    @Operation(summary = "获取应用授权作用域", description = "应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。")
     public Collection<? extends Scope> getUserClientScopes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid) {
         return clientService.listScopes(cid, uid);
     }
 
-    @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('WRITE_CLIENT_ANY')")
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @PutMapping("users/{uid}/clients/{cid}/scopes")
-    @Operation(summary = "添加应用授权作用域")
+    @Operation(summary = "添加应用授权作用域", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
     public void addUserClientScopes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("sid") Collection<Long> sid) {
         clientService.addScopes(cid, uid, sid);
     }
 
-    @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('WRITE_CLIENT_ANY')")
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @DeleteMapping("users/{uid}/clients/{cid}/scopes")
-    @Operation(summary = "删除应用授权作用域")
+    @Operation(summary = "删除应用授权作用域", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
     public void removeUserClientScopes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("sid") Collection<Long> sid) {
         clientService.removeScopes(cid, uid, sid);
     }

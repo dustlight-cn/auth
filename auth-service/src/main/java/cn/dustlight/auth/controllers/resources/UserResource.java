@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -51,13 +51,21 @@ public class UserResource {
     @Autowired
     protected StorageHandler storageHandler;
 
-    @PreAuthorize("#oauth2.hasAnyScope('read:user')")
+    /**
+     * 判断 Client 与用户是否拥有某权限。
+     */
+    public static boolean hasAuthority(OAuth2Authentication auth2Authentication,
+                                       String authority) {
+        SimpleGrantedAuthority a = new SimpleGrantedAuthority(authority);
+        return auth2Authentication.getOAuth2Request().getAuthorities().contains(a) &&
+                (!auth2Authentication.isClientOnly() && auth2Authentication.getUserAuthentication().getAuthorities().contains(a));
+
+    }
+
     @GetMapping("users/{uid}")
-    @Operation(summary = "获取用户信息", description = "获取用户的信息。" +
-            "权限：应用需要 'read:user' 授权作用域。（若用户拥有 'READ_USER' 权限，可获取用户完整信息。）")
-    public User getUser(@PathVariable Long uid) {
-        boolean flag = SecurityContextHolder.getContext().getAuthentication().getAuthorities().
-                contains(new SimpleGrantedAuthority("READ_USER"));
+    @Operation(summary = "获取用户信息", description = "获取用户的公开信息。如果应用与用户拥有 READ_USER 权限，则获取完整信息。")
+    public User getUser(@PathVariable Long uid, OAuth2Authentication auth2Authentication) {
+        boolean flag = hasAuthority(auth2Authentication, "READ_USER");
         DefaultUser user = null;
         if (flag) {
             user = userService.loadUser(uid);
@@ -72,12 +80,9 @@ public class UserResource {
         return setAvatar(user);
     }
 
-    @PreAuthorize("#oauth2.clientHasRole('CREATE_USER') and (#oauth2.client or hasAuthority('CREATE_USER'))")
+    @PreAuthorize("(#oauth2.client or hasAuthority('CREATE_USER')) and #oauth2.clientHasRole('CREATE_USER')")
     @PostMapping("users")
-    @Operation(summary = "注册用户", description = "创建新用户，用户名和邮箱不可重复。" +
-            "权限：" +
-            "1、应用拥有 'CREATE_USER' 权限。" +
-            "2、用户拥有 'CREATE_USER' 权限。")
+    @Operation(summary = "创建用户（用户名和邮箱不可重复）", description = "应用和用户需要 CREATE_USER 权限。")
     public User createUser(@RequestParam(name = "username") String username,
                            @RequestParam(name = "password") String password,
                            @RequestParam(name = "email") String email) {
@@ -90,26 +95,23 @@ public class UserResource {
         return setAvatar(userService.loadUserByUsername(username));
     }
 
-    @PreAuthorize("#oauth2.clientHasRole('DELETE_USER') and (#oauth2.client or hasAuthority('DELETE_USER') or #user.matchUid(#uid))")
+    @PreAuthorize("(#oauth2.client or hasAuthority('DELETE_USER')) and #oauth2.clientHasRole('DELETE_USER')")
     @DeleteMapping("users/{uid}")
-    @io.swagger.v3.oas.annotations.Operation(summary = "注销用户", description = "删除用户。权限：" +
-            "1、应用拥有 'DELETE_USER' 权限。" +
-            "2、用户拥有 'DELETE_USER' 权限，或者 'uid' 为用户所属。")
+    @io.swagger.v3.oas.annotations.Operation(summary = "删除用户（永久删除）", description = "应用和用户需要 DELETE_USER 权限。")
     public void deleteUser(@PathVariable Long uid) {
         userService.deleteUsers(Arrays.asList(uid));
         logger.debug(String.format("删除用户: [%s] ", uid));
     }
 
-    @PreAuthorize("#oauth2.hasAnyScope('read:user')")
     @GetMapping(value = "users")
-    @Operation(summary = "查找用户", description = "查询或者列出用户（取决于有无关键字）。" +
-            "权限：应用拥有 'read:user' 授权作用域。（若用户拥有 'READ_USER' 权限，可获取用户完整信息。）")
+    @Operation(summary = "查找用户",
+            description = "查询或者列出用户（取决于有无关键字与权限），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。")
     public QueryResults<? extends User> getUsers(@RequestParam(required = false, value = "q") String query,
                                                  @RequestParam(required = false) Integer offset,
                                                  @RequestParam(defaultValue = "10") Integer limit,
-                                                 @RequestParam(required = false) Collection<String> order) {
-        boolean flag = SecurityContextHolder.getContext().getAuthentication() != null &&
-                SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("READ_USER"));
+                                                 @RequestParam(required = false) Collection<String> order,
+                                                 OAuth2Authentication auth2Authentication) {
+        boolean flag = hasAuthority(auth2Authentication, "READ_USER");
         if (flag) {
             if (query != null && query.length() > 0)
                 return setAvatar(userService.searchUsers(query, order, offset, limit));
@@ -119,39 +121,39 @@ public class UserResource {
         return setAvatar(userService.searchPublicUsers(query, order, offset, limit));
     }
 
-    @PreAuthorize("#oauth2.hasAnyScope('write:user') and (#oauth2.client or hasAuthority('WRITE_USER'))")
+    @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_USER_PASSWORD')) and #oauth2.clientHasRole('WRITE_USER_PASSWORD')")
     @PutMapping("users/{uid}/password")
-    @Operation(summary = "更新用户密码", description = "更新用户的密码。" +
-            "权限：应用拥有 'write:user' 授权作用域。")
-    public void updatePassword(@PathVariable Long uid, @RequestParam String password) {
+    @Operation(summary = "更新用户密码", description = "应用和用户需拥有 WRITE_USER_PASSWORD 权限。")
+    public void updateUserPassword(@PathVariable Long uid, @RequestParam String password) {
         userService.updatePassword(uid, password);
     }
 
-    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
+    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_USER_EMAIL')) and #oauth2.clientHasRole('WRITE_USER_EMAIL')")
     @VerifyCode("email")
     @PutMapping("users/{uid}/email")
-    @Operation(summary = "更新用户邮箱")
-    public void updateEmail(@PathVariable Long uid, @CodeValue("email") @RequestParam String code, @CodeParam("email") @Parameter(hidden = true) String email) {
+    @Operation(summary = "更新用户邮箱", description = "应用和用户需拥有 WRITE_USER_EMAIL 权限。")
+    public void updateUserEmail(@PathVariable Long uid, @CodeValue("email") @RequestParam String code, @CodeParam("email") @Parameter(hidden = true) String email) {
         userService.updateEmail(uid, email);
     }
 
-    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('WRITE_USER')) and #oauth2.clientHasRole('WRITE_USER')")
     @PutMapping("users/{uid}/gender")
-    @Operation(summary = "更新用户性别")
-    public void updateGender(@PathVariable Long uid, @RequestParam int gender) {
+    @Operation(summary = "更新用户性别", description = "应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。")
+    public void updateUserGender(@PathVariable Long uid, @RequestParam int gender) {
         userService.updateGender(uid, gender);
     }
 
-    @PreAuthorize("#user.matchUid(#uid) and hasAnyAuthority('WRITE_USER') or hasAuthority('WRITE_USER_ANY')")
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_USER')) and #oauth2.clientHasRole('WRITE_USER')")
     @PutMapping(value = "users/{uid}/avatar", consumes = "image/*")
-    @Operation(summary = "更新用户头像", requestBody = @RequestBody(
-            required = true,
-            content = @Content(
-                    mediaType = "image/*",
-                    schema = @Schema(type = "string", format = "binary")
-            )
-    ))
-    public void updateAvatar(@PathVariable Long uid) {
+    @Operation(summary = "更新用户头像",
+            description = "应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。",
+            requestBody = @RequestBody(required = true,
+                    content = @Content(
+                            mediaType = "image/*",
+                            schema = @Schema(type = "string", format = "binary")
+                    )
+            ))
+    public void updateUserAvatar(@PathVariable Long uid) {
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             String key = generateAvatarKey(uid);
@@ -163,7 +165,7 @@ public class UserResource {
 
     @GetMapping("users/{uid}/avatar")
     @Operation(summary = "获取用户头像")
-    public void getAvatar(@PathVariable Long uid) {
+    public void getUserAvatar(@PathVariable Long uid) {
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             String key = generateAvatarKey(uid);
@@ -172,6 +174,8 @@ public class UserResource {
             ErrorEnum.RESOURCE_NOT_FOUND.details(e.getMessage()).throwException();
         }
     }
+
+    /* -------------------------------------------------------------------------------------------------- */
 
     protected String generateAvatarKey(Object id) {
         return String.format(Constants.AVATAR_FORMAT, id);

@@ -22,7 +22,7 @@ import java.util.Collection;
 @Tag(name = "GrantTypes", description = "授权模式的增删改查。")
 @SecurityRequirement(name = "AccessToken")
 @RequestMapping(value = Constants.API_ROOT, produces = Constants.ContentType.APPLICATION_JSON)
-@CrossOrigin(origins = Constants.CrossOrigin.origin,allowCredentials = Constants.CrossOrigin.allowCredentials)
+@CrossOrigin(origins = Constants.CrossOrigin.origin, allowCredentials = Constants.CrossOrigin.allowCredentials)
 public class GrantTypeResource {
 
     @Autowired
@@ -42,9 +42,9 @@ public class GrantTypeResource {
         return grantTypeService.getGrantTypes(tid);
     }
 
-    @PreAuthorize("hasAuthority('WRITE_TYPE')")
+    @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_TYPE')) and #oauth2.clientHasAnyRole('WRITE_TYPE')")
     @PutMapping("types")
-    @Operation(summary = "添加或修改授权模式")
+    @Operation(summary = "添加或修改授权模式", description = "应用和用户需要 WRITE_TYPE 权限。")
     public void setGrantTypes(@RequestBody Collection<DefaultGrantType> types) {
         if (types != null)
             for (DefaultGrantType type : types)
@@ -53,52 +53,54 @@ public class GrantTypeResource {
         grantTypeService.createGrantTypes(types);
     }
 
-    @PreAuthorize("hasAuthority('READ_CLIENT_ANY')")
+    @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_TYPE')) and #oauth2.clientHasAnyRole('WRITE_TYPE')")
+    @DeleteMapping("types")
+    @Operation(summary = "删除授权模式", description = "应用和用户需要 WRITE_TYPE 权限。")
+    public void deleteGrantTypes(@RequestParam("tid") Collection<Long> tid) {
+        grantTypeService.removeGrantTypes(tid);
+    }
+
+    /* ----------------------------------------------------------------------------------------------------------- */
+
+    @PreAuthorize("(#oauth2.client or hasAuthority('READ_CLIENT')) and #oauth2.clientHasAnyRole('READ_CLIENT')")
     @GetMapping("clients/{cid}/types")
-    @Operation(summary = "获取应用授权模式")
+    @Operation(summary = "获取应用授权模式", description = "应用和用户需要 READ_CLIENT 权限。")
     public Collection<? extends GrantType> getClientGrantTypes(@PathVariable("cid") String cid) {
         return clientService.listGrantTypes(cid);
     }
 
-    @PreAuthorize("#user.matchUid(#uid) or hasAuthority('READ_CLIENT_ANY')")
-    @GetMapping("users/{uid}/clients/{cid}/types")
-    @Operation(summary = "获取应用授权模式")
-    public Collection<? extends GrantType> getUserClientGrantTypes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid) {
-        return clientService.listGrantTypes(cid, uid);
-    }
-
-    @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('WRITE_CLIENT_ANY')")
-    @DeleteMapping("users/{uid}/clients/{cid}/types")
-    @Operation(summary = "删除应用授权模式")
-    public void deleteUserClientGrantTypes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("tid") Collection<Long> tid) {
-        clientService.removeGrantTypes(cid, uid, tid);
-    }
-
-    @PreAuthorize("#user.matchUid(#uid) and hasAuthority('WRITE_CLIENT') or hasAuthority('WRITE_CLIENT_ANY')")
-    @PutMapping("users/{uid}/clients/{cid}/types")
-    @Operation(summary = "添加或修改应用授权模式")
-    public void addUserClientGrantTypes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("tid") Collection<Long> tid) {
-        clientService.addGrantTypes(cid, uid, tid);
-    }
-
-    @PreAuthorize("hasAuthority('WRITE_CLIENT_ANY')")
+    @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @DeleteMapping("clients/{cid}/types")
-    @Operation(summary = "删除应用授权模式")
+    @Operation(summary = "删除应用授权模式", description = "应用和用户需要 WRITE_CLIENT 权限。")
     public void deleteClientGrantTypes(@PathVariable("cid") String cid, @RequestParam("tid") Collection<Long> tid) {
         clientService.removeGrantTypes(cid, tid);
     }
 
-    @PreAuthorize("hasAuthority('WRITE_CLIENT_ANY')")
+    @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @PutMapping("clients/{cid}/types")
-    @Operation(summary = "添加或修改应用授权模式")
+    @Operation(summary = "添加应用授权模式", description = "应用和用户需要 WRITE_CLIENT 权限。")
     public void addClientGrantTypes(@PathVariable("cid") String cid, @RequestParam("tid") Collection<Long> tid) {
         clientService.addGrantTypes(cid, tid);
     }
 
-    @PreAuthorize("hasAuthority('DELETE_TYPE')")
-    @DeleteMapping("types")
-    @Operation(summary = "删除授权模式")
-    public void deleteGrantTypes(@RequestParam("tid") Collection<Long> tid) {
-        grantTypeService.removeGrantTypes(tid);
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('READ_CLIENT')) and #oauth2.clientHasAnyRole('READ_CLIENT')")
+    @GetMapping("users/{uid}/clients/{cid}/types")
+    @Operation(summary = "获取应用授权模式", description = "应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。")
+    public Collection<? extends GrantType> getUserClientGrantTypes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid) {
+        return clientService.listGrantTypes(cid, uid);
+    }
+
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
+    @DeleteMapping("users/{uid}/clients/{cid}/types")
+    @Operation(summary = "删除应用授权模式", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
+    public void deleteUserClientGrantTypes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("tid") Collection<Long> tid) {
+        clientService.removeGrantTypes(cid, uid, tid);
+    }
+
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
+    @PutMapping("users/{uid}/clients/{cid}/types")
+    @Operation(summary = "添加应用授权模式", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
+    public void addUserClientGrantTypes(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("tid") Collection<Long> tid) {
+        clientService.addGrantTypes(cid, uid, tid);
     }
 }
