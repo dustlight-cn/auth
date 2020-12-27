@@ -103,7 +103,8 @@ module.exports = configure(function (/* ctx */) {
         'LocalStorage',
         'SessionStorage',
         'Dialog',
-        'Notify'
+        'Notify',
+        'Meta'
       ]
     },
 

@@ -12,7 +12,7 @@
 import VueRecaptcha from 'vue-recaptcha';
 
 export default {
-  name: "reCaptcha",
+  name: "ReCaptcha",
   components: {
     VueRecaptcha
   },
@@ -51,6 +51,16 @@ export default {
   }, mounted() {
     this.$on("execute", this.execute);
     this.$on("reload", this.reload);
+  },
+  meta: {
+    // JS标记
+    script: {
+      recaptcha: {
+        src: 'https://www.recaptcha.net/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit',
+        'async': '',
+        'defer': ''
+      }
+    }
   }
 }
 </script>
