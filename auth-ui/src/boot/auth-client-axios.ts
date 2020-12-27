@@ -1,4 +1,4 @@
-import {TokenApi, Configuration, User, UserApi, UsersApi, AuthorizationApi} from '@dustlight/auth-client-axios'
+import {TokenApi, Configuration, User, UserApi, UsersApi, AuthorizationApi, CodeApi} from '@dustlight/auth-client-axios'
 import {BASE_PATH} from '@dustlight/auth-client-axios/base'
 import {boot} from "quasar/wrappers";
 import config from "src/config";
@@ -84,7 +84,9 @@ declare module 'vue/types/vue' {
     $tokenApi: TokenApi;
     $userApi: UserApi;
     $usersApi: UsersApi;
-    $authorizationAi: AuthorizationApi;
+    $authorizationAi: AuthorizationApi
+    $codeApi: CodeApi;
+
     $apiCfg: Configuration;
     $s: S;
   }
@@ -111,5 +113,6 @@ export default boot(({Vue}) => {
   Vue.prototype.$userApi = new UserApi(Vue.prototype.$apiCfg);
   Vue.prototype.$usersApi = new UsersApi(Vue.prototype.$apiCfg);
   Vue.prototype.$authorizationAi = new AuthorizationApi(Vue.prototype.$apiCfg);
+  Vue.prototype.$codeApi = new CodeApi(Vue.prototype.$apiCfg);
 });
 

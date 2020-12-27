@@ -207,7 +207,6 @@
 
 <script>
 import reCaptcha from '../../components/reCaptcha'
-import {CAPTCHAApi, UserApi} from "@dustlight/auth-client-axios"
 
 export default {
   name: "SignUp",
@@ -263,7 +262,7 @@ export default {
       if (!this.verify(this.sendEmailCode))
         return;
       this.isBusy = true;
-      new CAPTCHAApi(this.$apiCfg).createRegistrationCode(this.model.recaptcha, this.model.email)
+      this.$codeApi.createRegistrationCode(this.model.recaptcha, this.model.email)
         .then(this.sendEmailCodeSuccess)
         .catch(this.sendEmailCodeFailed)
         .finally(() => {
@@ -283,7 +282,7 @@ export default {
     },
     register() {
       this.isBusy = true;
-      this.$userApi.createUser1(this.model.username, this.model.password, this.model.code)
+      this.$userApi.register(this.model.username, this.model.password, this.model.code)
         .then(this.registerSuccess)
         .catch(this.registerFailed)
         .finally(() => {

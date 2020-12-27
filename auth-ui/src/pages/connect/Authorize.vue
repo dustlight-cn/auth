@@ -41,7 +41,7 @@
                 <q-item-section>
                   <q-item-label overline>{{ scope.subtitle }}</q-item-label>
                   <q-item-label v-if="scope.value" caption>{{ $tt($options, 'approved') }}</q-item-label>
-                  <q-item-label v-if="scope.description && !scope.value" caption>{{ scope.description }}
+                  <q-item-label class="q-pl-sm" v-if="scope.description && !scope.value" caption>{{ scope.description }}
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side top>
