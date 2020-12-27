@@ -19,14 +19,13 @@ const routes: RouteConfig[] = [
       {path: 'reset-password', name: "resetPassword", component: () => import('pages/connect/ResetPassword.vue')}
     ]
   },
-  // {
-  //   path: '/',
-  //   component: () => import('layouts/ChildLayout.vue'),
-  //   children: [
-  //     // {path: '', component: () => import('pages/children/')}
-  //     {path: 'nickname', component: () => import('pages/children/Nickname')}
-  //   ]
-  // },
+  {
+    path: '/',
+    component: () => import('layouts/DetailsLayout.vue'),
+    children: [
+      {path: 'personal-info/test', name: "test", component: () => import('pages/details/Test.vue')}
+    ]
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

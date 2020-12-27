@@ -1,11 +1,5 @@
 <template>
   <q-page padding>
-    <div class="flex flex-center text-h5 gt-sm text-center">
-      {{ $tt($options, "title") }}
-    </div>
-    <div class="flex flex-center text-grey text-center">
-      {{ $tt($options, "subtitle") }}
-    </div>
     <require-authorization v-slot="{user,token}">
       <!-- 基础信息 -->
       <q-card bordered class="shadow-0 q-pa-md q-mt-md">

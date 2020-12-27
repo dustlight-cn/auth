@@ -42,7 +42,15 @@
         appear
         enter-active-class="animated fadeIn"
       >
-        <router-view/>
+        <div>
+          <div v-if="title" class="flex flex-center text-h5 gt-sm text-center">
+            {{ title }}
+          </div>
+          <div v-if="subtitle" class="flex flex-center text-grey text-center">
+            {{ subtitle }}
+          </div>
+          <router-view ref="page"/>
+        </div>
       </transition>
     </q-page-container>
 
@@ -65,7 +73,32 @@ export default {
   data() {
     return {
       left: false,
-      tab: "home"
+      tab: "home",
+      title: "",
+      subtitle: ""
+    }
+  },
+  methods: {
+    updateTitle(compeonent) {
+      if (compeonent != null && compeonent.showTitle != false) {
+        this.title = this.$tt(compeonent, "title");
+        this.subtitle = this.$tt(compeonent, "subtitle");
+      } else {
+        this.title = this.subtitle = "";
+      }
+    }
+  },
+  mounted() {
+    this.updateTitle(this.$refs.page);
+  },
+  watch: {
+    '$route': {
+      handler: function (t, f) {
+        console.log(t.matched[t.matched.length - 1])
+        if (t.matched.length > 0 && t.matched[t.matched.length - 1].components.default != null) {
+          this.updateTitle(t.matched[t.matched.length - 1].components.default)
+        }
+      }
     }
   }
 }

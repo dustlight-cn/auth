@@ -11,6 +11,7 @@
 
 <script>
 export default {
-  name: 'PageIndex'
+  name: 'PageIndex',
+  showTitle: false
 }
 </script>
