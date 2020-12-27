@@ -35,9 +35,9 @@ public class VerifiedEmailSender extends EmailCodeSender {
             super.send(code, parameters);
         else {
             if (target)
-                ErrorEnum.EMAIL_EXISTS.throwException();
-            else
                 ErrorEnum.EMAIL_NOT_FOUND.throwException();
+            else
+                ErrorEnum.EMAIL_EXISTS.throwException();
         }
     }
 
