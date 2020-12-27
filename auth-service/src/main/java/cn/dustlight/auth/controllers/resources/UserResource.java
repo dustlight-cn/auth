@@ -132,7 +132,9 @@ public class UserResource {
     @VerifyCode("email")
     @PutMapping("users/{uid}/email")
     @Operation(summary = "更新用户邮箱", description = "应用和用户需拥有 WRITE_USER_EMAIL 权限。")
-    public void updateUserEmail(@PathVariable Long uid, @CodeValue("email") @RequestParam String code, @CodeParam("email") @Parameter(hidden = true) String email) {
+    public void updateUserEmail(@PathVariable Long uid,
+                                @CodeValue("email") @RequestParam String code,
+                                @CodeParam("email") @Parameter(hidden = true) String email) {
         userService.updateEmail(uid, email);
     }
 
@@ -141,6 +143,13 @@ public class UserResource {
     @Operation(summary = "更新用户性别", description = "应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。")
     public void updateUserGender(@PathVariable Long uid, @RequestParam int gender) {
         userService.updateGender(uid, gender);
+    }
+
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('WRITE_USER')) and #oauth2.clientHasRole('WRITE_USER')")
+    @PutMapping("users/{uid}/nickname")
+    @Operation(summary = "更新用户昵称", description = "应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。")
+    public void updateUserNickname(@PathVariable Long uid, @RequestParam String nickname) {
+        userService.updateNickname(uid, nickname);
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_USER')) and #oauth2.clientHasRole('WRITE_USER')")

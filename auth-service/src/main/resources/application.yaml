@@ -1,7 +1,7 @@
 mysql:
   host: "instance-2"
   port: 30010
-  db: uim
+  db: auth
   charset: "utf8"
   ssl: false
   username: "root"
