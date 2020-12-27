@@ -49,10 +49,13 @@ export default {
   methods: {
     signOut() {
       this.$tokenApi.deleteToken()
-        .finally(() => {
+        .then(() => {
           this.$q.notify({
-            message: this.$tt(this, "signOutSuccess")
+            message: this.$tt(this, "signOutSuccess"),
+            type: 'info'
           })
+        })
+        .finally(() => {
           this.$s.clear();
         })
     }

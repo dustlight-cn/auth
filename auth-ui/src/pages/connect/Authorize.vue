@@ -6,7 +6,7 @@
         enter-active-class="animated fadeIn"
         leave-active-class="animated fadeOut"
       >
-        <q-page class="authorization" padding>
+        <q-page v-if="!error" class="authorization" padding>
           <div class="q-pt-lg flex flex-center">
             <div>
               <client-logo class="flex flex-center" :client="client" size="128"/>
@@ -115,6 +115,16 @@
             </q-list>
           </div>
         </q-page>
+        <q-page v-else class="flex flex-center text-center">
+          <div class="q-pa-md">
+            <div style="font-size: 15vh">
+              {{ error.details ? error.message : error.name }}
+            </div>
+            <div class="text-h4" style="opacity:.4">
+              {{ error.details || error.message }}
+            </div>
+          </div>
+        </q-page>
       </transition>
     </template>
     <template v-slot:unauthorized>
@@ -149,7 +159,8 @@ export default {
       authorization: null,
       loading: false,
       approving: false,
-      canceling: false
+      canceling: false,
+      error: null
     }
   },
   computed: {
@@ -175,13 +186,12 @@ export default {
         query.scope,
         query.state)
         .then(res => {
-
           res.data.client.scopes.forEach(s => {
             s.value = true;
           })
-
           this.authorization = res.data;
         })
+        .catch(e => this.error = e)
         .finally(() => this.loading = false)
     },
     approve() {

@@ -28,7 +28,6 @@ export default {
     "title": "Sign In",
     "signIn": "Sign In",
     "success": "Sign in success",
-    "error": "Sign in failed",
     "signUp": "Sign Up",
     "forgotPassword": "forgot password?",
     "account": "Account",
@@ -44,8 +43,7 @@ export default {
     "back": "Back",
     "done": "Verify And Sign In",
     "signIn": "Sign In",
-    "success": "Sign In Success",
-    "error": "Sign In Failed",
+    "success": "Sign Up Success",
     "step1": {
       "title": "Enter Information",
       "caption": "Enter your username, password and E-mail.",

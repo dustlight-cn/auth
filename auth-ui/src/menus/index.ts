@@ -1,13 +1,7 @@
-import main, {MainMenu} from './main'
+import main from './main'
 
-export class Menus {
-  main: MainMenu
+export * from './menu'
 
-  constructor(main: MainMenu) {
-    this.main = main
-  }
-}
-
-export default new Menus(
+export default {
   main
-)
+}

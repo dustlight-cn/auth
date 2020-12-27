@@ -79,6 +79,19 @@ export class S {
   }
 }
 
+export class AuthException extends Error {
+  public code: number;
+  public message: string;
+  public details: string;
+
+  public constructor(code: number, message: string, details: string) {
+    super(details);
+    this.code = code;
+    this.message = message;
+    this.details = details;
+  }
+}
+
 declare module 'vue/types/vue' {
   interface Vue {
     $tokenApi: TokenApi;
@@ -93,6 +106,17 @@ declare module 'vue/types/vue' {
 }
 
 globalAxios.defaults.withCredentials = true;
+globalAxios.interceptors.response.use(res => res, error => {
+  let res = error == null ? null : error.response;
+  let e: AuthException;
+  if (res != null && res.data != null) {
+    e = new AuthException(res.data.code, res.data.message, res.data.details);
+  } else {
+    e = new AuthException(-10, error.name || "Error", error.message);
+  }
+  V.prototype.$throw(e);
+  return Promise.reject(e);
+})
 
 export default boot(({Vue}) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

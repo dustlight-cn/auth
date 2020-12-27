@@ -28,7 +28,6 @@ export default {
     "title": "登录",
     "signIn": "登录",
     "success": "登录成功",
-    "error": "登录失败",
     "signUp": "注册",
     "forgotPassword": "忘记密码?",
     "account": "账号",
@@ -45,7 +44,6 @@ export default {
     "done": "验证并注册",
     "signIn": "登录",
     "success": "注册成功",
-    "error": "注册失败",
     "step1": {
       "title": "填写信息",
       "caption": "填写您的用户名、密码以及邮箱。",

@@ -151,7 +151,7 @@ export default {
     onSignInSuccess(token) {
       this.$q.notify({
         message: this.$tt(this, "success"),
-        color: "positive"
+        type: "positive"
       })
       this.$s.storeToken(token);
       if (this.onSuccess != null)
@@ -175,11 +175,6 @@ export default {
         // title = e.response.data.message || title
         msg = e.response.data.details || msg
       }
-      this.$q.dialog({
-        title: title,
-        message: msg,
-        color: "accent"
-      })
     }
   }
 }
