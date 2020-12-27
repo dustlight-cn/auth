@@ -55,7 +55,7 @@ export default {
           (lastTimestamp == null || new Date().getTime() - lastTimestamp > this.$cfg.getUserFrequency)) {
           lock = true;
           lastTimestamp = new Date().getTime();
-          this.$userApi.getUser1()
+          this.$userApi.getTokenUser()
             .then(res => this.$s.storeUser(res.data))
             .finally(() => lock = false)
         }
