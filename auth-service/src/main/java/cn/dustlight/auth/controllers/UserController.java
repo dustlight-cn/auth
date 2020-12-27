@@ -51,7 +51,6 @@ public class UserController {
         return UserResource.setAvatar(user);
     }
 
-    @PreAuthorize("#oauth2.clientHasRole('CREATE_USER')")
     @VerifyCode("Register")
     @PostMapping("user")
     @Operation(summary = "用户注册（通过邮箱验证码）",
@@ -87,7 +86,6 @@ public class UserController {
             logger.debug(String.format("【用户更改密码】 用户名：%s。", user.getUsername()));
     }
 
-    @PreAuthorize("#oauth2.clientHasRole('WRITE_USER_PASSWORD')")
     @VerifyCode("ResetPasswordByEmail")
     @PutMapping("password")
     @Operation(summary = "邮箱重置密码",
