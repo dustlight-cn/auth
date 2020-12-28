@@ -29,6 +29,7 @@ public class StorageConfiguration {
         if (restfulStorage != null) {
             CdnStorageProxy storage = new CdnStorageProxy(restfulStorage, properties.getBaseUrl());
             storage.setPrefix(properties.getPrefix());
+            storage.setSimpleUrl(properties.isSimpleURL());
             storages.add(storage);
         }
         storages.add(LocalStorage.from((properties.baseUrl != null ? properties.baseUrl : "") +
@@ -40,6 +41,8 @@ public class StorageConfiguration {
 
     @ConfigurationProperties("dustlight.auth.storage")
     public static class StorageProperties {
+
+        private boolean simpleURL = true;
         private String baseUrl = null;
         private String prefix = "upload/auth/";
         private Long defaultExpiration = 1000L * 60 * 15L;
@@ -66,6 +69,14 @@ public class StorageConfiguration {
 
         public void setDefaultExpiration(Long defaultExpiration) {
             this.defaultExpiration = defaultExpiration;
+        }
+
+        public boolean isSimpleURL() {
+            return simpleURL;
+        }
+
+        public void setSimpleURL(boolean simpleURL) {
+            this.simpleURL = simpleURL;
         }
     }
 }
