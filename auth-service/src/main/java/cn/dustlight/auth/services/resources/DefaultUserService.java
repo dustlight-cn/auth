@@ -137,7 +137,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     public void updatePassword(Long uid, String password) {
         if (passwordPattern != null && !passwordPattern.matcher(password).matches())
             ErrorEnum.PASSWORD_INVALID.throwException();
-        if (!userMapper.updatePassword(uid, password))
+        if (!userMapper.updatePassword(uid, encodePassword(password)))
             ErrorEnum.UPDATE_USER_FAIL.details("fail to update password").throwException();
     }
 

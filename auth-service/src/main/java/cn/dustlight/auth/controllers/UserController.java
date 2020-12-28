@@ -78,8 +78,17 @@ public class UserController {
     public void resetPassword(OAuth2Authentication oAuth2Authentication,
                               @RequestParam("oldPassword") String oldPassword,
                               @RequestParam("newPassword") String newPassword) {
+        if (oldPassword.equals(newPassword))
+            ErrorEnum.UPDATE_PASSWORD_FAIL_ORIGINAL_PASSWORD
+                    .details("The new password must not be the same as the original password.")
+                    .throwException();
         User user = (User) oAuth2Authentication.getPrincipal();
-        if (!passwordEncoder.matches(user.getPassword(), oldPassword))
+        user = userService.loadUser(user.getUid());
+        if (user.getEmail() == null || user.getEmail().trim().length() == 0)
+            ErrorEnum.UPDATE_PASSWORD_FAIL_EMAIL_NOT_EXIST
+                    .details("Can't change password without binding email address.")
+                    .throwException();
+        if (!passwordEncoder.matches(oldPassword, user.getPassword()))
             ErrorEnum.PASSWORD_INVALID.throwException();
         userService.updatePassword(user.getUid(), newPassword);
         if (logger.isDebugEnabled())
@@ -110,7 +119,7 @@ public class UserController {
                            @CodeValue("ChangeEmail") @RequestParam("code") String code,
                            @CodeParam(value = "ChangeEmail", name = "email") @Parameter(hidden = true) String email) {
         User user = (User) oAuth2Authentication.getPrincipal();
-        if (!passwordEncoder.matches(user.getPassword(), password))
+        if (!passwordEncoder.matches(password, user.getPassword()))
             ErrorEnum.PASSWORD_INVALID.throwException();
         userService.updateEmail(user.getUid(), email);
         if (logger.isDebugEnabled())
