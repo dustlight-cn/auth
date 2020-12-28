@@ -44,6 +44,8 @@ public enum ErrorEnum {
     UPDATE_SCOPE_FAIL(5004, "Fail to update scope"),
     UPDATE_CLIENT_FAIL(5005, "Fail to update client"),
     UPDATE_GRANT_TYPE_FAIL(5006, "Fail to update grant type"),
+    UPDATE_PASSWORD_FAIL_EMAIL_NOT_EXIST(5007, "Fail to update password"),
+    UPDATE_PASSWORD_FAIL_ORIGINAL_PASSWORD(5008, "Fail to update password"),
 
     DELETE_RESOURCE_FAIL(6000, "Fail to delete resource"),
     DELETE_USER_FAIL(6001, "Fail to delete user"),
