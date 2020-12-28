@@ -23,7 +23,8 @@ const routes: RouteConfig[] = [
     path: '/',
     component: () => import('layouts/DetailsLayout.vue'),
     children: [
-      {path: 'personal-info/nickname', name: "nickname", component: () => import('pages/edit/Nickname.vue')}
+      {path: 'personal-info/nickname', name: "nickname", component: () => import('pages/edit/Nickname.vue')},
+      {path: 'personal-info/gender', name: "gender", component: () => import('pages/edit/Gender.vue')}
     ]
   },
   // Always leave this as last one,

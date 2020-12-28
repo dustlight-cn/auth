@@ -24,7 +24,12 @@
               <div v-if="caption" class="text-caption">{{ caption }}</div>
             </q-card-section>
             <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),token,loading,busy}"/>
-            <q-card-actions>
+            <q-card-actions v-if="loading">
+              <q-space/>
+              <q-skeleton class="q-mr-md" type="QBtn"/>
+              <q-skeleton type="QBtn"/>
+            </q-card-actions>
+            <q-card-actions v-else>
               <q-space/>
               <q-btn no-caps :disable="busy" @click="$router.back()" flat>{{ $t("cancel") }}</q-btn>
               <q-btn no-caps :loading="busy" type="submit" color="accent">{{ $t("update") }}</q-btn>
@@ -58,7 +63,12 @@
               <div v-if="caption" class="text-caption">{{ caption }}</div>
             </q-card-section>
             <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),token,loading,busy}"/>
-            <q-card-actions>
+            <q-card-actions v-if="loading">
+              <q-space/>
+              <q-skeleton class="q-mr-md" type="QBtn"/>
+              <q-skeleton type="QBtn"/>
+            </q-card-actions>
+            <q-card-actions v-else>
               <q-space/>
               <q-btn no-caps :disable="busy" @click="$router.back()" flat>{{ $t("cancel") }}</q-btn>
               <q-btn no-caps :loading="busy" type="submit" color="accent">{{ $t("update") }}</q-btn>

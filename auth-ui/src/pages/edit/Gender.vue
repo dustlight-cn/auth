@@ -5,16 +5,15 @@
     :user="user"
     v-slot="{user,token,loading,busy}">
     <q-card-section v-if="!loading">
-      <q-input
-        :label="$tt($options,'nickname')"
-        :hint="$tt($options,'nicknameHint')"
-        v-model="model.nickname == null ? (model.nickname = (model.user = user).nickname) : model.nickname"
-        autocomplete="name"
-        color="accent"
+      <q-select
+        emit-value
+        map-options
         filled
-        :rules="rules.nickname"
         :disable="busy"
-        class="full-width"/>
+        v-model="model.gender == null ? (model.gender = (model.user = user).gender) : model.gender"
+        :options="options"
+        color="accent"
+        :label="$tt($options,'gender')"/>
     </q-card-section>
     <q-card-section v-else>
       <q-skeleton type="QInput"/>
@@ -27,7 +26,7 @@ import RequireAuthorization from "../../components/RequireAuthorization";
 import UpdateUser from "../../components/UpdateUser";
 
 export default {
-  name: "Nickname",
+  name: "Gender",
   components: {UpdateUser, RequireAuthorization},
   props: {
     user: Object
@@ -36,7 +35,7 @@ export default {
     return {
       model: {
         user: null,
-        nickname: null
+        gender: null
       },
       rules: {
         nickname: [val => val && val.length > 0 || this.$tt(this, "nicknameRule")]
@@ -45,15 +44,25 @@ export default {
   },
   methods: {
     onSubmit() {
-      if (this.model.user.nickname == this.model.nickname)
+      if (this.model.user.gender == this.model.gender)
         return;
-      return this.$usersApi.updateUserNickname(this.model.user.uid, this.model.nickname)
+      return this.$usersApi.updateUserGender(this.model.user.uid, this.model.gender)
         .then(() => {
-          this.model.user.nickname = this.model.nickname;
+          this.model.user.gender = this.model.gender;
         }).catch((e) => {
-          this.model.nickname = this.model.user.nickname;
+          this.model.gender = this.model.user.gender;
           throw e;
         })
+    }
+  },
+  computed: {
+    options() {
+      return [
+        {label: this.$t("gender.0"), value: 0},
+        {label: this.$t("gender.1"), value: 1},
+        {label: this.$t("gender.2"), value: 2},
+        {label: this.$t("gender.3"), value: 3}
+      ]
     }
   }
 }

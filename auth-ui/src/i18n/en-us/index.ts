@@ -139,6 +139,11 @@ export default {
     "nicknameHint": "User's nickname, anyone can see this information.",
     "nicknameRule": "Please enter a valid nickname."
   },
+  "Gender": {
+    "title": "Gender",
+    "operator": "Update Gender",
+    "gender": "Gender"
+  },
   "menus": {
     "home": "Home",
     "account": "Account"

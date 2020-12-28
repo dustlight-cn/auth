@@ -139,11 +139,13 @@ export default {
     "nicknameHint": "用户的昵称，任何人均能看到此信息。",
     "nicknameRule": "请输入有效的昵称。"
   },
+  "Gender": {
+    "title": "性别",
+    "operator": "更新性别",
+    "gender": "性别"
+  },
   "menus": {
     "home": "首页",
     "account": "个人信息"
-  },
-  "Edit": {
-    "title": "编辑"
   }
 };
