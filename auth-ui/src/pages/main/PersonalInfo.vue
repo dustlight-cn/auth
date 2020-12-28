@@ -48,7 +48,7 @@
             </q-item-label>
           </q-item>
           <!-- 密码 -->
-          <q-item v-ripple clickable>
+          <q-item v-ripple clickable :to="{name:'password'}">
             <q-item-section>
               <q-item-label caption>
                 {{ $tt($options, "password") }}

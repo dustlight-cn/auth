@@ -144,6 +144,19 @@ export default {
     "operator": "更新性别",
     "gender": "性别"
   },
+  "Password": {
+    "title": "密码",
+    "operator": "更改密码",
+    "oldPassword": "原密码",
+    "oldPasswordHint": "您的原始密码。",
+    "newPassword": "新密码",
+    "newPasswordHint": "新的密码。",
+    "confirmPassword": "确认密码",
+    "confirmPasswordHint": "确认您的密码。",
+    "passwordRule": "密码长度在6到20个字符之间。",
+    "confirmPasswordRule": "两次输入的密码不一致。",
+    "passwordRuleOriginal": "新密码不可与原密码相同。"
+  },
   "menus": {
     "home": "首页",
     "account": "个人信息"

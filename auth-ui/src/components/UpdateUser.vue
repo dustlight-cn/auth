@@ -11,8 +11,8 @@
           <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),busy}"/>
           <q-card-actions>
             <q-space/>
-            <q-btn no-caps :disable="busy" @click="$router.back()" flat>{{ $t("cancel") }}</q-btn>
-            <q-btn no-caps :loading="busy" type="submit" color="accent">{{ $t("update") }}</q-btn>
+            <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
+            <q-btn no-caps :loading="busy" type="submit" color="accent" :label="$t('update')"/>
           </q-card-actions>
         </q-form>
       </q-card>
@@ -31,8 +31,8 @@
             </q-card-actions>
             <q-card-actions v-else>
               <q-space/>
-              <q-btn no-caps :disable="busy" @click="$router.back()" flat>{{ $t("cancel") }}</q-btn>
-              <q-btn no-caps :loading="busy" type="submit" color="accent">{{ $t("update") }}</q-btn>
+              <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
+              <q-btn no-caps :loading="busy" type="submit" color="accent" :label="$t('update')"/>
             </q-card-actions>
           </q-form>
         </q-card>
@@ -50,8 +50,8 @@
           <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),busy}"/>
           <q-card-actions>
             <q-space/>
-            <q-btn no-caps :disable="busy" @click="$router.back()" flat>{{ $t("cancel") }}</q-btn>
-            <q-btn no-caps :loading="busy" type="submit" color="accent">{{ $t("update") }}</q-btn>
+            <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
+            <q-btn no-caps :loading="busy" type="submit" color="accent" :label="$t('update')"/>
           </q-card-actions>
         </q-form>
       </q-card>
@@ -70,8 +70,8 @@
             </q-card-actions>
             <q-card-actions v-else>
               <q-space/>
-              <q-btn no-caps :disable="busy" @click="$router.back()" flat>{{ $t("cancel") }}</q-btn>
-              <q-btn no-caps :loading="busy" type="submit" color="accent">{{ $t("update") }}</q-btn>
+              <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
+              <q-btn no-caps :loading="busy" type="submit" color="accent" :label="$t('update')"/>
             </q-card-actions>
           </q-form>
         </q-card>
@@ -90,7 +90,13 @@ export default {
     user: Object,
     title: String,
     caption: String,
-    submit: Function
+    submit: Function,
+    backOnSuccess: {
+      type: Boolean,
+      default() {
+        return true;
+      }
+    }
   },
   data() {
     return {
@@ -119,10 +125,14 @@ export default {
             type: "positive",
             message: this.$t("updateSuccess")
           })
+          if (this.isUserUpdated())
+            this.$s.storeUser(this.user_clone);
+
+          this.busy = false;
+          if (this.backOnSuccess)
+            this.$router.back();
         })
-          .finally(() => {
-            if (this.isUserUpdated())
-              this.$s.storeUser(this.user_clone);
+          .catch((e) => {
             this.busy = false;
           })
     }
