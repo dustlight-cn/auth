@@ -36,9 +36,6 @@ export default {
       model: {
         user: null,
         gender: null
-      },
-      rules: {
-        nickname: [val => val && val.length > 0 || this.$tt(this, "nicknameRule")]
       }
     }
   },

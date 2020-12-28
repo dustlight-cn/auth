@@ -144,6 +144,19 @@ export default {
     "operator": "Update Gender",
     "gender": "Gender"
   },
+  "Password": {
+    "title": "Password",
+    "operator": "Update Password",
+    "oldPassword": "The Original Password",
+    "oldPasswordHint": "Your original password.",
+    "newPassword": "The New Password",
+    "newPasswordHint": "Your new password.",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordHint": "Confirm your new password.",
+    "passwordRule": "The password is between 6 and 20 characters long.",
+    "confirmPasswordRule": "The password entered twice is inconsistent.",
+    "passwordRuleOriginal": "The new password must not be the same as the original password."
+  },
   "menus": {
     "home": "Home",
     "account": "Account"
