@@ -114,6 +114,9 @@ globalAxios.interceptors.response.use(res => res, error => {
   } else {
     e = new AuthException(-10, error.name || "Error", error.message);
   }
+  if (e.code == 1) {
+    V.prototype.$s.clear();
+  }
   V.prototype.$throw(e);
   return Promise.reject(e);
 })

@@ -34,7 +34,8 @@ export default {
     return {
       user: {},
       token: null,
-      initialized: false
+      initialized: false,
+      loading: false
     }
   },
   props: {
@@ -42,21 +43,30 @@ export default {
   },
   methods: {
     reload(user) {
+      if (this.user == user)
+        return;
       this.user = user || {};
       this.token = this.$s.loadToken();
+      this.loading = false;
     },
     tokenUpdate(token) {
       if (token) {
-        this.reload(this.$s.loadUser());
+        let usr = this.$s.loadUser();
+        this.reload(usr);
         this.token = token;
         if (this.onReady != null)
           this.onReady();
-        if (!lock &&
-          (lastTimestamp == null || new Date().getTime() - lastTimestamp > this.$cfg.getUserFrequency)) {
+        if (lock) {
+          this.loading = true;
+          return;
+        }
+        if ((usr == null || usr == {} || lastTimestamp == null || new Date().getTime() - lastTimestamp > this.$cfg.getUserFrequency)) {
           lock = true;
+          this.loading = true;
           lastTimestamp = new Date().getTime();
           this.$userApi.getTokenUser()
             .then(res => this.$s.storeUser(res.data))
+            .catch(e => this.$s.storeUser({}))
             .finally(() => lock = false)
         }
       }
@@ -70,9 +80,6 @@ export default {
         this.tokenUpdate(token);
       }
       return this.token && !this.token.isExpired();
-    },
-    loading() {
-      return lock;
     }
   },
   mounted() {

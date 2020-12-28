@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import {LocalStorage, SessionStorage} from "quasar";
+import pkg from '../package.json';
 
 export interface Config {
   /**
@@ -26,7 +27,8 @@ export interface Config {
   /**
    * 获取用户信息的频率限制，单位毫秒
    */
-  getUserFrequency: number
+  getUserFrequency: number,
+  pkg: typeof pkg
 }
 
 const config: Config = {
@@ -39,6 +41,7 @@ const config: Config = {
     account: /^\S{1,20}$/
   },
   storage: Vue.prototype.$q.localStorage,
-  getUserFrequency: 60000 // 60秒
+  getUserFrequency: 60000, // 60秒
+  pkg: pkg
 }
 export default config

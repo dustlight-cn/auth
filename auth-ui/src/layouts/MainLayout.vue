@@ -8,7 +8,7 @@
           <i18n path="title"/>
         </q-toolbar-title>
         <language-selector/>
-        <AvatarButton/>
+        <avatar-button/>
       </q-toolbar>
 
       <!-- 顶部导航栏 -->
@@ -38,19 +38,17 @@
     </q-drawer>
 
     <q-page-container>
+      <div v-if="title" class="flex flex-center text-h5 gt-sm text-center q-mt-md">
+        {{ title }}
+      </div>
+      <div v-if="subtitle" class="flex flex-center text-grey text-center q-mt-md">
+        {{ subtitle }}
+      </div>
       <transition
         appear
         enter-active-class="animated fadeIn"
       >
-        <div>
-          <div v-if="title" class="flex flex-center text-h5 gt-sm text-center">
-            {{ title }}
-          </div>
-          <div v-if="subtitle" class="flex flex-center text-grey text-center">
-            {{ subtitle }}
-          </div>
-          <router-view ref="page"/>
-        </div>
+        <router-view ref="page"/>
       </transition>
     </q-page-container>
 
@@ -67,7 +65,7 @@ import Logo from "../components/Logo";
 import Footer from "../components/Footer";
 import LanguageSelector from "../components/LanguageSelector";
 
-export default {
+const c = {
   name: 'MainLayout',
   components: {LanguageSelector, Logo, AvatarButton, Footer},
   data() {
@@ -81,20 +79,19 @@ export default {
   methods: {
     updateTitle(compeonent) {
       if (compeonent != null && compeonent.showTitle != false) {
-        this.title = this.$tt(compeonent, "title");
-        this.subtitle = this.$tt(compeonent, "subtitle");
+        this.title = this.$tt(compeonent, "title", true);
+        this.subtitle = this.$tt(compeonent, "subtitle", true);
       } else {
         this.title = this.subtitle = "";
       }
     }
   },
   mounted() {
-    this.updateTitle(this.$refs.page);
+    this.updateTitle(this.$refs.page.$options);
   },
   watch: {
     '$route': {
       handler: function (t, f) {
-        console.log(t.matched[t.matched.length - 1])
         if (t.matched.length > 0 && t.matched[t.matched.length - 1].components.default != null) {
           this.updateTitle(t.matched[t.matched.length - 1].components.default)
         }
@@ -102,4 +99,5 @@ export default {
     }
   }
 }
+export default c;
 </script>

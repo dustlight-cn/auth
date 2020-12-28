@@ -24,7 +24,7 @@
             </q-item-label>
           </q-item>
           <!-- 昵称 -->
-          <q-item v-ripple clickable to="nickname">
+          <q-item v-ripple clickable :to="{name:'nickname'}">
             <q-item-section>
               <q-item-label caption>
                 {{ $tt($options, "nickname") }}

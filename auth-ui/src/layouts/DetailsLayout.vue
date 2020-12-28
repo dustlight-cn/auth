@@ -7,6 +7,8 @@
         <q-toolbar-title>
           <i18n path="title"/>
         </q-toolbar-title>
+        <language-selector/>
+        <avatar-button/>
       </q-toolbar>
       <q-toolbar>
         <q-btn dense rounded flat icon="arrow_back" @click="$router.back()"/>
@@ -15,12 +17,14 @@
     </q-header>
 
     <q-page-container>
+      <div v-if="subtitle" class="flex flex-center text-grey text-center q-mt-md">
+        {{ subtitle }}
+      </div>
       <transition
         appear
         enter-active-class="animated fadeIn"
       >
-        <router-view class="q-mt-lg q-mb-lg gt-xs" ref="details"/>
-        <router-view class="lt-sm" ref="details"/>
+        <router-view ref="page"/>
       </transition>
     </q-page-container>
 
@@ -42,11 +46,31 @@ export default {
   components: {LanguageSelector, Logo, AvatarButton, Footer},
   data() {
     return {
-      title: ""
+      title: "",
+      subtitle: ""
+    }
+  },
+  methods: {
+    updateTitle(compeonent) {
+      if (compeonent != null && compeonent.showTitle != false) {
+        this.title = this.$tt(compeonent, "title", true);
+        this.subtitle = this.$tt(compeonent, "subtitle", true);
+      } else {
+        this.title = this.subtitle = "";
+      }
     }
   },
   mounted() {
-    this.title = this.$tt(this.$refs.details.$options, "title");
+    this.updateTitle(this.$refs.page.$options);
+  },
+  watch: {
+    '$route': {
+      handler: function (t, f) {
+        if (t.matched.length > 0 && t.matched[t.matched.length - 1].components.default != null) {
+          this.updateTitle(t.matched[t.matched.length - 1].components.default)
+        }
+      }
+    }
   }
 
 }
