@@ -11,6 +11,9 @@ export default {
     "3": "其他"
   },
   "error": "错误",
+  "update": "更新",
+  "updateSuccess": "更新成功",
+  "cancel": "取消",
   "Error404": {
     "notFound": "抱歉，这里空空如也。",
     "goBack": "返回"
@@ -130,7 +133,11 @@ export default {
     "regtime": "注册时间"
   },
   "Nickname": {
-    "title": "昵称"
+    "title": "昵称",
+    "operator": "更新昵称",
+    "nickname": "昵称",
+    "nicknameHint": "用户的昵称，任何人均能看到此信息。",
+    "nicknameRule": "请输入有效的昵称。"
   },
   "menus": {
     "home": "首页",

@@ -4,6 +4,25 @@ import {AuthException} from "./auth-client-axios";
 
 class Util {
 
+  public objectEquals(obj1: any, obj2: any): boolean {
+    for (let k in obj1) {
+      let field = obj1[k];
+      if ((field instanceof Object || field instanceof Array)) {
+        if ((field == null || obj2[k] == null) && field != obj2[k]) {
+          return false;
+        } else if (!this.objectEquals(field, obj2[k])) {
+          return false;
+        }
+      } else {
+        if (field instanceof Function)
+          continue;
+        if (field != obj2[k])
+          return false;
+      }
+    }
+    return true;
+  }
+
   public dateFormat(date: Date | string, format: string) {
     if (!(date instanceof Date))
       date = new Date(date)
@@ -31,6 +50,7 @@ class Util {
   }
 
   public handleError(err: Error, vm: Vue, info: string) {
+    console.error(err);
     let msg = {
       title: "Error",
       message: "Error",

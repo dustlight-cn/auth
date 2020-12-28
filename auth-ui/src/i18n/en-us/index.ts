@@ -11,6 +11,9 @@ export default {
     "3": "Other"
   },
   "error": "Error",
+  "update": "Update",
+  "updateSuccess": "Update success",
+  "cancel": "Cancel",
   "Error404": {
     "notFound": "Oops. Nothing here...",
     "goBack": "Go Back"
@@ -130,7 +133,11 @@ export default {
     "regtime": "Join At"
   },
   "Nickname": {
-    "title": "Nickname"
+    "title": "Nickname",
+    "operator": "Update Nickname",
+    "nickname": "Nickname",
+    "nicknameHint": "User's nickname, anyone can see this information.",
+    "nicknameRule": "Please enter a valid nickname."
   },
   "menus": {
     "home": "Home",

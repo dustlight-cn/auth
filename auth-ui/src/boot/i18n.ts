@@ -8,7 +8,13 @@ declare module 'vue/types/vue' {
   interface Vue {
     i18n: VueI18n;
 
-    $tt(context: any, key: string): string | null;
+    /**
+     * 获取语言文本
+     * @param context Vue上下文或者 $options 或者 前缀
+     * @param key
+     * @param notKey 是否不允许 key 和值一样
+     */
+    $tt(context: any, key: string, notKey: boolean): string | null;
 
     changeLanguage(lang: string): null,
 
@@ -23,25 +29,31 @@ const t = function (key: string) {
   return i18n._t.apply(i18n, [key, i18n.locale, i18n._getMessages(), this].concat(values))
 };
 
-const tt = function (context: string | Vue | ComponentOptions<Vue>, key: string) {
-  if (context == null)
-    return t(key);
-  if (typeof context === "string") {
+const tt = function (context: string | Vue | ComponentOptions<Vue>, key: string, notKey?: boolean) {
+  let k: string;
+  if (context == null) {
+    k = key;
+  } else if (typeof context === "string") {
     if (key == null)
-      return t(context);
-    return context.endsWith('.') ? context + key : context + "." + key;
+      k = context;
+    else
+      k = context.endsWith('.') ? context + key : context + "." + key;
   } else if (context instanceof Vue) {
     if (key == null)
-      return t((<Vue>context).$options.name || key);
-    return t(((<Vue>context).$options.name || "") + "." + key)
+      k = (<Vue>context).$options.name || key;
+    else
+      k = (((<Vue>context).$options.name || "") + "." + key)
   } else {
     let c = <ComponentOptions<Vue>>context;
     if (c == null || c.name == null)
-      return t(key);
-    if (key == null)
-      return t(c.name);
-    return t(c.name + "." + key);
+      k = (key);
+    else if (key == null)
+      k = (c.name);
+    else
+      k = (c.name + "." + key);
   }
+  let v = t(k);
+  return notKey && v == k ? "" : v;
 };
 
 Vue.use(VueI18n);
