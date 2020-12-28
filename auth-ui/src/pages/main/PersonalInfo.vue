@@ -36,7 +36,7 @@
             </q-item-label>
           </q-item>
           <!-- 性别 -->
-          <q-item v-ripple clickable>
+          <q-item v-ripple clickable :to="{name:'gender'}">
             <q-item-section>
               <q-item-label caption>
                 {{ $tt($options, "gender") }}
