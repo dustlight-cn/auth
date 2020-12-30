@@ -8,6 +8,7 @@
       <q-file
         style="max-width: 128px;"
         @input="onSelected"
+        accept="image/*"
         hide-hint
         hide-bottom-space
         borderless
