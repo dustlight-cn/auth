@@ -11,7 +11,7 @@
         </div>
         <q-list>
           <!-- 头像 -->
-          <q-item v-ripple clickable>
+          <q-item v-ripple clickable :to="{name:'avatar'}">
             <q-item-section>
               <q-item-label caption>
                 {{ $tt($options, "avatar") }}

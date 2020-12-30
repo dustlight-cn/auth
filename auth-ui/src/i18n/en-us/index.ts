@@ -157,6 +157,10 @@ export default {
     "confirmPasswordRule": "The password entered twice is inconsistent.",
     "passwordRuleOriginal": "The new password must not be the same as the original password."
   },
+  "Avatar": {
+    "title": "Avatar",
+    "operator": "Update Avatar"
+  },
   "menus": {
     "home": "Home",
     "account": "Account"
