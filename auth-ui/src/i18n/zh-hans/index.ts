@@ -157,6 +157,10 @@ export default {
     "confirmPasswordRule": "两次输入的密码不一致。",
     "passwordRuleOriginal": "新密码不可与原密码相同。"
   },
+  "Avatar": {
+    "title": "头像",
+    "operator": "更新头像"
+  },
   "menus": {
     "home": "首页",
     "account": "个人信息"
