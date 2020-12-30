@@ -5,12 +5,19 @@
         <avatar :user="user"/>
         <q-menu v-if="user && user.uid">
           <div class="text-center q-pa-md">
-            <avatar class="q-ma-sm" :size="avatarSize" :user="user"/>
+            <q-btn class="q-ma-sm" rounded dense flat :to="{name: 'avatar'}">
+              <avatar :size="avatarSize" :user="user"/>
+            </q-btn>
             <div class="text-bold">{{ user.nickname }}</div>
             <div class="text-caption">{{ user.email }}</div>
           </div>
           <q-list style="min-width: 150px;">
             <q-separator/>
+            <q-item class="text-black" v-ripple clickable v-close-popup :to="{name:'personal-info'}">
+              <q-item-section>
+                {{ $tt($options, "settings") }}
+              </q-item-section>
+            </q-item>
             <q-item @click="signOut" v-ripple clickable v-close-popup>
               <q-item-section>
                 {{ $tt($options, "signOut") }}
