@@ -105,8 +105,7 @@ declare module 'vue/types/vue' {
   }
 }
 
-globalAxios.defaults.withCredentials = true;
-globalAxios.interceptors.response.use(res => res, error => {
+const errorHandler = (error: any): any => {
   let res = error == null ? null : error.response;
   let e: AuthException;
   if (res != null && res.data != null) {
@@ -119,14 +118,21 @@ globalAxios.interceptors.response.use(res => res, error => {
   }
   V.prototype.$throw(e);
   return Promise.reject(e);
+};
+
+globalAxios.interceptors.response.use(res => res, errorHandler)
+const withCredentials = globalAxios.create({
+  withCredentials: true
 })
+withCredentials.interceptors.response.use(res => res, errorHandler);
 
 export default boot(({Vue}) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 
   Vue.prototype.$s = new S(Vue.prototype.$q.localStorage);
+  let path = config.host || BASE_PATH;
   Vue.prototype.$apiCfg = new Configuration({
-    basePath: config.host || BASE_PATH,
+    basePath: path,
     apiKey: () => {
       let s = Vue.prototype.$s;
       s.loadToken()
@@ -137,9 +143,9 @@ export default boot(({Vue}) => {
     }
   })
   Vue.prototype.$tokenApi = new TokenApi(Vue.prototype.$apiCfg);
-  Vue.prototype.$userApi = new UserApi(Vue.prototype.$apiCfg);
+  Vue.prototype.$userApi = new UserApi(Vue.prototype.$apiCfg, path, withCredentials);
   Vue.prototype.$usersApi = new UsersApi(Vue.prototype.$apiCfg);
-  Vue.prototype.$authorizationAi = new AuthorizationApi(Vue.prototype.$apiCfg);
-  Vue.prototype.$codeApi = new CodeApi(Vue.prototype.$apiCfg);
+  Vue.prototype.$authorizationAi = new AuthorizationApi(Vue.prototype.$apiCfg, path, withCredentials);
+  Vue.prototype.$codeApi = new CodeApi(Vue.prototype.$apiCfg, path, withCredentials);
 });
 
