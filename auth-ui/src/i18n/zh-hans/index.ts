@@ -162,6 +162,18 @@ export default {
     "title": "头像",
     "operator": "更新头像"
   },
+  "Email": {
+    "title": "邮箱地址",
+    "operator": "更新电子邮箱地址",
+    "step1": {
+      "title": "您的邮箱地址",
+      "caption": "请输入您的新邮箱地址"
+    },
+    "step2": {
+      "title": "您的密码和验证码",
+      "caption": "请输入您的账号密码与邮箱验证码"
+    }
+  },
   "menus": {
     "home": "首页",
     "account": "个人信息"
