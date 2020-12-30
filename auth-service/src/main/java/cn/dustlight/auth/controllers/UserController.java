@@ -53,9 +53,7 @@ public class UserController {
 
     @VerifyCode("Register")
     @PostMapping("user")
-    @Operation(summary = "用户注册（通过邮箱验证码）",
-            description = "应用需要 CREATE_USER 权限。",
-            security = @SecurityRequirement(name = "AccessToken"))
+    @Operation(summary = "用户注册（通过邮箱验证码）")
     public User register(@RequestParam("username") String username,
                          @RequestParam("password") String password,
                          @RequestParam("code") @CodeValue("Register") String code,
@@ -97,9 +95,7 @@ public class UserController {
 
     @VerifyCode("ResetPasswordByEmail")
     @PutMapping("password")
-    @Operation(summary = "邮箱重置密码",
-            description = "应用需要 WRITE_USER_PASSWORD 权限。",
-            security = @SecurityRequirement(name = "AccessToken"))
+    @Operation(summary = "邮箱重置密码")
     public void resetPasswordWithEmail(@RequestParam("password") String password,
                                        @RequestParam("code") @CodeValue("ResetPasswordByEmail") String code,
                                        @CodeParam(value = "ResetPasswordByEmail", name = "email") String email) {
@@ -119,6 +115,7 @@ public class UserController {
                            @CodeValue("ChangeEmail") @RequestParam("code") String code,
                            @CodeParam(value = "ChangeEmail", name = "email") @Parameter(hidden = true) String email) {
         User user = (User) oAuth2Authentication.getPrincipal();
+        user = userService.loadUser(user.getUid());
         if (!passwordEncoder.matches(password, user.getPassword()))
             ErrorEnum.PASSWORD_INVALID.throwException();
         userService.updateEmail(user.getUid(), email);

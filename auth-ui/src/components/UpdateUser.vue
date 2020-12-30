@@ -12,7 +12,8 @@
           <q-card-actions>
             <q-space/>
             <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
-            <q-btn no-caps :loading="busy" type="submit" color="accent" :label="$t('update')"/>
+            <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
+                   :label="$t('update')"/>
           </q-card-actions>
         </q-form>
       </q-card>
@@ -32,7 +33,8 @@
             <q-card-actions v-else>
               <q-space/>
               <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
-              <q-btn no-caps :loading="busy" type="submit" color="accent" :label="$t('update')"/>
+              <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
+                     :label="$t('update')"/>
             </q-card-actions>
           </q-form>
         </q-card>
@@ -51,7 +53,8 @@
           <q-card-actions>
             <q-space/>
             <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
-            <q-btn no-caps :loading="busy" type="submit" color="accent" :label="$t('update')"/>
+            <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
+                   :label="$t('update')"/>
           </q-card-actions>
         </q-form>
       </q-card>
@@ -71,7 +74,8 @@
             <q-card-actions v-else>
               <q-space/>
               <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
-              <q-btn no-caps :loading="busy" type="submit" color="accent" :label="$t('update')"/>
+              <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
+                     :label="$t('update')"/>
             </q-card-actions>
           </q-form>
         </q-card>
@@ -91,6 +95,12 @@ export default {
     title: String,
     caption: String,
     submit: Function,
+    disableSubmitButton: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
     backOnSuccess: {
       type: Boolean,
       default() {

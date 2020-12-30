@@ -162,6 +162,18 @@ export default {
     "title": "Avatar",
     "operator": "Update Avatar"
   },
+  "Email": {
+    "title": "Email Address",
+    "operator": "Update Email Address",
+    "step1": {
+      "title": "Your Email Address",
+      "caption": "Please enter your new email address."
+    },
+    "step2": {
+      "title": "Your Password And Verification Code",
+      "caption": "Please enter your account password and email verification code."
+    }
+  },
   "menus": {
     "home": "Home",
     "account": "Account"

@@ -26,7 +26,8 @@ const routes: RouteConfig[] = [
       {path: 'personal-info/nickname', name: "nickname", component: () => import('pages/edit/Nickname.vue')},
       {path: 'personal-info/gender', name: "gender", component: () => import('pages/edit/Gender.vue')},
       {path: 'personal-info/password', name: "password", component: () => import('pages/edit/Password.vue')},
-      {path: 'personal-info/avatar', name: "avatar", component: () => import('pages/edit/Avatar.vue')}
+      {path: 'personal-info/avatar', name: "avatar", component: () => import('pages/edit/Avatar.vue')},
+      {path: 'personal-info/email', name: "email", component: () => import('pages/edit/Email.vue')}
     ]
   },
   // Always leave this as last one,

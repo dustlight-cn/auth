@@ -254,8 +254,7 @@ export default {
                 .then((res) => !res.data || this.$tt(this, "step1.usernameExists"))
                 .finally(() => this.querying.username = null)
             )
-        ]
-        ,
+        ],
         password: [val => val && val.match(this.$cfg.pattern.password) || this.$tt(this, "step1.passwordRule")],
         confirmPassword: [val => val == this.model.password || this.$tt(this, "step1.confirmPasswordRule")],
         email: [

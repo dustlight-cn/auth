@@ -34,7 +34,8 @@ public class CodeController {
 
     @SendCode(value = "ChangeEmail", sender = @Sender("verifiedEmailSender"), parameters = {
             @Parameter(name = "SUBJECT", value = "更换用户邮箱"),
-            @Parameter(name = "TEMPLATE", value = "mail/ChangeEmail.html")
+            @Parameter(name = "TEMPLATE", value = "mail/ChangeEmail.html"),
+            @Parameter(name = "CHECK_EXISTS", value = "false") // 检查邮箱是否不存在
     })
     @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
     @PostMapping("code/email")
