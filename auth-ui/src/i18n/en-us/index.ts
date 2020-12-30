@@ -21,6 +21,7 @@ export default {
   "AvatarButton": {
     "signIn": "Sign In",
     "signOut": "Sign Out",
+    "settings": "Settings",
     "signOutSuccess": "Sign out success"
   },
   "RequireAuthorization": {

@@ -21,6 +21,7 @@ export default {
   "AvatarButton": {
     "signIn": "登录",
     "signOut": "注销",
+    "settings": "设置",
     "signOutSuccess": "注销成功"
   },
   "RequireAuthorization": {

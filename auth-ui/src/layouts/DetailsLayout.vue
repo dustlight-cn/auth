@@ -46,18 +46,24 @@ export default {
   components: {LanguageSelector, Logo, AvatarButton, Footer},
   data() {
     return {
-      title: "",
-      subtitle: ""
+      context: null
     }
   },
   methods: {
     updateTitle(compeonent) {
       if (compeonent != null && compeonent.showTitle != false) {
-        this.title = this.$tt(compeonent, "title", true);
-        this.subtitle = this.$tt(compeonent, "subtitle", true);
+        this.context = compeonent;
       } else {
-        this.title = this.subtitle = "";
+        this.context = null;
       }
+    }
+  },
+  computed: {
+    title() {
+      return this.context ? this.$tt(this.context, "title", true) : "";
+    },
+    subtitle() {
+      return this.context ? this.$tt(this.context, "subtitle", true) : "";
     }
   },
   mounted() {
