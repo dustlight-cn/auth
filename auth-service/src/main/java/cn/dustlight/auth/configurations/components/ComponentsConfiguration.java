@@ -1,14 +1,17 @@
 package cn.dustlight.auth.configurations.components;
 
 import cn.dustlight.auth.services.UserService;
+import cn.dustlight.auth.services.captcha.UserRedisCodeStore;
 import cn.dustlight.auth.services.captcha.VerifiedEmailSender;
 import cn.dustlight.captcha.EmailSenderProperties;
+import cn.dustlight.captcha.RedisCodeStoreProperties;
 import cn.dustlight.captcha.sender.CodeSender;
 import cn.dustlight.captcha.sender.EmailCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,4 +37,11 @@ public class ComponentsConfiguration {
                 userService);
     }
 
+    @Bean("userCodeStore")
+    @ConditionalOnMissingBean(name = "userCodeStore")
+    public UserRedisCodeStore userCodeStore(@Autowired RedisConnectionFactory factory,
+                                            @Autowired RedisCodeStoreProperties properties) {
+        UserRedisCodeStore userRedisCodeStore = new UserRedisCodeStore(factory, properties.getKeyPrefix());
+        return userRedisCodeStore;
+    }
 }

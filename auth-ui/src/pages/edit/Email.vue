@@ -172,9 +172,8 @@ export default {
         .then(() => {
           this.model.user.email = this.model.email;
         }).catch((e) => {
-          console.log(e, "????????")
           this.model.code = this.model.password = "";
-          this.step = 1;
+          // this.step = 1;
           throw e;
         })
     }

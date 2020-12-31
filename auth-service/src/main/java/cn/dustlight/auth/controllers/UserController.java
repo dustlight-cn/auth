@@ -10,6 +10,7 @@ import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.Constants;
 import cn.dustlight.captcha.annotations.CodeParam;
 import cn.dustlight.captcha.annotations.CodeValue;
+import cn.dustlight.captcha.annotations.Store;
 import cn.dustlight.captcha.annotations.VerifyCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 @RestController
@@ -105,12 +107,13 @@ public class UserController {
     }
 
     @PreAuthorize("#oauth2.clientHasRole('WRITE_USER_EMAIL')")
-    @VerifyCode("ChangeEmail")
+    @VerifyCode(value = "ChangeEmail", store = @Store("userCodeStore"))
     @PutMapping("user/email")
     @Operation(summary = "通过密码更改邮箱",
             description = "应用需要 WRITE_USER_EMAIL 权限。",
             security = @SecurityRequirement(name = "AccessToken"))
     public void resetEmail(OAuth2Authentication oAuth2Authentication,
+                           HttpServletRequest request,
                            @RequestParam("password") String password,
                            @CodeValue("ChangeEmail") @RequestParam("code") String code,
                            @CodeParam(value = "ChangeEmail", name = "email") @Parameter(hidden = true) String email) {

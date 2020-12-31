@@ -72,7 +72,7 @@
         </div>
         <q-list>
           <!-- 电子邮箱 -->
-          <q-item v-ripple clickable>
+          <q-item v-ripple clickable :to="{name:'email'}">
             <q-item-section>
               <q-item-label caption>
                 {{ $tt($options, "email") }}
