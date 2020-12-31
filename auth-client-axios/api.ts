@@ -142,16 +142,16 @@ export interface AuthorizationClient {
     clientSecret?: string;
     /**
      * 
-     * @type {number}
-     * @memberof AuthorizationClient
-     */
-    accessTokenValiditySeconds?: number;
-    /**
-     * 
      * @type {Set<string>}
      * @memberof AuthorizationClient
      */
     registeredRedirectUri?: Set<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof AuthorizationClient
+     */
+    accessTokenValiditySeconds?: number;
     /**
      * 
      * @type {number}
@@ -265,16 +265,16 @@ export interface Client {
     status?: number;
     /**
      * 
-     * @type {string}
-     * @memberof Client
-     */
-    logo?: string;
-    /**
-     * 
      * @type {Array<ClientScope>}
      * @memberof Client
      */
     scopes?: Array<ClientScope>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    logo?: string;
     /**
      * 
      * @type {Array<string>}
@@ -301,6 +301,18 @@ export interface Client {
     updatedAt?: string;
     /**
      * 
+     * @type {{ [key: string]: object; }}
+     * @memberof Client
+     */
+    extra?: { [key: string]: object; };
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    cid?: string;
+    /**
+     * 
      * @type {Set<string>}
      * @memberof Client
      */
@@ -310,19 +322,13 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    cid?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
     secret?: string;
     /**
      * 
-     * @type {{ [key: string]: object; }}
+     * @type {Set<string>}
      * @memberof Client
      */
-    extra?: { [key: string]: object; };
+    redirectUri?: Set<string>;
     /**
      * 
      * @type {number}
@@ -335,12 +341,6 @@ export interface Client {
      * @memberof Client
      */
     grantTypes?: Set<string>;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    redirectUri?: Set<string>;
     /**
      * 
      * @type {number}
@@ -454,10 +454,10 @@ export interface OAuth2AccessToken {
     expired?: boolean;
     /**
      * 
-     * @type {number}
+     * @type {{ [key: string]: object; }}
      * @memberof OAuth2AccessToken
      */
-    expiresIn?: number;
+    additionalInformation?: { [key: string]: object; };
     /**
      * 
      * @type {string}
@@ -472,10 +472,10 @@ export interface OAuth2AccessToken {
     refreshToken?: OAuth2RefreshToken;
     /**
      * 
-     * @type {{ [key: string]: object; }}
+     * @type {number}
      * @memberof OAuth2AccessToken
      */
-    additionalInformation?: { [key: string]: object; };
+    expiresIn?: number;
 }
 /**
  * 
@@ -504,12 +504,6 @@ export interface PublicUser {
     uid?: number;
     /**
      * 
-     * @type {number}
-     * @memberof PublicUser
-     */
-    gender?: number;
-    /**
-     * 
      * @type {string}
      * @memberof PublicUser
      */
@@ -519,13 +513,19 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    avatar?: string;
+    unlockedAt?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PublicUser
+     */
+    gender?: number;
     /**
      * 
      * @type {string}
      * @memberof PublicUser
      */
-    unlockedAt?: string;
+    avatar?: string;
     /**
      * 
      * @type {boolean}
@@ -543,7 +543,7 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    accountNonLocked?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {boolean}
@@ -555,7 +555,7 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    credentialsNonExpired?: boolean;
+    accountNonLocked?: boolean;
     /**
      * 
      * @type {string}
@@ -726,18 +726,6 @@ export interface User {
     email?: string;
     /**
      * 
-     * @type {string}
-     * @memberof User
-     */
-    accountExpiredAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    credentialsExpiredAt?: string;
-    /**
-     * 
      * @type {Array<string>}
      * @memberof User
      */
@@ -750,16 +738,22 @@ export interface User {
     uid?: number;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof User
      */
-    gender?: number;
+    nickname?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    nickname?: string;
+    unlockedAt?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    gender?: number;
     /**
      * 
      * @type {string}
@@ -771,7 +765,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
+    accountExpiredAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    credentialsExpiredAt?: string;
     /**
      * 
      * @type {boolean}
@@ -789,7 +789,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    accountNonLocked?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {boolean}
@@ -801,7 +801,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    credentialsNonExpired?: boolean;
+    accountNonLocked?: boolean;
     /**
      * 
      * @type {string}
@@ -4837,6 +4837,14 @@ export const CodeApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
+            // authentication AccessToken required
+            if (configuration && configuration.apiKey) {
+                const localVarApiKeyValue = typeof configuration.apiKey === 'function'
+                    ? await configuration.apiKey("access_token")
+                    : await configuration.apiKey;
+                localVarQueryParameter["access_token"] = localVarApiKeyValue;
+            }
+
             if (gRecaptchaResponse !== undefined) {
                 localVarQueryParameter['g-recaptcha-response'] = gRecaptchaResponse;
             }
@@ -7944,7 +7952,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             };
         },
         /**
-         * 应用需要 CREATE_USER 权限。
+         * 
          * @summary 用户注册（通过邮箱验证码）
          * @param {string} username 
          * @param {string} password 
@@ -7976,14 +7984,6 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-
-            // authentication AccessToken required
-            if (configuration && configuration.apiKey) {
-                const localVarApiKeyValue = typeof configuration.apiKey === 'function'
-                    ? await configuration.apiKey("access_token")
-                    : await configuration.apiKey;
-                localVarQueryParameter["access_token"] = localVarApiKeyValue;
-            }
 
             if (username !== undefined) {
                 localVarQueryParameter['username'] = username;
@@ -8142,7 +8142,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             };
         },
         /**
-         * 应用需要 WRITE_USER_PASSWORD 权限。
+         * 
          * @summary 邮箱重置密码
          * @param {string} password 
          * @param {string} code 
@@ -8170,14 +8170,6 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-
-            // authentication AccessToken required
-            if (configuration && configuration.apiKey) {
-                const localVarApiKeyValue = typeof configuration.apiKey === 'function'
-                    ? await configuration.apiKey("access_token")
-                    : await configuration.apiKey;
-                localVarQueryParameter["access_token"] = localVarApiKeyValue;
-            }
 
             if (password !== undefined) {
                 localVarQueryParameter['password'] = password;
@@ -8265,7 +8257,7 @@ export const UserApiFp = function(configuration?: Configuration) {
             };
         },
         /**
-         * 应用需要 CREATE_USER 权限。
+         * 
          * @summary 用户注册（通过邮箱验证码）
          * @param {string} username 
          * @param {string} password 
@@ -8311,7 +8303,7 @@ export const UserApiFp = function(configuration?: Configuration) {
             };
         },
         /**
-         * 应用需要 WRITE_USER_PASSWORD 权限。
+         * 
          * @summary 邮箱重置密码
          * @param {string} password 
          * @param {string} code 
@@ -8365,7 +8357,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
             return UserApiFp(configuration).isUsernameExists(username, options).then((request) => request(axios, basePath));
         },
         /**
-         * 应用需要 CREATE_USER 权限。
+         * 
          * @summary 用户注册（通过邮箱验证码）
          * @param {string} username 
          * @param {string} password 
@@ -8399,7 +8391,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
             return UserApiFp(configuration).resetPassword(oldPassword, newPassword, options).then((request) => request(axios, basePath));
         },
         /**
-         * 应用需要 WRITE_USER_PASSWORD 权限。
+         * 
          * @summary 邮箱重置密码
          * @param {string} password 
          * @param {string} code 
@@ -8456,7 +8448,7 @@ export class UserApi extends BaseAPI {
     }
 
     /**
-     * 应用需要 CREATE_USER 权限。
+     * 
      * @summary 用户注册（通过邮箱验证码）
      * @param {string} username 
      * @param {string} password 
@@ -8496,7 +8488,7 @@ export class UserApi extends BaseAPI {
     }
 
     /**
-     * 应用需要 WRITE_USER_PASSWORD 权限。
+     * 
      * @summary 邮箱重置密码
      * @param {string} password 
      * @param {string} code 
