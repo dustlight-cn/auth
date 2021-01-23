@@ -11,6 +11,9 @@ export default {
     "3": "Other"
   },
   "error": "Error",
+  "create": "Create",
+  "search": "Search",
+  "noSearchResults": "No search results.",
   "update": "Update",
   "updateSuccess": "Update success",
   "cancel": "Cancel",
@@ -174,8 +177,15 @@ export default {
       "caption": "Please enter your account password and email verification code."
     }
   },
+  "Clients": {
+    "title": "Apps",
+    "subtitle": "Manage OAuth2 clients, including app name, details, and more.",
+    "yourClients": "Your apps",
+    "yourClientsDesc": "OAuth2 apps you created."
+  },
   "menus": {
     "home": "Home",
-    "account": "Account"
+    "account": "Account",
+    "clients": "Apps"
   }
 };
