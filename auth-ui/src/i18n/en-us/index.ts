@@ -181,7 +181,9 @@ export default {
     "title": "Apps",
     "subtitle": "Manage OAuth2 clients, including app name, details, and more.",
     "yourClients": "Your apps",
-    "yourClientsDesc": "OAuth2 apps you created."
+    "yourClientsDesc": "OAuth2 apps you created.",
+    "allClients": "All Clients",
+    "allClientsDesc": "Apps that you and other users created."
   },
   "menus": {
     "home": "Home",
