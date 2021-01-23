@@ -71,6 +71,10 @@ dustlight:
     verifier:
       string-equals:
         trim: true
+  storage:
+    tencent:
+      cos:
+        enabled: false
 
 logging:
   level:
