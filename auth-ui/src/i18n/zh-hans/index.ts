@@ -11,7 +11,7 @@ export default {
     "3": "其他"
   },
   "error": "错误",
-  "create":"创建",
+  "create": "创建",
   "search": "搜索",
   "noSearchResults": "没有搜索结果。",
   "update": "更新",
@@ -181,7 +181,9 @@ export default {
     "title": "应用",
     "subtitle": "管理 OAuth2 应用，包括应用名称、详情等。",
     "yourClients": "您的应用",
-    "yourClientsDesc": "您创建的应用。"
+    "yourClientsDesc": "您创建的应用。",
+    "allClients": "所有应用",
+    "allClientsDesc": "您和其他用户创建的应用。"
   },
   "menus": {
     "home": "首页",
