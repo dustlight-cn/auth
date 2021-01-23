@@ -51,7 +51,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .antMatchers(resources).and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, Constants.API_ROOT + "/users/*/avatar",
-                        Constants.API_ROOT + "/client/*/logo")
+                        Constants.API_ROOT + "/clients/*/logo")
                 .permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**")
                 .permitAll()
