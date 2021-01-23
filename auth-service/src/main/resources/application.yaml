@@ -74,7 +74,7 @@ dustlight:
   storage:
     tencent:
       cos:
-        enabled: false
+        enabled: true
 
 logging:
   level:
