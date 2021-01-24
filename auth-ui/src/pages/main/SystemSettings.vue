@@ -13,7 +13,8 @@
             </div>
           </q-item-section>
           <q-item-section side>
-            <q-btn :loading="loading.grantTypes" :disable="loading.grantTypes" dense color="accent" rounded icon="add"/>
+            <q-btn @click="createGrantType" :loading="loading.grantTypes" :disable="loading.grantTypes" dense
+                   color="accent" rounded icon="add"/>
           </q-item-section>
         </q-item>
         <q-list separator>
@@ -47,7 +48,7 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn rounded flat dense icon="delete"/>
+                <q-btn @click="()=>deleteGrantType(type)" rounded flat dense icon="delete"/>
               </q-item-section>
             </q-item>
           </transition>
@@ -310,12 +311,6 @@ export default {
           this.data.roles = res.data;
         }).finally(() => this.loading.roles = false)
     },
-    showSuccessMessage() {
-      this.$q.notify({
-        message: this.$t("updateSuccess"),
-        type: 'positive'
-      })
-    },
     updateGrantType(index, key, initValue) {
       this.$grantTypesApi.setGrantTypes([this.data.grantTypes[index]])
         .then((res) => this.showSuccessMessage())
@@ -343,6 +338,82 @@ export default {
         .catch(e => {
           this.data.roles[index][key] = initValue;
         })
+    },
+    createGrantType() {
+      this.showCreateDialog(this.$tt(this, "createGrantType"), this.$tt(this, "createGrantTypeMsg"),
+        (name) => {
+          this.loading.grantTypes = true;
+          return this.$grantTypesApi.setGrantTypes([{name: name, description: name}])
+            .then(() => {
+              this.loading.grantTypes = false;
+              this.loadGrantTypes();
+            })
+        }
+      );
+    },
+    deleteGrantType(type) {
+      this.showDeleteDialog(this.$tt(this, "deleteGrantType") + " '" + type.name + "'",
+        this.$tt(this, "deleteGrantTypeMsg"),
+        () => {
+          this.loading.grantTypes = true;
+          return this.$grantTypesApi.deleteGrantTypes([type.tid])
+            .then(() => {
+              this.loading.grantTypes = false;
+              this.loadGrantTypes();
+            })
+        })
+    },
+    showSuccessMessage() {
+      this.$q.notify({
+        message: this.$t("updateSuccess"),
+        type: 'positive'
+      })
+    },
+    showDeleteSuccessMessage() {
+      this.$q.notify({
+        message: this.$t("deleteSuccess"),
+        type: 'positive'
+      })
+    },
+    showCreateSuccessMessage() {
+      this.$q.notify({
+        message: this.$t("createSuccess"),
+        type: 'positive'
+      })
+    },
+    showCreateDialog(title, msg, todo) {
+      this.$q.dialog({
+        title: title,
+        message: msg,
+        cancel: true,
+        color: "accent",
+        prompt: {
+          model: '',
+          isValid: val => val && val.trim().length > 0,
+          type: 'text' // optional
+        },
+        ok: {
+          label: this.$t("create")
+        }
+      }).onOk((data) => {
+        if (todo != null)
+          todo(data.trim()).then(() => this.showCreateSuccessMessage());
+      })
+    },
+    showDeleteDialog(title, msg, todo) {
+      this.$q.dialog({
+        title: title,
+        icon: "delete",
+        message: msg,
+        cancel: true,
+        color: "negative",
+        ok: {
+          label: this.$t("delete")
+        }
+      }).onOk(() => {
+        if (todo != null)
+          todo().then(() => this.showDeleteSuccessMessage());
+      })
     }
   },
   watch: {
