@@ -71,7 +71,8 @@
             </div>
           </q-item-section>
           <q-item-section side>
-            <q-btn :loading="loading.scopes" :disable="loading.scopes" dense color="accent" rounded icon="add"/>
+            <q-btn @click="createScope" :loading="loading.scopes" :disable="loading.scopes" dense color="accent" rounded
+                   icon="add"/>
           </q-item-section>
         </q-item>
         <q-list separator>
@@ -114,7 +115,7 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn rounded flat dense icon="delete"/>
+                <q-btn @click="()=>deleteScope(scope)" rounded flat dense icon="delete"/>
               </q-item-section>
             </q-item>
           </transition>
@@ -137,7 +138,8 @@
             </div>
           </q-item-section>
           <q-item-section side>
-            <q-btn :loading="loading.authorities" :disable="loading.authorities" dense color="accent" rounded
+            <q-btn @click="createAuthority" :loading="loading.authorities" :disable="loading.authorities" dense
+                   color="accent" rounded
                    icon="add"/>
           </q-item-section>
         </q-item>
@@ -172,7 +174,7 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn rounded flat dense icon="delete"/>
+                <q-btn @click="()=>deleteAuthority(authority)" rounded flat dense icon="delete"/>
               </q-item-section>
             </q-item>
           </transition>
@@ -195,7 +197,7 @@
             </div>
           </q-item-section>
           <q-item-section side>
-            <q-btn :loading="loading.roles" :disable="loading.roles" dense color="accent" rounded
+            <q-btn @click="createRole" :loading="loading.roles" :disable="loading.roles" dense color="accent" rounded
                    icon="add"/>
           </q-item-section>
         </q-item>
@@ -233,7 +235,7 @@
                 <q-btn rounded flat dense icon="security"/>
               </q-item-section>
               <q-item-section side>
-                <q-btn rounded flat dense icon="delete"/>
+                <q-btn @click="()=>deleteRole(role)" rounded flat dense icon="delete"/>
               </q-item-section>
             </q-item>
           </transition>
@@ -343,7 +345,7 @@ export default {
       this.showCreateDialog(this.$tt(this, "createGrantType"), this.$tt(this, "createGrantTypeMsg"),
         (name) => {
           this.loading.grantTypes = true;
-          return this.$grantTypesApi.setGrantTypes([{name: name, description: name}])
+          return this.$grantTypesApi.setGrantTypes([{name: name, description: name + " description"}])
             .then(() => {
               this.loading.grantTypes = false;
               this.loadGrantTypes();
@@ -360,6 +362,88 @@ export default {
             .then(() => {
               this.loading.grantTypes = false;
               this.loadGrantTypes();
+            })
+        })
+    },
+    createScope() {
+      this.showCreateDialog(this.$tt(this, "createScope"), this.$tt(this, "createScopeMsg"),
+        (name) => {
+          this.loading.scopes = true;
+          return this.$scopesApi.setScopes([{
+            name: name,
+            subtitle: name + " subtitle",
+            description: name + " description"
+          }])
+            .then(() => {
+              this.loading.scopes = false;
+              this.loadScopes();
+            })
+        }
+      );
+    },
+    deleteScope(scope) {
+      this.showDeleteDialog(this.$tt(this, "deleteScope") + " '" + scope.name + "'",
+        this.$tt(this, "deleteScopeMsg"),
+        () => {
+          this.loading.scopes = true;
+          return this.$scopesApi.deleteScopes([scope.sid])
+            .then(() => {
+              this.loading.scopes = false;
+              this.loadScopes();
+            })
+        })
+    },
+    createAuthority() {
+      this.showCreateDialog(this.$tt(this, "createAuthority"), this.$tt(this, "createAuthorityMsg"),
+        (name) => {
+          this.loading.authorities = true;
+          return this.$authoritiesApi.setAuthorities([{
+            authorityName: name,
+            authorityDescription: name + " description"
+          }])
+            .then(() => {
+              this.loading.authorities = false;
+              this.loadAuthorities();
+            })
+        }
+      );
+    },
+    deleteAuthority(authority) {
+      this.showDeleteDialog(this.$tt(this, "deleteAuthority") + " '" + authority.authorityName + "'",
+        this.$tt(this, "deleteAuthorityMsg"),
+        () => {
+          this.loading.authorities = true;
+          return this.$authoritiesApi.deleteAuthorities([authority.aid])
+            .then(() => {
+              this.loading.authorities = false;
+              this.loadAuthorities();
+            })
+        })
+    },
+    createRole() {
+      this.showCreateDialog(this.$tt(this, "createRole"), this.$tt(this, "createRoleMsg"),
+        (name) => {
+          this.loading.roles = true;
+          return this.$rolesApi.setRoles([{
+            roleName: name,
+            roleDescription: name + " description"
+          }])
+            .then(() => {
+              this.loading.roles = false;
+              this.loadRoles();
+            })
+        }
+      );
+    },
+    deleteRole(role) {
+      this.showDeleteDialog(this.$tt(this, "deleteRole") + " '" + role.roleName + "'",
+        this.$tt(this, "deleteRoleMsg"),
+        () => {
+          this.loading.roles = true;
+          return this.$rolesApi.deleteRoles([role.rid])
+            .then(() => {
+              this.loading.roles = false;
+              this.loadRoles();
             })
         })
     },
