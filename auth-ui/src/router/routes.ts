@@ -7,7 +7,8 @@ const routes: RouteConfig[] = [
     children: [
       {path: '', name: "Index", component: () => import('pages/Index.vue')},
       {path: 'personal-info', name: "personal-info", component: () => import('pages/main/PersonalInfo.vue')},
-      {path: 'clients', name: "clients", component: () => import('pages/main/Clients.vue')}
+      {path: 'clients', name: "clients", component: () => import('pages/main/Clients.vue')},
+      {path: 'system-settings', name: "system-settings", component: () => import('pages/main/SystemSettings.vue')}
     ]
   },
   {

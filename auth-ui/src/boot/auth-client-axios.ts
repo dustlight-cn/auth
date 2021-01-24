@@ -6,6 +6,10 @@ import {
   UsersApi,
   AuthorizationApi,
   CodeApi,
+  GrantTypesApi,
+  AuthoritiesApi,
+  ScopesApi,
+  RolesApi,
   ClientsApi
 } from '@dustlight/auth-client-axios'
 import {BASE_PATH} from '@dustlight/auth-client-axios/base'
@@ -109,6 +113,10 @@ declare module 'vue/types/vue' {
     $authorizationAi: AuthorizationApi
     $codeApi: CodeApi;
     $clientApi: ClientsApi;
+    $grantTypesApi: GrantTypesApi;
+    $authoritiesApi: AuthoritiesApi;
+    $scopesApi: ScopesApi;
+    $rolesApi: RolesApi;
 
     $apiCfg: Configuration;
     $s: S;
@@ -158,5 +166,9 @@ export default boot(({Vue}) => {
   Vue.prototype.$authorizationAi = new AuthorizationApi(Vue.prototype.$apiCfg, path, withCredentials);
   Vue.prototype.$codeApi = new CodeApi(Vue.prototype.$apiCfg, path, withCredentials);
   Vue.prototype.$clientApi = new ClientsApi(Vue.prototype.$apiCfg);
+  Vue.prototype.$grantTypesApi = new GrantTypesApi(Vue.prototype.$apiCfg);
+  Vue.prototype.$authoritiesApi = new AuthoritiesApi(Vue.prototype.$apiCfg);
+  Vue.prototype.$scopesApi = new ScopesApi(Vue.prototype.$apiCfg);
+  Vue.prototype.$rolesApi = new RolesApi(Vue.prototype.$apiCfg);
 });
 

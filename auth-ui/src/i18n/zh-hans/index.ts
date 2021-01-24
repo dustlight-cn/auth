@@ -2,7 +2,7 @@
 // so you can safely delete all default props below
 
 export default {
-  "title": "账号",
+  "siteName": "账号",
   "gender": {
     "undefined": "null",
     "0": "未知",
@@ -12,11 +12,15 @@ export default {
   },
   "error": "错误",
   "create": "创建",
+  "noResults": "空空如也。",
   "search": "搜索",
   "noSearchResults": "没有搜索结果。",
   "update": "更新",
   "updateSuccess": "更新成功",
   "cancel": "取消",
+  "name": "名称",
+  "title": "标题",
+  "description": "描述",
   "Error404": {
     "notFound": "抱歉，这里空空如也。",
     "goBack": "返回"
@@ -185,9 +189,22 @@ export default {
     "allClients": "所有应用",
     "allClientsDesc": "您和其他用户创建的应用。"
   },
+  "SystemSettings": {
+    "title": "系统设置",
+    "subtitle": "管理角色、权限以及授权作用域等。",
+    "grantTypes": "授权模式",
+    "grantTypesDesc": "管理 OAuth2 授权模式。",
+    "scopes": "授权作用域",
+    "scopesDesc": "管理 OAuth2 授权作用域。",
+    "authorities": "权限",
+    "authoritiesDesc": "管理系统权限。",
+    "roles": "角色",
+    "rolesDesc": "管理角色以及角色的权限。",
+  },
   "menus": {
     "home": "首页",
     "account": "个人信息",
-    "clients": "应用"
+    "clients": "应用",
+    "systemSettings": "系统设置"
   }
 };
