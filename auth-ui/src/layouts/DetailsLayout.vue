@@ -5,7 +5,7 @@
       <q-toolbar>
         <Logo/>
         <q-toolbar-title>
-          <i18n path="title"/>
+          <i18n path="siteName"/>
         </q-toolbar-title>
         <language-selector/>
         <avatar-button/>

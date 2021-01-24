@@ -2,7 +2,7 @@
 // so you can safely delete all default props below
 
 export default {
-  "title": "Account",
+  "siteName": "Account",
   "gender": {
     "undefined": "null",
     "0": "Unknown",
@@ -12,11 +12,15 @@ export default {
   },
   "error": "Error",
   "create": "Create",
+  "noResults": "No results.",
   "search": "Search",
   "noSearchResults": "No search results.",
   "update": "Update",
   "updateSuccess": "Update success",
   "cancel": "Cancel",
+  "name": "Name",
+  "title": "Title",
+  "description": "Description",
   "Error404": {
     "notFound": "Oops. Nothing here...",
     "goBack": "Go Back"
@@ -185,9 +189,22 @@ export default {
     "allClients": "All Clients",
     "allClientsDesc": "Apps that you and other users created."
   },
+  "SystemSettings": {
+    "title": "System Settings",
+    "subtitle": "Manage roles, authorities, authorization scopes, and so on.",
+    "grantTypes": "Grant Types",
+    "grantTypesDesc": "Manage the OAuth2 authorization grant types.",
+    "scopes": "Authorization scopes",
+    "scopesDesc": "Manage the OAuth2 authorization scopes.",
+    "authorities": "Authorities",
+    "authoritiesDesc": "Management system authorities.",
+    "roles": "Roles",
+    "rolesDesc": "Manage roles and authorities for roles.",
+  },
   "menus": {
     "home": "Home",
     "account": "Account",
-    "clients": "Apps"
+    "clients": "Apps",
+    "systemSettings": "System Settings"
   }
 };

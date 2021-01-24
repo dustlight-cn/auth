@@ -1,6 +1,7 @@
 <template>
   <q-page padding>
     <require-authorization v-slot="{user,token}">
+      {{ "", user_ != user && (user_ == null || user == null || user_.uid != user.uid) ? user_ = user : null }}
       <!-- 个人应用 -->
       <q-card bordered flat class="q-pa-md q-mt-md">
         <q-item>
@@ -30,7 +31,6 @@
             </template>
           </q-input>
         </div>
-        {{ "", user_ != user && (user_ == null || user == null || user_.uid != user.uid) ? user_ = user : null }}
         <div>
           <q-list separator>
             <transition
