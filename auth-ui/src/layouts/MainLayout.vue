@@ -18,7 +18,8 @@
           enter-active-class="animated fadeIn"
           v-for="(menu,i) in this.$menus.main" :key="i"
         >
-          <q-route-tab :name="menu.title" :to="menu.link" :label="$t('menus.' + menu.title)"/>
+          <q-route-tab no-caps v-if="hasPermission(menu.getAuthorities())" :name="menu.title" :to="menu.link"
+                       :label="$t('menus.' + menu.title)"/>
         </transition>
       </q-tabs>
     </q-header>
@@ -31,7 +32,8 @@
           enter-active-class="animated fadeIn"
           v-for="(menu,i) in this.$menus.main" :key="i"
         >
-          <q-route-tab :name="menu.title" :to="menu.link" :label="$t('menus.' + menu.title)"
+          <q-route-tab no-caps v-if="hasPermission(menu.getAuthorities())" :name="menu.title" :to="menu.link"
+                       :label="$t('menus.' + menu.title)"
                        :icon="menu.icon"/>
         </transition>
       </q-tabs>
@@ -72,7 +74,8 @@ const c = {
     return {
       left: false,
       tab: "home",
-      context: null
+      context: null,
+      user: null
     }
   },
   methods: {
@@ -82,6 +85,21 @@ const c = {
       } else {
         this.context = null;
       }
+    },
+    hasPermission(authorities) {
+      if (authorities == null)
+        return true;
+      if (typeof authorities == "string")
+        return this.user && this.user.authorities && this.user.authorities.indexOf(authorities) >= 0;
+      if (authorities.length == 0)
+        return true;
+      if (this.user == null || !this.user.authorities == null || this.user.authorities.length == 0)
+        return false;
+      for (let key in authorities) {
+        if (this.user.authorities.indexOf(authorities[key]) >= 0)
+          return true;
+      }
+      return false;
     }
   },
   computed: {
@@ -94,6 +112,8 @@ const c = {
   },
   mounted() {
     this.updateTitle(this.$refs.page.$options);
+    this.user = this.$s.loadUser();
+    this.$s.onUserUpdate((u) => this.user = u);
   },
   watch: {
     '$route': {
