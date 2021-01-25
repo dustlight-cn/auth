@@ -247,7 +247,8 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn :disable="!hasGrantRolePermission" rounded flat dense icon="security"/>
+                <q-btn :disable="!hasGrantRolePermission" @click="()=>showGrantRoleDialog(role)" rounded flat dense
+                       icon="security"/>
               </q-item-section>
               <q-item-section side>
                 <q-btn :disable="!hasWriteRolePermission" @click="()=>deleteRole(role)" rounded flat dense
@@ -264,6 +265,53 @@
         </q-card-actions>
       </q-card>
 
+      <q-dialog style="max-width: 400px;" :value="selectedRole!=null" @input="(val)=>{if(!val)selectedRole=null}">
+        <q-card v-if="selectedRole!=null" class="full-width">
+          <q-card-section>
+            <div class="text-h6">{{ $tt($options, 'grantRole') }}</div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            <q-item>
+              <q-item-section avatar>
+                <q-icon name="person"/>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ selectedRole.roleName || "-" }}</q-item-label>
+                <q-item-label caption>{{ selectedRole.roleDescription || "-" }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-card-section>
+
+          <q-card-section>
+            <q-list separator v-if="!loading.roleAuthorities && data.roleAuthorities">
+              <transition
+                v-for="(authority,index) in data.authorities"
+                :key="authority.aid"
+                appear
+                enter-active-class="animated fadeIn"
+                leave-active-class="animated fadeOut"
+              >
+                <q-item :disable="loading.grantingRole" @click="()=>grantRole(authority)" clickable v-ripple>
+                  <q-item-section>
+                    <q-item-label>{{ authority.authorityName || '-' }}</q-item-label>
+                    <q-item-label caption>{{ authority.authorityDescription || '-' }}</q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-icon :name="(data.roleAuthorities.indexOf(authority.authorityName)>-1?'remove':'add')"/>
+                  </q-item-section>
+                </q-item>
+              </transition>
+            </q-list>
+            <q-inner-loading :showing="loading.roleAuthorities">
+              <q-spinner-gears size="50px" color="accent"/>
+            </q-inner-loading>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat :label="$t('done')" color="accent" v-close-popup/>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </require-authorization>
   </q-page>
 </template>
@@ -281,14 +329,18 @@ export default {
         grantTypes: null,
         scopes: null,
         authorities: null,
-        roles: null
+        roles: null,
+        roleAuthorities: null,
       },
       loading: {
         grantTypes: false,
         scopes: false,
         authorities: false,
-        roles: false
-      }
+        roles: false,
+        roleAuthorities: false,
+        grantingRole: false
+      },
+      selectedRole: null
     }
   },
   computed: {
@@ -487,6 +539,23 @@ export default {
             .finally(() => this.loading.roles = false)
         })
     },
+    grantRole(authority) {
+      if (this.loading.grantingRole)
+        return;
+      this.loading.grantingRole = true;
+      let index = this.data.roleAuthorities.indexOf(authority.authorityName);
+      let p = index >= 0 ?
+        this.$authoritiesApi.deleteRoleAuthorities(this.selectedRole.rid, [authority.aid]) :
+        this.$authoritiesApi.setRoleAuthorities(this.selectedRole.rid, [authority.aid]);
+      p.then(() => {
+        if (index >= 0) {
+          this.data.roleAuthorities.splice(index, 1);
+        } else {
+          this.data.roleAuthorities.push(authority.authorityName);
+        }
+      })
+        .finally(() => this.loading.grantingRole = false);
+    },
     showSuccessMessage() {
       this.$q.notify({
         message: this.$t("updateSuccess"),
@@ -538,6 +607,18 @@ export default {
         if (todo != null)
           todo().then(() => this.showDeleteSuccessMessage());
       })
+    },
+    showGrantRoleDialog(role) {
+      this.loading.roleAuthorities = true;
+      this.data.roleAuthorities = null;
+      this.selectedRole = role;
+      this.$authoritiesApi.getRoleAuthorities(role.rid)
+        .then(res => {
+          this.data.roleAuthorities = res.data;
+        })
+        .finally(() => {
+          this.loading.roleAuthorities = false
+        })
     },
     hasPermission(permission) {
       return this.user_ && this.user_.authorities && this.user_.authorities.indexOf(permission) >= 0;

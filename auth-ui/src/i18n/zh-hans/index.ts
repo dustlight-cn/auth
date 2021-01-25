@@ -11,6 +11,7 @@ export default {
     "3": "其他"
   },
   "error": "错误",
+  "done": "完成",
   "create": "创建",
   "createSuccess": "创建成功",
   "delete": "删除",
@@ -219,6 +220,7 @@ export default {
     "deleteRoleMsg": "是否确定要删除此角色？",
     "createRole": "创建角色",
     "createRoleMsg": "请输入角色名称。",
+    "grantRole": "角色授权"
   },
   "menus": {
     "home": "首页",

@@ -11,6 +11,7 @@ export default {
     "3": "Other"
   },
   "error": "Error",
+  "done": "Done",
   "create": "Create",
   "createSuccess": "Created successfully",
   "delete": "Delete",
@@ -219,6 +220,7 @@ export default {
     "deleteRoleMsg": "Are you sure to delete the role?",
     "createRole": "Create Role",
     "createRoleMsg": "Please enter the name of the role.",
+    "grantRole": "Grant Role"
   },
   "menus": {
     "home": "Home",
