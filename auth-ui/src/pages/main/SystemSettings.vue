@@ -13,7 +13,8 @@
             </div>
           </q-item-section>
           <q-item-section side>
-            <q-btn @click="createGrantType" :loading="loading.grantTypes" :disable="loading.grantTypes" dense
+            <q-btn @click="createGrantType" :loading="loading.grantTypes"
+                   :disable="loading.grantTypes || !hasWriteGrantTypePermission" dense
                    color="accent" rounded icon="add"/>
           </q-item-section>
         </q-item>
@@ -29,8 +30,9 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label>
-                  {{ type.name }}
-                  <q-popup-edit @save="(val,initVal)=>updateGrantType(index,'name',initVal)"
+                  {{ type.name || "-" }}
+                  <q-popup-edit v-if="hasWriteGrantTypePermission"
+                                @save="(val,initVal)=>updateGrantType(index,'name',initVal)"
                                 :title="$t('name')"
                                 color="accent" v-model="type.name"
                                 buttons>
@@ -38,8 +40,9 @@
                   </q-popup-edit>
                 </q-item-label>
                 <q-item-label caption>
-                  {{ type.description }}
-                  <q-popup-edit @save="(val,initVal)=>updateGrantType(index,'description',initVal)"
+                  {{ type.description || "-" }}
+                  <q-popup-edit v-if="hasWriteGrantTypePermission"
+                                @save="(val,initVal)=>updateGrantType(index,'description',initVal)"
                                 :title="$t('description')"
                                 color="accent" v-model="type.description"
                                 buttons>
@@ -48,7 +51,8 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn @click="()=>deleteGrantType(type)" rounded flat dense icon="delete"/>
+                <q-btn :disable="!hasWriteGrantTypePermission" @click="()=>deleteGrantType(type)" rounded flat dense
+                       icon="delete"/>
               </q-item-section>
             </q-item>
           </transition>
@@ -71,7 +75,8 @@
             </div>
           </q-item-section>
           <q-item-section side>
-            <q-btn @click="createScope" :loading="loading.scopes" :disable="loading.scopes" dense color="accent" rounded
+            <q-btn @click="createScope" :loading="loading.scopes" :disable="loading.scopes || !hasWriteScopePermission"
+                   dense color="accent" rounded
                    icon="add"/>
           </q-item-section>
         </q-item>
@@ -87,8 +92,8 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label overline>
-                  {{ scope.name }}
-                  <q-popup-edit @save="(val,initVal)=>updateScope(index,'name',initVal)"
+                  {{ scope.name || "-" }}
+                  <q-popup-edit v-if="hasWriteScopePermission" @save="(val,initVal)=>updateScope(index,'name',initVal)"
                                 :title="$t('name')"
                                 color="accent" v-model="scope.name"
                                 buttons>
@@ -96,8 +101,9 @@
                   </q-popup-edit>
                 </q-item-label>
                 <q-item-label>
-                  {{ scope.subtitle }}
-                  <q-popup-edit @save="(val,initVal)=>updateScope(index,'subtitle',initVal)"
+                  {{ scope.subtitle || "-" }}
+                  <q-popup-edit v-if="hasWriteScopePermission"
+                                @save="(val,initVal)=>updateScope(index,'subtitle',initVal)"
                                 :title="$t('title')"
                                 color="accent" v-model="scope.subtitle"
                                 buttons>
@@ -105,8 +111,9 @@
                   </q-popup-edit>
                 </q-item-label>
                 <q-item-label caption>
-                  {{ scope.description }}
-                  <q-popup-edit @save="(val,initVal)=>updateScope(index,'description',initVal)"
+                  {{ scope.description || "-" }}
+                  <q-popup-edit v-if="hasWriteScopePermission"
+                                @save="(val,initVal)=>updateScope(index,'description',initVal)"
                                 :title="$t('description')"
                                 color="accent" v-model="scope.description"
                                 buttons>
@@ -115,7 +122,8 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn @click="()=>deleteScope(scope)" rounded flat dense icon="delete"/>
+                <q-btn :disable="!hasWriteScopePermission" @click="()=>deleteScope(scope)" rounded flat dense
+                       icon="delete"/>
               </q-item-section>
             </q-item>
           </transition>
@@ -138,7 +146,8 @@
             </div>
           </q-item-section>
           <q-item-section side>
-            <q-btn @click="createAuthority" :loading="loading.authorities" :disable="loading.authorities" dense
+            <q-btn @click="createAuthority" :loading="loading.authorities"
+                   :disable="loading.authorities || !hasWriteAuthorityPermission" dense
                    color="accent" rounded
                    icon="add"/>
           </q-item-section>
@@ -155,8 +164,9 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label>
-                  {{ authority.authorityName }}
-                  <q-popup-edit @save="(val,initVal)=>updateAuthority(index,'authorityName',initVal)"
+                  {{ authority.authorityName || "-" }}
+                  <q-popup-edit v-if="hasWriteAuthorityPermission"
+                                @save="(val,initVal)=>updateAuthority(index,'authorityName',initVal)"
                                 :title="$t('name')"
                                 color="accent" v-model="authority.authorityName"
                                 buttons>
@@ -164,8 +174,9 @@
                   </q-popup-edit>
                 </q-item-label>
                 <q-item-label caption>
-                  {{ authority.authorityDescription }}
-                  <q-popup-edit @save="(val,initVal)=>updateAuthority(index,'authorityDescription',initVal)"
+                  {{ authority.authorityDescription || "-" }}
+                  <q-popup-edit v-if="hasWriteAuthorityPermission"
+                                @save="(val,initVal)=>updateAuthority(index,'authorityDescription',initVal)"
                                 :title="$t('description')"
                                 color="accent" v-model="authority.authorityDescription"
                                 buttons>
@@ -174,7 +185,8 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn @click="()=>deleteAuthority(authority)" rounded flat dense icon="delete"/>
+                <q-btn :disable="!hasWriteAuthorityPermission" @click="()=>deleteAuthority(authority)" rounded flat
+                       dense icon="delete"/>
               </q-item-section>
             </q-item>
           </transition>
@@ -197,7 +209,8 @@
             </div>
           </q-item-section>
           <q-item-section side>
-            <q-btn @click="createRole" :loading="loading.roles" :disable="loading.roles" dense color="accent" rounded
+            <q-btn @click="createRole" :loading="loading.roles" :disable="loading.roles || !hasWriteRolePermission"
+                   dense color="accent" rounded
                    icon="add"/>
           </q-item-section>
         </q-item>
@@ -213,8 +226,9 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label>
-                  {{ role.roleName }}
-                  <q-popup-edit @save="(val,initVal)=>updateRole(index,'roleName',initVal)"
+                  {{ role.roleName || "-" }}
+                  <q-popup-edit v-if="hasWriteRolePermission"
+                                @save="(val,initVal)=>updateRole(index,'roleName',initVal)"
                                 :title="$t('name')"
                                 color="accent" v-model="role.roleName"
                                 buttons>
@@ -222,8 +236,9 @@
                   </q-popup-edit>
                 </q-item-label>
                 <q-item-label caption>
-                  {{ role.roleDescription }}
-                  <q-popup-edit @save="(val,initVal)=>updateRole(index,'roleDescription',initVal)"
+                  {{ role.roleDescription || "-" }}
+                  <q-popup-edit v-if="hasWriteRolePermission"
+                                @save="(val,initVal)=>updateRole(index,'roleDescription',initVal)"
                                 :title="$t('description')"
                                 color="accent" v-model="role.roleDescription"
                                 buttons>
@@ -232,10 +247,11 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn rounded flat dense icon="security"/>
+                <q-btn :disable="!hasGrantRolePermission" rounded flat dense icon="security"/>
               </q-item-section>
               <q-item-section side>
-                <q-btn @click="()=>deleteRole(role)" rounded flat dense icon="delete"/>
+                <q-btn :disable="!hasWriteRolePermission" @click="()=>deleteRole(role)" rounded flat dense
+                       icon="delete"/>
               </q-item-section>
             </q-item>
           </transition>
@@ -275,7 +291,23 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    hasWriteAuthorityPermission() {
+      return this.hasPermission("WRITE_AUTHORITY");
+    },
+    hasWriteGrantTypePermission() {
+      return this.hasPermission("WRITE_TYPE");
+    },
+    hasWriteScopePermission() {
+      return this.hasPermission("WRITE_SCOPE");
+    },
+    hasWriteRolePermission() {
+      return this.hasPermission("WRITE_ROLE");
+    },
+    hasGrantRolePermission() {
+      return this.hasPermission("GRANT_ROLE");
+    }
+  },
   methods: {
     loadGrantTypes() {
       if (this.loading.grantTypes)
@@ -350,6 +382,7 @@ export default {
               this.loading.grantTypes = false;
               this.loadGrantTypes();
             })
+            .finally(() => this.loading.grantTypes = false)
         }
       );
     },
@@ -363,6 +396,7 @@ export default {
               this.loading.grantTypes = false;
               this.loadGrantTypes();
             })
+            .finally(() => this.loading.grantTypes = false)
         })
     },
     createScope() {
@@ -378,6 +412,7 @@ export default {
               this.loading.scopes = false;
               this.loadScopes();
             })
+            .finally(() => this.loading.scopes = false)
         }
       );
     },
@@ -391,6 +426,7 @@ export default {
               this.loading.scopes = false;
               this.loadScopes();
             })
+            .finally(() => this.loading.scopes = false)
         })
     },
     createAuthority() {
@@ -405,6 +441,7 @@ export default {
               this.loading.authorities = false;
               this.loadAuthorities();
             })
+            .finally(() => this.loading.authorities = false)
         }
       );
     },
@@ -418,6 +455,7 @@ export default {
               this.loading.authorities = false;
               this.loadAuthorities();
             })
+            .finally(() => this.loading.authorities = false)
         })
     },
     createRole() {
@@ -432,6 +470,7 @@ export default {
               this.loading.roles = false;
               this.loadRoles();
             })
+            .finally(() => this.loading.roles = false)
         }
       );
     },
@@ -445,6 +484,7 @@ export default {
               this.loading.roles = false;
               this.loadRoles();
             })
+            .finally(() => this.loading.roles = false)
         })
     },
     showSuccessMessage() {
@@ -498,6 +538,9 @@ export default {
         if (todo != null)
           todo().then(() => this.showDeleteSuccessMessage());
       })
+    },
+    hasPermission(permission) {
+      return this.user_ && this.user_.authorities && this.user_.authorities.indexOf(permission) >= 0;
     }
   },
   watch: {
