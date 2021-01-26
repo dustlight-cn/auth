@@ -96,7 +96,10 @@
                 <q-item-section>
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientLogo") }}</q-item-label>
                   <q-item-label>
-                    <client-logo :src="logo" :size="118" :client="client"/>
+                    <q-btn flat dense @click="changeLogo" v-if="hasWriteClientPermission">
+                      <client-logo :src="logo" :size="118" :client="client"/>
+                    </q-btn>
+                    <client-logo v-else :src="logo" :size="118" :client="client"/>
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side>
@@ -133,7 +136,7 @@
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientRedirectUri") }}</q-item-label>
                   <q-item-label>
                     <q-list>
-                      <q-item v-for="(uri,index) in client.redirectUri" :key="index">
+                      <q-item v-ripple clickable v-for="(uri,index) in client.redirectUri" :key="index">
                         <q-item-section avatar>
                           <q-icon name="link"/>
                         </q-item-section>
@@ -158,7 +161,7 @@
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientScopes") }}</q-item-label>
                   <q-item-label>
                     <q-list>
-                      <q-item class="" v-for="(scope,index) in client.scopes" :key="scope.sid">
+                      <q-item v-ripple clickable class="" v-for="(scope,index) in client.scopes" :key="scope.sid">
                         <q-item-section avatar>
                           <q-icon name="policy"/>
                         </q-item-section>
@@ -184,7 +187,7 @@
                 <q-item-section>
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientAuthorities") }}</q-item-label>
                   <q-item-label>
-                    <q-chip icon="security" :size="wide?'14px':'12px'" class=""
+                    <q-chip v-ripple clickable icon="security" :size="wide?'14px':'12px'" class=""
                             v-for="(authority,index) in client.authorities"
                             :key="authority.aid">
                       {{ authority }}
@@ -205,7 +208,7 @@
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientGrantTypes") }}</q-item-label>
                   <q-item-label>
                     <q-list>
-                      <q-item v-for="(type,index) in client.grantTypes" :key="index">
+                      <q-item v-ripple clickable v-for="(type,index) in client.grantTypes" :key="index">
                         <q-item-section avatar>
                           <q-icon name="electrical_services"/>
                         </q-item-section>
