@@ -63,7 +63,7 @@ export default {
       return this.context ? this.$tt(this.context, "title", true) : "";
     },
     subtitle() {
-      return this.context ? this.$tt(this.context, "subtitle", true) : "";
+      return this.context && this.context.showSubtitle ? this.$tt(this.context, "subtitle", true) : "";
     }
   },
   mounted() {

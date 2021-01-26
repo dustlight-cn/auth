@@ -115,9 +115,9 @@
             </q-list>
           </div>
         </q-page>
-        <q-page v-else class="flex flex-center text-center">
+        <q-page v-else class="text-center">
           <div class="q-pa-md">
-            <div style="font-size: 15vh">
+            <div style="font-size: 10vh">
               {{ error.details ? error.message : error.name }}
             </div>
             <div class="text-h4" style="opacity:.4">

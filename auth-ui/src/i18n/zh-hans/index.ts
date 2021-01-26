@@ -193,6 +193,21 @@ export default {
     "allClients": "所有应用",
     "allClientsDesc": "您和其他用户创建的应用。"
   },
+  "Client": {
+    "title": "应用详情",
+    "createdAt": "创建于",
+    "clientId": "应用 ID",
+    "clientSecret": "应用密钥",
+    "regenerateSecret": "重新生成",
+    "clientLogo": "应用图标",
+    "upload": "上传新图标",
+    "clientName": "应用名称",
+    "clientDescription": "应用描述",
+    "clientRedirectUri": "应用回调地址",
+    "clientScopes": "应用授权作用域",
+    "clientAuthorities": "应用权限",
+    "clientGrantTypes": "应用授权模式",
+  },
   "SystemSettings": {
     "title": "系统设置",
     "subtitle": "管理角色、权限以及授权作用域等。",

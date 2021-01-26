@@ -38,7 +38,7 @@
               appear
               enter-active-class="animated fadeIn"
               leave-active-class="animated fadeOut">
-              <q-item clickable v-ripple :to="{name:'client',params:{id:client.cid}}">
+              <q-item clickable v-ripple :to="{name:'client',params:{id:client.cid},query:{uid:user.uid}}">
                 <q-item-section avatar>
                   <client-logo :size="45" :client="client"/>
                 </q-item-section>
