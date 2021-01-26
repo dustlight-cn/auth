@@ -199,6 +199,7 @@ export default {
     "clientId": "应用 ID",
     "clientSecret": "应用密钥",
     "regenerateSecret": "重新生成",
+    "regenerateSecretMsg": "是否确定重新生成应用密钥？",
     "clientLogo": "应用图标",
     "upload": "上传新图标",
     "clientName": "应用名称",

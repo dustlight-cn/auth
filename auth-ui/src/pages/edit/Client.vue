@@ -2,11 +2,49 @@
   <require-authorization>
     <template v-slot="{user}">
       {{ "", user_ == null || user != null && user_.uid != user.uid ? user_ = user : "" }}
+      <q-file
+        style="width: 0px;height: 0px;"
+        ref="logoPicker"
+        @input="onLogoPicked"
+        accept="image/*"
+        hide-hint
+        hide-bottom-space
+        borderless
+      >
+      </q-file>
       <edit-page v-if="error == null">
         <template v-slot="{wide}">
+          <!-- 骨架 -->
           <div v-if="loading || !client">
-
+            <div class="q-mb-sm">
+              <div class="text-h4 q-mb-sm">
+                <q-skeleton type="text" width="40%"/>
+              </div>
+              <q-separator class="q-ma-none"/>
+              <q-item class="q-pa-none q-mt-sm">
+                <q-item-section avatar class="q-pa-none q-mr-md" style="min-width: 40px;">
+                  <q-skeleton type="QAvatar"/>
+                </q-item-section>
+                <q-item-section>
+                  <q-skeleton type="text" width="60%"/>
+                </q-item-section>
+              </q-item>
+            </div>
+            <q-separator class="q-ma-none"/>
+            <q-list class="q-mb-md">
+              <q-item class="q-pa-none q-mt-md" v-for="index in 8" :key="index">
+                <q-item-section>
+                  <q-item-label header class="q-pl-none">
+                    <q-skeleton type="text" width="32%"/>
+                  </q-item-label>
+                  <q-item-label>
+                    <q-skeleton type="text" width="52%"/>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
           </div>
+          <!-- 页面 -->
           <div v-else>
             <div class="q-mb-sm">
               <div class="text-h4 q-mb-sm">{{ client.name }}</div>
@@ -15,13 +53,16 @@
                 <q-item-section avatar class="q-pa-none" style="min-width: 40px;">
                   <avatar :size="36" :user="owner"/>
                 </q-item-section>
-                <q-item-section>
+                <q-item-section v-if="owner">
                   <q-item-label>
                     <q-btn :to="{name:'user',params:{id:owner.uid}}" no-caps dense color="accent" flat
                            :label="ownerName"/>
                     {{ $tt($options, "createdAt") }}
                     <span class="text-caption">{{ $util.dateFormat(client.createdAt) }}</span>
                   </q-item-label>
+                </q-item-section>
+                <q-item-section v-else>
+                  <q-skeleton type="text" width="60%"/>
                 </q-item-section>
               </q-item>
             </div>
@@ -31,7 +72,7 @@
               <q-item class="q-pa-none q-mt-md">
                 <q-item-section>
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientId") }}</q-item-label>
-                  <q-item-label><code class="code">{{ client.cid }}</code></q-item-label>
+                  <q-item-label class="code">{{ client.cid }}</q-item-label>
                 </q-item-section>
               </q-item>
 
@@ -39,10 +80,13 @@
               <q-item class="q-pa-none q-mt-md">
                 <q-item-section>
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientSecret") }}</q-item-label>
-                  <q-item-label><code class="code">{{ client.secret || "******" }}</code></q-item-label>
+                  <q-item-label class="code">{{ client.secret || "******" }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                  <q-btn dense size="12px" no-caps color="negative" :label="$tt($options,'regenerateSecret')"
+                  <q-btn v-if="hasWriteClientPermission" :disable="secretRegenerating" :loading="secretRegenerating"
+                         dense size="12px" no-caps
+                         color="negative" :label="$tt($options,'regenerateSecret')"
+                         @click="regenerateSecret"
                          icon="vpn_key"/>
                 </q-item-section>
               </q-item>
@@ -52,11 +96,14 @@
                 <q-item-section>
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientLogo") }}</q-item-label>
                   <q-item-label>
-                    <client-logo :size="118" :client="client"/>
+                    <client-logo :src="logo" :size="118" :client="client"/>
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                  <q-btn dense size="12px" no-caps :label="$tt($options,'upload')" icon="upload"/>
+                  <q-btn v-if="hasWriteClientPermission"
+                         :disable="logoUploading" :loading="logoUploading"
+                         @click="changeLogo" dense size="12px" no-caps
+                         :label="$tt($options,'upload')" icon="upload"/>
                 </q-item-section>
               </q-item>
 
@@ -64,7 +111,7 @@
               <q-item class="q-pa-none q-mt-md">
                 <q-item-section>
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientName") }}</q-item-label>
-                  <q-item-label class="code">
+                  <q-item-label class="content">
                     {{ client.name || "-" }}
                   </q-item-label>
                 </q-item-section>
@@ -74,7 +121,7 @@
               <q-item class="q-pa-none q-mt-md">
                 <q-item-section>
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientDescription") }}</q-item-label>
-                  <q-item-label class="code">
+                  <q-item-label class="content">
                     {{ client.description || "-" }}
                   </q-item-label>
                 </q-item-section>
@@ -101,7 +148,7 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side top>
-                  <q-btn dense round size="12px" no-caps icon="edit"/>
+                  <q-btn v-if="hasWriteClientPermission" dense round size="12px" no-caps icon="edit"/>
                 </q-item-section>
               </q-item>
 
@@ -128,7 +175,7 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side top>
-                  <q-btn dense round size="12px" no-caps icon="edit"/>
+                  <q-btn v-if="hasWriteClientPermission" dense round size="12px" no-caps icon="edit"/>
                 </q-item-section>
               </q-item>
 
@@ -148,10 +195,9 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side top>
-                  <q-btn dense round size="12px" no-caps icon="edit"/>
+                  <q-btn v-if="hasGrantClientPermission" dense round size="12px" no-caps icon="edit"/>
                 </q-item-section>
               </q-item>
-
 
               <!-- 应用授权模式, Client Grant Types -->
               <q-item class="q-pa-none q-mt-md">
@@ -174,10 +220,9 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side top>
-                  <q-btn dense round size="12px" no-caps icon="edit"/>
+                  <q-btn v-if="hasWriteClientPermission" dense round size="12px" no-caps icon="edit"/>
                 </q-item-section>
               </q-item>
-<!--              <pre class="code">{{ JSON.stringify(client, null, '  ') }}</pre>-->
             </q-list>
           </div>
         </template>
@@ -213,10 +258,17 @@ export default {
       client: null,
       loading: false,
       error: null,
-      owner: null
+      owner: null,
+      logo: null,
+      logoUploading: false,
+      reader: new FileReader(),
+      secretRegenerating: false
     }
   },
   methods: {
+    hasPermission(permission) {
+      return this.user_ && this.user_.authorities && this.user_.authorities.indexOf(permission) >= 0;
+    },
     loadClient() {
       if (this.loading)
         return;
@@ -235,6 +287,59 @@ export default {
         })
         .catch(e => this.error = e)
         .finally(() => this.loading = false)
+    },
+    showUpdateSuccessMessage() {
+      this.$q.notify({
+        message: this.$t("updateSuccess"),
+        type: 'positive'
+      })
+    },
+    changeLogo(p) {
+      if (this.logoUploading)
+        return;
+      this.$refs.logoPicker.pickFiles(p);
+    },
+    onLogoPicked(file) {
+      if (file == null || this.logoUploading)
+        return;
+      this.logoUploading = true;
+      (this.uid == null ?
+          this.$clientApi.updateClientLogo(this.clientId, file) :
+          this.$clientApi.updateUserClientLogo(this.uid, this.clientId, file)
+      ).then(res => {
+        this.reader.readAsDataURL(file);
+        let cb = (r) => this.logo = r;
+        this.reader.onload = function () {
+          cb(this.result)
+        }
+        this.showUpdateSuccessMessage();
+      }).finally(() => this.logoUploading = false)
+    },
+    regenerateSecret() {
+      if (this.secretRegenerating)
+        return;
+      this.$q.dialog({
+        title: this.$tt(this, "regenerateSecret"),
+        message: this.$tt(this, "regenerateSecretMsg"),
+        color: "negative",
+        ok: {},
+        cancel: {
+          flat: true
+        }
+      }).onOk(() => {
+        if (this.secretRegenerating)
+          return;
+        this.secretRegenerating = true;
+        (this.uid == null ?
+            this.$clientApi.updateClientSecret(this.clientId) :
+            this.$clientApi.updateUserClientSecret(this.uid, this.clientId)
+        )
+          .then(res => {
+            this.client.secret = res.data;
+            this.showUpdateSuccessMessage();
+          })
+          .finally(() => this.secretRegenerating = false)
+      })
     }
   },
   computed: {
@@ -245,6 +350,15 @@ export default {
       if (name == null || name.trim().length == 0)
         name = this.owner.username;
       return name;
+    },
+    isOwner() {
+      return this.owner && this.user_ && this.owner.uid && this.user_.uid && this.owner.uid == this.user_.uid;
+    },
+    hasWriteClientPermission() {
+      return this.isOwner || this.hasPermission("WRITE_CLIENT");
+    },
+    hasGrantClientPermission() {
+      return this.hasPermission("GRANT_CLIENT");
     }
   },
   watch: {
@@ -259,6 +373,12 @@ export default {
 <style scoped>
 .code {
   font-family: Consolas;
-  font-size: 18px !important;
+  font-size: 16px;
+  word-break: break-all;
+}
+
+.content {
+  font-family: Consolas;
+  font-size: 16px;
 }
 </style>

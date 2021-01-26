@@ -199,6 +199,7 @@ export default {
     "clientId": "Client ID",
     "clientSecret": "Client Secret",
     "regenerateSecret": "Regenerate",
+    "regenerateSecretMsg": "Are you sure to regenerate the client secret?",
     "clientLogo": "Application Logo",
     "upload": "Upload new logo",
     "clientName": "Application Name",
