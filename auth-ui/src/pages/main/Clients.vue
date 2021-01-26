@@ -23,7 +23,6 @@
             dense
             color="accent"
             :loading="myClients.query!=null"
-            :disable="myClients.query!=null"
             :placeholder="$t('search')"
           >
             <template v-slot:append>
@@ -86,7 +85,6 @@
             dense
             color="accent"
             :loading="allClients.query!=null"
-            :disable="allClients.query!=null"
             :placeholder="$t('search')"
           >
             <template v-slot:append>
@@ -174,8 +172,9 @@ export default {
       if (refresh) {
         this.myClients.page = 1;
       }
+      let k = this.myClients.keywords;
       this.myClients.query = this.$clientApi.getUserClients(uid,
-        this.myClients.keywords,
+        k,
         "",
         (this.myClients.page - 1) * this.myClients.limit,
         this.myClients.limit
@@ -184,7 +183,9 @@ export default {
         this.myClients.count = res.data.count
         return res
       }).finally(() => {
-        this.myClients.query = null
+        this.myClients.query = null;
+        if (k != this.myClients.keywords)
+          this.loadMyClients(uid, refresh);
       })
     },
     loadClients(refresh) {
@@ -193,6 +194,7 @@ export default {
       if (refresh) {
         this.allClients.page = 1;
       }
+      let k = this.allClients.keywords;
       this.allClients.query = this.$clientApi.getClients(
         this.allClients.keywords,
         "",
@@ -203,7 +205,9 @@ export default {
         this.allClients.count = res.data.count
         return res
       }).finally(() => {
-        this.allClients.query = null
+        this.allClients.query = null;
+        if (k != this.allClients.keywords)
+          this.loadClients(refresh);
       })
     }
   },
