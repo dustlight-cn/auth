@@ -1,8 +1,7 @@
 <template>
-  <q-page padding>
-    <!-- 宽窗口 -->
-    <div class="q-mt-lg q-mb-lg gt-xs" style="max-width: 599px;margin: 0 auto;">
-      <q-card v-if="user" class="q-pa-md shadow-0" bordered>
+  <edit-page>
+    <template v-slot="{wide}">
+      <div v-if="user">
         <q-form @submit="onsubmit">
           <q-card-section v-if="caption || title">
             <div v-if="title" class="text-h6">{{ title }}</div>
@@ -16,80 +15,38 @@
                    :label="$t('update')"/>
           </q-card-actions>
         </q-form>
-      </q-card>
+      </div>
       <require-authorization v-else v-slot="{user,token,loading}">
-        <q-card class="q-pa-md shadow-0" bordered>
-          <q-form @submit="onsubmit">
-            <q-card-section v-if="caption || title">
-              <div v-if="title" class="text-h6">{{ title }}</div>
-              <div v-if="caption" class="text-caption">{{ caption }}</div>
-            </q-card-section>
-            <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),token,loading,busy}"/>
-            <q-card-actions v-if="loading">
-              <q-space/>
-              <q-skeleton class="q-mr-md" type="QBtn"/>
-              <q-skeleton type="QBtn"/>
-            </q-card-actions>
-            <q-card-actions v-else>
-              <q-space/>
-              <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
-              <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
-                     :label="$t('update')"/>
-            </q-card-actions>
-          </q-form>
-        </q-card>
-      </require-authorization>
-    </div>
-
-    <!-- 窄窗口 -->
-    <div class="lt-sm">
-      <q-card v-if="user" class="q-pa-sm shadow-0">
         <q-form @submit="onsubmit">
           <q-card-section v-if="caption || title">
             <div v-if="title" class="text-h6">{{ title }}</div>
             <div v-if="caption" class="text-caption">{{ caption }}</div>
           </q-card-section>
-          <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),busy}"/>
-          <q-card-actions>
+          <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),token,loading,busy}"/>
+          <q-card-actions v-if="loading">
+            <q-space/>
+            <q-skeleton class="q-mr-md" type="QBtn"/>
+            <q-skeleton type="QBtn"/>
+          </q-card-actions>
+          <q-card-actions v-else>
             <q-space/>
             <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
             <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
                    :label="$t('update')"/>
           </q-card-actions>
         </q-form>
-      </q-card>
-      <require-authorization v-else v-slot="{user,token,loading}">
-        <q-card class="q-pa-sm shadow-0">
-          <q-form @submit="onsubmit">
-            <q-card-section v-if="caption || title">
-              <div v-if="title" class="text-h6">{{ title }}</div>
-              <div v-if="caption" class="text-caption">{{ caption }}</div>
-            </q-card-section>
-            <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),token,loading,busy}"/>
-            <q-card-actions v-if="loading">
-              <q-space/>
-              <q-skeleton class="q-mr-md" type="QBtn"/>
-              <q-skeleton type="QBtn"/>
-            </q-card-actions>
-            <q-card-actions v-else>
-              <q-space/>
-              <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
-              <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
-                     :label="$t('update')"/>
-            </q-card-actions>
-          </q-form>
-        </q-card>
       </require-authorization>
-    </div>
-  </q-page>
+    </template>
+  </edit-page>
 </template>
 
 <script>
 import RequireAuthorization from "./RequireAuthorization";
+import EditPage from "./EditPage";
 
 export default {
   name: "CommonTemplate",
-  components: {RequireAuthorization},
+  components: {EditPage, RequireAuthorization},
   props: {
     user: Object,
     title: String,
