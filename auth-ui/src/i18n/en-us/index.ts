@@ -193,6 +193,21 @@ export default {
     "allClients": "All Clients",
     "allClientsDesc": "Apps that you and other users created."
   },
+  "Client": {
+    "title": "App Details",
+    "createdAt": "created this app at",
+    "clientId": "Client ID",
+    "clientSecret": "Client Secret",
+    "regenerateSecret": "Regenerate",
+    "clientLogo": "Application Logo",
+    "upload": "Upload new logo",
+    "clientName": "Application Name",
+    "clientDescription": "Application Description",
+    "clientRedirectUri": "Application Callback URLs",
+    "clientScopes": "Application Authorization Scopes",
+    "clientAuthorities": "Application Authorities",
+    "clientGrantTypes": "Application Authorization Grant Types",
+  },
   "SystemSettings": {
     "title": "System Settings",
     "subtitle": "Manage roles, authorities, authorization scopes, and so on.",

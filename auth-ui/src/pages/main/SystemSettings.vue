@@ -26,7 +26,7 @@
             leave-active-class="animated fadeOut">
             <q-item>
               <q-item-section avatar>
-                <q-icon name="link"/>
+                <q-icon name="electrical_services"/>
               </q-item-section>
               <q-item-section>
                 <q-item-label>
@@ -88,7 +88,7 @@
             leave-active-class="animated fadeOut">
             <q-item>
               <q-item-section avatar>
-                <q-icon name="security"/>
+                <q-icon name="policy"/>
               </q-item-section>
               <q-item-section>
                 <q-item-label overline>

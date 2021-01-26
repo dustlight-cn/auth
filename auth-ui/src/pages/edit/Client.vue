@@ -1,13 +1,264 @@
 <template>
+  <require-authorization>
+    <template v-slot="{user}">
+      {{ "", user_ == null || user != null && user_.uid != user.uid ? user_ = user : "" }}
+      <edit-page v-if="error == null">
+        <template v-slot="{wide}">
+          <div v-if="loading || !client">
 
+          </div>
+          <div v-else>
+            <div class="q-mb-sm">
+              <div class="text-h4 q-mb-sm">{{ client.name }}</div>
+              <q-separator class="q-ma-none"/>
+              <q-item class="q-pa-none q-mt-sm">
+                <q-item-section avatar class="q-pa-none" style="min-width: 40px;">
+                  <avatar :size="36" :user="owner"/>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>
+                    <q-btn :to="{name:'user',params:{id:owner.uid}}" no-caps dense color="accent" flat
+                           :label="ownerName"/>
+                    {{ $tt($options, "createdAt") }}
+                    <span class="text-caption">{{ $util.dateFormat(client.createdAt) }}</span>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </div>
+            <q-separator/>
+            <q-list class="q-mb-md">
+              <!-- 应用 ID, Client ID-->
+              <q-item class="q-pa-none q-mt-md">
+                <q-item-section>
+                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientId") }}</q-item-label>
+                  <q-item-label><code class="code">{{ client.cid }}</code></q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <!-- 应用密钥, Client Secret -->
+              <q-item class="q-pa-none q-mt-md">
+                <q-item-section>
+                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientSecret") }}</q-item-label>
+                  <q-item-label><code class="code">{{ client.secret || "******" }}</code></q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn dense size="12px" no-caps color="negative" :label="$tt($options,'regenerateSecret')"
+                         icon="vpn_key"/>
+                </q-item-section>
+              </q-item>
+
+              <!-- 应用图标, Client Logo -->
+              <q-item class="q-pa-none q-mt-md">
+                <q-item-section>
+                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientLogo") }}</q-item-label>
+                  <q-item-label>
+                    <client-logo :size="118" :client="client"/>
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn dense size="12px" no-caps :label="$tt($options,'upload')" icon="upload"/>
+                </q-item-section>
+              </q-item>
+
+              <!-- 应用名称, Client Name -->
+              <q-item class="q-pa-none q-mt-md">
+                <q-item-section>
+                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientName") }}</q-item-label>
+                  <q-item-label class="code">
+                    {{ client.name || "-" }}
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <!-- 应用描述, Client Description -->
+              <q-item class="q-pa-none q-mt-md">
+                <q-item-section>
+                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientDescription") }}</q-item-label>
+                  <q-item-label class="code">
+                    {{ client.description || "-" }}
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <!-- 应用回调地址, Client Redirect Uri -->
+              <q-item class="q-pa-none q-mt-md">
+                <q-item-section>
+                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientRedirectUri") }}</q-item-label>
+                  <q-item-label>
+                    <q-list>
+                      <q-item v-for="(uri,index) in client.redirectUri" :key="index">
+                        <q-item-section avatar>
+                          <q-icon name="link"/>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label>{{ uri }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                    <div v-if="client.redirectUri == null || client.redirectUri.length == 0"
+                         class="text-center text-caption text-grey">{{ $t("noResults") }}
+                    </div>
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side top>
+                  <q-btn dense round size="12px" no-caps icon="edit"/>
+                </q-item-section>
+              </q-item>
+
+              <!-- 应用授权作用域, Client Scopes -->
+              <q-item class="q-pa-none q-mt-md">
+                <q-item-section>
+                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientScopes") }}</q-item-label>
+                  <q-item-label>
+                    <q-list>
+                      <q-item class="" v-for="(scope,index) in client.scopes" :key="scope.sid">
+                        <q-item-section avatar>
+                          <q-icon name="policy"/>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label overline>{{ scope.name }}</q-item-label>
+                          <q-item-label>{{ scope.subtitle }}</q-item-label>
+                          <q-item-label caption>{{ scope.description }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                    <div v-if="client.scopes == null || client.scopes.length == 0"
+                         class="text-center text-caption text-grey">{{ $t("noResults") }}
+                    </div>
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side top>
+                  <q-btn dense round size="12px" no-caps icon="edit"/>
+                </q-item-section>
+              </q-item>
+
+              <!-- 应用权限, Client Authorities -->
+              <q-item class="q-pa-none q-mt-md">
+                <q-item-section>
+                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientAuthorities") }}</q-item-label>
+                  <q-item-label>
+                    <q-chip icon="security" :size="wide?'14px':'12px'" class=""
+                            v-for="(authority,index) in client.authorities"
+                            :key="authority.aid">
+                      {{ authority }}
+                    </q-chip>
+                    <div v-if="client.authorities == null || client.authorities.length == 0"
+                         class="text-center text-caption text-grey">{{ $t("noResults") }}
+                    </div>
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side top>
+                  <q-btn dense round size="12px" no-caps icon="edit"/>
+                </q-item-section>
+              </q-item>
+
+
+              <!-- 应用授权模式, Client Grant Types -->
+              <q-item class="q-pa-none q-mt-md">
+                <q-item-section>
+                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientGrantTypes") }}</q-item-label>
+                  <q-item-label>
+                    <q-list>
+                      <q-item v-for="(type,index) in client.grantTypes" :key="index">
+                        <q-item-section avatar>
+                          <q-icon name="electrical_services"/>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label>{{ type }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                    <div v-if="client.grantTypes == null || client.grantTypes.length == 0"
+                         class="text-center text-caption text-grey">{{ $t("noResults") }}
+                    </div>
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side top>
+                  <q-btn dense round size="12px" no-caps icon="edit"/>
+                </q-item-section>
+              </q-item>
+<!--              <pre class="code">{{ JSON.stringify(client, null, '  ') }}</pre>-->
+            </q-list>
+          </div>
+        </template>
+      </edit-page>
+      <q-page v-else class="text-center">
+        <div class="q-pa-md">
+          <div style="font-size: 10vh">
+            {{ error.details ? error.message : error.name }}
+          </div>
+          <div class="text-h4" style="opacity:.4">
+            {{ error.details || error.message }}
+          </div>
+        </div>
+      </q-page>
+    </template>
+  </require-authorization>
 </template>
 
 <script>
+import EditPage from "../../components/EditPage";
+import Avatar from "../../components/Avatar";
+import RequireAuthorization from "../../components/RequireAuthorization";
+import ClientLogo from "../../components/ClientLogo";
+
 export default {
-  name: "Client"
+  name: "Client",
+  components: {ClientLogo, RequireAuthorization, Avatar, EditPage},
+  data() {
+    return {
+      user_: null,
+      uid: this.$route.query.uid,
+      clientId: this.$route.params.id,
+      client: null,
+      loading: false,
+      error: null,
+      owner: null
+    }
+  },
+  methods: {
+    loadClient() {
+      if (this.loading)
+        return;
+      this.loading = true;
+      (this.uid == null ?
+          this.$clientApi.getClient(this.clientId) :
+          this.$clientApi.getUserClient(this.uid, this.clientId)
+      )
+        .then((res) => {
+          this.client = res.data
+          let usr = this.user_;
+          if (usr && usr.uid == this.client.uid)
+            this.owner = usr;
+          else
+            this.$usersApi.getUser(this.client.uid).then((res) => this.owner = res.data);
+        })
+        .catch(e => this.error = e)
+        .finally(() => this.loading = false)
+    }
+  },
+  computed: {
+    ownerName() {
+      if (this.owner == null)
+        return null;
+      let name = this.owner.nickname;
+      if (name == null || name.trim().length == 0)
+        name = this.owner.username;
+      return name;
+    }
+  },
+  watch: {
+    user_() {
+      if (this.user_ && this.user_.uid)
+        this.loadClient();
+    }
+  }
 }
 </script>
 
 <style scoped>
-
+.code {
+  font-family: Consolas;
+  font-size: 18px !important;
+}
 </style>
