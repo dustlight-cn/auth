@@ -1,13 +1,15 @@
 <template>
   <div class="text-transform：uppercase">
-    <q-avatar rounded v-if="error || client != null && client.cid != null && client.logo == null" color="grey"
+    <q-avatar rounded v-if="error || client != null && client.cid != null && client.logo == null && src == null"
+              color="grey"
               text-color="white"
-              :size="(size?size:32) + 'px'">
+              :size="computedSize">
       {{ firstChar }}
     </q-avatar>
-    <q-avatar rounded v-else :size="(size?size:32) + 'px'">
-      <q-skeleton square type="QAvatar" :size="(size?size:32) + 'px'" v-if="isLoading()"/>
-      <q-img v-if="client && client.logo" :src="client.logo" @load="onLoad" @error="onError"/>
+    <q-avatar rounded v-else :size="computedSize">
+      <q-skeleton square type="QAvatar" :size="computedSize" v-if="isLoading()"/>
+      <q-img :width="computedSize" :height="computedSize" v-if="client && client.logo || src" :src="src || client.logo"
+             @load="onLoad" @error="onError"/>
     </q-avatar>
   </div>
 </template>
@@ -17,7 +19,8 @@ export default {
   name: 'ClientLogo',
   props: {
     size: Number | String,
-    client: Object
+    client: Object,
+    src: String
   },
   data() {
     return {
@@ -26,6 +29,9 @@ export default {
     }
   },
   computed: {
+    computedSize() {
+      return (this.size ? this.size : 32) + 'px'
+    },
     firstChar() {
       return this.client.name.toUpperCase()[0];
     }
@@ -39,6 +45,12 @@ export default {
     },
     onLoad() {
       this.loading = false;
+    }
+  },
+  watch: {
+    src() {
+      this.error = false
+      this.loading = true
     }
   },
   mounted() {
