@@ -226,6 +226,7 @@ export default {
     "home": "首页",
     "account": "个人信息",
     "clients": "应用",
+    "users": "用户管理",
     "systemSettings": "系统设置"
   }
 };

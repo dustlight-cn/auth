@@ -226,6 +226,7 @@ export default {
     "home": "Home",
     "account": "Account",
     "clients": "Apps",
+    "users": "Users",
     "systemSettings": "System Settings"
   }
 };
