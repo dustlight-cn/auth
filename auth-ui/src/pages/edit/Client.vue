@@ -1,291 +1,344 @@
 <template>
-  <require-authorization>
-    <template v-slot="{user}">
-      {{ "", user_ == null || user != null && user_.uid != user.uid ? user_ = user : "" }}
-      <q-file
-        style="width: 0px;height: 0px;"
-        ref="logoPicker"
-        @input="onLogoPicked"
-        accept="image/*"
-        hide-hint
-        hide-bottom-space
-        borderless
-      >
-      </q-file>
-      <edit-page v-if="error == null">
-        <template v-slot="{wide}">
-          <!-- 骨架 -->
-          <div v-if="loading || !client">
-            <div class="q-mb-sm">
-              <div class="text-h4 q-mb-sm">
-                <q-skeleton type="text" width="40%"/>
+  <div>
+    <require-authorization>
+      <template v-slot="{user}">
+        {{ "", user_ == null || user != null && user_.uid != user.uid ? user_ = user : "" }}
+        <q-file
+          style="width: 0px;height: 0px;"
+          ref="logoPicker"
+          @input="onLogoPicked"
+          accept="image/*"
+          hide-hint
+          hide-bottom-space
+          borderless
+        >
+        </q-file>
+        <edit-page v-if="error == null">
+          <template v-slot="{wide}">
+            <!-- 骨架 -->
+            <div v-if="loading || !client">
+              <div class="q-mb-sm">
+                <div class="text-h4 q-mb-sm">
+                  <q-skeleton type="text" width="40%"/>
+                </div>
+                <q-separator class="q-ma-none"/>
+                <q-item class="q-pa-none q-mt-sm">
+                  <q-item-section avatar class="q-pa-none q-mr-md" style="min-width: 40px;">
+                    <q-skeleton type="QAvatar"/>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-skeleton type="text" width="60%"/>
+                  </q-item-section>
+                </q-item>
               </div>
               <q-separator class="q-ma-none"/>
-              <q-item class="q-pa-none q-mt-sm">
-                <q-item-section avatar class="q-pa-none q-mr-md" style="min-width: 40px;">
-                  <q-skeleton type="QAvatar"/>
-                </q-item-section>
-                <q-item-section>
-                  <q-skeleton type="text" width="60%"/>
-                </q-item-section>
-              </q-item>
+              <q-list class="q-mb-md">
+                <q-item class="q-pa-none q-mt-md" v-for="index in 8" :key="index">
+                  <q-item-section>
+                    <q-item-label header class="q-pl-none">
+                      <q-skeleton type="text" width="32%"/>
+                    </q-item-label>
+                    <q-item-label>
+                      <q-skeleton type="text" width="52%"/>
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
             </div>
-            <q-separator class="q-ma-none"/>
-            <q-list class="q-mb-md">
-              <q-item class="q-pa-none q-mt-md" v-for="index in 8" :key="index">
-                <q-item-section>
-                  <q-item-label header class="q-pl-none">
-                    <q-skeleton type="text" width="32%"/>
-                  </q-item-label>
-                  <q-item-label>
-                    <q-skeleton type="text" width="52%"/>
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </div>
-          <!-- 页面 -->
-          <div v-else>
-            <div class="q-mb-sm">
-              <div class="text-h4 q-mb-sm">{{ client.name }}</div>
-              <q-separator class="q-ma-none"/>
-              <q-item class="q-pa-none q-mt-sm">
-                <q-item-section avatar class="q-pa-none" style="min-width: 40px;">
-                  <avatar :size="36" :user="owner"/>
-                </q-item-section>
-                <q-item-section v-if="owner">
-                  <q-item-label>
-                    <q-btn :to="{name:'user',params:{id:owner.uid}}" no-caps dense color="accent" flat
-                           :label="ownerName"/>
-                    {{ $tt($options, "createdAt") }}
-                    <span class="text-caption">{{ $util.dateFormat(client.createdAt) }}</span>
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section v-else>
-                  <q-skeleton type="text" width="60%"/>
-                </q-item-section>
-              </q-item>
+            <!-- 页面 -->
+            <div v-else>
+              <div class="q-mb-sm">
+                <div class="text-h4 q-mb-sm">{{ client.name }}</div>
+                <q-separator class="q-ma-none"/>
+                <q-item class="q-pa-none q-mt-sm">
+                  <q-item-section avatar class="q-pa-none" style="min-width: 40px;">
+                    <avatar :size="36" :user="owner"/>
+                  </q-item-section>
+                  <q-item-section v-if="owner">
+                    <q-item-label>
+                      <q-btn :to="{name:'user',params:{id:owner.uid}}" no-caps dense color="accent" flat
+                             :label="ownerName"/>
+                      {{ $tt($options, "createdAt") }}
+                      <span class="text-caption">{{ $util.dateFormat(client.createdAt) }}</span>
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section v-else>
+                    <q-skeleton type="text" width="60%"/>
+                  </q-item-section>
+                </q-item>
+              </div>
+              <q-separator/>
+              <q-list class="q-mb-md">
+                <!-- 应用 ID, Client ID-->
+                <q-item class="q-pa-none q-mt-md">
+                  <q-item-section>
+                    <q-item-label header class="q-pl-none">{{ $tt($options, "clientId") }}</q-item-label>
+                    <q-item-label class="code">{{ client.cid }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+
+                <!-- 应用密钥, Client Secret -->
+                <q-item class="q-pa-none q-mt-md">
+                  <q-item-section>
+                    <q-item-label header class="q-pl-none">{{ $tt($options, "clientSecret") }}</q-item-label>
+                    <q-item-label class="code">{{ client.secret || "******" }}</q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-btn v-if="hasWriteClientPermission" :disable="secretRegenerating" :loading="secretRegenerating"
+                           dense no-caps
+                           color="negative" :label="$tt($options,'regenerateSecret')"
+                           @click="regenerateSecret"
+                           icon="vpn_key"/>
+                  </q-item-section>
+                </q-item>
+
+                <!-- 应用图标, Client Logo -->
+                <q-item class="q-pa-none q-mt-md">
+                  <q-item-section>
+                    <q-item-label header class="q-pl-none">{{ $tt($options, "clientLogo") }}</q-item-label>
+                    <q-item-label>
+                      <q-btn flat dense @click="changeLogo" v-if="hasWriteClientPermission">
+                        <client-logo :src="logo" :size="118" :client="client"/>
+                      </q-btn>
+                      <client-logo v-else :src="logo" :size="118" :client="client"/>
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-btn v-if="hasWriteClientPermission"
+                           :disable="logoUploading" :loading="logoUploading"
+                           @click="changeLogo" dense no-caps
+                           :label="$tt($options,'upload')" icon="upload"/>
+                  </q-item-section>
+                </q-item>
+
+                <!-- 应用名称, Client Name -->
+                <q-item class="q-pa-none q-mt-md">
+                  <q-item-section>
+                    <q-item-label header class="q-pl-none">{{ $tt($options, "clientName") }}</q-item-label>
+                    <q-item-label v-if="edit.name==null" class="content">
+                      {{ client.name || "-" }}
+                    </q-item-label>
+                    <q-item-label class="text-right" v-else>
+                      <q-form @submit="updateName">
+                        <q-input :placeholder="$tt($options, 'clientName')"
+                                 :disable="updating.name"
+                                 :loading="updating.name"
+                                 dense filled
+                                 class="q-mb-sm"
+                                 maxlength="64"
+                                 :rules="rules.name"
+                                 color="accent"
+                                 v-model="edit.name"/>
+                        <q-btn :disable="updating.name" no-caps flat :label="$t('cancel')" color="accent"
+                               class="q-mr-sm"
+                               @click="()=>edit.name=null"/>
+                        <q-btn :loading="updating.name" type="submit" no-caps :label="$t('update')" color="accent"/>
+                      </q-form>
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section side top v-if="edit.name==null">
+                    <q-btn @click="updateName" v-if="hasWriteClientPermission" flat round size="12px" no-caps
+                           icon="edit"/>
+                  </q-item-section>
+                </q-item>
+
+                <!-- 应用描述, Client Description -->
+                <q-item class="q-pa-none q-mt-md">
+                  <q-item-section>
+                    <q-item-label header class="q-pl-none">{{ $tt($options, "clientDescription") }}</q-item-label>
+                    <q-item-label v-if="edit.description==null" class="content">
+                      {{ client.description || "-" }}
+                    </q-item-label>
+                    <q-item-label class="text-right" v-else>
+                      <q-form @submit="updateDescription">
+                        <q-input :placeholder="$tt($options, 'clientDescription')"
+                                 :disable="updating.description"
+                                 :loading="updating.description"
+                                 dense filled
+                                 class="q-mb-sm"
+                                 type="textarea"
+                                 maxlength="256"
+                                 :rules="rules.description"
+                                 color="accent"
+                                 v-model="edit.description"/>
+                        <q-btn :disable="updating.description" no-caps flat :label="$t('cancel')" color="accent"
+                               class="q-mr-sm"
+                               @click="()=>edit.description=null"/>
+                        <q-btn :loading="updating.description" type="submit" no-caps :label="$t('update')"
+                               color="accent"/>
+                      </q-form>
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section side top v-if="edit.description==null">
+                    <q-btn @click="updateDescription" v-if="hasWriteClientPermission" flat round size="12px" no-caps
+                           icon="edit"/>
+                  </q-item-section>
+                </q-item>
+
+                <!-- 应用回调地址, Client Redirect Uri -->
+                <q-item class="q-pa-none q-mt-md">
+                  <q-item-section>
+                    <q-item-label header class="q-pl-none">{{ $tt($options, "clientRedirectUri") }}</q-item-label>
+                    <q-item-label>
+                      <q-list>
+                        <q-item v-for="(uri,index) in client.redirectUri" :key="index">
+                          <q-item-section avatar>
+                            <q-icon name="link"/>
+                          </q-item-section>
+                          <q-item-section>
+                            <q-item-label style="word-break: break-all;">{{ uri }}</q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                      <div v-if="client.redirectUri == null || client.redirectUri.length == 0"
+                           class="text-center text-caption text-grey">{{ $t("noResults") }}
+                      </div>
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section side top>
+                    <q-btn @click="updateRedirectUri" v-if="hasWriteClientPermission" flat round size="12px" no-caps
+                           icon="edit"/>
+                  </q-item-section>
+                </q-item>
+
+                <!-- 应用授权作用域, Client Scopes -->
+                <q-item class="q-pa-none q-mt-md">
+                  <q-item-section>
+                    <q-item-label header class="q-pl-none">{{ $tt($options, "clientScopes") }}</q-item-label>
+                    <q-item-label>
+                      <q-list>
+                        <q-item class="" v-for="(scope,index) in client.scopes" :key="scope.sid">
+                          <q-item-section avatar>
+                            <q-icon name="policy"/>
+                          </q-item-section>
+                          <q-item-section>
+                            <q-item-label overline>{{ scope.name }}</q-item-label>
+                            <q-item-label>{{ scope.subtitle }}</q-item-label>
+                            <q-item-label caption>{{ scope.description }}</q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                      <div v-if="client.scopes == null || client.scopes.length == 0"
+                           class="text-center text-caption text-grey">{{ $t("noResults") }}
+                      </div>
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section side top>
+                    <q-btn v-if="hasWriteClientPermission" flat round size="12px" no-caps icon="edit"/>
+                  </q-item-section>
+                </q-item>
+
+                <!-- 应用权限, Client Authorities -->
+                <q-item class="q-pa-none q-mt-md">
+                  <q-item-section>
+                    <q-item-label header class="q-pl-none">{{ $tt($options, "clientAuthorities") }}</q-item-label>
+                    <q-item-label>
+                      <q-chip icon="security" :size="wide?'14px':'12px'" class=""
+                              v-for="(authority,index) in client.authorities"
+                              :key="authority.aid">
+                        {{ authority }}
+                      </q-chip>
+                      <div v-if="client.authorities == null || client.authorities.length == 0"
+                           class="text-center text-caption text-grey">{{ $t("noResults") }}
+                      </div>
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section side top>
+                    <q-btn v-if="hasGrantClientPermission" flat round size="12px" no-caps icon="edit"/>
+                  </q-item-section>
+                </q-item>
+
+                <!-- 应用授权模式, Client Grant Types -->
+                <q-item class="q-pa-none q-mt-md">
+                  <q-item-section>
+                    <q-item-label header class="q-pl-none">{{ $tt($options, "clientGrantTypes") }}</q-item-label>
+                    <q-item-label>
+                      <q-list>
+                        <q-item dense v-for="(type,index) in client.grantTypes" :key="index">
+                          <q-item-section avatar>
+                            <q-icon name="electrical_services"/>
+                          </q-item-section>
+                          <q-item-section>
+                            <q-item-label>{{ type }}</q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                      <div v-if="client.grantTypes == null || client.grantTypes.length == 0"
+                           class="text-center text-caption text-grey">{{ $t("noResults") }}
+                      </div>
+                    </q-item-label>
+                  </q-item-section>
+                  <q-item-section side top>
+                    <q-btn v-if="hasWriteClientPermission" flat round size="12px" no-caps icon="edit"/>
+                  </q-item-section>
+                </q-item>
+
+              </q-list>
             </div>
-            <q-separator/>
-            <q-list class="q-mb-md">
-              <!-- 应用 ID, Client ID-->
-              <q-item class="q-pa-none q-mt-md">
-                <q-item-section>
-                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientId") }}</q-item-label>
-                  <q-item-label class="code">{{ client.cid }}</q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <!-- 应用密钥, Client Secret -->
-              <q-item class="q-pa-none q-mt-md">
-                <q-item-section>
-                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientSecret") }}</q-item-label>
-                  <q-item-label class="code">{{ client.secret || "******" }}</q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn v-if="hasWriteClientPermission" :disable="secretRegenerating" :loading="secretRegenerating"
-                         dense no-caps
-                         color="negative" :label="$tt($options,'regenerateSecret')"
-                         @click="regenerateSecret"
-                         icon="vpn_key"/>
-                </q-item-section>
-              </q-item>
-
-              <!-- 应用图标, Client Logo -->
-              <q-item class="q-pa-none q-mt-md">
-                <q-item-section>
-                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientLogo") }}</q-item-label>
-                  <q-item-label>
-                    <q-btn flat dense @click="changeLogo" v-if="hasWriteClientPermission">
-                      <client-logo :src="logo" :size="118" :client="client"/>
-                    </q-btn>
-                    <client-logo v-else :src="logo" :size="118" :client="client"/>
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn v-if="hasWriteClientPermission"
-                         :disable="logoUploading" :loading="logoUploading"
-                         @click="changeLogo" dense no-caps
-                         :label="$tt($options,'upload')" icon="upload"/>
-                </q-item-section>
-              </q-item>
-
-              <!-- 应用名称, Client Name -->
-              <q-item class="q-pa-none q-mt-md">
-                <q-item-section>
-                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientName") }}</q-item-label>
-                  <q-item-label v-if="edit.name==null" class="content">
-                    {{ client.name || "-" }}
-                  </q-item-label>
-                  <q-item-label class="text-right" v-else>
-                    <q-form @submit="updateName">
-                      <q-input :placeholder="$tt($options, 'clientName')"
-                               :disable="updating.name"
-                               :loading="updating.name"
-                               dense filled
-                               class="q-mb-sm"
-                               maxlength="64"
-                               :rules="rules.name"
-                               color="accent"
-                               v-model="edit.name"/>
-                      <q-btn :disable="updating.name" no-caps flat :label="$t('cancel')" color="accent" class="q-mr-sm"
-                             @click="()=>edit.name=null"/>
-                      <q-btn :loading="updating.name" type="submit" no-caps :label="$t('update')" color="accent"
-                             icon="check"/>
-                    </q-form>
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side top v-if="edit.name==null">
-                  <q-btn @click="updateName" v-if="hasWriteClientPermission" flat round size="12px" no-caps
-                         icon="edit"/>
-                </q-item-section>
-              </q-item>
-
-              <!-- 应用描述, Client Description -->
-              <q-item class="q-pa-none q-mt-md">
-                <q-item-section>
-                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientDescription") }}</q-item-label>
-                  <q-item-label v-if="edit.description==null" class="content">
-                    {{ client.description || "-" }}
-                  </q-item-label>
-                  <q-item-label class="text-right" v-else>
-                    <q-form @submit="updateDescription">
-                      <q-input :placeholder="$tt($options, 'clientDescription')"
-                               :disable="updating.description"
-                               :loading="updating.description"
-                               dense filled
-                               class="q-mb-sm"
-                               type="textarea"
-                               maxlength="256"
-                               :rules="rules.description"
-                               color="accent"
-                               v-model="edit.description"/>
-                      <q-btn :disable="updating.description" no-caps flat :label="$t('cancel')" color="accent"
-                             class="q-mr-sm"
-                             @click="()=>edit.description=null"/>
-                      <q-btn :loading="updating.description" type="submit" no-caps :label="$t('update')" color="accent"
-                             icon="check"/>
-                    </q-form>
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side top v-if="edit.description==null">
-                  <q-btn @click="updateDescription" v-if="hasWriteClientPermission" flat round size="12px" no-caps
-                         icon="edit"/>
-                </q-item-section>
-              </q-item>
-
-              <!-- 应用回调地址, Client Redirect Uri -->
-              <q-item class="q-pa-none q-mt-md">
-                <q-item-section>
-                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientRedirectUri") }}</q-item-label>
-                  <q-item-label>
-                    <q-list>
-                      <q-item dense v-for="(uri,index) in client.redirectUri" :key="index">
-                        <q-item-section avatar>
-                          <q-icon name="link"/>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label>{{ uri }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                    <div v-if="client.redirectUri == null || client.redirectUri.length == 0"
-                         class="text-center text-caption text-grey">{{ $t("noResults") }}
-                    </div>
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side top>
-                  <q-btn v-if="hasWriteClientPermission" flat round size="12px" no-caps icon="edit"/>
-                </q-item-section>
-              </q-item>
-
-              <!-- 应用授权作用域, Client Scopes -->
-              <q-item class="q-pa-none q-mt-md">
-                <q-item-section>
-                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientScopes") }}</q-item-label>
-                  <q-item-label>
-                    <q-list>
-                      <q-item class="" v-for="(scope,index) in client.scopes" :key="scope.sid">
-                        <q-item-section avatar>
-                          <q-icon name="policy"/>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label overline>{{ scope.name }}</q-item-label>
-                          <q-item-label>{{ scope.subtitle }}</q-item-label>
-                          <q-item-label caption>{{ scope.description }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                    <div v-if="client.scopes == null || client.scopes.length == 0"
-                         class="text-center text-caption text-grey">{{ $t("noResults") }}
-                    </div>
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side top>
-                  <q-btn v-if="hasWriteClientPermission" flat round size="12px" no-caps icon="edit"/>
-                </q-item-section>
-              </q-item>
-
-              <!-- 应用权限, Client Authorities -->
-              <q-item class="q-pa-none q-mt-md">
-                <q-item-section>
-                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientAuthorities") }}</q-item-label>
-                  <q-item-label>
-                    <q-chip icon="security" :size="wide?'14px':'12px'" class=""
-                            v-for="(authority,index) in client.authorities"
-                            :key="authority.aid">
-                      {{ authority }}
-                    </q-chip>
-                    <div v-if="client.authorities == null || client.authorities.length == 0"
-                         class="text-center text-caption text-grey">{{ $t("noResults") }}
-                    </div>
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side top>
-                  <q-btn v-if="hasGrantClientPermission" flat round size="12px" no-caps icon="edit"/>
-                </q-item-section>
-              </q-item>
-
-              <!-- 应用授权模式, Client Grant Types -->
-              <q-item class="q-pa-none q-mt-md">
-                <q-item-section>
-                  <q-item-label header class="q-pl-none">{{ $tt($options, "clientGrantTypes") }}</q-item-label>
-                  <q-item-label>
-                    <q-list>
-                      <q-item dense v-for="(type,index) in client.grantTypes" :key="index">
-                        <q-item-section avatar>
-                          <q-icon name="electrical_services"/>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label>{{ type }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                    <div v-if="client.grantTypes == null || client.grantTypes.length == 0"
-                         class="text-center text-caption text-grey">{{ $t("noResults") }}
-                    </div>
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side top>
-                  <q-btn v-if="hasWriteClientPermission" flat round size="12px" no-caps icon="edit"/>
-                </q-item-section>
-              </q-item>
-            </q-list>
+          </template>
+        </edit-page>
+        <!-- 错误页面 -->
+        <q-page v-else class="text-center">
+          <div class="q-pa-md">
+            <div style="font-size: 10vh">
+              {{ error.details ? error.message : error.name }}
+            </div>
+            <div class="text-h4" style="opacity:.4">
+              {{ error.details || error.message }}
+            </div>
           </div>
-        </template>
-      </edit-page>
-      <q-page v-else class="text-center">
-        <div class="q-pa-md">
-          <div style="font-size: 10vh">
-            {{ error.details ? error.message : error.name }}
-          </div>
-          <div class="text-h4" style="opacity:.4">
-            {{ error.details || error.message }}
-          </div>
-        </div>
-      </q-page>
-    </template>
-  </require-authorization>
+        </q-page>
+      </template>
+    </require-authorization>
+    <!-- 回调地址 -->
+    <q-dialog style="max-width: 400px;" :value="edit.redirectUri != null"
+              @input="val=>{if(!val)edit.redirectUri=null}">
+      <q-card class="full-width">
+        <q-card-section>
+          <div class="text-h6">{{ $tt($options, 'clientRedirectUri') }}</div>
+        </q-card-section>
+        <q-card-section v-if="edit.redirectUri" class="q-pa-none">
+          <q-list separator>
+            <transition
+              v-for="(uri,index) in edit.redirectUri"
+              :key="index"
+              appear
+              enter-active-class="animated fadeIn"
+              leave-active-class="animated fadeOut"
+            >
+              <q-item>
+                <q-item-section>
+                  <q-item-label>
+                    <q-input color="accent" filled dense v-model="edit.redirectUri[index]">
+                      <template v-slot:prepend>
+                        <q-icon name="link"/>
+                      </template>
+                      <template v-slot:after>
+                        <q-btn @click="edit.redirectUri.splice(index,1)" round flat icon="remove"/>
+                      </template>
+                    </q-input>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </transition>
+            <div class="text-center">
+              <q-btn @click="edit.redirectUri.push('')" round flat icon="add"/>
+            </div>
+          </q-list>
+        </q-card-section>
+        <!--              <q-card-section style="height: 50px;">-->
+        <!--                <q-inner-loading :showing="loading.roleAuthorities">-->
+        <!--                  <q-spinner-gears size="50px" color="accent"/>-->
+        <!--                </q-inner-loading>-->
+        <!--              </q-card-section>-->
+        <q-card-actions align="right">
+          <q-btn flat :label="$t('cancel')" color="accent" :disable="updating.redirectUri" v-close-popup/>
+          <q-btn :label="$t('update')" color="accent" :loading="updating.redirectUri"
+                 @click="updateRedirectUri"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+  </div>
 </template>
 
 <script>
@@ -312,11 +365,13 @@ export default {
       secretRegenerating: false,
       edit: {
         name: null,
-        description: null
+        description: null,
+        redirectUri: null
       },
       updating: {
         name: false,
-        description: false
+        description: false,
+        redirectUri: false
       },
       rules: {
         name: [val => val && val.length <= 64 && (val = val.trim()).length > 0 || this.$tt(this, "clientNameRule")],
@@ -443,6 +498,42 @@ export default {
           this.showUpdateSuccessMessage();
         }).finally(() => {
           this.updating.description = false;
+        })
+      }
+    },
+    updateRedirectUri() {
+      if (this.edit.redirectUri == null) {
+        this.edit.redirectUri = [];
+        if (this.client.redirectUri)
+          this.client.redirectUri.forEach(uri => this.edit.redirectUri.push(uri));
+      } else {
+        if (this.updating.redirectUri)
+          return;
+        this.updating.redirectUri = true;
+        let r = "";
+        let set = new Set();
+        if (this.edit.redirectUri) {
+          this.edit.redirectUri.forEach(uri => {
+            if (uri == null || (uri = uri.trim()).length == 0)
+              return;
+            set.add(uri);
+          });
+          set.forEach((uri) => {
+            if (r.length > 0)
+              r += ",";
+            r += uri;
+          })
+        }
+        (this.uid == null ?
+            this.$clientApi.updateClientRedirectUri(this.clientId, r) :
+            this.$clientApi.updateUserClientRedirectUri(this.uid, this.clientId, r)
+        ).then(() => {
+          this.client.redirectUri = [];
+          set.forEach(uri => this.client.redirectUri.push(uri));
+          this.edit.redirectUri = null;
+          this.showUpdateSuccessMessage();
+        }).finally(() => {
+          this.updating.redirectUri = false;
         })
       }
     }
