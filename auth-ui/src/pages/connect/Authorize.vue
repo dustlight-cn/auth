@@ -186,10 +186,13 @@ export default {
         query.scope,
         query.state)
         .then(res => {
-          res.data.client.scopes.forEach(s => {
-            s.value = true;
-          })
+          if (res.data.client && res.data.client.scopes)
+            res.data.client.scopes.forEach(s => {
+              s.value = true;
+            })
           this.authorization = res.data;
+          if (this.authorization.approved)
+            window.location = res.data.redirect
         })
         .catch(e => this.error = e)
         .finally(() => this.loading = false)
