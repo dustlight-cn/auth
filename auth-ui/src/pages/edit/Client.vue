@@ -118,7 +118,7 @@
                     <q-item-label v-if="edit.name==null" class="content">
                       {{ client.name || "-" }}
                     </q-item-label>
-                    <q-item-label class="text-right" v-else>
+                    <q-item-label v-else class="text-right">
                       <q-form @submit="updateName">
                         <q-input :placeholder="$tt($options, 'clientName')"
                                  :disable="updating.name"
@@ -190,9 +190,7 @@
                           </q-item-section>
                         </q-item>
                       </q-list>
-                      <div v-if="client.redirectUri == null || client.redirectUri.length == 0"
-                           class="text-center text-caption text-grey">{{ $t("noResults") }}
-                      </div>
+                      <no-results v-if="client.redirectUri == null || client.redirectUri.length == 0"/>
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side top>
@@ -218,13 +216,12 @@
                           </q-item-section>
                         </q-item>
                       </q-list>
-                      <div v-if="client.scopes == null || client.scopes.length == 0"
-                           class="text-center text-caption text-grey">{{ $t("noResults") }}
-                      </div>
+                      <no-results v-if="client.scopes == null || client.scopes.length == 0"/>
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side top>
-                    <q-btn v-if="hasWriteClientPermission" flat round size="12px" no-caps icon="edit"/>
+                    <q-btn @click="updateScopes" v-if="hasWriteClientPermission" flat round size="12px" no-caps
+                           icon="edit"/>
                   </q-item-section>
                 </q-item>
 
@@ -238,9 +235,7 @@
                               :key="authority.aid">
                         {{ authority }}
                       </q-chip>
-                      <div v-if="client.authorities == null || client.authorities.length == 0"
-                           class="text-center text-caption text-grey">{{ $t("noResults") }}
-                      </div>
+                      <no-results v-if="client.authorities == null || client.authorities.length == 0"/>
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side top>
@@ -263,9 +258,7 @@
                           </q-item-section>
                         </q-item>
                       </q-list>
-                      <div v-if="client.grantTypes == null || client.grantTypes.length == 0"
-                           class="text-center text-caption text-grey">{{ $t("noResults") }}
-                      </div>
+                      <no-results v-if="client.grantTypes == null || client.grantTypes.length == 0"/>
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side top>
@@ -291,14 +284,15 @@
       </template>
     </require-authorization>
     <!-- 回调地址 -->
-    <q-dialog style="max-width: 400px;" :value="edit.redirectUri != null"
+    <q-dialog :persistent="updating.redirectUri" style="max-width: 400px;" :value="edit.redirectUri != null"
               @input="val=>{if(!val)edit.redirectUri=null}">
       <q-card class="full-width">
         <q-card-section>
           <div class="text-h6">{{ $tt($options, 'clientRedirectUri') }}</div>
         </q-card-section>
         <q-card-section v-if="edit.redirectUri" class="q-pa-none">
-          <q-list separator>
+          <q-list>
+            <no-results class="q-ma-sm" v-if="edit.redirectUri.length==0"/>
             <transition
               v-for="(uri,index) in edit.redirectUri"
               :key="index"
@@ -309,12 +303,14 @@
               <q-item>
                 <q-item-section>
                   <q-item-label>
-                    <q-input color="accent" filled dense v-model="edit.redirectUri[index]">
+                    <q-input :disable="updating.redirectUri" color="accent" filled dense
+                             v-model="edit.redirectUri[index]">
                       <template v-slot:prepend>
                         <q-icon name="link"/>
                       </template>
                       <template v-slot:after>
-                        <q-btn @click="edit.redirectUri.splice(index,1)" round flat icon="remove"/>
+                        <q-btn :disable="updating.redirectUri" @click="edit.redirectUri.splice(index,1)" round flat
+                               icon="remove"/>
                       </template>
                     </q-input>
                   </q-item-label>
@@ -322,19 +318,70 @@
               </q-item>
             </transition>
             <div class="text-center">
-              <q-btn @click="edit.redirectUri.push('')" round flat icon="add"/>
+              <q-btn :disable="updating.redirectUri" @click="edit.redirectUri.push('')" round flat icon="add"/>
             </div>
           </q-list>
         </q-card-section>
-        <!--              <q-card-section style="height: 50px;">-->
-        <!--                <q-inner-loading :showing="loading.roleAuthorities">-->
-        <!--                  <q-spinner-gears size="50px" color="accent"/>-->
-        <!--                </q-inner-loading>-->
-        <!--              </q-card-section>-->
         <q-card-actions align="right">
           <q-btn flat :label="$t('cancel')" color="accent" :disable="updating.redirectUri" v-close-popup/>
           <q-btn :label="$t('update')" color="accent" :loading="updating.redirectUri"
                  @click="updateRedirectUri"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <!-- 授权作用域 -->
+    <q-dialog :persistent="updating.scopes.length>0" style="max-width: 400px;" v-model="edit.scopes"
+              @input="val=>{if(!val)edit.redirectUri=null}">
+      <q-card class="full-width">
+        <q-card-section>
+          <div class="text-h6">{{ $tt($options, 'clientScopes') }}</div>
+        </q-card-section>
+        <q-card-section v-if="!scopesLoading" class="q-pa-none">
+          <q-list v-if="edit.scopes && scopes.length>0">
+            <transition
+              v-for="(scope,index) in scopes"
+              :key="scope.sid"
+              appear
+              enter-active-class="animated fadeIn"
+              leave-active-class="animated fadeOut"
+            >
+              <q-item clickable v-ripple>
+                <q-item-section avatar style="min-width: 0px;">
+                  <q-icon :color="getClientScopeIndex(scope.sid) > -1?'accent':''" name="policy"/>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label v-if="getClientScopeIndex(scope.sid) > -1" class="text-accent" overline>
+                    {{ scope.name }}
+                  </q-item-label>
+                  <q-item-label v-else overline>
+                    {{ scope.name }}
+                  </q-item-label>
+                  <q-item-label>
+                    {{ scope.subtitle }}
+                  </q-item-label>
+                  <q-item-label caption>
+                    {{ scope.description }}
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn
+                    :disable="updating.scopes.indexOf(scope.sid)>-1"
+                    :loading="updating.scopes.indexOf(scope.sid)>-1"
+                    @click="()=>addOrRemoveScope(scope)"
+                    flat round :icon="getClientScopeIndex(scope.sid) > -1?'remove':'add'"/>
+                </q-item-section>
+              </q-item>
+            </transition>
+          </q-list>
+          <no-results class="q-ma-sm" v-else/>
+        </q-card-section>
+        <q-card-section style="height: 50px;">
+          <q-inner-loading :showing="scopesLoading">
+            <q-spinner-gears size="50px" color="accent"/>
+          </q-inner-loading>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn :label="$t('done')" color="accent" :loading="updating.scopes.length>0" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -346,10 +393,11 @@ import EditPage from "../../components/EditPage";
 import Avatar from "../../components/Avatar";
 import RequireAuthorization from "../../components/RequireAuthorization";
 import ClientLogo from "../../components/ClientLogo";
+import NoResults from '../../components/NoResults'
 
 export default {
   name: "Client",
-  components: {ClientLogo, RequireAuthorization, Avatar, EditPage},
+  components: {ClientLogo, RequireAuthorization, Avatar, EditPage, NoResults},
   data() {
     return {
       user_: null,
@@ -366,17 +414,21 @@ export default {
       edit: {
         name: null,
         description: null,
-        redirectUri: null
+        redirectUri: null,
+        scopes: false
       },
       updating: {
         name: false,
         description: false,
-        redirectUri: false
+        redirectUri: false,
+        scopes: []
       },
       rules: {
         name: [val => val && val.length <= 64 && (val = val.trim()).length > 0 || this.$tt(this, "clientNameRule")],
         description: [val => val && val.length <= 256 && (val = val.trim()).length > 0 || this.$tt(this, "clientDescriptionRule")]
-      }
+      },
+      scopes: null,
+      scopesLoading: false
     }
   },
   methods: {
@@ -509,7 +561,6 @@ export default {
       } else {
         if (this.updating.redirectUri)
           return;
-        this.updating.redirectUri = true;
         let r = "";
         let set = new Set();
         if (this.edit.redirectUri) {
@@ -524,6 +575,21 @@ export default {
             r += uri;
           })
         }
+        let r_ = "";
+        if (this.client.redirectUri) { // 如果内容未更改，不进行更新。
+          this.client.redirectUri.forEach(uri => {
+            if (uri == null || (uri = uri.trim()).length == 0)
+              return;
+            if (r_.length > 0)
+              r_ += ",";
+            r_ += uri;
+          })
+        }
+        if (r == r_) {
+          this.edit.redirectUri = null;
+          return;
+        }
+        this.updating.redirectUri = true;
         (this.uid == null ?
             this.$clientApi.updateClientRedirectUri(this.clientId, r) :
             this.$clientApi.updateUserClientRedirectUri(this.uid, this.clientId, r)
@@ -536,6 +602,49 @@ export default {
           this.updating.redirectUri = false;
         })
       }
+    },
+    updateScopes() {
+      if (this.edit.scopes)
+        return;
+      this.edit.scopes = true;
+      if (this.scopes == null && !this.scopesLoading) {
+        this.scopesLoading = true;
+        this.$scopesApi.getScopes()
+          .then(res => this.scopes = res.data)
+          .finally(() => this.scopesLoading = false)
+      }
+    },
+    getClientScopeIndex(sid) {
+      if (this.client && this.client.scopes) {
+        for (let index in this.client.scopes)
+          if (this.client.scopes[index].sid == sid)
+            return index;
+        return -1;
+      }
+      return null;
+    },
+    addOrRemoveScope(scope) {
+      if (this.updating.scopes.indexOf(scope.sid) >= 0)
+        return;
+      let contains = this.getClientScopeIndex(scope.sid) > -1;
+      this.updating.scopes.push(scope.sid);
+      let p = null;
+      if (this.uid == null)
+        p = contains ?
+          this.$scopesApi.removeClientScopes(this.clientId, [scope.sid]) :
+          this.$scopesApi.addClientScopes(this.clientId, [scope.sid]);
+      else
+        p = contains ?
+          this.$scopesApi.removeUserClientScopes(this.uid, this.clientId, [scope.sid]) :
+          this.$scopesApi.addUserClientScopes(this.uid, this.clientId, [scope.sid]);
+      p.then(res => {
+        if (contains)
+          this.client.scopes.splice(this.getClientScopeIndex(scope.sid), 1);
+        else
+          this.client.scopes.push(scope);
+      }).finally(() => {
+        this.updating.scopes.splice(this.updating.scopes.indexOf(scope.sid), 1);
+      })
     }
   },
   computed: {
