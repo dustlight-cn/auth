@@ -559,7 +559,7 @@ export default {
         this.$authoritiesApi.setRoleAuthorities(this.selectedRole.rid, [authority.aid]);
       p.then(() => {
         if (index >= 0) {
-          this.data.roleAuthorities.splice(index, 1);
+          this.data.roleAuthorities.splice(this.data.roleAuthorities.indexOf(authority.authorityName), 1);
         } else {
           this.data.roleAuthorities.push(authority.authorityName);
         }
