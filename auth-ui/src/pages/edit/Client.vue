@@ -84,7 +84,7 @@
                 </q-item-section>
                 <q-item-section side>
                   <q-btn v-if="hasWriteClientPermission" :disable="secretRegenerating" :loading="secretRegenerating"
-                         dense size="12px" no-caps
+                         dense no-caps
                          color="negative" :label="$tt($options,'regenerateSecret')"
                          @click="regenerateSecret"
                          icon="vpn_key"/>
@@ -105,7 +105,7 @@
                 <q-item-section side>
                   <q-btn v-if="hasWriteClientPermission"
                          :disable="logoUploading" :loading="logoUploading"
-                         @click="changeLogo" dense size="12px" no-caps
+                         @click="changeLogo" dense no-caps
                          :label="$tt($options,'upload')" icon="upload"/>
                 </q-item-section>
               </q-item>
@@ -114,9 +114,30 @@
               <q-item class="q-pa-none q-mt-md">
                 <q-item-section>
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientName") }}</q-item-label>
-                  <q-item-label class="content">
+                  <q-item-label v-if="edit.name==null" class="content">
                     {{ client.name || "-" }}
                   </q-item-label>
+                  <q-item-label class="text-right" v-else>
+                    <q-form @submit="updateName">
+                      <q-input :placeholder="$tt($options, 'clientName')"
+                               :disable="updating.name"
+                               :loading="updating.name"
+                               dense filled
+                               class="q-mb-sm"
+                               maxlength="64"
+                               :rules="rules.name"
+                               color="accent"
+                               v-model="edit.name"/>
+                      <q-btn :disable="updating.name" no-caps flat :label="$t('cancel')" color="accent" class="q-mr-sm"
+                             @click="()=>edit.name=null"/>
+                      <q-btn :loading="updating.name" type="submit" no-caps :label="$t('update')" color="accent"
+                             icon="check"/>
+                    </q-form>
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side top v-if="edit.name==null">
+                  <q-btn @click="updateName" v-if="hasWriteClientPermission" flat round size="12px" no-caps
+                         icon="edit"/>
                 </q-item-section>
               </q-item>
 
@@ -124,9 +145,32 @@
               <q-item class="q-pa-none q-mt-md">
                 <q-item-section>
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientDescription") }}</q-item-label>
-                  <q-item-label class="content">
+                  <q-item-label v-if="edit.description==null" class="content">
                     {{ client.description || "-" }}
                   </q-item-label>
+                  <q-item-label class="text-right" v-else>
+                    <q-form @submit="updateDescription">
+                      <q-input :placeholder="$tt($options, 'clientDescription')"
+                               :disable="updating.description"
+                               :loading="updating.description"
+                               dense filled
+                               class="q-mb-sm"
+                               type="textarea"
+                               maxlength="256"
+                               :rules="rules.description"
+                               color="accent"
+                               v-model="edit.description"/>
+                      <q-btn :disable="updating.description" no-caps flat :label="$t('cancel')" color="accent"
+                             class="q-mr-sm"
+                             @click="()=>edit.description=null"/>
+                      <q-btn :loading="updating.description" type="submit" no-caps :label="$t('update')" color="accent"
+                             icon="check"/>
+                    </q-form>
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side top v-if="edit.description==null">
+                  <q-btn @click="updateDescription" v-if="hasWriteClientPermission" flat round size="12px" no-caps
+                         icon="edit"/>
                 </q-item-section>
               </q-item>
 
@@ -136,7 +180,7 @@
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientRedirectUri") }}</q-item-label>
                   <q-item-label>
                     <q-list>
-                      <q-item v-ripple clickable v-for="(uri,index) in client.redirectUri" :key="index">
+                      <q-item dense v-for="(uri,index) in client.redirectUri" :key="index">
                         <q-item-section avatar>
                           <q-icon name="link"/>
                         </q-item-section>
@@ -151,7 +195,7 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side top>
-                  <q-btn v-if="hasWriteClientPermission" dense round size="12px" no-caps icon="edit"/>
+                  <q-btn v-if="hasWriteClientPermission" flat round size="12px" no-caps icon="edit"/>
                 </q-item-section>
               </q-item>
 
@@ -161,7 +205,7 @@
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientScopes") }}</q-item-label>
                   <q-item-label>
                     <q-list>
-                      <q-item v-ripple clickable class="" v-for="(scope,index) in client.scopes" :key="scope.sid">
+                      <q-item class="" v-for="(scope,index) in client.scopes" :key="scope.sid">
                         <q-item-section avatar>
                           <q-icon name="policy"/>
                         </q-item-section>
@@ -178,7 +222,7 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side top>
-                  <q-btn v-if="hasWriteClientPermission" dense round size="12px" no-caps icon="edit"/>
+                  <q-btn v-if="hasWriteClientPermission" flat round size="12px" no-caps icon="edit"/>
                 </q-item-section>
               </q-item>
 
@@ -187,7 +231,7 @@
                 <q-item-section>
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientAuthorities") }}</q-item-label>
                   <q-item-label>
-                    <q-chip v-ripple clickable icon="security" :size="wide?'14px':'12px'" class=""
+                    <q-chip icon="security" :size="wide?'14px':'12px'" class=""
                             v-for="(authority,index) in client.authorities"
                             :key="authority.aid">
                       {{ authority }}
@@ -198,7 +242,7 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side top>
-                  <q-btn v-if="hasGrantClientPermission" dense round size="12px" no-caps icon="edit"/>
+                  <q-btn v-if="hasGrantClientPermission" flat round size="12px" no-caps icon="edit"/>
                 </q-item-section>
               </q-item>
 
@@ -208,7 +252,7 @@
                   <q-item-label header class="q-pl-none">{{ $tt($options, "clientGrantTypes") }}</q-item-label>
                   <q-item-label>
                     <q-list>
-                      <q-item v-ripple clickable v-for="(type,index) in client.grantTypes" :key="index">
+                      <q-item dense v-for="(type,index) in client.grantTypes" :key="index">
                         <q-item-section avatar>
                           <q-icon name="electrical_services"/>
                         </q-item-section>
@@ -223,7 +267,7 @@
                   </q-item-label>
                 </q-item-section>
                 <q-item-section side top>
-                  <q-btn v-if="hasWriteClientPermission" dense round size="12px" no-caps icon="edit"/>
+                  <q-btn v-if="hasWriteClientPermission" flat round size="12px" no-caps icon="edit"/>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -265,7 +309,19 @@ export default {
       logo: null,
       logoUploading: false,
       reader: new FileReader(),
-      secretRegenerating: false
+      secretRegenerating: false,
+      edit: {
+        name: null,
+        description: null
+      },
+      updating: {
+        name: false,
+        description: false
+      },
+      rules: {
+        name: [val => val && val.length <= 64 && (val = val.trim()).length > 0 || this.$tt(this, "clientNameRule")],
+        description: [val => val && val.length <= 256 && (val = val.trim()).length > 0 || this.$tt(this, "clientDescriptionRule")]
+      }
     }
   },
   methods: {
@@ -343,6 +399,52 @@ export default {
           })
           .finally(() => this.secretRegenerating = false)
       })
+    },
+    updateName() {
+      if (this.edit.name == null)
+        this.edit.name = this.client.name;
+      else {
+        if (this.updating.name)
+          return;
+        if (this.edit.name == this.client.name) {
+          this.edit.name = null;
+          return;
+        }
+        this.updating.name = true;
+        (this.uid == null ?
+            this.$clientApi.updateClientName(this.clientId, this.edit.name) :
+            this.$clientApi.updateUserClientName(this.uid, this.clientId, this.edit.name)
+        ).then(() => {
+          this.client.name = this.edit.name;
+          this.edit.name = null;
+          this.showUpdateSuccessMessage();
+        }).finally(() => {
+          this.updating.name = false;
+        })
+      }
+    },
+    updateDescription() {
+      if (this.edit.description == null)
+        this.edit.description = this.client.description;
+      else {
+        if (this.updating.description)
+          return;
+        if (this.edit.description == this.client.description) {
+          this.edit.description = null;
+          return;
+        }
+        this.updating.description = true;
+        (this.uid == null ?
+            this.$clientApi.updateClientDescription(this.clientId, this.edit.description) :
+            this.$clientApi.updateUserClientDescription(this.uid, this.clientId, this.edit.description)
+        ).then(() => {
+          this.client.description = this.edit.description;
+          this.edit.description = null;
+          this.showUpdateSuccessMessage();
+        }).finally(() => {
+          this.updating.description = false;
+        })
+      }
     }
   },
   computed: {

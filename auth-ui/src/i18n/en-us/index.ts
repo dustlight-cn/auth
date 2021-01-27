@@ -188,7 +188,7 @@ export default {
   "Clients": {
     "title": "Apps",
     "subtitle": "Manage OAuth2 clients, including app name, details, and more.",
-    "yourClients": "Your apps",
+    "yourClients": "Your Apps",
     "yourClientsDesc": "OAuth2 apps you created.",
     "allClients": "All Clients",
     "allClientsDesc": "Apps that you and other users created."
@@ -203,7 +203,9 @@ export default {
     "clientLogo": "Application Logo",
     "upload": "Upload new logo",
     "clientName": "Application Name",
+    "clientNameRule": "The app name cannot be empty and can be up to 64 characters long.",
     "clientDescription": "Application Description",
+    "clientDescriptionRule": "The app description must not be empty and can be up to 256 characters long.",
     "clientRedirectUri": "Application Callback URLs",
     "clientScopes": "Application Authorization Scopes",
     "clientAuthorities": "Application Authorities",
