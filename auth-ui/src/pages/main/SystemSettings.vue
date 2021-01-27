@@ -265,7 +265,8 @@
         </q-card-actions>
       </q-card>
 
-      <q-dialog style="max-width: 400px;" :value="selectedRole!=null" @input="(val)=>{if(!val)selectedRole=null}">
+      <q-dialog :persistent="loading.grantingRole.length>0" style="max-width: 400px;" :value="selectedRole!=null"
+                @input="(val)=>{if(!val)selectedRole=null}">
         <q-card v-if="selectedRole!=null" class="full-width">
           <q-card-section>
             <div class="text-h6">{{ $tt($options, 'grantRole') }}</div>
@@ -318,7 +319,7 @@
             </q-inner-loading>
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn flat :label="$t('done')" color="accent" v-close-popup/>
+            <q-btn flat :label="$t('done')" :loading="loading.grantingRole.length>0" color="accent" v-close-popup/>
           </q-card-actions>
         </q-card>
       </q-dialog>
