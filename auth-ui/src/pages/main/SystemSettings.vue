@@ -295,6 +295,10 @@
                 leave-active-class="animated fadeOut"
               >
                 <q-item clickable v-ripple>
+                  <q-item-section avatar style="min-width: 0px;">
+                    <q-icon :color="data.roleAuthorities.indexOf(authority.authorityName)>-1?'accent':''"
+                            name="security"/>
+                  </q-item-section>
                   <q-item-section>
                     <q-item-label v-if="data.roleAuthorities.indexOf(authority.authorityName)>-1" class="text-accent">
                       {{ authority.authorityName || '-' }}
@@ -319,7 +323,7 @@
             </q-inner-loading>
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn flat :label="$t('done')" :loading="loading.grantingRole.length>0" color="accent" v-close-popup/>
+            <q-btn :label="$t('done')" :loading="loading.grantingRole.length>0" color="accent" v-close-popup/>
           </q-card-actions>
         </q-card>
       </q-dialog>
