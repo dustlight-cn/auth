@@ -295,7 +295,10 @@
               >
                 <q-item clickable v-ripple>
                   <q-item-section>
-                    <q-item-label>{{ authority.authorityName || '-' }}</q-item-label>
+                    <q-item-label v-if="data.roleAuthorities.indexOf(authority.authorityName)>-1" class="text-accent">
+                      {{ authority.authorityName || '-' }}
+                    </q-item-label>
+                    <q-item-label v-else>{{ authority.authorityName || '-' }}</q-item-label>
                     <q-item-label caption>{{ authority.authorityDescription || '-' }}</q-item-label>
                   </q-item-section>
                   <q-item-section side>
