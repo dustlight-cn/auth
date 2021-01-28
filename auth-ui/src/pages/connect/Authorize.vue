@@ -66,7 +66,7 @@
                 <q-space/>
                 <q-item-section class="q-ma-md">
                   <q-btn class="full-width"
-                         :disable="canceling"
+                         :disable="canceling || !anyApproved"
                          :loading="authorization.approved || approving"
                          :label="$tt($options,'approve')"
                          type="submit"
@@ -172,6 +172,14 @@ export default {
     },
     approved() {
       return this.authorization ? this.authorization.approved : null;
+    },
+    anyApproved() {
+      if (this.client.scopes == null)
+        return false;
+      for (let index in this.client.scopes)
+        if (this.client.scopes[index].value)
+          return true;
+      return false;
     }
   },
   methods: {
