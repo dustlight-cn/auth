@@ -239,7 +239,8 @@
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side top>
-                    <q-btn v-if="hasGrantClientPermission" flat round size="12px" no-caps icon="edit"/>
+                    <q-btn @click="updateAuthorities" v-if="hasGrantClientPermission" flat round size="12px" no-caps
+                           icon="edit"/>
                   </q-item-section>
                 </q-item>
 
@@ -330,8 +331,7 @@
       </q-card>
     </q-dialog>
     <!-- 授权作用域 -->
-    <q-dialog :persistent="updating.scopes.length>0" style="max-width: 400px;" v-model="edit.scopes"
-              @input="val=>{if(!val)edit.redirectUri=null}">
+    <q-dialog :persistent="updating.scopes.length>0" style="max-width: 400px;" v-model="edit.scopes">
       <q-card class="full-width">
         <q-card-section>
           <div class="text-h6">{{ $tt($options, 'clientScopes') }}</div>
@@ -385,6 +385,62 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- 权限 -->
+    <q-dialog :persistent="updating.authorities.length>0" style="max-width: 400px;" v-model="edit.authorities">
+      <q-card class="full-width">
+        <q-card-section>
+          <div class="text-h6">{{ $tt($options, 'clientAuthorities') }}</div>
+        </q-card-section>
+        <q-card-section v-if="!authoritiesLoading" class="q-pa-none">
+          <q-list v-if="edit.authorities && authorities.length>0">
+            <transition
+              v-for="(authority,index) in authorities"
+              :key="authority.aid"
+              appear
+              enter-active-class="animated fadeIn"
+              leave-active-class="animated fadeOut"
+            >
+              <q-item clickable v-ripple>
+                <q-item-section avatar style="min-width: 0px;">
+                  <q-icon
+                    :color="client.authorities && client.authorities.indexOf(authority.authorityName) > -1?'accent':''"
+                    name="policy"/>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label v-if="client.authorities && client.authorities.indexOf(authority.authorityName) > -1"
+                                class="text-accent" overline>
+                    {{ authority.authorityName }}
+                  </q-item-label>
+                  <q-item-label v-else overline>
+                    {{ authority.authorityName }}
+                  </q-item-label>
+                  <q-item-label caption>
+                    {{ authority.authorityDescription }}
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn
+                    :disable="updating.authorities.indexOf(authority.aid)>-1"
+                    :loading="updating.scopes.indexOf(authority.aid)>-1"
+                    @click="()=>addOrRemoveAuthorities(authority)"
+                    flat round
+                    :icon="client.authorities && client.authorities.indexOf(authority.authorityName) > -1?'remove':'add'"/>
+                </q-item-section>
+              </q-item>
+            </transition>
+          </q-list>
+          <no-results class="q-ma-sm" v-else/>
+        </q-card-section>
+        <q-card-section style="height: 50px;">
+          <q-inner-loading :showing="authoritiesLoading">
+            <q-spinner-gears size="50px" color="accent"/>
+          </q-inner-loading>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn :label="$t('done')" color="accent" :loading="updating.authorities.length>0" v-close-popup/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -415,20 +471,24 @@ export default {
         name: null,
         description: null,
         redirectUri: null,
-        scopes: false
+        scopes: false,
+        authorities: false
       },
       updating: {
         name: false,
         description: false,
         redirectUri: false,
-        scopes: []
+        scopes: [],
+        authorities: []
       },
       rules: {
         name: [val => val && val.length <= 64 && (val = val.trim()).length > 0 || this.$tt(this, "clientNameRule")],
         description: [val => val && val.length <= 256 && (val = val.trim()).length > 0 || this.$tt(this, "clientDescriptionRule")]
       },
       scopes: null,
-      scopesLoading: false
+      scopesLoading: false,
+      authorities: null,
+      authoritiesLoading: false
     }
   },
   methods: {
@@ -645,7 +705,35 @@ export default {
       }).finally(() => {
         this.updating.scopes.splice(this.updating.scopes.indexOf(scope.sid), 1);
       })
-    }
+    },
+    updateAuthorities() {
+      if (this.edit.authorities)
+        return;
+      this.edit.authorities = true;
+      if (this.authorities == null && !this.authoritiesLoading) {
+        this.authoritiesLoading = true;
+        this.$authoritiesApi.getAuthorities()
+          .then(res => this.authorities = res.data)
+          .finally(() => this.authoritiesLoading = false)
+      }
+    },
+    addOrRemoveAuthorities(authority) {
+      if (this.updating.authorities.indexOf(authority.aid) >= 0)
+        return;
+      let contains = this.client.authorities && this.client.authorities.indexOf(authority.authorityName) > -1;
+      this.updating.authorities.push(authority.aid);
+      let p = contains ?
+        this.$authoritiesApi.deleteClientAuthorities(this.clientId, [authority.aid]) :
+        this.$authoritiesApi.setClientAuthorities(this.clientId, [authority.aid]);
+      p.then(res => {
+        if (contains)
+          this.client.authorities.splice(this.client.authorities.indexOf(authority.authorityName), 1);
+        else
+          this.client.authorities.push(authority.authorityName);
+      }).finally(() => {
+        this.updating.authorities.splice(this.updating.authorities.indexOf(authority.aid), 1);
+      })
+    },
   },
   computed: {
     ownerName() {
