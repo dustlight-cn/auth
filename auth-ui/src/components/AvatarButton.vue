@@ -14,12 +14,12 @@
           <q-list style="min-width: 150px;">
             <q-separator/>
             <q-item class="text-black" v-ripple clickable v-close-popup :to="{name:'personal-info'}">
-              <q-item-section>
+              <q-item-section class="text-center">
                 {{ $tt($options, "settings") }}
               </q-item-section>
             </q-item>
             <q-item @click="signOut" v-ripple clickable v-close-popup>
-              <q-item-section>
+              <q-item-section class="text-center">
                 {{ $tt($options, "signOut") }}
               </q-item-section>
             </q-item>
