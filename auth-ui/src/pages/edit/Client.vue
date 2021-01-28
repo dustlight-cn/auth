@@ -334,7 +334,12 @@
     <q-dialog :persistent="updating.scopes.length>0" style="max-width: 400px;" v-model="edit.scopes">
       <q-card class="full-width">
         <q-card-section>
-          <div class="text-h6">{{ $tt($options, 'clientScopes') }}</div>
+          <div class="row items-center no-wrap">
+            <div class="text-h6 col">{{ $tt($options, 'clientScopes') }}</div>
+            <div class="col-auto text-caption text-grey" v-if="scopes">
+              {{ (client && client.scopes ? client.scopes.length : 0) + " / " + scopes.length }}
+            </div>
+          </div>
         </q-card-section>
         <q-card-section v-if="!scopesLoading" class="q-pa-none">
           <q-list v-if="edit.scopes && scopes.length>0">
@@ -389,7 +394,12 @@
     <q-dialog :persistent="updating.authorities.length>0" style="max-width: 400px;" v-model="edit.authorities">
       <q-card class="full-width">
         <q-card-section>
-          <div class="text-h6">{{ $tt($options, 'clientAuthorities') }}</div>
+          <div class="row items-center no-wrap">
+            <div class="text-h6 col">{{ $tt($options, 'clientAuthorities') }}</div>
+            <div class="col-auto text-caption text-grey" v-if="authorities">
+              {{ (client && client.authorities ? client.authorities.length : 0) + " / " + authorities.length }}
+            </div>
+          </div>
         </q-card-section>
         <q-card-section v-if="!authoritiesLoading" class="q-pa-none">
           <q-list v-if="edit.authorities && authorities.length>0">
@@ -408,10 +418,10 @@
                 </q-item-section>
                 <q-item-section>
                   <q-item-label v-if="client.authorities && client.authorities.indexOf(authority.authorityName) > -1"
-                                class="text-accent" overline>
+                                class="text-accent">
                     {{ authority.authorityName }}
                   </q-item-label>
-                  <q-item-label v-else overline>
+                  <q-item-label v-else>
                     {{ authority.authorityName }}
                   </q-item-label>
                   <q-item-label caption>
@@ -421,7 +431,7 @@
                 <q-item-section side>
                   <q-btn
                     :disable="updating.authorities.indexOf(authority.aid)>-1"
-                    :loading="updating.scopes.indexOf(authority.aid)>-1"
+                    :loading="updating.authorities.indexOf(authority.aid)>-1"
                     @click="()=>addOrRemoveAuthorities(authority)"
                     flat round
                     :icon="client.authorities && client.authorities.indexOf(authority.authorityName) > -1?'remove':'add'"/>
