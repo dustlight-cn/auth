@@ -210,6 +210,10 @@ export default {
     "clientScopes": "Application Authorization Scopes",
     "clientAuthorities": "Application Authorities",
     "clientGrantTypes": "Application Authorization Grant Types",
+    "deleteClient": "Delete",
+    "deleteClientTitle": "Delete Application",
+    "deleteClientMsg": "Are you sure to delete this app?",
+    "deleted": "Application Deleted"
   },
   "SystemSettings": {
     "title": "System Settings",

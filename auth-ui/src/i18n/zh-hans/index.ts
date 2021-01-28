@@ -210,6 +210,10 @@ export default {
     "clientScopes": "应用授权作用域",
     "clientAuthorities": "应用权限",
     "clientGrantTypes": "应用授权模式",
+    "deleteClient": "删除",
+    "deleteClientTitle": "删除应用",
+    "deleteClientMsg": "是否确定删除此应用？",
+    "deleted": "应用已删除"
   },
   "SystemSettings": {
     "title": "系统设置",
