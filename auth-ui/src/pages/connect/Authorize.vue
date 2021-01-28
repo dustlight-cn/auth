@@ -20,7 +20,67 @@
               </div>
             </div>
           </div>
-          <q-skeleton height="200px" v-if="loading || userLoading"/>
+          <!-- 详情骨架 -->
+          <div v-if="(loading || userLoading)">
+            <q-list class="q-ma-sm" bordered>
+              <q-item>
+                <q-item-section avatar>
+                  <q-skeleton type="QAvatar" size="36"/>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>
+                    <q-skeleton type="text" width="20%"/>
+                  </q-item-label>
+                  <q-item-label caption>
+                    <q-skeleton type="text" width="40%"/>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item dense v-for="index in 2" :key="index" tag="label" v-ripple>
+                <q-item-section class="q-pb-sm">
+                  <q-item-label overline>
+                    <q-skeleton type="text" width="30%"/>
+                  </q-item-label>
+                  <q-item-label class="q-pl-sm" caption>
+                    <q-skeleton type="rect" width="60%"/>
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side top>
+                  <q-skeleton type="QToggle" size="26px"/>
+                </q-item-section>
+              </q-item>
+              <q-separator/>
+              <q-item class="q-pt-lg">
+                <q-item-section class="q-ma-md">
+                  <q-skeleton type="QButton" class="full-width"/>
+                </q-item-section>
+                <q-space/>
+                <q-item-section class="q-ma-md">
+                  <q-skeleton type="QButton" class="full-width"/>
+                </q-item-section>
+              </q-item>
+              <div class="q-pb-md">
+                <q-skeleton style="left: 30%;" type="text" width="40%"/>
+                <div>
+                  <q-skeleton style="left: 20%;" type="text" width="60%"/>
+                </div>
+              </div>
+            </q-list>
+
+            <q-list class="q-ma-sm q-mt-lg" bordered>
+              <q-item v-for="index in 3" :key="index">
+                <q-item-section>
+                  <q-item-label overline>
+                    <q-skeleton type="text" width="22%"/>
+                  </q-item-label>
+                  <q-item-label caption>
+                    <q-skeleton type="rect" width="40%"/>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
+          <!-- 详情 -->
           <div v-else>
             <q-list class="q-ma-sm" bordered>
               <q-item>
