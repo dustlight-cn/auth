@@ -306,6 +306,7 @@
                 <q-item-section>
                   <q-item-label>
                     <q-input :disable="updating.redirectUri" color="accent" filled dense
+                             placeholder="URI"
                              v-model="edit.redirectUri[index]">
                       <template v-slot:prepend>
                         <q-icon name="link"/>
@@ -319,9 +320,26 @@
                 </q-item-section>
               </q-item>
             </transition>
-            <div class="text-center">
-              <q-btn :disable="updating.redirectUri" @click="edit.redirectUri.push('')" round flat icon="add"/>
-            </div>
+            <q-item>
+              <q-item-section>
+                <q-item-label>
+                  <q-form>
+                    <q-input
+                      v-model="edit.newRedirectUri" placeholder="URI" color="accent" filled dense>
+                      <template v-slot:prepend>
+                        <q-icon name="link"/>
+                      </template>
+                      <template v-slot:after>
+                        <q-btn type="submit" :disable="updating.redirectUri || edit.newRedirectUri.trim().length==0"
+                               @click="()=>{edit.redirectUri.push(edit.newRedirectUri);edit.newRedirectUri=''}" round
+                               flat
+                               icon="add"/>
+                      </template>
+                    </q-input>
+                  </q-form>
+                </q-item-label>
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-card-section>
         <q-card-actions align="right">
@@ -545,7 +563,8 @@ export default {
         redirectUri: null,
         scopes: false,
         authorities: false,
-        grantTypes: false
+        grantTypes: false,
+        newRedirectUri: ""
       },
       updating: {
         name: false,
