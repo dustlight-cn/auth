@@ -263,7 +263,8 @@
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side top>
-                    <q-btn v-if="hasWriteClientPermission" flat round size="12px" no-caps icon="edit"/>
+                    <q-btn @click="updateGrantTypes" v-if="hasWriteClientPermission" flat round size="12px" no-caps
+                           icon="edit"/>
                   </q-item-section>
                 </q-item>
 
@@ -451,6 +452,67 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- 授权模式 -->
+    <q-dialog :persistent="updating.grantTypes.length>0" style="max-width: 400px;" v-model="edit.grantTypes">
+      <q-card class="full-width">
+        <q-card-section>
+          <div class="row items-center no-wrap">
+            <div class="text-h6 col">{{ $tt($options, 'clientGrantTypes') }}</div>
+            <div class="col-auto text-caption text-grey" v-if="grantTypes">
+              {{ (client && client.grantTypes ? client.grantTypes.length : 0) + " / " + grantTypes.length }}
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section v-if="!grantTypesLoading" class="q-pa-none">
+          <q-list v-if="edit.grantTypes && grantTypes.length>0">
+            <transition
+              v-for="(type,index) in grantTypes"
+              :key="type.tid"
+              appear
+              enter-active-class="animated fadeIn"
+              leave-active-class="animated fadeOut"
+            >
+              <q-item clickable v-ripple>
+                <q-item-section avatar style="min-width: 0px;">
+                  <q-icon
+                    :color="client.grantTypes && client.grantTypes.indexOf(type.name) > -1?'accent':''"
+                    name="electrical_services"/>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label v-if="client.grantTypes && client.grantTypes.indexOf(type.name) > -1"
+                                class="text-accent">
+                    {{ type.name }}
+                  </q-item-label>
+                  <q-item-label v-else>
+                    {{ type.name }}
+                  </q-item-label>
+                  <q-item-label caption>
+                    {{ type.description }}
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn
+                    :disable="updating.grantTypes.indexOf(type.tid)>-1"
+                    :loading="updating.grantTypes.indexOf(type.tid)>-1"
+                    @click="()=>addOrRemoveGrantType(type)"
+                    flat round
+                    :icon="client.grantTypes && client.grantTypes.indexOf(type.name) > -1?'remove':'add'"/>
+                </q-item-section>
+              </q-item>
+            </transition>
+          </q-list>
+          <no-results class="q-ma-sm" v-else/>
+        </q-card-section>
+        <q-card-section style="height: 50px;">
+          <q-inner-loading :showing="grantTypesLoading">
+            <q-spinner-gears size="50px" color="accent"/>
+          </q-inner-loading>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn :label="$t('done')" color="accent" :loading="updating.grantTypes.length>0" v-close-popup/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -482,14 +544,16 @@ export default {
         description: null,
         redirectUri: null,
         scopes: false,
-        authorities: false
+        authorities: false,
+        grantTypes: false
       },
       updating: {
         name: false,
         description: false,
         redirectUri: false,
         scopes: [],
-        authorities: []
+        authorities: [],
+        grantTypes: []
       },
       rules: {
         name: [val => val && val.length <= 64 && (val = val.trim()).length > 0 || this.$tt(this, "clientNameRule")],
@@ -498,7 +562,9 @@ export default {
       scopes: null,
       scopesLoading: false,
       authorities: null,
-      authoritiesLoading: false
+      authoritiesLoading: false,
+      grantTypes: null,
+      grantTypesLoading: false
     }
   },
   methods: {
@@ -744,6 +810,40 @@ export default {
         this.updating.authorities.splice(this.updating.authorities.indexOf(authority.aid), 1);
       })
     },
+    updateGrantTypes() {
+      if (this.edit.grantTypes)
+        return;
+      this.edit.grantTypes = true;
+      if (this.grantTypes == null && !this.grantTypesLoading) {
+        this.grantTypesLoading = true;
+        this.$grantTypesApi.getGrantTypes()
+          .then(res => this.grantTypes = res.data)
+          .finally(() => this.grantTypesLoading = false)
+      }
+    },
+    addOrRemoveGrantType(type) {
+      if (this.updating.grantTypes.indexOf(type.tid) >= 0)
+        return;
+      let contains = this.client.grantTypes && this.client.grantTypes.indexOf(type.name) > -1;
+      this.updating.grantTypes.push(type.tid);
+      let p = null;
+      if (this.uid == null)
+        p = contains ?
+          this.$grantTypesApi.deleteClientGrantTypes(this.clientId, [type.tid]) :
+          this.$grantTypesApi.addClientGrantTypes(this.clientId, [type.tid]);
+      else
+        p = contains ?
+          this.$grantTypesApi.deleteUserClientGrantTypes(this.uid, this.clientId, [type.tid]) :
+          this.$grantTypesApi.addUserClientGrantTypes(this.uid, this.clientId, [type.tid]);
+      p.then(res => {
+        if (contains)
+          this.client.grantTypes.splice(this.client.grantTypes.indexOf(type.name), 1);
+        else
+          this.client.grantTypes.push(type.name);
+      }).finally(() => {
+        this.updating.grantTypes.splice(this.updating.grantTypes.indexOf(type.tid), 1);
+      })
+    }
   },
   computed: {
     ownerName() {
