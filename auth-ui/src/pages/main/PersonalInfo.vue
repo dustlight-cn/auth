@@ -95,6 +95,13 @@
           </div>
         </div>
         <q-list>
+          <!-- UID -->
+          <q-item>
+            <q-item-section>
+              <q-item-label caption>UID</q-item-label>
+              <q-item-label overline>{{ user.uid }}</q-item-label>
+            </q-item-section>
+          </q-item>
           <!-- 用户名 -->
           <q-item>
             <q-item-section>
@@ -111,7 +118,7 @@
                 {{ $tt($options, "roles") }}
               </q-item-label>
               <q-item-label overline>
-                <q-chip v-for="(role,i) in user.roles" :key="i">
+                <q-chip icon="person" v-for="(role,i) in user.roles" :key="i">
                   {{ role.roleDescription }}
                 </q-chip>
               </q-item-label>
