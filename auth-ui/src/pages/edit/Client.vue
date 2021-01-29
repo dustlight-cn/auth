@@ -52,7 +52,7 @@
               <div v-else>
                 <div class="q-mb-sm">
                   <div class="text-h4 q-mb-sm">{{ client.name }}</div>
-                  <q-separator class="q-ma-none"/>
+                  <q-separator/>
                   <q-item class="q-pa-none q-mt-sm">
                     <q-item-section avatar class="q-pa-none" style="min-width: 40px;">
                       <avatar :size="36" :user="owner"/>
@@ -280,9 +280,116 @@
                     </q-item-section>
                   </q-item>
 
+                  <!-- Access Token 有效期 -->
+                  <q-item class="q-pa-none q-mt-md">
+                    <q-item-section>
+                      <q-item-label header class="q-pl-none">{{ $tt($options, "accessTokenValidity") }}</q-item-label>
+                      <q-item-label v-if="edit.accessTokenValidity==null" class="content">
+                        <q-item dense>
+                          <q-item-section style="min-width: 0px;" avatar>
+                            <q-icon name="timer"/>
+                          </q-item-section>
+                          <q-item-section>
+                            <q-item-label>{{ client.accessTokenValidity || "0" }}
+                              <span>{{ $t('seconds') }}</span>
+                            </q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </q-item-label>
+                      <q-item-label v-else class="text-right">
+                        <q-form @submit="updateAccessTokenValidity">
+                          <q-input :placeholder="$tt($options, 'accessTokenValidityHint')"
+                                   :disable="updating.accessTokenValidity"
+                                   :loading="updating.accessTokenValidity"
+                                   dense filled
+                                   class="q-mb-sm"
+                                   type="number"
+                                   min="0"
+                                   step="1"
+                                   color="accent"
+                                   v-model="edit.accessTokenValidity">
+                            <template v-slot:prepend>
+                              <q-icon name="timer"/>
+                            </template>
+                            <template v-slot:after>
+                              <div class="q-pa-sm text-subtitle1">
+                                {{ $t('seconds') }}
+                              </div>
+                            </template>
+                          </q-input>
+                          <q-btn :disable="updating.accessTokenValidity" no-caps flat :label="$t('cancel')"
+                                 color="accent"
+                                 class="q-mr-sm"
+                                 @click="()=>edit.accessTokenValidity=null"/>
+                          <q-btn :loading="updating.accessTokenValidity" type="submit" no-caps :label="$t('update')"
+                                 color="accent"/>
+                        </q-form>
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section side top v-if="edit.accessTokenValidity==null">
+                      <q-btn @click="updateAccessTokenValidity" v-if="hasWriteClientPermission" flat round size="12px"
+                             no-caps
+                             icon="edit"/>
+                    </q-item-section>
+                  </q-item>
+
+                  <!-- Refresh Token 有效期 -->
+                  <q-item class="q-pa-none q-mt-md">
+                    <q-item-section>
+                      <q-item-label header class="q-pl-none">{{ $tt($options, "refreshTokenValidity") }}</q-item-label>
+                      <q-item-label v-if="edit.refreshTokenValidity==null" class="content">
+                        <q-item dense>
+                          <q-item-section style="min-width: 0px;" avatar>
+                            <q-icon name="timer"/>
+                          </q-item-section>
+                          <q-item-section>
+                            <q-item-label>{{ client.refreshTokenValidity || "0" }}
+                              <span>{{ $t('seconds') }}</span>
+                            </q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </q-item-label>
+                      <q-item-label v-else class="text-right">
+                        <q-form @submit="updateRefreshTokenValidity">
+                          <q-input :placeholder="$tt($options, 'refreshTokenValidity')"
+                                   :disable="updating.refreshTokenValidity"
+                                   :loading="updating.refreshTokenValidity"
+                                   dense filled
+                                   class="q-mb-sm"
+                                   type="number"
+                                   min="0"
+                                   step="1"
+                                   color="accent"
+                                   v-model="edit.refreshTokenValidity">
+                            <template v-slot:prepend>
+                              <q-icon name="timer"/>
+                            </template>
+                            <template v-slot:after>
+                              <div class="q-pa-sm text-subtitle1">
+                                {{ $t('seconds') }}
+                              </div>
+                            </template>
+                          </q-input>
+                          <q-btn :disable="updating.refreshTokenValidity" no-caps flat :label="$t('cancel')"
+                                 color="accent"
+                                 class="q-mr-sm"
+                                 @click="()=>edit.refreshTokenValidity=null"/>
+                          <q-btn :loading="updating.refreshTokenValidity" type="submit" no-caps :label="$t('update')"
+                                 color="accent"/>
+                        </q-form>
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section side top v-if="edit.refreshTokenValidity==null">
+                      <q-btn @click="updateRefreshTokenValidity" v-if="hasWriteClientPermission" flat round size="12px"
+                             no-caps
+                             icon="edit"/>
+                    </q-item-section>
+                  </q-item>
+
                   <!-- 操作按钮 -->
-                  <div v-if="hasWriteClientPermissionOrOwnClient" class="q-pt-md">
-                    <q-separator/>
+                  <q-separator v-if="hasWriteClientPermissionOrOwnClient" class="q-mt-md"/>
+                  <div v-if="hasWriteClientPermissionOrOwnClient">
+
                     <q-item class="q-pa-none q-mt-lg">
                       <q-space/>
                       <q-item-section>
@@ -372,7 +479,8 @@
                       </template>
                       <template v-slot:after>
                         <q-btn type="submit" :disable="updating.redirectUri || edit.newRedirectUri.trim().length==0"
-                               @click="()=>{edit.redirectUri.push(edit.newRedirectUri.trim());edit.newRedirectUri=''}" round
+                               @click="()=>{edit.redirectUri.push(edit.newRedirectUri.trim());edit.newRedirectUri=''}"
+                               round
                                flat
                                icon="add"/>
                       </template>
@@ -602,6 +710,8 @@ export default {
         name: null,
         description: null,
         redirectUri: null,
+        accessTokenValidity: null,
+        refreshTokenValidity: null,
         scopes: false,
         authorities: false,
         grantTypes: false,
@@ -611,6 +721,8 @@ export default {
         name: false,
         description: false,
         redirectUri: false,
+        accessTokenValidity: false,
+        refreshTokenValidity: false,
         scopes: [],
         authorities: [],
         grantTypes: []
@@ -731,6 +843,48 @@ export default {
           this.showUpdateSuccessMessage();
         }).finally(() => {
           this.updating.name = false;
+        })
+      }
+    },
+    updateAccessTokenValidity() {
+      if (this.edit.accessTokenValidity == null)
+        this.edit.accessTokenValidity = this.client.accessTokenValidity;
+      else {
+        if (this.updating.accessTokenValidity)
+          return;
+        if (this.edit.accessTokenValidity == this.client.accessTokenValidity) {
+          this.edit.accessTokenValidity = null;
+          return;
+        }
+        this.updating.accessTokenValidity = true;
+        this.$clientApi.updateClientAccessTokenValidity(this.clientId, this.edit.accessTokenValidity)
+          .then(() => {
+            this.client.accessTokenValidity = this.edit.accessTokenValidity;
+            this.edit.accessTokenValidity = null;
+            this.showUpdateSuccessMessage();
+          }).finally(() => {
+          this.updating.accessTokenValidity = false;
+        })
+      }
+    },
+    updateRefreshTokenValidity() {
+      if (this.edit.refreshTokenValidity == null)
+        this.edit.refreshTokenValidity = this.client.refreshTokenValidity;
+      else {
+        if (this.updating.refreshTokenValidity)
+          return;
+        if (this.edit.refreshTokenValidity == this.client.refreshTokenValidity) {
+          this.edit.refreshTokenValidity = null;
+          return;
+        }
+        this.updating.refreshTokenValidity = true;
+        this.$clientApi.updateClientRefreshTokenValidity(this.clientId, this.edit.refreshTokenValidity)
+          .then(() => {
+            this.client.refreshTokenValidity = this.edit.refreshTokenValidity;
+            this.edit.refreshTokenValidity = null;
+            this.showUpdateSuccessMessage();
+          }).finally(() => {
+          this.updating.refreshTokenValidity = false;
         })
       }
     },
