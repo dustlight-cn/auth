@@ -217,7 +217,7 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public void updateRefreshTokenValidity(String cid, Integer refreshTokenValidity) {
-        if (!clientMapper.updateClientAccessTokenValidity(cid, refreshTokenValidity))
+        if (!clientMapper.updateClientRefreshTokenValidity(cid, refreshTokenValidity))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to update client refresh token validity").throwException();
     }
 
