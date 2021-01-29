@@ -372,7 +372,7 @@
                       </template>
                       <template v-slot:after>
                         <q-btn type="submit" :disable="updating.redirectUri || edit.newRedirectUri.trim().length==0"
-                               @click="()=>{edit.redirectUri.push(edit.newRedirectUri);edit.newRedirectUri=''}" round
+                               @click="()=>{edit.redirectUri.push(edit.newRedirectUri.trim());edit.newRedirectUri=''}" round
                                flat
                                icon="add"/>
                       </template>

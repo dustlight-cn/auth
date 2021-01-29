@@ -11,6 +11,7 @@ export default {
     "3": "其他"
   },
   "error": "错误",
+  "needPermission": "权限不足",
   "done": "完成",
   "create": "创建",
   "createSuccess": "创建成功",
@@ -25,6 +26,7 @@ export default {
   "name": "名称",
   "title": "标题",
   "description": "描述",
+  "seconds": "秒",
   "Error404": {
     "notFound": "抱歉，这里空空如也。",
     "goBack": "返回"
@@ -214,6 +216,16 @@ export default {
     "deleteClientTitle": "删除应用",
     "deleteClientMsg": "是否确定删除此应用？",
     "deleted": "应用已删除"
+  },
+  "NewClient": {
+    "title": "创建应用",
+    "ownerUid": "应用所有者",
+    "ownerUidHint": "应用所有者的 UID",
+    "accessTokenValidity": "Access Token 有效期",
+    "accessTokenValidityHint": "访问令牌的有效时间，单位为秒。",
+    "refreshTokenValidity": "Refresh Token 有效期",
+    "refreshTokenValidityHint": "刷新令牌的有效时间，单位为秒。",
+    "selectUser": "用户选择"
   },
   "SystemSettings": {
     "title": "系统设置",
