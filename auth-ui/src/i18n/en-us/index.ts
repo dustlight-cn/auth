@@ -11,6 +11,7 @@ export default {
     "3": "Other"
   },
   "error": "Error",
+  "needPermission": "Insufficient Permissions",
   "done": "Done",
   "create": "Create",
   "createSuccess": "Created successfully",
@@ -25,6 +26,7 @@ export default {
   "name": "Name",
   "title": "Title",
   "description": "Description",
+  "seconds": "Seconds",
   "Error404": {
     "notFound": "Oops. Nothing here...",
     "goBack": "Go Back"
@@ -214,6 +216,16 @@ export default {
     "deleteClientTitle": "Delete Application",
     "deleteClientMsg": "Are you sure to delete this app?",
     "deleted": "Application Deleted"
+  },
+  "NewClient": {
+    "title": "New OAuth Application",
+    "ownerUid": "Application Owner",
+    "ownerUidHint": "UID of application owner.",
+    "accessTokenValidity": "Access Token Validity",
+    "accessTokenValidityHint": "The validity of the access token, in seconds.",
+    "refreshTokenValidity": "Refresh Token Validity",
+    "refreshTokenValidityHint": "The validity of the refresh token, in seconds.",
+    "selectUser": "Select User"
   },
   "SystemSettings": {
     "title": "System Settings",
