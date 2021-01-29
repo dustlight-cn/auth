@@ -126,9 +126,11 @@ public class DefaultClientService implements ClientService<DefaultClient> {
         try {
             if (!clientMapper.insertClientDefault(id, uid, passwordEncoder.encode(secret), name, description, redirectUri))
                 ErrorEnum.CREATE_CLIENT_FAIL.throwException();
-            if (!scopeMapper.insertClientScopeByScopeIds(id, scopes, false))
+            if (scopes != null && scopes.size() > 0 &&
+                    !scopeMapper.insertClientScopeByScopeIds(id, scopes, false))
                 ErrorEnum.CREATE_SCOPE_FAIL.details("fail to insert client scopes").throwException();
-            if (!grantTypeMapper.insertClientGrantTypes(id, grantTypes))
+            if (grantTypes != null && grantTypes.size() > 0
+                    && !grantTypeMapper.insertClientGrantTypes(id, grantTypes))
                 ErrorEnum.CREATE_GRANT_TYPE_FAIL.details("fail to insert client grant types").throwException();
         } catch (DuplicateKeyException e) {
             ErrorEnum.CLIENT_EXISTS.throwException();
