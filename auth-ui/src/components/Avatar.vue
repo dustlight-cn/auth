@@ -51,6 +51,10 @@ export default {
     src() {
       this.error = false
       this.loading = true
+    },
+    "user.avatar"() {
+      this.error = false
+      this.loading = true
     }
   },
   mounted() {

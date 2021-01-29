@@ -51,6 +51,10 @@ export default {
     src() {
       this.error = false
       this.loading = true
+    },
+    "client.logo"() {
+      this.error = false
+      this.loading = true
     }
   },
   mounted() {
