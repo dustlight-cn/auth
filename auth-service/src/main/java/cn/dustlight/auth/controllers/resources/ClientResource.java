@@ -73,7 +73,16 @@ public class ClientResource {
     @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @PostMapping("clients")
     @Operation(summary = "创建应用", description = "应用和用户需要 WRITE_CLIENT 权限。")
-    public Client createClient(@RequestParam Long uid, @RequestParam String name, @RequestParam String description, @RequestParam String redirectUri, @RequestParam Collection<Long> scopes, @RequestParam Collection<Long> grantTypes, @RequestParam(required = false, defaultValue = "7200") Integer accessTokenValidity, @RequestParam(required = false, defaultValue = "86400") Integer refreshTokenValidity, @RequestParam(required = false) String additionalInformation, @RequestParam(required = false, defaultValue = "0") Integer status) {
+    public Client createClient(@RequestParam Long uid,
+                               @RequestParam String name,
+                               @RequestParam String description,
+                               @RequestParam String redirectUri,
+                               @RequestParam(required = false) Collection<Long> scopes,
+                               @RequestParam(required = false) Collection<Long> grantTypes,
+                               @RequestParam(required = false, defaultValue = "7200") Integer accessTokenValidity,
+                               @RequestParam(required = false, defaultValue = "86400") Integer refreshTokenValidity,
+                               @RequestParam(required = false) String additionalInformation,
+                               @RequestParam(required = false, defaultValue = "0") Integer status) {
         return setLogo(clientService.create(uid, name, description, redirectUri, scopes, grantTypes, accessTokenValidity, refreshTokenValidity, additionalInformation, status));
     }
 
@@ -190,7 +199,12 @@ public class ClientResource {
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) and hasAuthority('CREATE_CLIENT') or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @PostMapping("users/{uid}/clients")
     @Operation(summary = "创建用户应用", description = "应用和用户需要 WRITE_CLIENT 权限，或者应用拥有 WRITE_CLIENT 权限且 uid 为当前用户并拥有 CREATE_CLIENT 权限）")
-    public Client createUserClient(@PathVariable("uid") Long uid, @RequestParam String name, @RequestParam String description, @RequestParam String redirectUri, @RequestParam Collection<Long> scopes, @RequestParam Collection<Long> grantTypes) {
+    public Client createUserClient(@PathVariable("uid") Long uid,
+                                   @RequestParam String name,
+                                   @RequestParam String description,
+                                   @RequestParam String redirectUri,
+                                   @RequestParam(required = false) Collection<Long> scopes,
+                                   @RequestParam(required = false) Collection<Long> grantTypes) {
         return setLogo(clientService.create(uid, name, description, redirectUri, scopes, grantTypes));
     }
 
