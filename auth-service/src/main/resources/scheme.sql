@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS`users` (
   PRIMARY KEY (`uid`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`),
-  FULLTEXT KEY `user_keywords` (`username`,`email`,`nickname`) /*!50100 WITH PARSER `ngram` */
+  FULLTEXT KEY `user_keywords` (`username`,`email`,`nickname`) WITH PARSER ngram /*!50100 WITH PARSER `ngram` */
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /* 角色表 Roles */
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS`clients` (
   PRIMARY KEY (`cid`),
   UNIQUE KEY `name_UNIQUE` (`name`),
   KEY `client_owner_idx` (`uid`),
-  FULLTEXT KEY `client_keywords` (`name`,`description`,`redirectUri`,`cid`) /*!50100 WITH PARSER `ngram` */ ,
+  FULLTEXT KEY `client_keywords` (`name`,`description`,`redirectUri`,`cid`) WITH PARSER ngram /*!50100 WITH PARSER `ngram` */ ,
   CONSTRAINT `client_owner` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
