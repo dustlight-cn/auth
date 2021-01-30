@@ -47,7 +47,7 @@
                   <q-item-label caption>{{ client.description }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                  {{ $util.dateFormat(client.createdAt, "YYYY-mm-dd") }}
+                  <q-icon name="keyboard_arrow_right"/>
                 </q-item-section>
               </q-item>
             </transition>
@@ -111,7 +111,7 @@
                   <q-item-label caption>{{ client.description }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                  {{ $util.dateFormat(client.createdAt, "YYYY-mm-dd") }}
+                  <q-icon name="keyboard_arrow_right"/>
                 </q-item-section>
               </q-item>
             </transition>
