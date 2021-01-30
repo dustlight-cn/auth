@@ -279,7 +279,7 @@ export default {
         type: "positive"
       })
       let redirect = this.$route.query.redirect_uri;
-      this.$router.push(redirect ? {path: redirect} : {name: 'login'})
+      this.$router.replace(redirect ? {path: redirect} : {name: 'login'})
     },
     resetPasswordFailed(e) {
       this.model.code = "";
