@@ -8,6 +8,7 @@ const routes: RouteConfig[] = [
       {path: '', name: "Index", component: () => import('pages/Index.vue')},
       {path: 'personal-info', name: "personal-info", component: () => import('pages/main/PersonalInfo.vue')},
       {path: 'clients', name: "clients", component: () => import('pages/main/Clients.vue')},
+      {path: 'users', name: "users", component: () => import('pages/main/Users.vue')},
       {path: 'system-settings', name: "system-settings", component: () => import('pages/main/SystemSettings.vue')}
     ]
   },
@@ -32,7 +33,10 @@ const routes: RouteConfig[] = [
       {path: 'personal-info/email', name: "email", component: () => import('pages/edit/Email.vue')},
 
       {path: 'clients/new', name: "new-client", component: () => import('pages/edit/NewClient.vue')},
-      {path: 'client/:id', name: "client", component: () => import ('pages/edit/Client.vue')}
+      {path: 'client/:id', name: "client", component: () => import ('pages/edit/Client.vue')},
+
+      {path: 'users/new', name: "new-user", component: () => import('pages/edit/NewUser.vue')},
+      {path: 'user/:id', name: "user", component: () => import('pages/edit/User.vue')}
     ]
   },
   // Always leave this as last one,
