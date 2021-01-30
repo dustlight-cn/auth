@@ -55,7 +55,9 @@
                   <q-separator/>
                   <q-item class="q-pa-none q-mt-sm">
                     <q-item-section avatar class="q-pa-none" style="min-width: 40px;">
-                      <avatar :size="36" :user="owner"/>
+                      <q-btn flat round :to="owner?{name:'user',params:{id:owner.uid}}:null">
+                        <avatar :size="36" :user="owner"/>
+                      </q-btn>
                     </q-item-section>
                     <q-item-section v-if="owner">
                       <q-item-label>

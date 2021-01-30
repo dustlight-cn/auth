@@ -1,7 +1,7 @@
 <template>
   <require-authorization>
     <template v-slot="{user,token}">
-      <q-btn rounded dense flat>
+      <q-btn flat round>
         <avatar :user="user"/>
         <q-menu v-if="user && user.uid">
           <div class="text-center q-pa-md">
