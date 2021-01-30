@@ -148,7 +148,11 @@
                     {{ $tt($options, 'developer') }}
                   </q-item-label>
                   <q-item-label caption>
-                    {{ owner.nickname || owner.username }}
+                    <q-btn v-if="owner && owner.uid" rounded dense flat no-caps
+                           :to="{name:'user',params:{id:owner.uid}}">
+                      <avatar :user="owner"/>
+                      <span class="q-pl-xs">{{ ownerName }}</span>
+                    </q-btn>
                   </q-item-label>
                 </q-item-section>
               </q-item>
@@ -205,10 +209,12 @@ import RequireAuthorization from "../../components/RequireAuthorization";
 import SignIn from "./SignIn";
 import AvatarButton from "../../components/AvatarButton";
 import ClientLogo from "../../components/ClientLogo";
+import Avatar from "../../components/Avatar";
 
 export default {
   name: "Authorize",
   components: {
+    Avatar,
     ClientLogo,
     AvatarButton,
     SignIn,
@@ -229,6 +235,12 @@ export default {
     },
     owner() {
       return this.authorization ? this.authorization.owner : null;
+    },
+    ownerName() {
+      if (this.owner != null)
+        return this.owner.nickname && this.owner.nickname.trim() ?
+          this.owner.nickname : this.owner.username;
+      return "-";
     },
     approved() {
       return this.authorization ? this.authorization.approved : null;
