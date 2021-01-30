@@ -231,6 +231,12 @@ export default {
     "refreshTokenValidityHint": "刷新令牌的有效时间，单位为秒。",
     "selectUser": "用户选择"
   },
+  "Users": {
+    "title": "用户管理",
+    "subtitle": "查询用户，管理用户的昵称、性别等信息。",
+    "userList": "用户列表",
+    "userListDesc": "此站点的所有用户。"
+  },
   "SystemSettings": {
     "title": "系统设置",
     "subtitle": "管理角色、权限以及授权作用域等。",

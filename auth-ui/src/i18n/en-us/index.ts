@@ -231,6 +231,12 @@ export default {
     "refreshTokenValidityHint": "The validity of the refresh token, in seconds.",
     "selectUser": "Select User"
   },
+  "Users": {
+    "title": "Users",
+    "subtitle": "Search for users and manage their nicknames, genders, and more.",
+    "userList": "Users",
+    "userListDesc": "All users of this site."
+  },
   "SystemSettings": {
     "title": "System Settings",
     "subtitle": "Manage roles, authorities, authorization scopes, and so on.",
