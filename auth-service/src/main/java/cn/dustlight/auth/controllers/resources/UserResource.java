@@ -11,6 +11,7 @@ import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.util.QueryResults;
 import cn.dustlight.captcha.annotations.CodeParam;
 import cn.dustlight.captcha.annotations.CodeValue;
+import cn.dustlight.captcha.annotations.Store;
 import cn.dustlight.captcha.annotations.VerifyCode;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -100,6 +101,11 @@ public class UserResource {
     @io.swagger.v3.oas.annotations.Operation(summary = "删除用户（永久删除）", description = "应用和用户需要 DELETE_USER 权限。")
     public void deleteUser(@PathVariable Long uid) {
         userService.deleteUsers(Arrays.asList(uid));
+        try {
+            storageHandler.remove(generateAvatarKey(uid));
+        } catch (Exception e) {
+            ErrorEnum.DELETE_USER_AVATAR_FAIL.details(e.getMessage());
+        }
         logger.debug(String.format("删除用户: [%s] ", uid));
     }
 
@@ -129,12 +135,12 @@ public class UserResource {
     }
 
     @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_USER_EMAIL')) and #oauth2.clientHasRole('WRITE_USER_EMAIL')")
-    @VerifyCode("email")
+    @VerifyCode(value = "ChangeEmail", store = @Store("userCodeStore"))
     @PutMapping("users/{uid}/email")
     @Operation(summary = "更新用户邮箱", description = "应用和用户需拥有 WRITE_USER_EMAIL 权限。")
     public void updateUserEmail(@PathVariable Long uid,
-                                @CodeValue("email") @RequestParam String code,
-                                @CodeParam("email") @Parameter(hidden = true) String email) {
+                                @CodeValue("ChangeEmail") @RequestParam String code,
+                                @CodeParam(value = "ChangeEmail", name = "email") @Parameter(hidden = true) String email) {
         userService.updateEmail(uid, email);
     }
 

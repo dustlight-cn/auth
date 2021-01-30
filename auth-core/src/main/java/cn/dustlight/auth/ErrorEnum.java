@@ -53,7 +53,9 @@ public enum ErrorEnum {
     DELETE_AUTHORITY_FAIL(6003, "Fail to delete authority"),
     DELETE_SCOPE_FAIL(6004, "Fail to delete scope"),
     DELETE_CLIENT_FAIL(6005, "Fail to delete client"),
-    DELETE_GRANT_TYPE_FAIL(6006, "Fail to delete grant type");
+    DELETE_GRANT_TYPE_FAIL(6006, "Fail to delete grant type"),
+    DELETE_USER_AVATAR_FAIL(6007, "Fail to delete user's avatar"),
+    DELETE_CLIENT_LOGO_FAIL(6008, "Fail to delete client's logo");
 
     private ErrorDetails details;
 

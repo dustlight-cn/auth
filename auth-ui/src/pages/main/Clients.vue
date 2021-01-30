@@ -11,7 +11,7 @@
               {{ $tt($options, "yourClientsDesc") }}
             </div>
           </q-item-section>
-          <q-item-section side>
+          <q-item-section v-if="hasCreateClientPermission" side>
             <q-btn color="accent" :to="{name:'new-client'}" :label="$t('create')"/>
           </q-item-section>
         </q-item>
@@ -165,6 +165,9 @@ export default {
   computed: {
     hasPermission() {
       return this.user_ && this.user_.uid && this.user_.authorities && this.user_.authorities.indexOf('READ_CLIENT') >= 0;
+    },
+    hasCreateClientPermission() {
+      return this.user_ && this.user_.uid && this.user_.authorities && this.user_.authorities.indexOf('CREATE_CLIENT') >= 0;
     }
   },
   methods: {

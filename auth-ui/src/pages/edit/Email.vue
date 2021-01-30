@@ -1,5 +1,7 @@
 <template>
   <update-user
+    :on-success="onSuccess"
+    :on-cancel="onCancel"
     :disable-submit-button="step<=1"
     :submit="onSubmit"
     :title="$tt(this,'operator')"
@@ -51,8 +53,8 @@
       <!-- 步骤2 -->
       <q-step
         :name="2"
-        :title="$tt($options,'step2.title')"
-        :caption="$tt($options,'step2.caption')"
+        :title="$tt($options,withoutPassword?'step2.titleWithoutPassword':'step2.title')"
+        :caption="$tt($options,withoutPassword?'step2.captionWithoutPassword':'step2.caption')"
         icon="email"
         color="grey"
         done-color="black"
@@ -61,6 +63,7 @@
         :header-nav="step > 2"
       >
         <q-input
+          v-if="!withoutPassword"
           :disable="isBusy"
           color="accent"
           v-model="model.password"
@@ -103,7 +106,10 @@ export default {
   name: "Email",
   components: {ReCaptcha, UpdateUser, RequireAuthorization},
   props: {
-    user: Object
+    user: Object,
+    withoutPassword: Boolean,
+    onSuccess: Function,
+    onCancel: Function
   },
   data() {
     return {
@@ -166,14 +172,20 @@ export default {
       this.$refs.captcha.$emit("reload")
     },
     onSubmit() {
-      if (this.model.user.email == this.model.email)
+      if (this.model.user.email == this.model.email) {
+        if (this.onCancel != null)
+          this.onCancel();
         return;
-      return this.$userApi.resetEmail(this.model.password, this.model.code)
+      }
+      return (
+        this.withoutPassword ?
+          this.$usersApi.updateUserEmail(this.model.user.uid, this.model.code) :
+          this.$userApi.resetEmail(this.model.password, this.model.code)
+      )
         .then(() => {
           this.model.user.email = this.model.email;
         }).catch((e) => {
           this.model.code = this.model.password = "";
-          // this.step = 1;
           throw e;
         })
     }

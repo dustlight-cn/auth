@@ -66,8 +66,13 @@ public class ClientResource {
     @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @DeleteMapping("clients/{cid}")
     @Operation(summary = "删除应用", description = "应用和用户需要 WRITE_CLIENT 权限。")
-    public void removeClient(@PathVariable("cid") String cid) {
+    public void removeClient(@PathVariable("cid") String cid) throws IOException {
         clientService.delete(Arrays.asList(cid));
+        try {
+            storageHandler.remove(generateLogoKey(cid));
+        } catch (Exception e) {
+            ErrorEnum.DELETE_CLIENT_LOGO_FAIL.details(e.getMessage());
+        }
     }
 
     @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
@@ -194,6 +199,11 @@ public class ClientResource {
     @Operation(summary = "删除用户应用", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
     public void removeUserClient(@PathVariable("uid") Long uid, @PathVariable("cid") String cid) {
         clientService.delete(uid, Arrays.asList(cid));
+        try {
+            storageHandler.remove(generateLogoKey(cid));
+        } catch (Exception e) {
+            ErrorEnum.DELETE_CLIENT_LOGO_FAIL.details(e.getMessage());
+        }
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) and hasAuthority('CREATE_CLIENT') or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")

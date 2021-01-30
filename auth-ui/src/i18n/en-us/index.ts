@@ -184,7 +184,9 @@ export default {
     },
     "step2": {
       "title": "Your Password And Verification Code",
-      "caption": "Please enter your account password and email verification code."
+      "caption": "Please enter your account password and email verification code.",
+      "titleWithoutPassword": "Your Verification Code",
+      "captionWithoutPassword": "Please enter your email verification code."
     }
   },
   "Clients": {
@@ -233,9 +235,20 @@ export default {
   },
   "Users": {
     "title": "Users",
-    "subtitle": "Search for users and manage their nicknames, genders, and more.",
+    "subtitle": "Search for users to see their nicknames, genders, and more.",
     "userList": "Users",
-    "userListDesc": "All users of this site."
+    "userListDesc": "Search for all users of this site."
+  },
+  "User": {
+    "title": "User Details",
+    "uid": "UID",
+    "username": "Username",
+    "nickname": "Nickname",
+    "gender": "Gender",
+    "email": "E-mail"
+  },
+  "NewUser": {
+    "title": "New User"
   },
   "SystemSettings": {
     "title": "System Settings",

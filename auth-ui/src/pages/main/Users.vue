@@ -12,7 +12,7 @@
                   {{ $tt($options, "userListDesc") }}
                 </div>
               </q-item-section>
-              <q-item-section side>
+              <q-item-section v-if="hasCreateUserPermission" side>
                 <q-btn color="accent" :to="{name:'new-user'}" :label="$t('create')"/>
               </q-item-section>
             </q-item>
@@ -42,14 +42,16 @@
                 leave-active-class="animated fadeOut">
                 <q-item clickable v-ripple
                         :to="{name:'user',params:{id:user.uid}}">
-                  <q-item-section avatar>
+                  <q-item-section class="q-pr-sm" style="min-width: 0px;" avatar>
                     <avatar :user="user"/>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label>
                       {{ user.nickname && user.nickname.trim() ? user.nickname.trim() : user.username }}
                     </q-item-label>
-                    <q-item-label caption style="word-break: break-all;">{{ user.email }}</q-item-label>
+                    <q-item-label v-if="user.email" caption style="word-break: break-all;">
+                      {{ user.email }}
+                    </q-item-label>
                   </q-item-section>
                   <q-item-section side>
                     <q-icon name="keyboard_arrow_right"/>
@@ -115,7 +117,15 @@ export default {
       this.doSearchUser(false);
     }
   },
+  computed: {
+    hasCreateUserPermission() {
+      return this.hasPermission("CREATE_USER");
+    }
+  },
   methods: {
+    hasPermission(authority) {
+      return this.user_ && this.user_.authorities && this.user_.authorities.indexOf(authority) >= 0;
+    },
     saveSearch() {
       this.$q.sessionStorage.set("users_search", this.search);
     },
