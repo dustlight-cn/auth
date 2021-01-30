@@ -20,12 +20,13 @@
             v-model="myClients.keywords"
             debounce="500"
             filled
+            clearable
             dense
             color="accent"
             :loading="myClients.query!=null"
             :placeholder="$t('search')"
           >
-            <template v-slot:append>
+            <template v-slot:prepend>
               <q-icon name="search"/>
             </template>
           </q-input>
@@ -82,12 +83,13 @@
             v-model="allClients.keywords"
             debounce="500"
             filled
+            clearable
             dense
             color="accent"
             :loading="allClients.query!=null"
             :placeholder="$t('search')"
           >
-            <template v-slot:append>
+            <template v-slot:prepend>
               <q-icon name="search"/>
             </template>
           </q-input>
@@ -224,6 +226,8 @@ export default {
         this.loadMyClients(this.user_.uid, false);
     },
     "myClients.keywords": function () {
+      if (this.myClients.keywords == null)
+        this.myClients.keywords = "";
       if (this.user_ && this.user_.uid)
         this.loadMyClients(this.user_.uid, true);
     },
@@ -231,6 +235,8 @@ export default {
       this.loadClients(false);
     },
     "allClients.keywords": function () {
+      if (this.allClients.keywords == null)
+        this.allClients.keywords = "";
       this.loadClients(true);
     }
   }

@@ -234,9 +234,14 @@
           </div>
           <q-input
             :placeholder="$t('search')"
-            v-model="searchUser.key" :loading="searchUser.searching" debounce="500" filled type="search"
+            v-model="searchUser.key"
+            :loading="searchUser.searching"
+            debounce="500"
+            filled
+            clearable
+            type="search"
             color="accent" dense>
-            <template v-slot:append>
+            <template v-slot:prepend>
               <q-icon name="search"/>
             </template>
           </q-input>
@@ -328,6 +333,8 @@ export default {
         this.data.owner = this.user_;
     },
     "searchUser.key"() {
+      if (this.searchUser.key == null)
+        this.searchUser.key = "";
       this.doSearchUser(true);
     },
     "searchUser.page"() {
