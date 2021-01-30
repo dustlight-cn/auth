@@ -13,6 +13,7 @@
           <q-input
             :disable="isBusy"
             color="accent"
+            filled
             v-model="model.account"
             autocomplete="username"
             :label="$tt(this,'account')"
@@ -22,6 +23,7 @@
           <q-input
             :disable="isBusy"
             color="accent"
+            filled
             v-model="model.password"
             autocomplete="current-password"
             :label="$tt(this,'password')"
@@ -30,9 +32,13 @@
             :rules="rule.password"
           />
           <div class="q-mb-md flex">
-            <q-btn :label="$tt(this,'forgotPassword')" @click="forgotPassword" flat color="accent" class="q-ml-sm"/>
+            <q-btn
+              :to="{name: 'reset-password', query: {redirect_uri: $route.fullPath}}"
+              :label="$tt(this,'forgotPassword')" flat color="accent" class="q-ml-sm"/>
             <q-space/>
-            <q-btn :label="$tt(this,'signUp')" @click="signUp" flat color="accent" class="q-ml-sm"/>
+            <q-btn
+              :to="{name: 'join', query: {redirect_uri: this.$route.fullPath}}"
+              :label="$tt(this,'signUp')" flat color="accent" class="q-ml-sm"/>
             <q-btn type="submit" :loading="isBusy" :label="$tt(this,'signIn')"
                    color="accent" class="q-ml-sm"/>
           </div>
@@ -71,8 +77,12 @@
             <q-btn :loading="isBusy" :label="$tt(this,'signIn')" type="submit" color="accent"
                    class="q-ml-sm"/>
             <q-space/>
-            <q-btn :label="$tt(this,'signUp')" @click="signUp" flat color="accent" class="q-ml-sm"/>
-            <q-btn :label="$tt(this,'forgotPassword')" @click="forgotPassword" flat color="accent" class="q-ml-sm"/>
+            <q-btn
+              :to="{name: 'join', query: {redirect_uri: this.$route.fullPath}}"
+              :label="$tt(this,'signUp')" flat color="accent" class="q-ml-sm"/>
+            <q-btn
+              :to="{name: 'reset-password', query: {redirect_uri: $route.fullPath}}"
+              :label="$tt(this,'forgotPassword')" flat color="accent" class="q-ml-sm"/>
           </div>
         </div>
       </q-form>
@@ -134,14 +144,6 @@ export default {
         .then((res) => this.onSignInSuccess(res.data))
         .catch(this.onSignInFail)
         .finally(() => this.isBusy = false);
-    }
-    ,
-    signUp() {
-      this.$router.push({path: 'join', query: {redirect_uri: this.$route.fullPath}})
-    }
-    ,
-    forgotPassword() {
-      this.$router.push({path: 'reset-password', query: {redirect_uri: this.$route.fullPath}})
     }
     ,
     /**

@@ -18,7 +18,7 @@ const routes: RouteConfig[] = [
       {path: 'login', name: "login", component: () => import('pages/connect/SignIn.vue')},
       {path: 'join', name: "join", component: () => import('pages/connect/SignUp.vue')},
       {path: 'authorize', name: "authorize", component: () => import('pages/connect/Authorize.vue')},
-      {path: 'reset-password', name: "resetPassword", component: () => import('pages/connect/ResetPassword.vue')}
+      {path: 'reset-password', name: "reset-password", component: () => import('pages/connect/ResetPassword.vue')}
     ]
   },
   {

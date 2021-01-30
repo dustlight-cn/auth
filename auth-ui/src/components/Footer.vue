@@ -5,7 +5,7 @@
                     href="https://dustlight-cn.github.io/auth">Auth</a>
     </div>
     <div>
-      <q-btn @click="openURL('http://github.com/dustlight-cn/auth')" size="12px" dense no-caps flat
+      <q-btn @click="openURL('https://github.com/dustlight-cn/auth')" size="12px" dense no-caps flat
              icon="img:icons/github.png"
              label="View on Github"/>
     </div>
