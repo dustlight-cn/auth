@@ -1,17 +1,17 @@
 export default class Menu {
   icon: string | null
   title: string
-  link: string
+  to: any
   keywords: string | string[]
   authorities: string | string[] | null
 
   public constructor(title: string,
-                     link: string,
+                     to: any,
                      icon: string,
                      keywords: string | string[],
                      authorities: string | string[] | null) {
     this.title = title
-    this.link = link
+    this.to = to
     this.icon = icon
     this.keywords = keywords
     this.authorities = authorities

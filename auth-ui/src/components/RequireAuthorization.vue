@@ -9,7 +9,7 @@
         {{ $tt($options, "tips") }}
       </div>
       <div class="flex flex-center q-mt-lg q-mb-md">
-        <q-btn :to="{name:'login',query:{redirect_uri:$route.fullPath}}" :label="$tt($options,'signIn')"
+        <q-btn replace :to="{name:'login',query:{redirect_uri:$route.fullPath}}" :label="$tt($options,'signIn')"
                color="accent"/>
       </div>
     </slot>

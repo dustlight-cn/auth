@@ -10,7 +10,6 @@
         <language-selector/>
         <avatar-button/>
       </q-toolbar>
-
       <!-- 顶部导航栏 -->
       <q-tabs v-model="tab" v-if="!left">
         <transition
@@ -18,7 +17,10 @@
           enter-active-class="animated fadeIn"
           v-for="(menu,i) in this.$menus.main" :key="i"
         >
-          <q-route-tab no-caps v-if="hasPermission(menu.getAuthorities())" :name="menu.title" :to="menu.link"
+          <q-route-tab no-caps
+                       v-if="hasPermission(menu.getAuthorities())"
+                       :name="menu.title"
+                       :to="menu.to"
                        :label="$t('menus.' + menu.title)"/>
         </transition>
       </q-tabs>
@@ -32,7 +34,10 @@
           enter-active-class="animated fadeIn"
           v-for="(menu,i) in this.$menus.main" :key="i"
         >
-          <q-route-tab no-caps v-if="hasPermission(menu.getAuthorities())" :name="menu.title" :to="menu.link"
+          <q-route-tab no-caps
+                       v-if="hasPermission(menu.getAuthorities())"
+                       :name="menu.title"
+                       :to="menu.to"
                        :label="$t('menus.' + menu.title)"
                        :icon="menu.icon"/>
         </transition>

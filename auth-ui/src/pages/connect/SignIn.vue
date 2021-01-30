@@ -33,10 +33,12 @@
           />
           <div class="q-mb-md flex">
             <q-btn
+              replace
               :to="{name: 'reset-password', query: {redirect_uri: $route.fullPath}}"
               :label="$tt(this,'forgotPassword')" flat color="accent" class="q-ml-sm"/>
             <q-space/>
             <q-btn
+              replace
               :to="{name: 'join', query: {redirect_uri: this.$route.fullPath}}"
               :label="$tt(this,'signUp')" flat color="accent" class="q-ml-sm"/>
             <q-btn type="submit" :loading="isBusy" :label="$tt(this,'signIn')"
@@ -78,9 +80,11 @@
                    class="q-ml-sm"/>
             <q-space/>
             <q-btn
+              replace
               :to="{name: 'join', query: {redirect_uri: this.$route.fullPath}}"
               :label="$tt(this,'signUp')" flat color="accent" class="q-ml-sm"/>
             <q-btn
+              replace
               :to="{name: 'reset-password', query: {redirect_uri: $route.fullPath}}"
               :label="$tt(this,'forgotPassword')" flat color="accent" class="q-ml-sm"/>
           </div>
@@ -160,7 +164,7 @@ export default {
         this.onSuccess(token)
       if (this.redirectAfterSuccess) {
         let redirect = this.$route.query.redirect_uri;
-        this.$router.push(redirect ? {path: redirect} : {name: 'Index'})
+        this.$router.replace(redirect ? {path: redirect} : {name: 'Index'})
       }
     }
     ,
