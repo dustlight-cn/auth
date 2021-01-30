@@ -180,11 +180,13 @@ export default {
     "operator": "更新电子邮箱地址",
     "step1": {
       "title": "您的邮箱地址",
-      "caption": "请输入您的新邮箱地址"
+      "caption": "请输入您的新邮箱地址。"
     },
     "step2": {
       "title": "您的密码和验证码",
-      "caption": "请输入您的账号密码与邮箱验证码"
+      "titleWithoutPassword": "您的邮箱验证码",
+      "caption": "请输入您的账号密码与邮箱验证码。",
+      "captionWithoutPassword": "请输入邮箱验证码。"
     }
   },
   "Clients": {
@@ -232,10 +234,21 @@ export default {
     "selectUser": "用户选择"
   },
   "Users": {
-    "title": "用户管理",
-    "subtitle": "查询用户，管理用户的昵称、性别等信息。",
+    "title": "用户",
+    "subtitle": "搜索用户，查看用户的昵称、性别等信息。",
     "userList": "用户列表",
-    "userListDesc": "此站点的所有用户。"
+    "userListDesc": "搜索此站点的所有用户。"
+  },
+  "User": {
+    "title": "用户详情",
+    "uid": "UID",
+    "username": "用户名",
+    "nickname": "昵称",
+    "gender": "性别",
+    "email": "电子邮箱"
+  },
+  "NewUser": {
+    "title": "创建用户"
   },
   "SystemSettings": {
     "title": "系统设置",
@@ -270,7 +283,7 @@ export default {
     "home": "首页",
     "account": "个人信息",
     "clients": "应用",
-    "users": "用户管理",
+    "users": "用户",
     "systemSettings": "系统设置"
   }
 };

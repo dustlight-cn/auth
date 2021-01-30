@@ -10,7 +10,7 @@
           <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),busy}"/>
           <q-card-actions>
             <q-space/>
-            <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
+            <q-btn no-caps :disable="busy" @click="onCancel" flat :label="$t('cancel')"/>
             <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
                    :label="$t('update')"/>
           </q-card-actions>
@@ -30,7 +30,7 @@
           </q-card-actions>
           <q-card-actions v-else>
             <q-space/>
-            <q-btn no-caps :disable="busy" @click="$router.back()" flat :label="$t('cancel')"/>
+            <q-btn no-caps :disable="busy" @click="()=>onCancel()" flat :label="$t('cancel')"/>
             <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
                    :label="$t('update')"/>
           </q-card-actions>
@@ -58,10 +58,16 @@ export default {
         return false;
       }
     },
-    backOnSuccess: {
-      type: Boolean,
+    onSuccess: {
+      type: Function,
       default() {
-        return true;
+        this.$router.back();
+      }
+    },
+    onCancel: {
+      type: Function,
+      default() {
+        this.$router.back();
       }
     }
   },
@@ -96,8 +102,7 @@ export default {
             this.$s.storeUser(this.user_clone);
 
           this.busy = false;
-          if (this.backOnSuccess)
-            this.$router.back();
+          this.onSuccess();
         })
           .catch((e) => {
             this.busy = false;

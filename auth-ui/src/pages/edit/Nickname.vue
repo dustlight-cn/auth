@@ -1,5 +1,7 @@
 <template>
   <update-user
+    :on-success="onSuccess"
+    :on-cancel="onCancel"
     :submit="onSubmit"
     :title="$tt(this,'operator')"
     :user="user"
@@ -30,7 +32,9 @@ export default {
   name: "Nickname",
   components: {UpdateUser, RequireAuthorization},
   props: {
-    user: Object
+    user: Object,
+    onSuccess: Function,
+    onCancel: Function
   },
   data() {
     return {
@@ -45,8 +49,11 @@ export default {
   },
   methods: {
     onSubmit() {
-      if (this.model.user.nickname == this.model.nickname)
+      if (this.model.user.nickname == this.model.nickname) {
+        if (this.onCancel != null)
+          this.onCancel();
         return;
+      }
       return this.$usersApi.updateUserNickname(this.model.user.uid, this.model.nickname)
         .then(() => {
           this.model.user.nickname = this.model.nickname;

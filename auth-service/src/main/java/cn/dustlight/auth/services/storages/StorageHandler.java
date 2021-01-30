@@ -22,7 +22,7 @@ public class StorageHandler {
         this.storages = storages;
     }
 
-    protected Storage getStorage() {
+    public Storage getStorage() {
         if (this.storage == null) {
             if (this.storages != null) {
                 for (Storage s : this.storages) {
@@ -37,6 +37,12 @@ public class StorageHandler {
             }
         }
         return this.storage;
+    }
+
+    public void remove(String key) throws IOException {
+        if (storage.isExist(key)) {
+            storage.remove(key);
+        }
     }
 
     public void handle(String key, HttpServletRequest request, HttpServletResponse response) throws IOException {

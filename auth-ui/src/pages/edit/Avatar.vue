@@ -1,5 +1,7 @@
 <template>
   <update-user
+    :on-success="onSuccess"
+    :on-cancel="onCancel"
     :submit="onSubmit"
     :title="$tt(this,'operator')"
     :user="user"
@@ -33,7 +35,9 @@ export default {
   name: "Avatar",
   components: {UpdateUser, RequireAuthorization, AvatarComponent},
   props: {
-    user: Object
+    user: Object,
+    onSuccess: Function,
+    onCancel: Function
   },
   data() {
     return {
@@ -58,8 +62,11 @@ export default {
       }
     },
     onSubmit() {
-      if (this.file == null)
+      if (this.file == null) {
+        if (this.onCancel != null)
+          this.onCancel();
         return;
+      }
       return this.$usersApi.updateUserAvatar(this.user_clone.uid, this.file);
     }
   }
