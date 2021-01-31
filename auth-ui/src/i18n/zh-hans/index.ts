@@ -247,6 +247,8 @@ export default {
     "gender": "性别",
     "email": "电子邮箱",
     "password": "密码",
+    "roles": "角色",
+    "expiredAt": "到期时间",
 
     "deleteUser": "删除",
     "deleteUserTitle": "删除用户",

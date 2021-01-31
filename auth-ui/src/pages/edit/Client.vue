@@ -496,7 +496,9 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat :label="$t('cancel')" color="accent" :disable="updating.redirectUri" v-close-popup/>
-          <q-btn :label="$t('update')" color="accent" :loading="updating.redirectUri"
+          <q-btn :label="$t('update')" color="accent"
+                 :disable="updating.redirectUri"
+                 :loading="updating.redirectUri"
                  @click="updateRedirectUri"/>
         </q-card-actions>
       </q-card>
@@ -513,7 +515,7 @@
           </div>
         </q-card-section>
         <q-card-section v-if="!scopesLoading" class="q-pa-none">
-          <q-list v-if="edit.scopes && scopes.length>0">
+          <q-list v-if="scopes && scopes.length>0">
             <transition
               v-for="(scope,index) in scopes"
               :key="scope.sid"
@@ -551,13 +553,16 @@
           </q-list>
           <no-results class="q-ma-sm" v-else/>
         </q-card-section>
-        <q-card-section style="height: 50px;">
+        <q-card-section v-else style="height: 80px;">
           <q-inner-loading :showing="scopesLoading">
             <q-spinner-gears size="50px" color="accent"/>
           </q-inner-loading>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn :label="$t('done')" color="accent" :loading="updating.scopes.length>0" v-close-popup/>
+          <q-btn :label="$t('done')" color="accent"
+                 :disable="updating.scopes.length>0"
+                 :loading="updating.scopes.length>0"
+                 v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -573,7 +578,7 @@
           </div>
         </q-card-section>
         <q-card-section v-if="!authoritiesLoading" class="q-pa-none">
-          <q-list v-if="edit.authorities && authorities.length>0">
+          <q-list v-if="authorities && authorities.length>0">
             <transition
               v-for="(authority,index) in authorities"
               :key="authority.aid"
@@ -612,13 +617,16 @@
           </q-list>
           <no-results class="q-ma-sm" v-else/>
         </q-card-section>
-        <q-card-section style="height: 50px;">
+        <q-card-section v-else style="height: 80px;">
           <q-inner-loading :showing="authoritiesLoading">
             <q-spinner-gears size="50px" color="accent"/>
           </q-inner-loading>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn :label="$t('done')" color="accent" :loading="updating.authorities.length>0" v-close-popup/>
+          <q-btn :label="$t('done')" color="accent"
+                 :disable="updating.authorities.length>0"
+                 :loading="updating.authorities.length>0"
+                 v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -634,7 +642,7 @@
           </div>
         </q-card-section>
         <q-card-section v-if="!grantTypesLoading" class="q-pa-none">
-          <q-list v-if="edit.grantTypes && grantTypes.length>0">
+          <q-list v-if="grantTypes && grantTypes.length>0">
             <transition
               v-for="(type,index) in grantTypes"
               :key="type.tid"
@@ -673,13 +681,16 @@
           </q-list>
           <no-results class="q-ma-sm" v-else/>
         </q-card-section>
-        <q-card-section style="height: 50px;">
+        <q-card-section v-else style="height: 80px;">
           <q-inner-loading :showing="grantTypesLoading">
             <q-spinner-gears size="50px" color="accent"/>
           </q-inner-loading>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn :label="$t('done')" color="accent" :loading="updating.grantTypes.length>0" v-close-popup/>
+          <q-btn :label="$t('done')" color="accent"
+                 :disable="updating.grantTypes.length>0"
+                 :loading="updating.grantTypes.length>0"
+                 v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
