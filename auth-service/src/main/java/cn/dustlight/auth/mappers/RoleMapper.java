@@ -80,7 +80,7 @@ public interface RoleMapper {
 
     @Insert("<script>INSERT INTO user_role (uid,rid,expiredAt) VALUES " +
             "<foreach collection='roles' item='role' separator=','>(#{uid},<choose>" +
-            "<when test='role.rid'>#{role.rid}</when>" + // 如果roleId存在
+            "<when test='role.rid!=null'>#{role.rid}</when>" + // 如果roleId存在
             "<otherwise>(SELECT rid FROM roles WHERE roleName=#{role.roleName} LIMIT 1)</otherwise>" + // 不存在则查询
             "</choose>,#{role.expiredAt})</foreach>" +
             " ON DUPLICATE KEY UPDATE expiredAt=VALUES(expiredAt)</script>")

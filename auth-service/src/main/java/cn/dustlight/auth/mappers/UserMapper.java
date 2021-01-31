@@ -58,8 +58,8 @@ public interface UserMapper {
 
     @Select("<script>SELECT users.* FROM users," +
             "(SELECT uid FROM users" +
-            "<if test='orderBy'> ORDER BY ${orderBy}</if>" +
-            "<if test='limit'> LIMIT #{limit}<if test='offset'> OFFSET #{offset}</if></if>) AS tmp " +
+            "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
+            "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")
     @ResultMap("User")
     Collection<DefaultUser> listUsers(@Param("orderBy") String orderBy,
@@ -71,8 +71,8 @@ public interface UserMapper {
 
     @Select("<script>SELECT users.* FROM users," +
             "(SELECT uid FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})" +
-            "<if test='orderBy'> ORDER BY ${orderBy}</if>" +
-            "<if test='limit'> LIMIT #{limit}<if test='offset'> OFFSET #{offset}</if></if>) AS tmp " +
+            "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
+            "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")
     @ResultMap("User")
     Collection<DefaultUser> searchUsers(@Param("keywords") String keywords,
@@ -82,8 +82,8 @@ public interface UserMapper {
 
     @Select("<script>SELECT users.* FROM users," +
             "(SELECT uid FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})" +
-            "<if test='orderBy'> ORDER BY ${orderBy}</if>" +
-            "<if test='limit'> LIMIT #{limit}<if test='offset'> OFFSET #{offset}</if></if>) AS tmp " +
+            "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
+            "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")
     Collection<DefaultPublicUser> searchPublicUsers(@Param("keywords") String keywords,
                                                     @Param("orderBy") String orderBy,

@@ -18,8 +18,8 @@ public interface ClientMapper {
 
     @Select("<script>SELECT clients.* FROM clients," +
             "(SELECT cid FROM clients" +
-            "<if test='orderBy'> ORDER BY ${orderBy}</if>" +
-            "<if test='limit'> LIMIT #{limit}<if test='offset'> offset #{offset}</if></if>) AS c" +
+            "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
+            "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> offset #{offset}</if></if>) AS c" +
             " WHERE clients.cid=c.cid</script>")
     Collection<DefaultClient> listClients(@Param("orderBy") String orderBy,
                                           @Param("offset") Integer offset,
@@ -30,8 +30,8 @@ public interface ClientMapper {
 
     @Select("<script>SELECT clients.* FROM clients," +
             "(SELECT cid FROM clients WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key})" +
-            "<if test='orderBy'> ORDER BY ${orderBy}</if>" +
-            "<if test='limit'> LIMIT #{limit}<if test='offset'> offset #{offset}</if></if>) AS c" +
+            "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
+            "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> offset #{offset}</if></if>) AS c" +
             " WHERE clients.cid=c.cid</script>")
     Collection<DefaultClient> searchClients(@Param("key") String key,
                                             @Param("orderBy") String orderBy,
@@ -60,8 +60,8 @@ public interface ClientMapper {
 
     @Select("<script>SELECT clients.* FROM clients," +
             "(SELECT cid FROM clients WHERE uid=#{uid}" +
-            "<if test='orderBy'> ORDER BY ${orderBy}</if>" +
-            "<if test='limit'> LIMIT #{limit}<if test='offset'> offset #{offset}</if></if>) AS c" +
+            "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
+            "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> offset #{offset}</if></if>) AS c" +
             " WHERE clients.cid=c.cid</script>")
     Collection<DefaultClient> listUserClients(@Param("uid") Long uid,
                                               @Param("orderBy") String orderBy,
@@ -73,8 +73,8 @@ public interface ClientMapper {
 
     @Select("<script>SELECT clients.* FROM clients," +
             "(SELECT cid FROM clients WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key}) AND uid=#{uid}" +
-            "<if test='orderBy'> ORDER BY ${orderBy}</if>" +
-            "<if test='limit'> LIMIT #{limit}<if test='offset'> offset #{offset}</if></if>) AS c" +
+            "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
+            "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> offset #{offset}</if></if>) AS c" +
             " WHERE clients.cid=c.cid</script>")
     Collection<DefaultClient> searchUserClients(@Param("uid") Long uid,
                                                 @Param("key") String key,
