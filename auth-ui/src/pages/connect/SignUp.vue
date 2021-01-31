@@ -137,6 +137,7 @@
           >
             <q-form @submit="sendEmailCode" class="q-pa-md rounded-borders q-gutter-md">
               <q-input
+                dense
                 debounce="1000"
                 :disable="isBusy"
                 color="accent"
@@ -148,6 +149,7 @@
                 filled
               />
               <q-input
+                dense
                 :disable="isBusy"
                 color="accent"
                 v-model="model.password"
@@ -159,6 +161,7 @@
                 filled
               />
               <q-input
+                dense
                 :disable="isBusy"
                 color="accent"
                 v-model="model.confirmPassword"
@@ -170,6 +173,7 @@
                 filled
               />
               <q-input
+                dense
                 :disable="isBusy"
                 debounce="1000"
                 color="accent"
@@ -203,6 +207,7 @@
           >
             <q-form @submit="register" class="q-pa-md rounded-borders q-gutter-md">
               <q-input
+                dense
                 :disable="isBusy"
                 color="accent"
                 v-model="model.code"

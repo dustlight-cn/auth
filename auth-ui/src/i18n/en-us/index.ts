@@ -248,7 +248,15 @@ export default {
     "email": "E-mail"
   },
   "NewUser": {
-    "title": "New User"
+    "title": "New User",
+    "username": "Username",
+    "usernameHint": "Please enter the username of the new user.",
+    "password": "Password",
+    "passwordHint": "Please enter the password of the new user.",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordHint": "Confirm the new user's password.",
+    "email": "E-mail",
+    "emailHint": "Please enter the new user's email address."
   },
   "SystemSettings": {
     "title": "System Settings",
