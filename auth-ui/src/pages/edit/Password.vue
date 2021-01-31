@@ -1,5 +1,7 @@
 <template>
   <update-user
+    :on-success="onSuccess"
+    :on-cancel="onCancel"
     :submit="onSubmit"
     :title="$tt(this,'operator')"
     :user="user"
@@ -7,6 +9,7 @@
     <div v-if="!loading">
       <q-card-section>
         <q-input
+          v-if="!withoutOldPassword"
           :label="$tt($options,'oldPassword')"
           :hint="$tt($options,'oldPasswordHint')"
           v-model="model.oldPassword"
@@ -69,7 +72,10 @@ export default {
   name: "Password",
   components: {UpdateUser, RequireAuthorization},
   props: {
-    user: Object
+    user: Object,
+    onSuccess: Function,
+    onCancel: Function,
+    withoutOldPassword: Boolean,
   },
   data() {
     return {
@@ -88,7 +94,9 @@ export default {
   },
   methods: {
     onSubmit() {
-      return this.$userApi.resetPassword(this.model.oldPassword, this.model.newPassword);
+      return (this.withoutOldPassword ?
+        this.$usersApi.updateUserPassword(this.user.uid, this.model.newPassword) :
+        this.$userApi.resetPassword(this.model.oldPassword, this.model.newPassword));
     }
   }
 }

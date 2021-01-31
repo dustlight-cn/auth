@@ -245,7 +245,13 @@ export default {
     "username": "用户名",
     "nickname": "昵称",
     "gender": "性别",
-    "email": "电子邮箱"
+    "email": "电子邮箱",
+    "password": "密码",
+
+    "deleteUser": "删除",
+    "deleteUserTitle": "删除用户",
+    "deleteUserMsg": "是否确定删除此用户？",
+    "deleted": "用户已删除"
   },
   "NewUser": {
     "title": "创建用户",

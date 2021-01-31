@@ -245,7 +245,13 @@ export default {
     "username": "Username",
     "nickname": "Nickname",
     "gender": "Gender",
-    "email": "E-mail"
+    "email": "E-mail",
+    "password": "Password",
+
+    "deleteUser": "Delete",
+    "deleteUserTitle": "Delete User",
+    "deleteUserMsg": "Are you sure to delete this user?",
+    "deleted": "User Deleted"
   },
   "NewUser": {
     "title": "New User",
