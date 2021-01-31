@@ -248,7 +248,15 @@ export default {
     "email": "电子邮箱"
   },
   "NewUser": {
-    "title": "创建用户"
+    "title": "创建用户",
+    "username": "用户名",
+    "usernameHint": "请输入新用户的用户名。",
+    "password": "密码",
+    "passwordHint": "请输入新用户的密码。",
+    "confirmPassword": "确认密码",
+    "confirmPasswordHint": "确认新用户的密码。",
+    "email": "电子邮箱",
+    "emailHint": "请输入新用户的电子邮箱。"
   },
   "SystemSettings": {
     "title": "系统设置",
