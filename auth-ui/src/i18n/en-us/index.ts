@@ -247,6 +247,8 @@ export default {
     "gender": "Gender",
     "email": "E-mail",
     "password": "Password",
+    "roles": "Roles",
+    "expiredAt": "Expired at",
 
     "deleteUser": "Delete",
     "deleteUserTitle": "Delete User",
