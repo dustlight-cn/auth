@@ -98,7 +98,7 @@ const c = {
         return this.user && this.user.authorities && this.user.authorities.indexOf(authorities) >= 0;
       if (authorities.length == 0)
         return true;
-      if (this.user == null || !this.user.authorities == null || this.user.authorities.length == 0)
+      if (this.user == null || this.user.authorities == null || this.user.authorities.length == 0)
         return false;
       for (let key in authorities) {
         if (this.user.authorities.indexOf(authorities[key]) >= 0)

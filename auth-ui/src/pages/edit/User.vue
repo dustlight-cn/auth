@@ -92,7 +92,35 @@
                     </q-item-section>
                   </q-item>
 
+                  <!--  用户密码, Password -->
+                  <q-item class="q-pa-none q-mt-md" v-if="hasWriteUserPasswordPermission">
+                    <q-item-section>
+                      <q-item-label header class="q-pl-none">{{ $tt($options, "password") }}</q-item-label>
+                      <q-item-label class="content">******</q-item-label>
+                    </q-item-section>
+                    <q-item-section side top>
+                      <q-btn round flat icon="edit"
+                             @click="()=>edit.password=true"/>
+                    </q-item-section>
+                  </q-item>
                 </q-list>
+
+                <!-- 操作按钮 -->
+                <q-separator v-if="hasDeleteUserPermission" class="q-mt-md"/>
+                <div v-if="hasDeleteUserPermission">
+
+                  <q-item class="q-pa-none q-mt-lg">
+                    <q-space/>
+                    <q-item-section>
+                      <q-item-label caption>
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-btn :loading="deleting" @click="deleteUser" no-caps color="negative" icon="delete"
+                             :label="$tt($options,'deleteUser')"/>
+                    </q-item-section>
+                  </q-item>
+                </div>
               </div>
             </template>
           </edit-page>
@@ -145,6 +173,11 @@
                :user="targetUser"
                :on-success="()=>edit.email=false"
                :on-cancel="()=>edit.email=false"/>
+        <password :without-old-password="true"
+                  v-if="edit.password"
+                  :user="targetUser"
+                  :on-success="()=>edit.password=false"
+                  :on-cancel="()=>edit.password=false"/>
       </div>
     </transition>
   </div>
@@ -158,10 +191,11 @@ import EditAvatar from "./Avatar";
 import Nickname from "./Nickname";
 import Gender from "./Gender";
 import Email from "./Email";
+import Password from "./Password";
 
 export default {
   name: "User",
-  components: {Email, Gender, Nickname, EditAvatar, Avatar, RequireAuthorization, EditPage},
+  components: {Password, Email, Gender, Nickname, EditAvatar, Avatar, RequireAuthorization, EditPage},
   data() {
     return {
       user_: null,
@@ -170,17 +204,19 @@ export default {
       loading: false,
       error: null,
       deleted: false,
+      deleting: false,
       edit: {
         nickname: false,
         gender: false,
         avatar: false,
-        email: false
+        email: false,
+        password: false
       }
     }
   },
   computed: {
     isEditing() {
-      return this.edit.nickname || this.edit.gender || this.edit.avatar || this.edit.email;
+      return this.edit.nickname || this.edit.gender || this.edit.avatar || this.edit.email || this.edit.password;
     },
     hasWriteUserPermission() {
       return this.hasPermission("WRITE_USER");
@@ -216,6 +252,34 @@ export default {
         })
         .catch(e => this.error = e)
         .finally(() => this.loading = false)
+    },
+    showDeleteSuccessMessage() {
+      this.$q.notify({
+        message: this.$t("deleteSuccess"),
+        type: 'positive'
+      })
+    },
+    deleteUser() {
+      if (this.deleting || this.deleted)
+        return;
+      this.$q.dialog({
+        type: "warning",
+        color: "negative",
+        message: this.$tt(this, "deleteUserMsg"),
+        title: this.$tt(this, "deleteUserTitle"),
+        ok: {
+          label: this.$t("delete")
+        },
+        cancel: true
+      }).onOk(() => {
+        this.deleting = true;
+        this.$usersApi.deleteUser(this.uid)
+          .then(() => {
+            this.deleted = true;
+            this.showDeleteSuccessMessage();
+          })
+          .finally(() => this.deleting = false);
+      })
     }
   },
   watch: {
