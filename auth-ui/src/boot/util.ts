@@ -28,7 +28,7 @@ class Util {
       date = new Date(date)
     let ret;
     if (format == null)
-      format = "YYYY-mm-dd"
+      format = "YYYY/mm/dd"
     const opt = {
       "Y+": date.getFullYear().toString(),        // 年
       "m+": (date.getMonth() + 1).toString(),     // 月

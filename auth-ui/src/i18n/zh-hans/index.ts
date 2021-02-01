@@ -27,6 +27,7 @@ export default {
   "title": "标题",
   "description": "描述",
   "seconds": "秒",
+  "day": "天",
   "Error404": {
     "notFound": "抱歉，这里空空如也。",
     "goBack": "返回"
@@ -249,6 +250,10 @@ export default {
     "password": "密码",
     "roles": "角色",
     "expiredAt": "到期时间",
+    "expiredNull": "无期限",
+    "expiredSimple": "简单设置",
+    "expiredDetails": "详细设置",
+    "expiredNullDesc": "角色无到期时间。",
 
     "deleteUser": "删除",
     "deleteUserTitle": "删除用户",
