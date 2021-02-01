@@ -27,6 +27,7 @@ export default {
   "title": "Title",
   "description": "Description",
   "seconds": "Seconds",
+  "day": "Day",
   "Error404": {
     "notFound": "Oops. Nothing here...",
     "goBack": "Go Back"
@@ -248,7 +249,11 @@ export default {
     "email": "E-mail",
     "password": "Password",
     "roles": "Roles",
-    "expiredAt": "Expired at",
+    "expiredAt": "Expired At",
+    "expiredNull": "No Expiration",
+    "expiredSimple": "Simple Setup",
+    "expiredDetails": "Detailed Settings",
+    "expiredNullDesc": "The role has no expiration time.",
 
     "deleteUser": "Delete",
     "deleteUserTitle": "Delete User",

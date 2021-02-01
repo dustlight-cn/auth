@@ -162,7 +162,7 @@
                     {{ $tt($options, 'createdAt') }}
                   </q-item-label>
                   <q-item-label caption>
-                    {{ $util.dateFormat(client.createdAt, "YYYY-mm-dd") }}
+                    {{ $util.dateFormat(client.createdAt, "YYYY/mm/dd") }}
                   </q-item-label>
                 </q-item-section>
               </q-item>
