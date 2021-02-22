@@ -23,6 +23,6 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
         externalDocs = @ExternalDocumentation(description = "View on Github", url = "https://github.com/dustlight-cn/auth")
 )
 @SecurityScheme(name = "ClientCredentials", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER, scheme = "basic")
-@SecurityScheme(name = "AccessToken", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.QUERY, paramName = "access_token")
+@SecurityScheme(name = "AccessToken", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER, scheme = "bearer")
 public class DocumentConfiguration {
 }

@@ -14,7 +14,7 @@
 ### 前端
 * 基于 **Vue** & **Quasar** 框架。
 * 使用 **OpenAPI Generator** 生成 Typescript Axios SDK。
-* 国际化 & 自适应。
+* 国际化（中英文） & 自适应。
 
 ### 关键词
 * OAuth2.0 授权中心
@@ -22,15 +22,19 @@
 * 角色权限（RBAC）
 
 ## 示例
-* [UI](https://accounts.dustlight.cn)
-* [API](https://api.dustlight.cn/v0)
+* [UI (前端)](https://accounts.dustlight.cn)
+* [API浏览 (Swagger UI)](https://api.dustlight.cn/v0/swagger-ui)
 
 ## 构建
 待完善
 
 ## 部署
-### 镜像
-```dustlightcn/auth-service:0.0.1-alpha-4```
+### 镜像 
+```dustlightcn/auth-service```
+
+![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/dustlightcn/auth-service?logo=docker)
+![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dustlightcn/auth-service?label=version)
+
 ### Kubernetes配置
 待完善
 ### ...
