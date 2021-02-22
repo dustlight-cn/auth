@@ -28,7 +28,7 @@ jobs:
         jarName=`find *.jar`
         tagName=${jarName%.jar}
         tagName=${tagName#auth-service-}
-        cp $jarName /auth-service.jar
+        cp $jarName ../../auth-service.jar
         echo "jarName=$jarName" >> $GITHUB_ENV
         echo "tagName=$tagName" >> $GITHUB_ENV
     - name: Build and push Docker images
