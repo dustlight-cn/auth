@@ -34,7 +34,20 @@ public class ExceptionController {
 
     @ExceptionHandler(AuthException.class)
     public ErrorDetails onErrorException(AuthException e, HttpServletRequest request, HttpServletResponse response) {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        int code = e != null && e.getErrorDetails() != null ? e.getErrorDetails().getCode() : 0;
+        if (code == -1)
+            response.setStatus(HttpStatus.OK.value());
+        else if (code == 1)
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        else if (code == 2)
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+        else if (code >= 2000 && code <= 2999)
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+        else if (code >= 3000 && code <= 3999)
+            response.setStatus(HttpStatus.CONFLICT.value());
+        else
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+
         logger.debug(e.getErrorDetails().getMessage(), e);
         return e.getErrorDetails();
     }
@@ -48,7 +61,7 @@ public class ExceptionController {
 
     @ExceptionHandler(AuthenticationException.class)
     public ErrorDetails onAuthenticationException(AuthenticationException e, HttpServletRequest request, HttpServletResponse response) {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         logger.debug(e.getMessage(), e);
         return ErrorEnum.UNAUTHORIZED.details(e.getMessage());
     }
