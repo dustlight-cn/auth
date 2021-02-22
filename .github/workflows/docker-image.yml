@@ -11,9 +11,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-      jarName: auth-service.jar
-      tagName: tag
     steps:
     - uses: actions/checkout@v2
     - name: Build the Maven project
@@ -23,11 +20,13 @@ jobs:
         cd auth-service/target
         find -name "*-sources.jar" -exec rm {} \;
         find -name "*-javadoc.jar" -exec rm {} \;
-        export jarName=`find *.jar`
+        jarName=`find *.jar`
         tagName=${jarName%.jar}
-        export tagName=${tagName#auth-service-}
+        tagName=${tagName#auth-service-}
         cp $jarName ../../auth-service.jar
         cd ../../
+        echo "jarName=$jarName" >> $GITHUB_ENV
+        echo "tagName=$tagName" >> $GITHUB_ENV
     - name: Login to DockerHub
       uses: docker/login-action@v1 
       with:
@@ -37,4 +36,4 @@ jobs:
       uses: docker/build-push-action@v2.3.0
       with:
         push: true
-        tags: dustlightcn/auth-service:${{  tagName  }}
+        tags: dustlightcn/auth-service:${{  env.tagName  }}
