@@ -151,7 +151,7 @@ export default boot(({Vue}) => {
   let path = config.host || BASE_PATH;
   Vue.prototype.$apiCfg = new Configuration({
     basePath: path,
-    apiKey: () => {
+    accessToken: () => {
       let s = Vue.prototype.$s;
       s.loadToken()
       let token = s.loadToken();
