@@ -14,8 +14,8 @@ jobs:
     steps:
     - name: Test
       env:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.docker.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.docker.DOCKERHUB_TOKEN }}
       run: | 
        echo $username
        echo $password
