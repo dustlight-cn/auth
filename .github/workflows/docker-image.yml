@@ -12,13 +12,6 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - name: Test
-      env:
-        username: ${{ secrets.docker.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.docker.DOCKERHUB_TOKEN }}
-      run: | 
-       echo $username
-       echo $password
     - name: Login to DockerHub
       uses: docker/login-action@v1.8.0
       with:
