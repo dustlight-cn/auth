@@ -12,6 +12,8 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
@@ -55,5 +57,11 @@ public class TokenConfiguration {
                 instance.setKeyPrefix(properties.getKeyPrefix());
         }
         return instance;
+    }
+
+    @Bean("accessTokenConverter")
+    @ConditionalOnMissingBean(name = "accessTokenConverter")
+    public AccessTokenConverter accessTokenConverter() {
+        return new DefaultAccessTokenConverter();
     }
 }

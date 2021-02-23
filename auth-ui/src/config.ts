@@ -33,7 +33,6 @@ export interface Config {
 
 const config: Config = {
   // host: "http://localhost:8080",
-  // host: "http://192.168.199.106:8080",
   host: "https://api.dustlight.cn",
   recaptchaKey: "6Lcp1xAaAAAAAEp6YI3vE4rLG5Ehgj4EeMip04er",
   pattern: {

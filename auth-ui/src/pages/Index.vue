@@ -2,8 +2,9 @@
   <q-page>
     <q-page class="flex flex-center">
       <img
-        alt="Quasar logo"
-        src="~assets/icon.png"
+        alt="Auth logo"
+        width="100%"
+        src="~assets/auth.png"
       >
     </q-page>
   </q-page>
