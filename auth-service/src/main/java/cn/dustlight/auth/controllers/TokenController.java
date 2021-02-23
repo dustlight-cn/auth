@@ -27,7 +27,9 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.*;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.security.oauth2.provider.*;
+import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.authentication.www.BasicAuthenticationConverter;
 import org.springframework.util.StringUtils;
@@ -61,6 +63,12 @@ public class TokenController {
 
     @Autowired
     private AuthorizationServerTokenServices authorizationServerTokenServices;
+
+    @Autowired
+    private ResourceServerTokenServices resourceServerTokenServices;
+
+    @Autowired
+    private AccessTokenConverter accessTokenConverter;
 
     @Autowired
     private OAuth2RequestFactory oAuth2RequestFactory;
@@ -101,6 +109,23 @@ public class TokenController {
         }
     }
 
+    @Operation(summary = "检查 OAuth2 令牌", security = @SecurityRequirement(name = "ClientCredentials"))
+    @GetMapping({"oauth/token"})
+    @ResponseBody
+    public Map<String, ?> checkOAuthToken(@RequestParam("token") String value,
+                                          HttpServletRequest request) {
+        Client client = getClient(request);
+        OAuth2AccessToken token = this.resourceServerTokenServices.readAccessToken(value);
+        if (token == null) {
+            throw new InvalidTokenException("Token was not recognised");
+        } else if (token.isExpired()) {
+            throw new InvalidTokenException("Token has expired");
+        } else {
+            OAuth2Authentication authentication = this.resourceServerTokenServices.loadAuthentication(token.getValue());
+            return this.accessTokenConverter.convertAccessToken(token, authentication);
+        }
+    }
+
     @Operation(summary = "颁发 OAuth2 令牌", security = @SecurityRequirement(name = "ClientCredentials"))
     @PostMapping("oauth/token")
     public ResponseEntity<OAuth2AccessToken> grantOAuthToken(@RequestParam(value = "code", required = false) String code,
@@ -110,21 +135,9 @@ public class TokenController {
                                                              @RequestParam(value = "password", required = false) String password,
                                                              @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
                                                              HttpServletRequest request) {
+        Client client = getClient(request);
 
-        UsernamePasswordAuthenticationToken clientPrincipal = basicConverter.convert(request);
-        if (clientPrincipal == null)
-            ErrorEnum.UNAUTHORIZED.throwException();
-        String clientName = clientPrincipal.getName();
-        String clientSecret = clientPrincipal.getCredentials() == null ? null : clientPrincipal.getCredentials().toString();
-
-        Client client = clientService.loadClientByClientId(clientName);
-        if (client == null)
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
-        if ((clientSecret == null || client.getClientSecret() == null) && clientSecret != client.getClientSecret() ||
-                !passwordEncoder.matches(clientSecret, client.getClientSecret()))
-            ErrorEnum.OAUTH_ERROR.details("client secret incorrect").throwException();
-
-        String clientId = clientName;
+        String clientId = client.getClientId();
         ClientDetails authenticatedClient = client;
 
         TokenRequest tokenRequest = oAuth2RequestFactory.createTokenRequest(parameters, authenticatedClient);
@@ -156,6 +169,22 @@ public class TokenController {
         if (token == null)
             throw new UnsupportedGrantTypeException("Unsupported grant type: " + tokenRequest.getGrantType());
         return getResponse(token);
+    }
+
+    protected Client getClient(HttpServletRequest request) {
+        UsernamePasswordAuthenticationToken clientPrincipal = basicConverter.convert(request);
+        if (clientPrincipal == null)
+            ErrorEnum.UNAUTHORIZED.throwException();
+        String clientId = clientPrincipal.getName();
+        String clientSecret = clientPrincipal.getCredentials() == null ? null : clientPrincipal.getCredentials().toString();
+
+        Client client = clientService.loadClientByClientId(clientId);
+        if (client == null)
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if ((clientSecret == null || client.getClientSecret() == null) && clientSecret != client.getClientSecret() ||
+                !passwordEncoder.matches(clientSecret, client.getClientSecret()))
+            ErrorEnum.OAUTH_ERROR.details("client secret incorrect").throwException();
+        return client;
     }
 
     private ResponseEntity<OAuth2AccessToken> getResponse(OAuth2AccessToken accessToken) {

@@ -24,6 +24,7 @@ import org.springframework.security.oauth2.provider.approval.UserApprovalHandler
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.endpoint.RedirectResolver;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -81,7 +82,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .authenticationManager(authenticationManager);
     }
 
-
     @Bean
     @ConditionalOnMissingBean
     public AuthorizationServerEndpointsConfigurer authorizationServerEndpointsConfigurer(@Autowired AuthorizationServerEndpointsConfiguration configuration) {
@@ -98,6 +98,12 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @ConditionalOnMissingBean
     public AuthorizationServerTokenServices authorizationServerTokenServices(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
         return configurer.getTokenServices();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ResourceServerTokenServices resourceServerTokenServices(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
+        return configurer.getResourceServerTokenServices();
     }
 
     @Bean

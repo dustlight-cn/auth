@@ -250,12 +250,6 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
     description?: string;
     /**
      * 
@@ -265,10 +259,22 @@ export interface Client {
     status?: number;
     /**
      * 
+     * @type {number}
+     * @memberof Client
+     */
+    uid?: number;
+    /**
+     * 
      * @type {Array<ClientScope>}
      * @memberof Client
      */
     scopes?: Array<ClientScope>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    logo?: string;
     /**
      * 
      * @type {Array<string>}
@@ -280,13 +286,13 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    logo?: string;
+    name?: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof Client
      */
-    uid?: number;
+    updatedAt?: string;
     /**
      * 
      * @type {string}
@@ -298,19 +304,7 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    updatedAt?: string;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof Client
-     */
-    extra?: { [key: string]: object; };
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    resources?: Set<string>;
+    secret?: string;
     /**
      * 
      * @type {string}
@@ -319,16 +313,16 @@ export interface Client {
     cid?: string;
     /**
      * 
-     * @type {string}
-     * @memberof Client
-     */
-    secret?: string;
-    /**
-     * 
      * @type {Set<string>}
      * @memberof Client
      */
-    grantTypes?: Set<string>;
+    resources?: Set<string>;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof Client
+     */
+    extra?: { [key: string]: object; };
     /**
      * 
      * @type {Set<string>}
@@ -341,6 +335,12 @@ export interface Client {
      * @memberof Client
      */
     accessTokenValidity?: number;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof Client
+     */
+    grantTypes?: Set<string>;
     /**
      * 
      * @type {number}
@@ -365,12 +365,6 @@ export interface ClientScope {
      * @type {string}
      * @memberof ClientScope
      */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ClientScope
-     */
     description?: string;
     /**
      * 
@@ -384,6 +378,12 @@ export interface ClientScope {
      * @memberof ClientScope
      */
     subtitle?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ClientScope
+     */
+    name?: string;
 }
 /**
  * 
@@ -433,12 +433,6 @@ export interface OAuth2AccessToken {
      * @type {string}
      * @memberof OAuth2AccessToken
      */
-    value?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
     expiration?: string;
     /**
      * 
@@ -448,10 +442,10 @@ export interface OAuth2AccessToken {
     scope?: Set<string>;
     /**
      * 
-     * @type {{ [key: string]: object; }}
+     * @type {number}
      * @memberof OAuth2AccessToken
      */
-    additionalInformation?: { [key: string]: object; };
+    expiresIn?: number;
     /**
      * 
      * @type {boolean}
@@ -460,22 +454,28 @@ export interface OAuth2AccessToken {
     expired?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    tokenType?: string;
-    /**
-     * 
      * @type {OAuth2RefreshToken}
      * @memberof OAuth2AccessToken
      */
     refreshToken?: OAuth2RefreshToken;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof OAuth2AccessToken
      */
-    expiresIn?: number;
+    tokenType?: string;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof OAuth2AccessToken
+     */
+    additionalInformation?: { [key: string]: object; };
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    value?: string;
 }
 /**
  * 
@@ -501,7 +501,7 @@ export interface PublicUser {
      * @type {number}
      * @memberof PublicUser
      */
-    uid?: number;
+    gender?: number;
     /**
      * 
      * @type {string}
@@ -513,19 +513,31 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
+    nickname?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicUser
+     */
     unlockedAt?: string;
     /**
      * 
      * @type {number}
      * @memberof PublicUser
      */
-    gender?: number;
+    uid?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PublicUser
+     */
+    enabled?: boolean;
     /**
      * 
      * @type {string}
      * @memberof PublicUser
      */
-    nickname?: string;
+    username?: string;
     /**
      * 
      * @type {boolean}
@@ -544,18 +556,6 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     accountNonLocked?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof PublicUser
-     */
-    enabled?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
-    username?: string;
     /**
      * 
      * @type {string}
@@ -612,25 +612,25 @@ export interface Resource {
      * @type {string}
      * @memberof Resource
      */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Resource
-     */
     rid?: string;
     /**
      * 
      * @type {string}
      * @memberof Resource
      */
-    createdAt?: string;
+    name?: string;
     /**
      * 
      * @type {string}
      * @memberof Resource
      */
     updatedAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Resource
+     */
+    createdAt?: string;
 }
 /**
  * 
@@ -661,13 +661,13 @@ export interface Role {
      * @type {string}
      * @memberof Role
      */
-    createdAt?: string;
+    updatedAt?: string;
     /**
      * 
      * @type {string}
      * @memberof Role
      */
-    updatedAt?: string;
+    createdAt?: string;
 }
 /**
  * 
@@ -732,22 +732,10 @@ export interface User {
     accountExpiredAt?: string;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof User
-     */
-    authorities?: Array<string>;
-    /**
-     * 
      * @type {number}
      * @memberof User
      */
-    uid?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    email?: string;
+    gender?: number;
     /**
      * 
      * @type {string}
@@ -759,19 +747,43 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof User
-     */
-    gender?: number;
+    nickname?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    nickname?: string;
+    unlockedAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    email?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    uid?: number;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof User
+     */
+    authorities?: Array<string>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof User
+     */
+    enabled?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    username?: string;
     /**
      * 
      * @type {boolean}
@@ -792,28 +804,16 @@ export interface User {
     accountNonLocked?: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof User
-     */
-    enabled?: boolean;
-    /**
-     * 
      * @type {string}
      * @memberof User
      */
-    username?: string;
+    updatedAt?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
     createdAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    updatedAt?: string;
     /**
      * 
      * @type {Array<UserRole>}
@@ -7532,6 +7532,58 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
+         * @summary 检查 OAuth2 令牌
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkOAuthToken: async (token: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'token' is not null or undefined
+            if (token === null || token === undefined) {
+                throw new RequiredError('token','Required parameter token was null or undefined when calling checkOAuthToken.');
+            }
+            const localVarPath = `/v0/oauth/token`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ClientCredentials required
+            // http basic authentication required
+            if (configuration && (configuration.username || configuration.password)) {
+                localVarRequestOptions["auth"] = { username: configuration.username, password: configuration.password };
+            }
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 删除令牌
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7719,6 +7771,20 @@ export const TokenApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary 检查 OAuth2 令牌
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async checkOAuthToken(token: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: object; }>> {
+            const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).checkOAuthToken(token, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
          * @summary 删除令牌
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7775,6 +7841,16 @@ export const TokenApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
+         * @summary 检查 OAuth2 令牌
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkOAuthToken(token: string, options?: any): AxiosPromise<{ [key: string]: object; }> {
+            return TokenApiFp(configuration).checkOAuthToken(token, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 删除令牌
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7818,6 +7894,18 @@ export const TokenApiFactory = function (configuration?: Configuration, basePath
  * @extends {BaseAPI}
  */
 export class TokenApi extends BaseAPI {
+    /**
+     * 
+     * @summary 检查 OAuth2 令牌
+     * @param {string} token 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TokenApi
+     */
+    public checkOAuthToken(token: string, options?: any) {
+        return TokenApiFp(this.configuration).checkOAuthToken(token, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary 删除令牌
