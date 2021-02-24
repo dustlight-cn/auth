@@ -111,7 +111,6 @@ public class TokenController {
 
     @Operation(summary = "检查 OAuth2 令牌", security = @SecurityRequirement(name = "ClientCredentials"))
     @GetMapping({"oauth/token"})
-    @ResponseBody
     public Map<String, ?> checkOAuthToken(@RequestParam("token") String value,
                                           HttpServletRequest request) {
         Client client = getClient(request);
