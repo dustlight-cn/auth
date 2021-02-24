@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
@@ -16,6 +18,8 @@ import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
+
+import java.util.Map;
 
 public class TokenConfiguration {
 
@@ -62,6 +66,13 @@ public class TokenConfiguration {
     @Bean("accessTokenConverter")
     @ConditionalOnMissingBean(name = "accessTokenConverter")
     public AccessTokenConverter accessTokenConverter() {
-        return new DefaultAccessTokenConverter();
+        return new DefaultAccessTokenConverter() {
+            @Override
+            public Map<String, ?> convertAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
+                Map claims = super.convertAccessToken(token, authentication);
+                claims.put("active", true);
+                return claims;
+            }
+        };
     }
 }
