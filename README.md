@@ -4,6 +4,10 @@
 
 ## 简介
 **Auth** 是一个基于 **Spring Boot** 的 **OAuth2.0** 的授权与管理服务。
+提供 OAuth2.0 授权服务，以及包括用户、应用、角色与权限的管理。
+提供 Restful 接口以及 OpenAPI 文档。
+提供前端页面。
+支持微服务部署。
 
 ### 后端
 * 通过重写 **Spring Security OAuth2** 中的 Endpoint 实现前后端分离架构，使用 **Redis** 存储 Token、授权码、验证码等。
@@ -21,17 +25,31 @@
 * 无状态（Stateless）
 * 角色权限（RBAC）
 
-## 示例
-* [UI (前端)](https://accounts.dustlight.cn)
-* [API浏览 (Swagger UI)](https://api.dustlight.cn/v0/swagger-ui)
+## 展示
+### 前端展示
+包含登录注册、应用授权、个人信息管理、应用管理以及用户管理和系统设置。
+[前往查看](https://accounts.dustlight.cn)
+
+您可以使用下列的测试账号登录，它们拥有测试权限以及开发者权限。
+
+| 用户名 | 密码 |
+| --- | --- |
+| test_user | 123456 |
+| aaaaaa | 123456 |
+| bbbbbb | 123456 |
+
+> 1. 出于功能展示的目的，测试账号拥有查看所有用户信息的权限。如果您打算进行注册账号，您的电子邮箱地址可能会被其他人看到。
+> 2. 若上述测试账号均不可用，请 [创建 Issue](https://github.com/dustlight-cn/auth/issues/new) 联系我们。
+### 接口浏览
+后端接口浏览与调试（Swagger UI）。
+[前往查看](https://api.dustlight.cn/v0/swagger-ui)
 
 ## 构建
 待完善
 
 ## 部署
-### 镜像 
+### Docker 镜像 
 ```dustlightcn/auth-service```
-
 ![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/dustlightcn/auth-service?logo=docker)
 ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dustlightcn/auth-service?label=version)
 
