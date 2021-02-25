@@ -111,20 +111,36 @@ public class UserResource {
 
     @GetMapping(value = "users")
     @Operation(summary = "查找用户",
-            description = "查询或者列出用户（取决于有无关键字与权限），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。")
-    public QueryResults<? extends User> getUsers(@RequestParam(required = false, value = "q") String query,
+            description = "查询或者列出用户（取决于有无关键字(q)或者用户ID(uid)），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。")
+    public QueryResults<? extends User> getUsers(@RequestParam(required = false, value = "uid") Collection<Long> uid,
+                                                 @RequestParam(required = false, value = "q") String query,
                                                  @RequestParam(required = false) Integer offset,
                                                  @RequestParam(defaultValue = "10") Integer limit,
                                                  @RequestParam(required = false) Collection<String> order,
                                                  OAuth2Authentication auth2Authentication) {
         boolean flag = hasAuthority(auth2Authentication, "READ_USER");
-        if (flag) {
-            if (query != null && query.length() > 0)
-                return setAvatar(userService.searchUsers(query, order, offset, limit));
-            else
-                return setAvatar(userService.listUsers(order, offset, limit));
+        if (uid != null && uid.size() > 0) {
+            if (flag) {
+                QueryResults<DefaultUser> result = new QueryResults<>();
+                Collection<DefaultUser> users = userService.loadUsers(uid);
+                result.setData(users);
+                result.setCount(users.size());
+                return setAvatar(result);
+            }
+            QueryResults<DefaultPublicUser> result = new QueryResults<>();
+            Collection<DefaultPublicUser> users = userService.loadPublicUserByUid(uid);
+            result.setData(users);
+            result.setCount(users.size());
+            return setAvatar(result);
+        } else {
+            if (flag) {
+                if (query != null && query.length() > 0)
+                    return setAvatar(userService.searchUsers(query, order, offset, limit));
+                else
+                    return setAvatar(userService.listUsers(order, offset, limit));
+            }
+            return setAvatar(userService.searchPublicUsers(query, order, offset, limit));
         }
-        return setAvatar(userService.searchPublicUsers(query, order, offset, limit));
     }
 
     @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_USER_PASSWORD')) and #oauth2.clientHasRole('WRITE_USER_PASSWORD')")
