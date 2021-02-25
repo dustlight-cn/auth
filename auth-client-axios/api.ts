@@ -151,13 +151,13 @@ export interface AuthorizationClient {
      * @type {number}
      * @memberof AuthorizationClient
      */
-    accessTokenValiditySeconds?: number;
+    refreshTokenValiditySeconds?: number;
     /**
      * 
      * @type {number}
      * @memberof AuthorizationClient
      */
-    refreshTokenValiditySeconds?: number;
+    accessTokenValiditySeconds?: number;
     /**
      * 
      * @type {string}
@@ -250,6 +250,12 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
     description?: string;
     /**
      * 
@@ -257,18 +263,6 @@ export interface Client {
      * @memberof Client
      */
     status?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Client
-     */
-    uid?: number;
-    /**
-     * 
-     * @type {Array<ClientScope>}
-     * @memberof Client
-     */
-    scopes?: Array<ClientScope>;
     /**
      * 
      * @type {string}
@@ -283,10 +277,16 @@ export interface Client {
     authorities?: Array<string>;
     /**
      * 
-     * @type {string}
+     * @type {Array<ClientScope>}
      * @memberof Client
      */
-    name?: string;
+    scopes?: Array<ClientScope>;
+    /**
+     * 
+     * @type {number}
+     * @memberof Client
+     */
+    uid?: number;
     /**
      * 
      * @type {string}
@@ -304,12 +304,6 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    secret?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
     cid?: string;
     /**
      * 
@@ -317,6 +311,12 @@ export interface Client {
      * @memberof Client
      */
     resources?: Set<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    secret?: string;
     /**
      * 
      * @type {{ [key: string]: object; }}
@@ -328,25 +328,25 @@ export interface Client {
      * @type {Set<string>}
      * @memberof Client
      */
+    grantTypes?: Set<string>;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof Client
+     */
     redirectUri?: Set<string>;
     /**
      * 
      * @type {number}
      * @memberof Client
      */
-    accessTokenValidity?: number;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    grantTypes?: Set<string>;
+    refreshTokenValidity?: number;
     /**
      * 
      * @type {number}
      * @memberof Client
      */
-    refreshTokenValidity?: number;
+    accessTokenValidity?: number;
 }
 /**
  * 
@@ -365,6 +365,12 @@ export interface ClientScope {
      * @type {string}
      * @memberof ClientScope
      */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ClientScope
+     */
     description?: string;
     /**
      * 
@@ -378,12 +384,6 @@ export interface ClientScope {
      * @memberof ClientScope
      */
     subtitle?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ClientScope
-     */
-    name?: string;
 }
 /**
  * 
@@ -433,6 +433,12 @@ export interface OAuth2AccessToken {
      * @type {string}
      * @memberof OAuth2AccessToken
      */
+    value?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
     expiration?: string;
     /**
      * 
@@ -442,22 +448,16 @@ export interface OAuth2AccessToken {
     scope?: Set<string>;
     /**
      * 
-     * @type {number}
-     * @memberof OAuth2AccessToken
-     */
-    expiresIn?: number;
-    /**
-     * 
      * @type {boolean}
      * @memberof OAuth2AccessToken
      */
     expired?: boolean;
     /**
      * 
-     * @type {OAuth2RefreshToken}
+     * @type {number}
      * @memberof OAuth2AccessToken
      */
-    refreshToken?: OAuth2RefreshToken;
+    expiresIn?: number;
     /**
      * 
      * @type {string}
@@ -466,16 +466,16 @@ export interface OAuth2AccessToken {
     tokenType?: string;
     /**
      * 
+     * @type {OAuth2RefreshToken}
+     * @memberof OAuth2AccessToken
+     */
+    refreshToken?: OAuth2RefreshToken;
+    /**
+     * 
      * @type {{ [key: string]: object; }}
      * @memberof OAuth2AccessToken
      */
     additionalInformation?: { [key: string]: object; };
-    /**
-     * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    value?: string;
 }
 /**
  * 
@@ -498,12 +498,6 @@ export interface OAuth2RefreshToken {
 export interface PublicUser {
     /**
      * 
-     * @type {number}
-     * @memberof PublicUser
-     */
-    gender?: number;
-    /**
-     * 
      * @type {string}
      * @memberof PublicUser
      */
@@ -513,13 +507,19 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    nickname?: string;
+    unlockedAt?: string;
     /**
      * 
      * @type {string}
      * @memberof PublicUser
      */
-    unlockedAt?: string;
+    nickname?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PublicUser
+     */
+    gender?: number;
     /**
      * 
      * @type {number}
@@ -549,13 +549,13 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    credentialsNonExpired?: boolean;
+    accountNonLocked?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof PublicUser
      */
-    accountNonLocked?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {string}
@@ -612,13 +612,13 @@ export interface Resource {
      * @type {string}
      * @memberof Resource
      */
-    rid?: string;
+    name?: string;
     /**
      * 
      * @type {string}
      * @memberof Resource
      */
-    name?: string;
+    rid?: string;
     /**
      * 
      * @type {string}
@@ -723,31 +723,7 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    credentialsExpiredAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    accountExpiredAt?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof User
-     */
-    gender?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
     avatar?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    nickname?: string;
     /**
      * 
      * @type {string}
@@ -759,7 +735,31 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    email?: string;
+    nickname?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    gender?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    credentialsExpiredAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    accountExpiredAt?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof User
+     */
+    authorities?: Array<string>;
     /**
      * 
      * @type {number}
@@ -768,10 +768,10 @@ export interface User {
     uid?: number;
     /**
      * 
-     * @type {Array<string>}
+     * @type {string}
      * @memberof User
      */
-    authorities?: Array<string>;
+    email?: string;
     /**
      * 
      * @type {boolean}
@@ -795,13 +795,13 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    credentialsNonExpired?: boolean;
+    accountNonLocked?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof User
      */
-    accountNonLocked?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {string}
@@ -8877,8 +8877,9 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 查询或者列出用户（取决于有无关键字与权限），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。
+         * 查询或者列出用户（取决于有无关键字(q)或者用户ID(uid)），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。
          * @summary 查找用户
+         * @param {Array<number>} [uid] 
          * @param {string} [q] 
          * @param {number} [offset] 
          * @param {number} [limit] 
@@ -8886,7 +8887,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUsers: async (q?: string, offset?: number, limit?: number, order?: Array<string>, options: any = {}): Promise<RequestArgs> => {
+        getUsers: async (uid?: Array<number>, q?: string, offset?: number, limit?: number, order?: Array<string>, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/v0/users`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
@@ -8906,6 +8907,10 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
                     ? await configuration.accessToken()
                     : await configuration.accessToken;
                 localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+            if (uid) {
+                localVarQueryParameter['uid'] = uid;
             }
 
             if (q !== undefined) {
@@ -9320,8 +9325,9 @@ export const UsersApiFp = function(configuration?: Configuration) {
             };
         },
         /**
-         * 查询或者列出用户（取决于有无关键字与权限），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。
+         * 查询或者列出用户（取决于有无关键字(q)或者用户ID(uid)），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。
          * @summary 查找用户
+         * @param {Array<number>} [uid] 
          * @param {string} [q] 
          * @param {number} [offset] 
          * @param {number} [limit] 
@@ -9329,8 +9335,8 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUsers(q?: string, offset?: number, limit?: number, order?: Array<string>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultsUser>> {
-            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).getUsers(q, offset, limit, order, options);
+        async getUsers(uid?: Array<number>, q?: string, offset?: number, limit?: number, order?: Array<string>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryResultsUser>> {
+            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).getUsers(uid, q, offset, limit, order, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -9463,8 +9469,9 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
             return UsersApiFp(configuration).getUserAvatar(uid, options).then((request) => request(axios, basePath));
         },
         /**
-         * 查询或者列出用户（取决于有无关键字与权限），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。
+         * 查询或者列出用户（取决于有无关键字(q)或者用户ID(uid)），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。
          * @summary 查找用户
+         * @param {Array<number>} [uid] 
          * @param {string} [q] 
          * @param {number} [offset] 
          * @param {number} [limit] 
@@ -9472,8 +9479,8 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUsers(q?: string, offset?: number, limit?: number, order?: Array<string>, options?: any): AxiosPromise<QueryResultsUser> {
-            return UsersApiFp(configuration).getUsers(q, offset, limit, order, options).then((request) => request(axios, basePath));
+        getUsers(uid?: Array<number>, q?: string, offset?: number, limit?: number, order?: Array<string>, options?: any): AxiosPromise<QueryResultsUser> {
+            return UsersApiFp(configuration).getUsers(uid, q, offset, limit, order, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
@@ -9591,8 +9598,9 @@ export class UsersApi extends BaseAPI {
     }
 
     /**
-     * 查询或者列出用户（取决于有无关键字与权限），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。
+     * 查询或者列出用户（取决于有无关键字(q)或者用户ID(uid)），获取公开信息。若应用和用户拥有 READ_USER 权限，则获取完整信息。
      * @summary 查找用户
+     * @param {Array<number>} [uid] 
      * @param {string} [q] 
      * @param {number} [offset] 
      * @param {number} [limit] 
@@ -9601,8 +9609,8 @@ export class UsersApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUsers(q?: string, offset?: number, limit?: number, order?: Array<string>, options?: any) {
-        return UsersApiFp(this.configuration).getUsers(q, offset, limit, order, options).then((request) => request(this.axios, this.basePath));
+    public getUsers(uid?: Array<number>, q?: string, offset?: number, limit?: number, order?: Array<string>, options?: any) {
+        return UsersApiFp(this.configuration).getUsers(uid, q, offset, limit, order, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
