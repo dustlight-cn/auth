@@ -99,7 +99,7 @@
           <q-item>
             <q-item-section>
               <q-item-label caption>UID</q-item-label>
-              <q-item-label overline>{{ user.uid }}</q-item-label>
+              <q-item-label class="content">{{ user.uid }}</q-item-label>
             </q-item-section>
           </q-item>
           <!-- 用户名 -->
@@ -108,7 +108,7 @@
               <q-item-label caption>
                 {{ $tt($options, "username") }}
               </q-item-label>
-              <q-item-label overline>{{ user.username }}</q-item-label>
+              <q-item-label class="content">{{ user.username }}</q-item-label>
             </q-item-section>
           </q-item>
           <!-- 角色 -->
@@ -117,20 +117,37 @@
               <q-item-label caption>
                 {{ $tt($options, "roles") }}
               </q-item-label>
-              <q-item-label overline>
-                <q-chip icon="person" v-for="(role,i) in user.roles" :key="i">
-                  {{ role.roleDescription }}
-                </q-chip>
+              <q-item-label class="content">
+                <q-list>
+                  <q-item class="q-pl-none" v-for="(role,i) in user.roles" :key="role.rid">
+                    <q-item-section avatar style="min-width: 0px;">
+                      <q-icon name="person"/>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>{{ role.roleDescription }}
+                        <q-badge color="dark" transparent align="top" v-if="role.expiredAt">
+                          <span>{{ $tt("User", "expiredAt") }}</span>
+                          <span class="q-ml-xs">
+                          {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
+                        </span>
+                        </q-badge>
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+                <!--                <q-chip icon="person" v-for="(role,i) in user.roles" :key="i">-->
+                <!--                  {{ role.roleDescription }}-->
+                <!--                </q-chip>-->
               </q-item-label>
             </q-item-section>
           </q-item>
-          <!-- 角色 -->
+          <!-- 注册时间 -->
           <q-item>
             <q-item-section>
               <q-item-label caption>
                 {{ $tt($options, "regtime") }}
               </q-item-label>
-              <q-item-label overline>
+              <q-item-label class="content">
                 {{ $util.dateFormat(user.createdAt) }}
               </q-item-label>
             </q-item-section>
@@ -152,5 +169,8 @@ export default {
 </script>
 
 <style scoped>
-
+.content {
+  font-family: Consolas;
+  font-size: 16px;
+}
 </style>

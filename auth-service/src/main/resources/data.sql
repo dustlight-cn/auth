@@ -48,7 +48,7 @@ INSERT IGNORE INTO `scopes` (`sid`,`name`,`subtitle`,`description`) VALUES
 INSERT IGNORE INTO `types` (`tid`,`name`,`description`) VALUES
 (0,'authorization_code','授权码模式'),
 (1,'refresh_token','令牌刷新'),
-(2,'implicit','简易模式'),
+(2,'implicit','隐式授权模式'),
 (3,'client_credentials','客户端凭据模式');
 -- (4,'password','密码模式'); 此授权模式不安全，可绕过验证直接登录。
 

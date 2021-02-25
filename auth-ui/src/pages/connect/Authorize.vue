@@ -137,7 +137,7 @@
               </q-item>
               <div class="q-pb-md text-caption text-grey text-center">
                 {{ $tt($options, 'redirect') }}
-                <div><b>{{ authorization.redirect }}</b></div>
+                <div><b>{{ $route.query.redirect_uri }}</b></div>
               </div>
             </q-list>
 
