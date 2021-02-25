@@ -139,7 +139,8 @@ export default {
         this.search.page = 1;
       this.searching = true;
       let k = this.search.keywords;
-      this.$usersApi.getUsers(k,
+      this.$usersApi.getUsers(null,
+        k,
         this.limit * (this.search.page - 1),
         this.limit,
         []

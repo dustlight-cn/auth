@@ -43,7 +43,7 @@ export default {
         nickname: null
       },
       rules: {
-        nickname: [val => val && val.length > 0 || this.$tt(this, "nicknameRule")]
+        nickname: [val => val && val.trim().length > 0 || this.$tt(this, "nicknameRule")]
       }
     }
   },

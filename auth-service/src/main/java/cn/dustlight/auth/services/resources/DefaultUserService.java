@@ -153,6 +153,8 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     @Override
     public void updateNickname(Long uid, String nickname) {
+        if (nickname == null || nickname.trim().isEmpty())
+            ErrorEnum.UPDATE_USER_FAIL.details("fail to update nickname").throwException();
         if (!userMapper.updateNickname(uid, nickname))
             ErrorEnum.UPDATE_USER_FAIL.details("fail to update nickname").throwException();
     }
