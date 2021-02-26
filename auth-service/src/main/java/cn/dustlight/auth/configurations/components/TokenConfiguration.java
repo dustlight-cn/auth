@@ -82,7 +82,7 @@ public class TokenConfiguration {
                 Map response = super.convertUserAuthentication(authentication);
                 if (authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
                     User user = (User) authentication.getPrincipal();
-                    response.put("username", user.getUid());
+                    response.put("username", user.getUid() != null ? user.getUid().toString() : null);
                 }
                 return response;
             }
