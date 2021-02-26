@@ -2,7 +2,7 @@ package cn.dustlight.auth.util;
 
 public final class Constants {
 
-    public final static String VERSION = "v0";
+    public final static String VERSION = "v1";
 
     public final static String API_ROOT = "/" + VERSION;
 
