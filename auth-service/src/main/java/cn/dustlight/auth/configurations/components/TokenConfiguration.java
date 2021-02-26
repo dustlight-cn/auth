@@ -1,5 +1,6 @@
 package cn.dustlight.auth.configurations.components;
 
+import cn.dustlight.auth.entities.User;
 import cn.dustlight.auth.properties.AuthorizationCodeProperties;
 import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
 import cn.dustlight.auth.services.oauth.RedisAuthorizationCodeService;
@@ -9,14 +10,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 import java.util.Map;
@@ -66,13 +66,28 @@ public class TokenConfiguration {
     @Bean("accessTokenConverter")
     @ConditionalOnMissingBean(name = "accessTokenConverter")
     public AccessTokenConverter accessTokenConverter() {
-        return new DefaultAccessTokenConverter() {
+        DefaultAccessTokenConverter accessTokenConverter = new DefaultAccessTokenConverter() {
             @Override
             public Map<String, ?> convertAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
                 Map claims = super.convertAccessToken(token, authentication);
+                if (claims == null)
+                    return null;
                 claims.put("active", true);
                 return claims;
             }
         };
+        DefaultUserAuthenticationConverter userAuthenticationConverter = new DefaultUserAuthenticationConverter() {
+            @Override
+            public Map<String, ?> convertUserAuthentication(Authentication authentication) {
+                Map response = super.convertUserAuthentication(authentication);
+                if (authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+                    User user = (User) authentication.getPrincipal();
+                    response.put("username", user.getUid());
+                }
+                return response;
+            }
+        };
+        accessTokenConverter.setUserTokenConverter(userAuthenticationConverter);
+        return accessTokenConverter;
     }
 }
