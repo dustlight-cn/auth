@@ -46,9 +46,9 @@ spring:
 
 springdoc:
   api-docs:
-    path: /v0/api-doc
+    path: /v1/api-doc
   swagger-ui:
-    path: /v0/swagger-ui
+    path: /v1/swagger-ui
 
 dustlight:
   auth:

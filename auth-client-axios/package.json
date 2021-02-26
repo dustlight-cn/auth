@@ -1,6 +1,6 @@
 {
   "name": "@dustlight/auth-client-axios",
-  "version": "1.0.2-alpha",
+  "version": "1.0.3-alpha",
   "description": "Client SDK for Auth-Service",
   "main": "index.ts",
   "scripts": {

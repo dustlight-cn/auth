@@ -42,7 +42,7 @@
 > 2. 若上述测试账号均不可用，请 [创建 Issue](https://github.com/dustlight-cn/auth/issues/new) 联系我们。
 ### 接口浏览
 后端接口浏览与调试（Swagger UI）。
-[前往查看](https://api.dustlight.cn/v0/swagger-ui)
+[前往查看](https://api.dustlight.cn/v1/swagger-ui)
 
 ## 构建
 待完善
