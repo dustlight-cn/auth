@@ -149,12 +149,13 @@ public class AuthorizationController {
                 } else if (responseTypes.contains("code")) {
                     response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, (Authentication) principal));
                 }
-            } else {
-                authorizationClient.setScopes(getUserApprovalScopes(authorizationRequest, principal.getName(), client));
-                HttpSession session = httpServletRequest.getSession(true);
-                session.setAttribute(AUTHORIZATION_REQUEST_ATTR_NAME, authorizationRequest);
-                session.setAttribute(ORIGINAL_AUTHORIZATION_REQUEST_ATTR_NAME, unmodifiableMap(authorizationRequest));
             }
+
+            authorizationClient.setScopes(getUserApprovalScopes(authorizationRequest, principal.getName(), client));
+            HttpSession session = httpServletRequest.getSession(true);
+            session.setAttribute(AUTHORIZATION_REQUEST_ATTR_NAME, authorizationRequest);
+            session.setAttribute(ORIGINAL_AUTHORIZATION_REQUEST_ATTR_NAME, unmodifiableMap(authorizationRequest));
+
             response.setClient(ClientResource.setLogo(authorizationClient));
             response.setOwner(UserResource.setAvatar((DefaultPublicUser) owner));
             response.setApproved(approved);

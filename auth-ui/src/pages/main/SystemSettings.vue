@@ -317,7 +317,7 @@
               </transition>
             </q-list>
           </q-card-section>
-          <q-card-section style="height: 50px;">
+          <q-card-section v-if="loading.roleAuthorities" style="height: 80px;">
             <q-inner-loading :showing="loading.roleAuthorities">
               <q-spinner-gears size="50px" color="accent"/>
             </q-inner-loading>
