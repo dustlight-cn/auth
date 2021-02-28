@@ -1,6 +1,6 @@
 # Auth
 
-[简介](#简介) | [示例](#示例) | [构建](#构建) | [部署](#部署)
+[简介](#简介) | [展示](#展示) | [构建](#构建) | [部署](#部署)
 
 ## 简介
 **Auth** 是一个基于 **Spring Boot** 的 **OAuth2.0** 的授权与管理服务。
@@ -8,6 +8,8 @@
 提供 Restful 接口以及 OpenAPI 文档。
 提供前端页面。
 支持微服务部署。
+
+> [在线展示](#展示)
 
 ### 后端
 * 通过重写 **Spring Security OAuth2** 中的 Endpoint 实现前后端分离架构，使用 **Redis** 存储 Token、授权码、验证码等。
@@ -41,8 +43,15 @@
 > 1. 出于功能展示的目的，测试账号拥有查看所有用户信息的权限。如果您打算进行注册账号，您的电子邮箱地址可能会被其他人看到。
 > 2. 若上述测试账号均不可用，请 [创建 Issue](https://github.com/dustlight-cn/auth/issues/new) 联系我们。
 ### 接口浏览
-后端接口浏览与调试（Swagger UI）。
-[前往查看](https://api.dustlight.cn/v1/swagger-ui)
+
+| Open API | URL |
+| --- | --- |
+| JSON | [https://api.dustlight.cn/v1/api-doc](https://api.dustlight.cn/v1/api-doc) | 
+| YAML | [https://api.dustlight.cn/v1/api-doc.yaml](https://api.dustlight.cn/v1/api-doc.yaml) | 
+
+> 后端接口浏览调试：
+> [前往查看（Swagger UI）](https://api.dustlight.cn/v1/swagger-ui)
+
 
 ## 构建
 待完善

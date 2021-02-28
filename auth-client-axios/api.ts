@@ -136,28 +136,28 @@ export interface AuthorizationClient {
     authorities?: Array<string>;
     /**
      * 
-     * @type {number}
-     * @memberof AuthorizationClient
-     */
-    accessTokenValiditySeconds?: number;
-    /**
-     * 
      * @type {Set<string>}
      * @memberof AuthorizationClient
      */
     registeredRedirectUri?: Set<string>;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof AuthorizationClient
      */
-    clientSecret?: string;
+    refreshTokenValiditySeconds?: number;
     /**
      * 
      * @type {number}
      * @memberof AuthorizationClient
      */
-    refreshTokenValiditySeconds?: number;
+    accessTokenValiditySeconds?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuthorizationClient
+     */
+    clientSecret?: string;
     /**
      * 
      * @type {string}
@@ -250,6 +250,12 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
     description?: string;
     /**
      * 
@@ -286,12 +292,6 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
     createdAt?: string;
     /**
      * 
@@ -301,16 +301,22 @@ export interface Client {
     updatedAt?: string;
     /**
      * 
-     * @type {number}
-     * @memberof Client
-     */
-    accessTokenValidity?: number;
-    /**
-     * 
      * @type {Set<string>}
      * @memberof Client
      */
     redirectUri?: Set<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof Client
+     */
+    refreshTokenValidity?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Client
+     */
+    accessTokenValidity?: number;
     /**
      * 
      * @type {Set<string>}
@@ -341,12 +347,6 @@ export interface Client {
      * @memberof Client
      */
     extra?: { [key: string]: object; };
-    /**
-     * 
-     * @type {number}
-     * @memberof Client
-     */
-    refreshTokenValidity?: number;
 }
 /**
  * 
@@ -365,13 +365,7 @@ export interface ClientScope {
      * @type {string}
      * @memberof ClientScope
      */
-    description?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof ClientScope
-     */
-    sid?: number;
+    name?: string;
     /**
      * 
      * @type {string}
@@ -383,7 +377,13 @@ export interface ClientScope {
      * @type {string}
      * @memberof ClientScope
      */
-    name?: string;
+    description?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ClientScope
+     */
+    sid?: number;
 }
 /**
  * 
@@ -430,42 +430,6 @@ export interface GrantType {
 export interface OAuth2AccessToken {
     /**
      * 
-     * @type {Set<string>}
-     * @memberof OAuth2AccessToken
-     */
-    scope?: Set<string>;
-    /**
-     * 
-     * @type {OAuth2RefreshToken}
-     * @memberof OAuth2AccessToken
-     */
-    refreshToken?: OAuth2RefreshToken;
-    /**
-     * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    tokenType?: string;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof OAuth2AccessToken
-     */
-    additionalInformation?: { [key: string]: object; };
-    /**
-     * 
-     * @type {boolean}
-     * @memberof OAuth2AccessToken
-     */
-    expired?: boolean;
-    /**
-     * 
-     * @type {number}
-     * @memberof OAuth2AccessToken
-     */
-    expiresIn?: number;
-    /**
-     * 
      * @type {string}
      * @memberof OAuth2AccessToken
      */
@@ -476,6 +440,42 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     expiration?: string;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof OAuth2AccessToken
+     */
+    scope?: Set<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    tokenType?: string;
+    /**
+     * 
+     * @type {OAuth2RefreshToken}
+     * @memberof OAuth2AccessToken
+     */
+    refreshToken?: OAuth2RefreshToken;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OAuth2AccessToken
+     */
+    expired?: boolean;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof OAuth2AccessToken
+     */
+    additionalInformation?: { [key: string]: object; };
+    /**
+     * 
+     * @type {number}
+     * @memberof OAuth2AccessToken
+     */
+    expiresIn?: number;
 }
 /**
  * 
@@ -513,12 +513,6 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    avatar?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
     unlockedAt?: string;
     /**
      * 
@@ -526,6 +520,12 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     gender?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicUser
+     */
+    avatar?: string;
     /**
      * 
      * @type {boolean}
@@ -543,7 +543,7 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    credentialsNonExpired?: boolean;
+    accountNonLocked?: boolean;
     /**
      * 
      * @type {boolean}
@@ -555,7 +555,7 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    accountNonLocked?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {string}
@@ -612,13 +612,13 @@ export interface Resource {
      * @type {string}
      * @memberof Resource
      */
-    rid?: string;
+    name?: string;
     /**
      * 
      * @type {string}
      * @memberof Resource
      */
-    name?: string;
+    rid?: string;
     /**
      * 
      * @type {string}
@@ -720,6 +720,24 @@ export interface Scope {
 export interface User {
     /**
      * 
+     * @type {Array<string>}
+     * @memberof User
+     */
+    authorities?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    email?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    uid?: number;
+    /**
+     * 
      * @type {string}
      * @memberof User
      */
@@ -732,34 +750,10 @@ export interface User {
     credentialsExpiredAt?: string;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof User
-     */
-    authorities?: Array<string>;
-    /**
-     * 
-     * @type {number}
-     * @memberof User
-     */
-    uid?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    email?: string;
-    /**
-     * 
      * @type {string}
      * @memberof User
      */
     nickname?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    avatar?: string;
     /**
      * 
      * @type {string}
@@ -772,6 +766,12 @@ export interface User {
      * @memberof User
      */
     gender?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    avatar?: string;
     /**
      * 
      * @type {boolean}
@@ -789,7 +789,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    credentialsNonExpired?: boolean;
+    accountNonLocked?: boolean;
     /**
      * 
      * @type {boolean}
@@ -801,7 +801,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    accountNonLocked?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {string}

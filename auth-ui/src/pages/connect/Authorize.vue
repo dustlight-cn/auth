@@ -7,7 +7,7 @@
         leave-active-class="animated fadeOut"
       >
         <q-page v-if="!error" class="authorization" padding>
-          <div class="q-pt-lg flex flex-center">
+          <div class="q-pt-lg flex flex-center q-pb-md">
             <div>
               <client-logo class="flex flex-center" :client="client" size="128"/>
               <div class="flex flex-center text-h6 q-pl-md q-pr-md">
@@ -96,24 +96,29 @@
                   </q-item-label>
                 </q-item-section>
               </q-item>
+              <q-separator/>
 
-              <q-item dense v-for="(scope,i) in client.scopes" :key="scope.sid" tag="label" v-ripple>
+              <q-item v-for="(scope,i) in client.scopes" :key="scope.sid" tag="label" v-ripple>
+                <q-item-section avatar>
+                  <q-avatar icon="policy"/>
+                </q-item-section>
                 <q-item-section>
-                  <q-item-label overline>{{ scope.subtitle }}</q-item-label>
-                  <q-item-label v-if="scope.value" caption>{{ $tt($options, 'approved') }}</q-item-label>
-                  <q-item-label class="q-pl-sm" v-if="scope.description && !scope.value" caption>{{ scope.description }}
+                  <q-item-label class="text-bold">{{ scope.subtitle }}</q-item-label>
+                  <q-item-label v-if="scope.description" caption>{{ scope.description }}
                   </q-item-label>
                 </q-item-section>
-                <q-item-section side top>
-                  <q-checkbox color="grey" v-if="scope && scope.approved" disable v-model="scope.value"/>
-                  <q-checkbox color="grey" v-else v-model="scope.value"/>
+                <q-item-section side v-if="scope && scope.approved">
+                  <q-badge transparent color="grey" :label="$tt($options, 'approved')"/>
+                </q-item-section>
+                <q-item-section side top v-else>
+                  <q-checkbox color="grey" v-model="scope.value"/>
                 </q-item-section>
               </q-item>
               <q-separator/>
               <q-item class="q-pt-lg">
                 <q-item-section class="q-ma-md">
                   <q-btn class="full-width"
-                         :disable="approving || authorization.approved"
+                         :disable="approving"
                          :loading="canceling"
                          :label="$tt($options,'cancel')"
                          type="submit"
@@ -127,7 +132,7 @@
                 <q-item-section class="q-ma-md">
                   <q-btn class="full-width"
                          :disable="canceling || !anyApproved"
-                         :loading="authorization.approved || approving"
+                         :loading="approving"
                          :label="$tt($options,'approve')"
                          type="submit"
                          color="positive"
@@ -271,13 +276,15 @@ export default {
               s.value = true;
             })
           this.authorization = res.data;
-          if (this.authorization.approved)
-            window.location = res.data.redirect
         })
         .catch(e => this.error = e)
         .finally(() => this.loading = false)
     },
     approve() {
+      if (this.authorization.approved) {
+        window.location = this.authorization.redirect
+        return;
+      }
       if (this.approving)
         return;
       this.approving = true;
