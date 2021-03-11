@@ -258,7 +258,15 @@ export default {
     "deleteUser": "Delete",
     "deleteUserTitle": "Delete User",
     "deleteUserMsg": "Are you sure to delete this user?",
-    "deleted": "User Deleted"
+    "deleted": "This user has been deleted",
+
+    "banUser": "Ban",
+    "unbanUser": "Unban",
+    "banUserTitle": "Ban User",
+    "banUserMsg": "Are you sure to ban this user?",
+    "unbanUserTitle": "Unban User",
+    "unbanUserMsg": "Are you sure to unban this user?",
+    "userBanned": "This user has been banned"
   },
   "NewUser": {
     "title": "New User",
