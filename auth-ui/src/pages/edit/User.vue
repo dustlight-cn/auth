@@ -4,6 +4,14 @@
       <template v-slot="{user}">
         {{ "", user_ == null || user != null && user_.uid != user.uid ? user_ = user : "" }}
         <div v-if="!deleted">
+          <q-banner v-if="targetUser && !targetUser.enabled"
+                    inline-actions
+                    class="bg-warning text-white">
+            <q-icon size="32px" name="no_accounts"/>
+            {{
+              $tt($options, "userBanned")
+            }}
+          </q-banner>
           <edit-page v-if="error == null">
             <template v-slot="{wide}">
               <!-- 骨架 -->
@@ -177,10 +185,23 @@
                 </q-list>
 
                 <!-- 操作按钮 -->
-                <q-separator v-if="hasDeleteUserPermission" class="q-mt-md"/>
-                <div v-if="hasDeleteUserPermission">
+                <q-separator v-if="hasDeleteUserPermission || hasLockUserPermission" class="q-mt-md"/>
+                <div v-if="hasDeleteUserPermission || hasLockUserPermission">
+                  <q-item v-if="hasLockUserPermission" class="q-pa-none q-mt-lg">
+                    <q-space/>
+                    <q-item-section>
+                      <q-item-label caption>
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-btn :loading="updating.enabled" @click="()=>enableUser(!targetUser.enabled)" no-caps
+                             color="grey"
+                             :icon="'no_accounts'"
+                             :label="$tt($options,targetUser.enabled?'banUser':'unbanUser')"/>
+                    </q-item-section>
+                  </q-item>
 
-                  <q-item class="q-pa-none q-mt-lg">
+                  <q-item v-if="hasDeleteUserPermission" class="q-pa-none q-mt-sm">
                     <q-space/>
                     <q-item-section>
                       <q-item-label caption>
@@ -461,7 +482,8 @@ export default {
       },
       updating: {
         roles: [],
-        role: false
+        role: false,
+        enabled: false
       },
       roles: null,
       rolesLoading: false,
@@ -493,6 +515,9 @@ export default {
     },
     hasDeleteUserPermission() {
       return this.hasPermission("DELETE_USER");
+    },
+    hasLockUserPermission() {
+      return this.hasPermission("LOCK_USER");
     }
   },
   methods: {
@@ -612,6 +637,24 @@ export default {
       this.$q.notify({
         message: this.$t("updateSuccess"),
         type: 'positive'
+      })
+    },
+    enableUser(enabled) {
+      if (this.updating.enabled)
+        return;
+      this.$q.dialog({
+        type: "warning",
+        color: "grey",
+        message: this.$tt(this, enabled ? "unbanUserMsg" : "banUserMsg"),
+        title: this.$tt(this, enabled ? "unbanUserTitle" : "banUserTitle"),
+        ok: {},
+        cancel: true
+      }).onOk(() => {
+        this.$usersApi.updateUserEnabled(this.uid, enabled)
+          .then(() => {
+            this.targetUser.enabled = enabled;
+            this.showUpdateSuccessMessage();
+          }).finally(() => this.updating.enabled = false)
       })
     },
     deleteUser() {

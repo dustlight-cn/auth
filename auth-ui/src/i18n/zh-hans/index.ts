@@ -258,7 +258,15 @@ export default {
     "deleteUser": "删除",
     "deleteUserTitle": "删除用户",
     "deleteUserMsg": "是否确定删除此用户？",
-    "deleted": "用户已删除"
+    "deleted": "此用户已被删除",
+
+    "banUser": "禁用",
+    "unbanUser": "解禁",
+    "banUserTitle": "禁用用户",
+    "banUserMsg": "是否确定禁用此用户？",
+    "unbanUserTitle": "解禁用户",
+    "unbanUserMsg": "是否确定要解禁此用户？",
+    "userBanned": "此用户已被禁用"
   },
   "NewUser": {
     "title": "创建用户",
