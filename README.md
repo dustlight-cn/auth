@@ -92,4 +92,4 @@
 
 ## 鸣谢
 
-[![JetBrains](https://github.com/dustlight-cn/auth/blob/master/auth-ui/docs/img/jetbrains.png)](https://www.jetbrains.com/?from=Auth)
+[![JetBrains](https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/jetbrains.svg)](https://www.jetbrains.com/?from=Auth)
