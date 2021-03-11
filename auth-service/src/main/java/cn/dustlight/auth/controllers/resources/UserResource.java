@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 
 @RestController
 @Tag(name = "Users", description = "用户增删改查、信息更新。")
@@ -146,8 +147,29 @@ public class UserResource {
     @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_USER_PASSWORD')) and #oauth2.clientHasRole('WRITE_USER_PASSWORD')")
     @PutMapping("users/{uid}/password")
     @Operation(summary = "更新用户密码", description = "应用和用户需拥有 WRITE_USER_PASSWORD 权限。")
-    public void updateUserPassword(@PathVariable Long uid, @RequestParam String password) {
+    public void updateUserPassword(@PathVariable Long uid, @RequestBody String password) {
         userService.updatePassword(uid, password);
+    }
+
+    @PreAuthorize("(#oauth2.client or hasAuthority('LOCK_USER')) and #oauth2.clientHasRole('LOCK_USER')")
+    @PutMapping("users/{uid}/unlock-at")
+    @Operation(summary = "设置用户解锁日期", description = "设置用户账号的解锁日期，在此日期日前账号不能使用。设置为 NULL 则不锁定。应用和用户需拥有 LOCK_USER 权限。")
+    public void updateUserUnlockAt(@PathVariable Long uid, @RequestBody Date unlockAt) {
+        userService.updateUnlockedAt(Arrays.asList(uid), unlockAt);
+    }
+
+    @PreAuthorize("(#oauth2.client or hasAuthority('LOCK_USER')) and #oauth2.clientHasRole('LOCK_USER')")
+    @PutMapping("users/{uid}/expired-at")
+    @Operation(summary = "设置用户解锁日期", description = "设置用户账号过期日期。设置为 NULL 则无过期时间。应用和用户需拥有 LOCK_USER 权限。")
+    public void updateUserExpiredAt(@PathVariable Long uid, @RequestBody Date expiredAt) {
+        userService.updateAccountExpiredAt(Arrays.asList(uid), expiredAt);
+    }
+
+    @PreAuthorize("(#oauth2.client or hasAuthority('LOCK_USER')) and #oauth2.clientHasRole('LOCK_USER')")
+    @PutMapping("users/{uid}/ban")
+    @Operation(summary = "设置用户封禁或解封", description = "封禁或解封用户。应用和用户需拥有 LOCK_USER 权限。")
+    public void updateUserEnabled(@PathVariable Long uid, @RequestBody Boolean enabled) {
+        userService.updateEnabled(Arrays.asList(uid), enabled);
     }
 
     @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_USER_EMAIL')) and #oauth2.clientHasRole('WRITE_USER_EMAIL')")
@@ -163,14 +185,14 @@ public class UserResource {
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('WRITE_USER')) and #oauth2.clientHasRole('WRITE_USER')")
     @PutMapping("users/{uid}/gender")
     @Operation(summary = "更新用户性别", description = "应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。")
-    public void updateUserGender(@PathVariable Long uid, @RequestParam int gender) {
+    public void updateUserGender(@PathVariable Long uid, @RequestBody int gender) {
         userService.updateGender(uid, gender);
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('WRITE_USER')) and #oauth2.clientHasRole('WRITE_USER')")
     @PutMapping("users/{uid}/nickname")
     @Operation(summary = "更新用户昵称", description = "应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。")
-    public void updateUserNickname(@PathVariable Long uid, @RequestParam String nickname) {
+    public void updateUserNickname(@PathVariable Long uid, @RequestBody String nickname) {
         userService.updateNickname(uid, nickname);
     }
 

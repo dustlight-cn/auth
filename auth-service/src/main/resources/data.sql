@@ -4,11 +4,13 @@
  */
 
 /* 用户 Users */
-INSERT IGNORE INTO `users` (`uid`,`username`,`password`,`enabled`) VALUES
+INSERT
+IGNORE INTO `users` (`uid`,`username`,`password`,`enabled`) VALUES
 (0,'root','$2a$10$GP57XrnKif0JriZlHCyu2OwfMvB3/VpOUEZPvvAnleVOPYpvMR79e',1);
 
 /* 权限 Authorities */
-INSERT IGNORE INTO `authorities` (`aid`,`authorityName`,`authorityDescription`) VALUES
+INSERT
+IGNORE INTO `authorities` (`aid`,`authorityName`,`authorityDescription`) VALUES
 (0,'WRITE_AUTHORITY','创建、修改以及删除任意权限。'),
 (1,'WRITE_TYPE','创建、修改以及删除任意授权模式。'),
 (2,'WRITE_SCOPE','创建、修改以及删除任意授权作用域。'),
@@ -25,6 +27,7 @@ INSERT IGNORE INTO `authorities` (`aid`,`authorityName`,`authorityDescription`) 
 (201,'CREATE_CLIENT','创建用户应用。'),
 
 (300,'DELETE_USER','删除用户。'),
+(301,'LOCK_USER','封禁或锁定用户。'),
 
 (400,'GRANT_ROLE','为角色添加或删除权限。'),
 (401,'GRANT_CLIENT','为应用添加或删除权限。'),
@@ -33,19 +36,22 @@ INSERT IGNORE INTO `authorities` (`aid`,`authorityName`,`authorityDescription`) 
 (500,'AUTHORIZE','应用授权。');
 
 /* 角色 Roles */
-INSERT IGNORE INTO `roles` (`rid`,`roleName`,`roleDescription`) VALUES
+INSERT
+IGNORE INTO `roles` (`rid`,`roleName`,`roleDescription`) VALUES
 (0,'User','用户'),
 (1,'Developer','开发者'),
 (2,'Administrator','管理员'),
 (3,'Root','超级管理员');
 
 /* 授权作用域 Scopes */
-INSERT IGNORE INTO `scopes` (`sid`,`name`,`subtitle`,`description`) VALUES
+INSERT
+IGNORE INTO `scopes` (`sid`,`name`,`subtitle`,`description`) VALUES
 (0,'read:user','读取用户信息','读取您的所有个人资料，包括头像、用户名、昵称和邮箱等。'),
 (1,'write:user','修改用户信息','此授权作用域暂无任何意义。');
 
 /* 授权类型 GrantTypes */
-INSERT IGNORE INTO `types` (`tid`,`name`,`description`) VALUES
+INSERT
+IGNORE INTO `types` (`tid`,`name`,`description`) VALUES
 (0,'authorization_code','授权码模式'),
 (1,'refresh_token','令牌刷新'),
 (2,'implicit','隐式授权模式'),
@@ -53,20 +59,37 @@ INSERT IGNORE INTO `types` (`tid`,`name`,`description`) VALUES
 -- (4,'password','密码模式'); 此授权模式不安全，可绕过验证直接登录。
 
 /* 应用 Clients */
-INSERT IGNORE INTO `clients` (`cid`,`uid`,`secret`,`name`,`description`,`redirectUri`,`accessTokenValidity`,`refreshTokenValidity`,`additionalInformation`,`status`) VALUES
+INSERT
+IGNORE INTO `clients` (`cid`,`uid`,`secret`,`name`,`description`,`redirectUri`,`accessTokenValidity`,`refreshTokenValidity`,`additionalInformation`,`status`) VALUES
 ('default',0,NULL,'default','系统默认应用',NULL,7200,86400,NULL,0); -- 默认应用，提供授权中心使用
 
 /* 应用权限 ClientAuthorities */
-INSERT IGNORE INTO `client_authority` SELECT 'default',aid FROM `authorities` WHERE aid BETWEEN 0 AND 999;
+INSERT
+IGNORE INTO `client_authority`
+SELECT 'default', aid
+FROM `authorities`
+WHERE aid BETWEEN 0 AND 999;
 
 /* 应用授权作用域 ClientScopes */
-INSERT IGNORE INTO `client_scope` SELECT 'default',sid,1 FROM `scopes` WHERE sid BETWEEN 0 AND 999;
+INSERT
+IGNORE INTO `client_scope`
+SELECT 'default', sid, 1
+FROM `scopes`
+WHERE sid BETWEEN 0 AND 999;
 
 /* 角色权限 RoleAuthorities */
-INSERT IGNORE INTO `role_authority` VALUES (1,201); /* 开发者拥有创建应用权限 */
-INSERT IGNORE INTO `role_authority` VALUES (2,4),(2,100),(2,101),(2,200),(2,201); /* 管理员拥有的权限：修改用户基本信息、读取任意用户和应用的所有信息、创建用户和应用 */
-INSERT IGNORE INTO `role_authority` SELECT 3,aid FROM `authorities` WHERE aid BETWEEN 0 AND 999; /* 超级管理员具有所有权限 */
+INSERT
+IGNORE INTO `role_authority` VALUES (1,201); /* 开发者拥有创建应用权限 */
+INSERT
+IGNORE INTO `role_authority` VALUES (2,4),(2,100),(2,101),(2,200),(2,201); /* 管理员拥有的权限：修改用户基本信息、读取任意用户和应用的所有信息、创建用户和应用 */
+INSERT
+IGNORE INTO `role_authority`
+SELECT 3, aid
+FROM `authorities`
+WHERE aid BETWEEN 0 AND 999;
+/* 超级管理员具有所有权限 */
 
 /* 用户角色 UserRoles */
-INSERT IGNORE INTO `user_role` (`uid`,`rid`,`expiredAt`) VALUES (0,3,NULL); /* root用户具有超级管理员权限 */
+INSERT
+IGNORE INTO `user_role` (`uid`,`rid`,`expiredAt`) VALUES (0,3,NULL); /* root用户具有超级管理员权限 */
 
