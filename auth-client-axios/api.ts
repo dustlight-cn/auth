@@ -136,6 +136,18 @@ export interface AuthorizationClient {
     authorities?: Array<string>;
     /**
      * 
+     * @type {string}
+     * @memberof AuthorizationClient
+     */
+    clientSecret?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof AuthorizationClient
+     */
+    accessTokenValiditySeconds?: number;
+    /**
+     * 
      * @type {Set<string>}
      * @memberof AuthorizationClient
      */
@@ -146,18 +158,6 @@ export interface AuthorizationClient {
      * @memberof AuthorizationClient
      */
     refreshTokenValiditySeconds?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof AuthorizationClient
-     */
-    accessTokenValiditySeconds?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof AuthorizationClient
-     */
-    clientSecret?: string;
     /**
      * 
      * @type {string}
@@ -250,12 +250,6 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
     description?: string;
     /**
      * 
@@ -263,12 +257,6 @@ export interface Client {
      * @memberof Client
      */
     status?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
-    logo?: string;
     /**
      * 
      * @type {Array<ClientScope>}
@@ -283,10 +271,22 @@ export interface Client {
     authorities?: Array<string>;
     /**
      * 
+     * @type {string}
+     * @memberof Client
+     */
+    logo?: string;
+    /**
+     * 
      * @type {number}
      * @memberof Client
      */
     uid?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    name?: string;
     /**
      * 
      * @type {string}
@@ -299,30 +299,6 @@ export interface Client {
      * @memberof Client
      */
     updatedAt?: string;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    redirectUri?: Set<string>;
-    /**
-     * 
-     * @type {number}
-     * @memberof Client
-     */
-    refreshTokenValidity?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Client
-     */
-    accessTokenValidity?: number;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    grantTypes?: Set<string>;
     /**
      * 
      * @type {string}
@@ -347,6 +323,30 @@ export interface Client {
      * @memberof Client
      */
     extra?: { [key: string]: object; };
+    /**
+     * 
+     * @type {number}
+     * @memberof Client
+     */
+    accessTokenValidity?: number;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof Client
+     */
+    grantTypes?: Set<string>;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof Client
+     */
+    redirectUri?: Set<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof Client
+     */
+    refreshTokenValidity?: number;
 }
 /**
  * 
@@ -365,7 +365,13 @@ export interface ClientScope {
      * @type {string}
      * @memberof ClientScope
      */
-    name?: string;
+    description?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ClientScope
+     */
+    sid?: number;
     /**
      * 
      * @type {string}
@@ -377,13 +383,7 @@ export interface ClientScope {
      * @type {string}
      * @memberof ClientScope
      */
-    description?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof ClientScope
-     */
-    sid?: number;
+    name?: string;
 }
 /**
  * 
@@ -430,18 +430,6 @@ export interface GrantType {
 export interface OAuth2AccessToken {
     /**
      * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    value?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    expiration?: string;
-    /**
-     * 
      * @type {Set<string>}
      * @memberof OAuth2AccessToken
      */
@@ -476,6 +464,18 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     expiresIn?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    value?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    expiration?: string;
 }
 /**
  * 
@@ -513,6 +513,12 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
+    avatar?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicUser
+     */
     unlockedAt?: string;
     /**
      * 
@@ -520,12 +526,6 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     gender?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
-    avatar?: string;
     /**
      * 
      * @type {boolean}
@@ -543,12 +543,6 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    accountNonLocked?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof PublicUser
-     */
     accountNonExpired?: boolean;
     /**
      * 
@@ -556,6 +550,12 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     credentialsNonExpired?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PublicUser
+     */
+    accountNonLocked?: boolean;
     /**
      * 
      * @type {string}
@@ -612,13 +612,13 @@ export interface Resource {
      * @type {string}
      * @memberof Resource
      */
-    name?: string;
+    rid?: string;
     /**
      * 
      * @type {string}
      * @memberof Resource
      */
-    rid?: string;
+    name?: string;
     /**
      * 
      * @type {string}
@@ -741,19 +741,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    accountExpiredAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    credentialsExpiredAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
     nickname?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    avatar?: string;
     /**
      * 
      * @type {string}
@@ -771,7 +765,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    avatar?: string;
+    accountExpiredAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    credentialsExpiredAt?: string;
     /**
      * 
      * @type {boolean}
@@ -789,12 +789,6 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    accountNonLocked?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
     accountNonExpired?: boolean;
     /**
      * 
@@ -802,6 +796,12 @@ export interface User {
      * @memberof User
      */
     credentialsNonExpired?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof User
+     */
+    accountNonLocked?: boolean;
     /**
      * 
      * @type {string}
@@ -7550,7 +7550,7 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -7602,7 +7602,7 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -9163,21 +9163,141 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
-         * @summary 更新用户性别
+         * 封禁或解封用户。应用和用户需拥有 LOCK_USER 权限。
+         * @summary 设置用户封禁或解封
          * @param {number} uid 
-         * @param {number} gender 
+         * @param {boolean} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUserGender: async (uid: number, gender: number, options: any = {}): Promise<RequestArgs> => {
+        updateUserEnabled: async (uid: number, body?: boolean, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uid' is not null or undefined
+            if (uid === null || uid === undefined) {
+                throw new RequiredError('uid','Required parameter uid was null or undefined when calling updateUserEnabled.');
+            }
+            const localVarPath = `/v1/users/{uid}/ban`
+                .replace(`{${"uid"}}`, encodeURIComponent(String(uid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const nonString = typeof body !== 'string';
+            const needsSerialization = nonString && configuration && configuration.isJsonMime
+                ? configuration.isJsonMime(localVarRequestOptions.headers['Content-Type'])
+                : nonString;
+            localVarRequestOptions.data =  needsSerialization
+                ? JSON.stringify(body !== undefined ? body : {})
+                : (body || "");
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 设置用户账号过期日期。设置为 NULL 则无过期时间。应用和用户需拥有 LOCK_USER 权限。
+         * @summary 设置用户解锁日期
+         * @param {number} uid 
+         * @param {string} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserExpiredAt: async (uid: number, body?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uid' is not null or undefined
+            if (uid === null || uid === undefined) {
+                throw new RequiredError('uid','Required parameter uid was null or undefined when calling updateUserExpiredAt.');
+            }
+            const localVarPath = `/v1/users/{uid}/expired-at`
+                .replace(`{${"uid"}}`, encodeURIComponent(String(uid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const nonString = typeof body !== 'string';
+            const needsSerialization = nonString && configuration && configuration.isJsonMime
+                ? configuration.isJsonMime(localVarRequestOptions.headers['Content-Type'])
+                : nonString;
+            localVarRequestOptions.data =  needsSerialization
+                ? JSON.stringify(body !== undefined ? body : {})
+                : (body || "");
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
+         * @summary 更新用户性别
+         * @param {number} uid 
+         * @param {number} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserGender: async (uid: number, body?: number, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'uid' is not null or undefined
             if (uid === null || uid === undefined) {
                 throw new RequiredError('uid','Required parameter uid was null or undefined when calling updateUserGender.');
-            }
-            // verify required parameter 'gender' is not null or undefined
-            if (gender === null || gender === undefined) {
-                throw new RequiredError('gender','Required parameter gender was null or undefined when calling updateUserGender.');
             }
             const localVarPath = `/v1/users/{uid}/gender`
                 .replace(`{${"uid"}}`, encodeURIComponent(String(uid)));
@@ -9201,12 +9321,10 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
                 localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
             }
 
-            if (gender !== undefined) {
-                localVarQueryParameter['gender'] = gender;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             const queryParameters = new URLSearchParams(localVarUrlObj.search);
             for (const key in localVarQueryParameter) {
                 queryParameters.set(key, localVarQueryParameter[key]);
@@ -9217,6 +9335,13 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const nonString = typeof body !== 'string';
+            const needsSerialization = nonString && configuration && configuration.isJsonMime
+                ? configuration.isJsonMime(localVarRequestOptions.headers['Content-Type'])
+                : nonString;
+            localVarRequestOptions.data =  needsSerialization
+                ? JSON.stringify(body !== undefined ? body : {})
+                : (body || "");
 
             return {
                 url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
@@ -9227,18 +9352,14 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
          * @summary 更新用户昵称
          * @param {number} uid 
-         * @param {string} nickname 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUserNickname: async (uid: number, nickname: string, options: any = {}): Promise<RequestArgs> => {
+        updateUserNickname: async (uid: number, body?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'uid' is not null or undefined
             if (uid === null || uid === undefined) {
                 throw new RequiredError('uid','Required parameter uid was null or undefined when calling updateUserNickname.');
-            }
-            // verify required parameter 'nickname' is not null or undefined
-            if (nickname === null || nickname === undefined) {
-                throw new RequiredError('nickname','Required parameter nickname was null or undefined when calling updateUserNickname.');
             }
             const localVarPath = `/v1/users/{uid}/nickname`
                 .replace(`{${"uid"}}`, encodeURIComponent(String(uid)));
@@ -9262,12 +9383,10 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
                 localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
             }
 
-            if (nickname !== undefined) {
-                localVarQueryParameter['nickname'] = nickname;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             const queryParameters = new URLSearchParams(localVarUrlObj.search);
             for (const key in localVarQueryParameter) {
                 queryParameters.set(key, localVarQueryParameter[key]);
@@ -9278,6 +9397,13 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const nonString = typeof body !== 'string';
+            const needsSerialization = nonString && configuration && configuration.isJsonMime
+                ? configuration.isJsonMime(localVarRequestOptions.headers['Content-Type'])
+                : nonString;
+            localVarRequestOptions.data =  needsSerialization
+                ? JSON.stringify(body !== undefined ? body : {})
+                : (body || "");
 
             return {
                 url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
@@ -9288,18 +9414,14 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * 应用和用户需拥有 WRITE_USER_PASSWORD 权限。
          * @summary 更新用户密码
          * @param {number} uid 
-         * @param {string} password 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUserPassword: async (uid: number, password: string, options: any = {}): Promise<RequestArgs> => {
+        updateUserPassword: async (uid: number, body?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'uid' is not null or undefined
             if (uid === null || uid === undefined) {
                 throw new RequiredError('uid','Required parameter uid was null or undefined when calling updateUserPassword.');
-            }
-            // verify required parameter 'password' is not null or undefined
-            if (password === null || password === undefined) {
-                throw new RequiredError('password','Required parameter password was null or undefined when calling updateUserPassword.');
             }
             const localVarPath = `/v1/users/{uid}/password`
                 .replace(`{${"uid"}}`, encodeURIComponent(String(uid)));
@@ -9323,12 +9445,10 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
                 localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
             }
 
-            if (password !== undefined) {
-                localVarQueryParameter['password'] = password;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             const queryParameters = new URLSearchParams(localVarUrlObj.search);
             for (const key in localVarQueryParameter) {
                 queryParameters.set(key, localVarQueryParameter[key]);
@@ -9339,6 +9459,75 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const nonString = typeof body !== 'string';
+            const needsSerialization = nonString && configuration && configuration.isJsonMime
+                ? configuration.isJsonMime(localVarRequestOptions.headers['Content-Type'])
+                : nonString;
+            localVarRequestOptions.data =  needsSerialization
+                ? JSON.stringify(body !== undefined ? body : {})
+                : (body || "");
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 设置用户账号的解锁日期，在此日期日前账号不能使用。设置为 NULL 则不锁定。应用和用户需拥有 LOCK_USER 权限。
+         * @summary 设置用户解锁日期
+         * @param {number} uid 
+         * @param {string} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserUnlockAt: async (uid: number, body?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uid' is not null or undefined
+            if (uid === null || uid === undefined) {
+                throw new RequiredError('uid','Required parameter uid was null or undefined when calling updateUserUnlockAt.');
+            }
+            const localVarPath = `/v1/users/{uid}/unlock-at`
+                .replace(`{${"uid"}}`, encodeURIComponent(String(uid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const nonString = typeof body !== 'string';
+            const needsSerialization = nonString && configuration && configuration.isJsonMime
+                ? configuration.isJsonMime(localVarRequestOptions.headers['Content-Type'])
+                : nonString;
+            localVarRequestOptions.data =  needsSerialization
+                ? JSON.stringify(body !== undefined ? body : {})
+                : (body || "");
 
             return {
                 url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
@@ -9461,15 +9650,45 @@ export const UsersApiFp = function(configuration?: Configuration) {
             };
         },
         /**
-         * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
-         * @summary 更新用户性别
+         * 封禁或解封用户。应用和用户需拥有 LOCK_USER 权限。
+         * @summary 设置用户封禁或解封
          * @param {number} uid 
-         * @param {number} gender 
+         * @param {boolean} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateUserGender(uid: number, gender: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).updateUserGender(uid, gender, options);
+        async updateUserEnabled(uid: number, body?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).updateUserEnabled(uid, body, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 设置用户账号过期日期。设置为 NULL 则无过期时间。应用和用户需拥有 LOCK_USER 权限。
+         * @summary 设置用户解锁日期
+         * @param {number} uid 
+         * @param {string} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateUserExpiredAt(uid: number, body?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).updateUserExpiredAt(uid, body, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
+         * @summary 更新用户性别
+         * @param {number} uid 
+         * @param {number} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateUserGender(uid: number, body?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).updateUserGender(uid, body, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -9479,12 +9698,12 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
          * @summary 更新用户昵称
          * @param {number} uid 
-         * @param {string} nickname 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateUserNickname(uid: number, nickname: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).updateUserNickname(uid, nickname, options);
+        async updateUserNickname(uid: number, body?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).updateUserNickname(uid, body, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -9494,12 +9713,27 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * 应用和用户需拥有 WRITE_USER_PASSWORD 权限。
          * @summary 更新用户密码
          * @param {number} uid 
-         * @param {string} password 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateUserPassword(uid: number, password: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).updateUserPassword(uid, password, options);
+        async updateUserPassword(uid: number, body?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).updateUserPassword(uid, body, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 设置用户账号的解锁日期，在此日期日前账号不能使用。设置为 NULL 则不锁定。应用和用户需拥有 LOCK_USER 权限。
+         * @summary 设置用户解锁日期
+         * @param {number} uid 
+         * @param {string} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateUserUnlockAt(uid: number, body?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).updateUserUnlockAt(uid, body, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -9593,37 +9827,70 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
             return UsersApiFp(configuration).updateUserEmail(uid, code, options).then((request) => request(axios, basePath));
         },
         /**
-         * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
-         * @summary 更新用户性别
+         * 封禁或解封用户。应用和用户需拥有 LOCK_USER 权限。
+         * @summary 设置用户封禁或解封
          * @param {number} uid 
-         * @param {number} gender 
+         * @param {boolean} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUserGender(uid: number, gender: number, options?: any): AxiosPromise<void> {
-            return UsersApiFp(configuration).updateUserGender(uid, gender, options).then((request) => request(axios, basePath));
+        updateUserEnabled(uid: number, body?: boolean, options?: any): AxiosPromise<void> {
+            return UsersApiFp(configuration).updateUserEnabled(uid, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 设置用户账号过期日期。设置为 NULL 则无过期时间。应用和用户需拥有 LOCK_USER 权限。
+         * @summary 设置用户解锁日期
+         * @param {number} uid 
+         * @param {string} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserExpiredAt(uid: number, body?: string, options?: any): AxiosPromise<void> {
+            return UsersApiFp(configuration).updateUserExpiredAt(uid, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
+         * @summary 更新用户性别
+         * @param {number} uid 
+         * @param {number} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserGender(uid: number, body?: number, options?: any): AxiosPromise<void> {
+            return UsersApiFp(configuration).updateUserGender(uid, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
          * @summary 更新用户昵称
          * @param {number} uid 
-         * @param {string} nickname 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUserNickname(uid: number, nickname: string, options?: any): AxiosPromise<void> {
-            return UsersApiFp(configuration).updateUserNickname(uid, nickname, options).then((request) => request(axios, basePath));
+        updateUserNickname(uid: number, body?: string, options?: any): AxiosPromise<void> {
+            return UsersApiFp(configuration).updateUserNickname(uid, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户需拥有 WRITE_USER_PASSWORD 权限。
          * @summary 更新用户密码
          * @param {number} uid 
-         * @param {string} password 
+         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUserPassword(uid: number, password: string, options?: any): AxiosPromise<void> {
-            return UsersApiFp(configuration).updateUserPassword(uid, password, options).then((request) => request(axios, basePath));
+        updateUserPassword(uid: number, body?: string, options?: any): AxiosPromise<void> {
+            return UsersApiFp(configuration).updateUserPassword(uid, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 设置用户账号的解锁日期，在此日期日前账号不能使用。设置为 NULL 则不锁定。应用和用户需拥有 LOCK_USER 权限。
+         * @summary 设置用户解锁日期
+         * @param {number} uid 
+         * @param {string} [body] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserUnlockAt(uid: number, body?: string, options?: any): AxiosPromise<void> {
+            return UsersApiFp(configuration).updateUserUnlockAt(uid, body, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -9728,42 +9995,81 @@ export class UsersApi extends BaseAPI {
     }
 
     /**
-     * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
-     * @summary 更新用户性别
+     * 封禁或解封用户。应用和用户需拥有 LOCK_USER 权限。
+     * @summary 设置用户封禁或解封
      * @param {number} uid 
-     * @param {number} gender 
+     * @param {boolean} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public updateUserGender(uid: number, gender: number, options?: any) {
-        return UsersApiFp(this.configuration).updateUserGender(uid, gender, options).then((request) => request(this.axios, this.basePath));
+    public updateUserEnabled(uid: number, body?: boolean, options?: any) {
+        return UsersApiFp(this.configuration).updateUserEnabled(uid, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 设置用户账号过期日期。设置为 NULL 则无过期时间。应用和用户需拥有 LOCK_USER 权限。
+     * @summary 设置用户解锁日期
+     * @param {number} uid 
+     * @param {string} [body] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public updateUserExpiredAt(uid: number, body?: string, options?: any) {
+        return UsersApiFp(this.configuration).updateUserExpiredAt(uid, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
+     * @summary 更新用户性别
+     * @param {number} uid 
+     * @param {number} [body] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public updateUserGender(uid: number, body?: number, options?: any) {
+        return UsersApiFp(this.configuration).updateUserGender(uid, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。
      * @summary 更新用户昵称
      * @param {number} uid 
-     * @param {string} nickname 
+     * @param {string} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public updateUserNickname(uid: number, nickname: string, options?: any) {
-        return UsersApiFp(this.configuration).updateUserNickname(uid, nickname, options).then((request) => request(this.axios, this.basePath));
+    public updateUserNickname(uid: number, body?: string, options?: any) {
+        return UsersApiFp(this.configuration).updateUserNickname(uid, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 应用和用户需拥有 WRITE_USER_PASSWORD 权限。
      * @summary 更新用户密码
      * @param {number} uid 
-     * @param {string} password 
+     * @param {string} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public updateUserPassword(uid: number, password: string, options?: any) {
-        return UsersApiFp(this.configuration).updateUserPassword(uid, password, options).then((request) => request(this.axios, this.basePath));
+    public updateUserPassword(uid: number, body?: string, options?: any) {
+        return UsersApiFp(this.configuration).updateUserPassword(uid, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 设置用户账号的解锁日期，在此日期日前账号不能使用。设置为 NULL 则不锁定。应用和用户需拥有 LOCK_USER 权限。
+     * @summary 设置用户解锁日期
+     * @param {number} uid 
+     * @param {string} [body] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public updateUserUnlockAt(uid: number, body?: string, options?: any) {
+        return UsersApiFp(this.configuration).updateUserUnlockAt(uid, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
