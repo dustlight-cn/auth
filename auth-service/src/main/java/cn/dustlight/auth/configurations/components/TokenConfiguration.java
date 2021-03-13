@@ -31,8 +31,9 @@ public class TokenConfiguration {
 
     @Bean("enhancedTokenStore")
     @ConditionalOnMissingBean(name = "enhancedTokenStore")
-    public EnhancedRedisTokenStore enhancedRedisTokenStore(@Autowired RedisConnectionFactory redisConnectionFactory) {
-        return new EnhancedRedisTokenStore(redisConnectionFactory);
+    public EnhancedRedisTokenStore enhancedRedisTokenStore(@Autowired RedisConnectionFactory redisConnectionFactory,
+                                                           @Autowired RedisTokenStore redisTokenStore) {
+        return new EnhancedRedisTokenStore(redisConnectionFactory, redisTokenStore);
     }
 
     @Bean("authApprovalStore")
