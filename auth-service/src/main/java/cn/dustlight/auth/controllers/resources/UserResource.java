@@ -5,6 +5,7 @@ import cn.dustlight.auth.entities.DefaultPublicUser;
 import cn.dustlight.auth.entities.DefaultUser;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.User;
+import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
 import cn.dustlight.auth.services.storages.StorageHandler;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.Constants;
@@ -52,6 +53,9 @@ public class UserResource {
 
     @Autowired
     protected StorageHandler storageHandler;
+
+    @Autowired
+    protected EnhancedRedisTokenStore enhancedRedisTokenStore;
 
     /**
      * 判断 Client 与用户是否拥有某权限。
@@ -101,11 +105,19 @@ public class UserResource {
     @DeleteMapping("users/{uid}")
     @io.swagger.v3.oas.annotations.Operation(summary = "删除用户（永久删除）", description = "应用和用户需要 DELETE_USER 权限。")
     public void deleteUser(@PathVariable Long uid) {
+        DefaultUser user = userService.loadUser(uid);
+        if (user == null)
+            ErrorEnum.USER_NOT_FOUND.throwException();
         userService.deleteUsers(Arrays.asList(uid));
         try {
             storageHandler.remove(generateAvatarKey(uid));
         } catch (Exception e) {
             ErrorEnum.DELETE_USER_AVATAR_FAIL.details(e.getMessage());
+        }
+        try {
+            enhancedRedisTokenStore.deleteUserToken(user.getUsername());
+        } catch (IOException e) {
+            ErrorEnum.DELETE_USER_TOKEN_FAIL.throwException();
         }
         logger.debug(String.format("删除用户: [%s] ", uid));
     }
@@ -170,6 +182,14 @@ public class UserResource {
     @Operation(summary = "设置用户封禁或解封", description = "封禁或解封用户。应用和用户需拥有 LOCK_USER 权限。")
     public void updateUserEnabled(@PathVariable Long uid, @RequestParam Boolean enabled) {
         userService.updateEnabled(Arrays.asList(uid), enabled);
+        if(!enabled){
+            DefaultUser user = userService.loadUser(uid);
+            try {
+                enhancedRedisTokenStore.deleteUserToken(user.getUsername());
+            } catch (IOException e) {
+                ErrorEnum.DELETE_USER_TOKEN_FAIL.throwException();
+            }
+        }
     }
 
     @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_USER_EMAIL')) and #oauth2.clientHasRole('WRITE_USER_EMAIL')")
