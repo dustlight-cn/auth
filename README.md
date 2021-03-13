@@ -3,6 +3,7 @@
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/dustlight-cn/auth?include_prereleases)](https://github.com/dustlight-cn/auth/releases)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/dustlightcn/auth-service?logo=docker)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dustlightcn/auth-service?label=image%20version&logo=docker)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
+[![License](https://img.shields.io/github/license/dustlight-cn/auth)](LICENSE)
 
 [简介](#简介) | [展示](#展示) | [部署](#部署) | [构建](#构建) | [鸣谢](#鸣谢)
 
@@ -14,6 +15,16 @@
 > [在线展示](https://accounts.dustlight.cn/)
 > 
 > [获取测试账号](#前端展示) （拥有创建应用权限，查看所有用户信息以及查看所有应用信息权限。）
+>
+> [隐式授权示例 *(implicit)*](https://accounts.dustlight.cn/authorize?client_id=test&response_type=token)
+
+### 支持的授权模式
+
+* 授权码模式 *authorization_code* ✔
+* 客户端凭据模式 *client_credentials* ✔
+* 隐式授权模式 *implicit* ✔
+* 令牌刷新 *refresh_token* ✔
+* 密码模式 *password* （默认不启用，如需启用可以创建授权模式。）
 
 ### 后端
 
@@ -22,11 +33,28 @@
 * 文件储存通过第三方服务实现（同时支持本地储存），登录注册等接口通过谷歌 reCAPTCHA 人机识别进行验证。
 * 使用 **Spring Doc** & **Swagger-UI** 生成 **OpenAPI** 文档和 API 调试页面。
 
+#### OAuth2 端点
+
+| 功能 | URL | 方法 |
+| --- | --- | --- |
+| 颁发 OAuth 令牌 | [/v1/oauth/token](https://api.dustlight.cn/v1/oauth/token) | POST |
+| 销毁令牌 | [/v1/token](https://api.dustlight.cn/v1/token) | DELETE |
+| 检查令牌 | [/v1/token/validity](https://api.dustlight.cn/v1/token/validity) | GET / POST |
+| 授权 | - | - |
+
+> 由于后端服务只提供 Restful 接口，授权页面由前端提供。
+
+
 ### 前端
 
 * 基于 **Vue** & **Quasar** 框架。
 * 使用 **OpenAPI Generator** 生成 Typescript Axios SDK。
 * 国际化（中英文） & 自适应。
+
+| 功能 | URL |  |
+| --- | --- | --- |
+| 授权 | [/authorize](https://accounts.dustlight.cn/authorize) | [隐式授权示例 *(implicit)*](https://accounts.dustlight.cn/authorize?client_id=test&response_type=token) |
+
 
 ### 关键词
 
@@ -39,7 +67,10 @@
 ### 前端展示
 
 包含登录注册、应用授权、个人信息管理、应用管理以及用户管理和系统设置。
-[前往查看](https://accounts.dustlight.cn)
+
+[前往查看用户中心](https://accounts.dustlight.cn)
+
+[隐式授权示例 *(implicit)*](https://accounts.dustlight.cn/authorize?client_id=test&response_type=token)
 
 您可以使用下列的测试账号登录，它们拥有测试权限以及开发者权限。
 
@@ -71,25 +102,27 @@
 下载编译完成的可执行 Jar 包，
 也可以选择进行 [手动构建](#构建后端服务)。
 
-#### 部署后端服务
-> 运行之前请安装 [JRE](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)
-
-配置文件：application.yaml
+#### 配置文件
+application.yaml（与运行目录同级）：
 
 ```yaml
 mysql:
-  host: "instance-2"  # MySQL 服务器地址
-  port: 30010         # MySQL 服务端口
+  host: "localhost"   # MySQL 服务器地址
+  port: 3306          # MySQL 服务端口
   db: auth            # MySQL 数据库
   charset: "utf8"     # 字符编码
   ssl: false          # 连接启用 SSL
   username: "root"    # 数据库用户名
   password: "123456"  # 数据库密码
 redis:
-  host: "instance-2"  # Redis 服务器地址
-  port: 30020         # Redis 服务端口
+  host: "localhost"   # Redis 服务器地址
+  port: 6379          # Redis 服务端口
   password: ""        # Redis 密码
-
+smtp:
+  host: "smtp.exmail.qq.com" # SMTP 服务器地址
+  user: "YOUR_USERNAME"
+  pass: "YOUR_PASSWORD"
+  
 dustlight:
   auth:
     storage:
@@ -125,10 +158,14 @@ dustlight:
         enabled: false
 ```
 
+
+#### 部署后端服务
+> 本地部署需要提前请安装 [Java 运行环境 (JRE)](https://www.oracle.com/java/technologies/javase-jre8-downloads.html) 。
+
 运行服务：
 
 ```
-java -jar auth-service-X.X.X.jar
+java -jar auth-service-*.jar
 ```
 
 #### 获取前端 UI
@@ -174,6 +211,9 @@ server {
 
 其他 Web 服务器配置请 [参考此处](http://www.quasarchs.com/quasar-cli/developing-spa/deploying/) ，或者搜索对应的关键字 ”单页面应用 部署“。
 
+> 正式部署时需要更改后端接口的地址，可以在 ```js/app.*.js``` 中搜索 ```http://localhost:8080```，
+> 并将其替换。若需要更改更多参数，如用户名正则、谷歌验证码 Key，建议选择手动构建。（修改前端项目的配置文件 ```src/config.ts```）
+
 ### Docker 部署
 
 #### 拉取镜像
@@ -181,18 +221,30 @@ server {
 最新版本：
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dustlightcn/auth-service?label=version)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
 
-拉取镜像：
-```docker push dustlightcn/auth-service:版本号```
+1. 拉取镜像：
+```
+docker push dustlightcn/auth-service:版本号（如 1.0.4-alpha-3）
+```
+   
+2. 启动容器：
+```
+docker run -e mysql.host=MY_SQL_HOST -p 8080:8080 --name auth-service dustlightcn/auth-service:*
+```
 
-#### 
+> 通过 Docker 容器进行部署时，可以通过参数来配置环境变量（例如：```-e key=value```）。环境变量可以作为应用配置被读取，如 ```-e mysql.host=MYSQ_HOST```。
+> 
+> 查看 [示例配置](#配置文件)
 
 ### Kubernetes 部署
 
-待完善
-
-### ...
+Kubernetes 部署文档未完善。
 
 ## 构建
+
+> 前端构建需要提前安装 [Node.js](https://nodejs.org/)  。
+> 
+> 后端构建需要提前安装 [Java 开发工具包 (JDK)](https://www.oracle.com/java/technologies/javase-jdk8-downloads.html) 
+> 以及 [Maven](https://maven.apache.org/) 。
 
 如果您需要自己构建项目，可以参考以下步骤进行构建。
 
@@ -200,17 +252,31 @@ server {
 
 执行 ```mvn package```
 
+> 配置文件位于：[```auth-service/src/main/resources/application.yaml```](auth-service/src/main/resources/application.yaml)
+>
+> 生成的文件位于 ```auth-service/target```
+
 ### 构建前端 UI
 
 进入目录 ```cd auth-ui```
 
+#### 安装 NPM 依赖
+
+执行 ```npm i```
+
+#### 进行前端构建
+
 执行 ```quasar build```
+
+> 配置文件位于：[```auth-ui/src/config.ts```](auth-ui/src/config.ts)
+> 
+> 生成的文件位于 ```auth-ui/dist/spa```
 
 ### 构建 Docker 镜像
 
 复制构建完成的二进制文件到根目录，将其重命名为 ```auth-service.jar```
 
-执行 ```docker build -t auth-service:0.0.1 .```
+执行 ```docker build -t auth-service:* .```
 
 ## 鸣谢
 
