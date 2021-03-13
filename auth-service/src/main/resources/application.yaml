@@ -15,8 +15,8 @@ dustlight:
   auth:
     storage:
       storage-type: local # 储存模式，可选本地储存或者云储存。（local | storage）
-      prefix: "upload/auth/" # 储存地址前缀：本地储存模式时可理解为文件的储存目录，云储存模式则为存储对象 key 的前缀。
-      base-url: "https://accounts.dustlight.cn/" # 当启用云储存时，自定义域名以及协议。（通常用于 CDN）
+      prefix: "upload/auth/" # 储存地址前缀：本地储存模式为文件名的前缀，云储存模式则为存储对象 key 的前缀。
+      base-url: "./" # 使用本地储存时为文件储存目录，如 './upload/'。当启用云储存时，自定义域名以及协议，如 'https://accounts.dustlight.cn/'。（通常用于 CDN）
       simple-mode: true # 当云储存启用时，是否省略生成的签名。（可以避免 CDN 缓存失效）
       default-expiration: 900000 # 当云储存启用时，生成签名的有效期。（单位为毫秒，默认为15分钟）
     service:
