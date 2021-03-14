@@ -51,6 +51,8 @@
 * 使用 **OpenAPI Generator** 生成 Typescript Axios SDK。
 * 国际化（中英文） & 自适应。
 
+#### OAuth2 页面
+
 | 功能 | URL |  |
 | --- | --- | --- |
 | 授权 | [/authorize](https://accounts.dustlight.cn/authorize) | [隐式授权示例 *(implicit)*](https://accounts.dustlight.cn/authorize?client_id=test&response_type=token) |
@@ -170,7 +172,7 @@ java -jar auth-service-*.jar
 
 #### 获取前端 UI
 您可以从 [Release](https://github.com/dustlight-cn/auth/releases)
-下载构建完成的压缩文件，也可以选择进行 [手动构建](#构建前端%20UI)。
+下载构建完成的压缩文件，也可以选择进行 [手动构建](#构建前端-ui)。
 
 #### 部署前端 UI
 
@@ -218,17 +220,18 @@ server {
 
 #### 拉取镜像
 
-最新版本：
-[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dustlightcn/auth-service?label=version)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
+镜像： ```dustlightcn/auth-service``` [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dustlightcn/auth-service?label=version)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
 
-1. 拉取镜像：
+拉取镜像：
 ```
-docker push dustlightcn/auth-service:版本号（如 1.0.4-alpha-3）
+docker pull dustlightcn/auth-service:版本号（如 1.0.4-alpha-3）
 ```
    
-2. 启动容器：
+#### 启动容器
+
+运行容器：
 ```
-docker run -e mysql.host=MY_SQL_HOST -p 8080:8080 --name auth-service dustlightcn/auth-service:*
+docker run -e mysql.host=MYSQL_HOST -p 8080:8080 --name auth-service dustlightcn/auth-service:版本号（如 1.0.4-alpha-3）
 ```
 
 > 通过 Docker 容器进行部署时，可以通过参数来配置环境变量（例如：```-e key=value```）。环境变量可以作为应用配置被读取，如 ```-e mysql.host=MYSQ_HOST```。
@@ -276,7 +279,7 @@ Kubernetes 部署文档未完善。
 
 复制构建完成的二进制文件到根目录，将其重命名为 ```auth-service.jar```
 
-执行 ```docker build -t auth-service:* .```
+执行 ```docker build -t auth-service:TAG .```
 
 ## 鸣谢
 
