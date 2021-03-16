@@ -12,7 +12,7 @@
     <groupId>cn.dustlight.auth</groupId>
     <artifactId>auth-parent</artifactId>
     <name>auth-parent</name>
-    <version>1.0.4-alpha-3</version>
+    <version>1.0.5-alpha</version>
     <description>Parent project of OAuth2 Server based on Spring Cloud Security</description>
 
     <modules>
@@ -24,8 +24,8 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <captcha.version>0.0.5</captcha.version>
-        <storage.version>0.0.3</storage.version>
+        <captcha.version>0.0.6</captcha.version>
+        <storage.version>0.0.4</storage.version>
 
         <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
         <spring-doc.version>1.5.2</spring-doc.version>
@@ -68,7 +68,9 @@
             <!-- Storage -->
             <dependency>
                 <groupId>cn.dustlight.storage</groupId>
-                <artifactId>tencent-cloud-object-storage</artifactId>
+                <artifactId>storage</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
                 <version>${storage.version}</version>
             </dependency>
 

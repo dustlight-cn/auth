@@ -10,15 +10,19 @@ redis:
   host: "instance-2"  # Redis 服务器地址
   port: 30020         # Redis 服务端口
   password: ""        # Redis 密码
+#smtp:
+#  host: "smtp.exmail.qq.com" # SMTP 服务器地址
+#  user: "YOUR_USERNAME"
+#  pass: "YOUR_PASSWORD"
 
 dustlight:
   auth:
     storage:
       storage-type: local # 储存模式，可选本地储存或者云储存。（local | storage）
-      prefix: "upload/auth/" # 储存地址前缀：本地储存模式为文件名的前缀，云储存模式则为存储对象 key 的前缀。
-      base-url: "./" # 使用本地储存时为文件储存目录，如 './upload/'。当启用云储存时，自定义域名以及协议，如 'https://accounts.dustlight.cn/'。（通常用于 CDN）
-      simple-mode: true # 当云储存启用时，是否省略生成的签名。（可以避免 CDN 缓存失效）
-      default-expiration: 900000 # 当云储存启用时，生成签名的有效期。（单位为毫秒，默认为15分钟）
+      prefix: "upload/auth/" # 储存地址前缀：本地储存模式时代表本地储存目录，云储存模式则代表存储对象 key 的前缀。
+#      base-url: "https://accounts.dustlight.cn/" # 当启用云储存时，自定义生成访问链接的域名以及协议。（通常用于 CDN 或者自定义域名）
+#      simple-mode: true # 当云储存启用时，是否忽略对象 URL 的 Query 部分，以便前端能够利用缓存减少请求次数提高访问速度。（仅适用于公有读储存桶）
+#      default-expiration: 900000 # 当云储存启用时，生成签名的有效期。（单位为毫秒，默认为15分钟）
     service:
       pattern:
         username: "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$" # 用户名正则限制
@@ -30,20 +34,29 @@ dustlight:
       store:
         name: redisCodeStore
     recaptcha:
-      default-secret: "6Lcp1xAaAAAAAJh6jmR8oWjEiqwGgbBTS7BnDpbX"
-      default-parameter-name: "g-recaptcha-response"
+      default-secret: "6Lcp1xAaAAAAAJh6jmR8oWjEiqwGgbBTS7BnDpbX" # 谷歌 reCAPTCHA 服务的密钥
+      default-parameter-name: "g-recaptcha-response" # 请求参数名（更该此项必须配合前端更改）
     generator:
       random-string:
-        chars: "0123456789"
-        length: 6
+        chars: "0123456789" # 生成随机字符验证码的字符池
+        length: 6 # 随机字符验证码的长度
     verifier:
       string-equals:
         trim: true
   # 对象存储配置，详情请参考：https://github.com/dustlight-cn/storage
   storage:
-    tencent:
-      cos:
-        enabled: false
+#    alibaba:
+#      oss:
+#        access-key-id: YOUR_ACCESS_KEY_ID
+#        secret-access-key: YOUR_SECRET_ACCESS_KEY
+#        bucket: YOUR_BUCKET_NAME
+#        endpoint: YOUR_BUCKET_ENDPOINT
+#    tencent:
+#      cos:
+#        secret-key: YOUR_SECRET_KEY
+#        secret-id: YOUR_SECRET_ID
+#        bucket: YOUR_BUCKET_NAME
+#        region: YOUR_BUCKET_REGION
 
 spring:
   application:

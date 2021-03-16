@@ -67,7 +67,12 @@ export default {
           this.onCancel();
         return;
       }
-      return this.$usersApi.updateUserAvatar(this.user_clone.uid, this.file);
+      return this.$usersApi.updateUserAvatar(this.user_clone.uid, this.file, {
+        transformRequest: (data, header) => {
+          header["Content-Type"] = "" // 阿里云OSS生成签名的URL限制了Content-TYpe
+          return data;
+        }
+      });
     }
   }
 }

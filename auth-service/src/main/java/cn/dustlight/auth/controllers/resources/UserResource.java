@@ -217,7 +217,7 @@ public class UserResource {
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_USER')) and #oauth2.clientHasRole('WRITE_USER')")
-    @PutMapping(value = "users/{uid}/avatar", consumes = "image/*")
+    @PutMapping(value = "users/{uid}/avatar")
     @Operation(summary = "更新用户头像",
             description = "应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。",
             requestBody = @RequestBody(required = true,

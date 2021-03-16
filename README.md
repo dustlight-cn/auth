@@ -30,7 +30,7 @@
 
 * 通过重写 **Spring Security OAuth2** 中的 Endpoint 实现前后端分离架构，使用 **Redis** 存储 Token、授权码、验证码等。
 * 基于 **MySQL** & **MyBatis** 实现包括用户管理、应用管理、权限与角色管理等业务。
-* 文件储存通过第三方服务实现（同时支持本地储存），登录注册等接口通过谷歌 reCAPTCHA 人机识别进行验证。
+* 文件储存通过第三方服务实现（同时兼容本地储存），登录注册等接口通过谷歌 reCAPTCHA 人机识别进行验证。
 * 使用 **Spring Doc** & **Swagger-UI** 生成 **OpenAPI** 文档和 API 调试页面。
 
 #### OAuth2 端点
@@ -124,15 +124,15 @@ smtp:
   host: "smtp.exmail.qq.com" # SMTP 服务器地址
   user: "YOUR_USERNAME"
   pass: "YOUR_PASSWORD"
-  
+
 dustlight:
   auth:
     storage:
       storage-type: local # 储存模式，可选本地储存或者云储存。（local | storage）
-      prefix: "upload/auth/" # 储存地址前缀：本地储存模式为文件名的前缀，云储存模式则为存储对象 key 的前缀。
-      base-url: "./" # 使用本地储存时为文件储存目录，如 './upload/'。当启用云储存时，自定义域名以及协议，如 'https://accounts.dustlight.cn/'。（通常用于 CDN）
-      simple-mode: true # 当云储存启用时，是否省略生成的签名。（可以避免 CDN 缓存失效）
-      default-expiration: 900000 # 当云储存启用时，生成签名的有效期。（单位为毫秒，默认为15分钟）
+      prefix: "upload/auth/" # 储存地址前缀：本地储存模式时代表本地储存目录，云储存模式则代表存储对象 key 的前缀。
+    #      base-url: "https://accounts.dustlight.cn/" # 当启用云储存时，自定义生成访问链接的域名以及协议。（通常用于 CDN 或者自定义域名）
+    #      simple-mode: true # 当云储存启用时，是否忽略对象 URL 的 Query 部分，以便前端能够利用缓存减少请求次数提高访问速度。（仅适用于公有读储存桶）
+    #      default-expiration: 900000 # 当云储存启用时，生成签名的有效期。（单位为毫秒，默认为15分钟）
     service:
       pattern:
         username: "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$" # 用户名正则限制
@@ -144,20 +144,29 @@ dustlight:
       store:
         name: redisCodeStore
     recaptcha:
-      default-secret: "6Lcp1xAaAAAAAJh6jmR8oWjEiqwGgbBTS7BnDpbX"
-      default-parameter-name: "g-recaptcha-response"
+      default-secret: "6Lcp1xAaAAAAAJh6jmR8oWjEiqwGgbBTS7BnDpbX" # 谷歌 reCAPTCHA 服务的密钥
+      default-parameter-name: "g-recaptcha-response" # 请求参数名（更该此项必须配合前端更改）
     generator:
       random-string:
-        chars: "0123456789"
-        length: 6
+        chars: "0123456789" # 生成随机字符验证码的字符池
+        length: 6 # 随机字符验证码的长度
     verifier:
       string-equals:
         trim: true
   # 对象存储配置，详情请参考：https://github.com/dustlight-cn/storage
   storage:
-    tencent:
-      cos:
-        enabled: false
+#    alibaba:
+#      oss:
+#        access-key-id: YOUR_ACCESS_KEY_ID
+#        secret-access-key: YOUR_SECRET_ACCESS_KEY
+#        bucket: YOUR_BUCKET_NAME
+#        endpoint: YOUR_BUCKET_ENDPOINT
+#    tencent:
+#      cos:
+#        secret-key: YOUR_SECRET_KEY
+#        secret-id: YOUR_SECRET_ID
+#        bucket: YOUR_BUCKET_NAME
+#        region: YOUR_BUCKET_REGION
 ```
 
 
@@ -224,14 +233,14 @@ server {
 
 拉取镜像：
 ```
-docker pull dustlightcn/auth-service:版本号（如 1.0.4-alpha-3）
+docker pull dustlightcn/auth-service:版本号（如 1.0.5-alpha）
 ```
    
 #### 启动容器
 
 运行容器：
 ```
-docker run -e mysql.host=MYSQL_HOST -p 8080:8080 --name auth-service dustlightcn/auth-service:版本号（如 1.0.4-alpha-3）
+docker run -e mysql.host=MYSQL_HOST -p 8080:8080 --name auth-service dustlightcn/auth-service:版本号（如 1.0.5-alpha）
 ```
 
 > 通过 Docker 容器进行部署时，可以通过参数来配置环境变量（例如：```-e key=value```）。环境变量可以作为应用配置被读取，如 ```-e mysql.host=MYSQ_HOST```。
