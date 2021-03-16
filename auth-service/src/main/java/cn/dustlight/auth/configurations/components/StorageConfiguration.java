@@ -29,8 +29,7 @@ public class StorageConfiguration {
                                               @Autowired StorageProperties properties) {
         Collection<Storage> storages = new HashSet<>();
 
-        storages.add(LocalStorage.from((properties.baseUrl != null ? properties.baseUrl : "") +
-                (properties.prefix != null ? properties.prefix : "")));
+        storages.add(LocalStorage.from(properties.prefix != null ? properties.prefix : ""));
 
         StorageHandler handler = new StorageHandler(storages);
         handler.setExpiration(properties.getDefaultExpiration());

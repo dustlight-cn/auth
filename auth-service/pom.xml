@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.dustlight.auth</groupId>
         <artifactId>auth-parent</artifactId>
-        <version>1.0.4-alpha-3</version>
+        <version>1.0.5-alpha</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>auth-service</artifactId>
@@ -25,6 +25,10 @@
         <dependency>
             <groupId>cn.dustlight.storage</groupId>
             <artifactId>tencent-cloud-object-storage</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.dustlight.storage</groupId>
+            <artifactId>alibaba-cloud-object-storage</artifactId>
         </dependency>
 
         <!-- 验证码 -->

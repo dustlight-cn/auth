@@ -800,8 +800,18 @@ export default {
         return;
       this.logoUploading = true;
       (this.uid == null ?
-          this.$clientApi.updateClientLogo(this.clientId, file) :
-          this.$clientApi.updateUserClientLogo(this.uid, this.clientId, file)
+          this.$clientApi.updateClientLogo(this.clientId, file, {
+            transformRequest: (data, header) => {
+              header["Content-Type"] = "" // 阿里云OSS生成签名的URL限制了Content-TYpe
+              return data;
+            }
+          }) :
+          this.$clientApi.updateUserClientLogo(this.uid, this.clientId, file, {
+            transformRequest: (data, header) => {
+              header["Content-Type"] = "" // 阿里云OSS生成签名的URL限制了Content-TYpe
+              return data;
+            }
+          })
       ).then(res => {
         this.reader.readAsDataURL(file);
         let cb = (r) => this.logo = r;

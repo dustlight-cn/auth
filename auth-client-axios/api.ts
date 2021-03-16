@@ -136,10 +136,10 @@ export interface AuthorizationClient {
     authorities?: Array<string>;
     /**
      * 
-     * @type {number}
+     * @type {Set<string>}
      * @memberof AuthorizationClient
      */
-    refreshTokenValiditySeconds?: number;
+    registeredRedirectUri?: Set<string>;
     /**
      * 
      * @type {number}
@@ -148,10 +148,10 @@ export interface AuthorizationClient {
     accessTokenValiditySeconds?: number;
     /**
      * 
-     * @type {Set<string>}
+     * @type {number}
      * @memberof AuthorizationClient
      */
-    registeredRedirectUri?: Set<string>;
+    refreshTokenValiditySeconds?: number;
     /**
      * 
      * @type {string}
@@ -271,16 +271,16 @@ export interface Client {
     logo?: string;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof Client
-     */
-    authorities?: Array<string>;
-    /**
-     * 
      * @type {Array<ClientScope>}
      * @memberof Client
      */
     scopes?: Array<ClientScope>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof Client
+     */
+    authorities?: Array<string>;
     /**
      * 
      * @type {number}
@@ -301,10 +301,10 @@ export interface Client {
     updatedAt?: string;
     /**
      * 
-     * @type {number}
+     * @type {Set<string>}
      * @memberof Client
      */
-    refreshTokenValidity?: number;
+    redirectUri?: Set<string>;
     /**
      * 
      * @type {Set<string>}
@@ -319,16 +319,10 @@ export interface Client {
     accessTokenValidity?: number;
     /**
      * 
-     * @type {Set<string>}
+     * @type {number}
      * @memberof Client
      */
-    redirectUri?: Set<string>;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof Client
-     */
-    extra?: { [key: string]: object; };
+    refreshTokenValidity?: number;
     /**
      * 
      * @type {string}
@@ -337,16 +331,22 @@ export interface Client {
     cid?: string;
     /**
      * 
+     * @type {string}
+     * @memberof Client
+     */
+    secret?: string;
+    /**
+     * 
      * @type {Set<string>}
      * @memberof Client
      */
     resources?: Set<string>;
     /**
      * 
-     * @type {string}
+     * @type {{ [key: string]: object; }}
      * @memberof Client
      */
-    secret?: string;
+    extra?: { [key: string]: object; };
 }
 /**
  * 
@@ -374,16 +374,16 @@ export interface ClientScope {
     description?: string;
     /**
      * 
-     * @type {number}
-     * @memberof ClientScope
-     */
-    sid?: number;
-    /**
-     * 
      * @type {string}
      * @memberof ClientScope
      */
     subtitle?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ClientScope
+     */
+    sid?: number;
 }
 /**
  * 
@@ -448,18 +448,6 @@ export interface OAuth2AccessToken {
     scope?: Set<string>;
     /**
      * 
-     * @type {boolean}
-     * @memberof OAuth2AccessToken
-     */
-    expired?: boolean;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof OAuth2AccessToken
-     */
-    additionalInformation?: { [key: string]: object; };
-    /**
-     * 
      * @type {string}
      * @memberof OAuth2AccessToken
      */
@@ -470,6 +458,18 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     refreshToken?: OAuth2RefreshToken;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof OAuth2AccessToken
+     */
+    additionalInformation?: { [key: string]: object; };
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OAuth2AccessToken
+     */
+    expired?: boolean;
     /**
      * 
      * @type {number}
@@ -507,7 +507,13 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    nickname?: string;
+    unlockedAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicUser
+     */
+    avatar?: string;
     /**
      * 
      * @type {number}
@@ -519,13 +525,7 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    avatar?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
-    unlockedAt?: string;
+    nickname?: string;
     /**
      * 
      * @type {boolean}
@@ -726,12 +726,6 @@ export interface User {
     authorities?: Array<string>;
     /**
      * 
-     * @type {string}
-     * @memberof User
-     */
-    email?: string;
-    /**
-     * 
      * @type {number}
      * @memberof User
      */
@@ -741,7 +735,19 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    nickname?: string;
+    email?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    unlockedAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    avatar?: string;
     /**
      * 
      * @type {number}
@@ -753,13 +759,7 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    avatar?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    unlockedAt?: string;
+    nickname?: string;
     /**
      * 
      * @type {string}
