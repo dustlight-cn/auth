@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: auth
+  labels:
+    app: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: dustlightcn/auth-service:1.0.5-alpha
+          # 配置 SMTP 服务后开启健康检查，否则检查将失败。
+          # livenessProbe:
+          #   failureThreshold: 3
+          #   httpGet:
+          #     path: /actuator/health
+          #     port: 8080
+          #     scheme: HTTP
+          #   initialDelaySeconds: 70
+          #   periodSeconds: 70
+          #   successThreshold: 1
+          #   timeoutSeconds: 1
+          # readinessProbe:
+          #   failureThreshold: 3
+          #   httpGet:
+          #     path: /actuator/health
+          #     port: 8080
+          #     scheme: HTTP
+          #   initialDelaySeconds: 70
+          #   periodSeconds: 10
+          #   successThreshold: 1
+          #   timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+            name: auth-port
+          volumeMounts:
+          - name: config
+            mountPath: /application.yaml
+            subPath: application.yaml
+      initContainers:
+      - name: init-cache
+        image: busybox
+        command: ['sh', '-c', "until nc -z auth-cache 6379; do echo waiting for cache; sleep 2; done"]
+      - name: init-database
+        image: busybox
+        command: ['sh', '-c', "until nc -z auth-database 3306; do echo waiting for database; sleep 2; done"]
+      volumes:
+        - name: config
+          configMap:
+            name: auth-service-config
+            items:
+            - key: application.yaml
+              path: application.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: auth
+  labels:
+    app: auth-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    name: auth-port
+  selector:
+    app: auth-service
+  type: NodePort

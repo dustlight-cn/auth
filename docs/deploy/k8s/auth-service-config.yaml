@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-service-config
+  namespace: auth
+data:
+  application.yaml: |-
+    mysql:
+      host: "auth-database" # MySQL 服务器地址
+      port: 3306            # MySQL 服务端口
+      db: auth              # MySQL 数据库
+      charset: "utf8"       # 字符编码
+      ssl: false            # 连接启用 SSL
+      username: "root"      # 数据库用户名
+      password: "123456"    # 数据库密码
+    redis:
+      host: "auth-cache"    # Redis 服务器地址
+      port: 6379           # Redis 服务端口
+      password: ""          # Redis 密码
+    #smtp:
+    #  host: "smtp.exmail.qq.com" # SMTP 服务器地址
+    #  user: "YOUR_USERNAME"
+    #  pass: "YOUR_PASSWORD"
+
+    dustlight:
+      auth:
+        storage:
+          storage-type: local # 储存模式，可选本地储存或者云储存。（local | storage）
+          prefix: "upload/auth/" # 储存地址前缀：本地储存模式时代表本地储存目录，云储存模式则代表存储对象 key 的前缀。
+    #      base-url: "https://accounts.dustlight.cn/" # 当启用云储存时，自定义生成访问链接的域名以及协议。（通常用于 CDN 或者自定义域名）
+    #      simple-mode: true # 当云储存启用时，是否忽略对象 URL 的 Query 部分，以便前端能够利用缓存减少请求次数提高访问速度。（仅适用于公有读储存桶）
+    #      default-expiration: 900000 # 当云储存启用时，生成签名的有效期。（单位为毫秒，默认为15分钟）
+        service:
+          pattern:
+            username: "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$" # 用户名正则限制
+            email: "^\\S+@\\S+$"  # 邮箱地址正则限制
+            password: "^.{6,20}$" # 密码正则限制
+      # 验证码配置，详情请参考：https://github.com/dustlight-cn/captcha
+      captcha:
+        default:
+          store:
+            name: redisCodeStore
+        recaptcha:
+          default-secret: "6Lcp1xAaAAAAAJh6jmR8oWjEiqwGgbBTS7BnDpbX" # 谷歌 reCAPTCHA 服务的密钥
+          default-parameter-name: "g-recaptcha-response" # 请求参数名（更该此项必须配合前端更改）
+        generator:
+          random-string:
+            chars: "0123456789" # 生成随机字符验证码的字符池
+            length: 6 # 随机字符验证码的长度
+        verifier:
+          string-equals:
+            trim: true
+      # 对象存储配置，详情请参考：https://github.com/dustlight-cn/storage
+      storage:
+    #    alibaba:
+    #      oss:
+    #        access-key-id: YOUR_ACCESS_KEY_ID
+    #        secret-access-key: YOUR_SECRET_ACCESS_KEY
+    #        bucket: YOUR_BUCKET_NAME
+    #        endpoint: YOUR_BUCKET_ENDPOINT
+    #    tencent:
+    #      cos:
+    #        secret-key: YOUR_SECRET_KEY
+    #        secret-id: YOUR_SECRET_ID
+    #        bucket: YOUR_BUCKET_NAME
+    #        region: YOUR_BUCKET_REGION
+
+    spring:
+      application:
+        name: auth-service  # 应用名
+      cloud:
+        kubernetes:
+          config:
+            name: ${spring.application.name}  # Kubernetes 配置名称
+            namespace: auth
+          reload:
+            enabled: true # 是否监听 Kubernetes 配置更改
+      datasource:
+        url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}&allowPublicKeyRetrieval=true
+        username: ${mysql.username}
+        password: ${mysql.password}
+        hikari:
+          connection-timeout: 30000
+          idle-timeout: 600000
+          max-lifetime: 1800000
+          maximum-pool-size: 8  # 数据库连接池最大连接数
+          minimum-idle: 2       # 数据库连接池最小连接数
+        initialization-mode: always   # 启动时是否自动建表以及导入默认数据
+        schema: classpath:scheme.sql
+        data: classpath:data.sql
+      redis:
+        host: ${redis.host}
+        port: ${redis.port}
+        password: ${redis.password}
+      mail:
+        host: ${smtp.host:smtp.exmail.qq.com} # SMTP 服务器地址
+        username: ${smtp.user}                # SMTP 用户名
+        password: ${smtp.pass}                # SMTP 密码
+      mvc:
+        throw-exception-if-no-handler-found: true
+      resources:
+        add-mappings: false
+
+    springdoc:
+      api-docs:
+        path: /v1/api-doc # OpenAPI 路径
+      swagger-ui:
+        path: /v1/swagger-ui # Swagger UI 路径
+
+    logging:
+      level:
+        cn.dustlight.*: debug
