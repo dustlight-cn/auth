@@ -31,9 +31,27 @@ jobs:
         cp $jarName ../../auth-service.jar
         echo "jarName=$jarName" >> $GITHUB_ENV
         echo "tagName=$tagName" >> $GITHUB_ENV
-    - name: Build and push Docker images
+    - name: Build and push Service Docker images
       uses: docker/build-push-action@v2.3.0
       with:
         context: .
         push: true
         tags: dustlightcn/auth-service:${{  env.tagName  }}
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.5
+    - name: Build the Vue project
+      run: |
+        cd auth-ui
+        npm i
+        quasar build
+    - name: Build and push UI Docker images
+      uses: docker/build-push-action@v2.3.0
+      with:
+        context: auth-ui
+        push: true
+        tags: dustlightcn/auth-ui:${{  env.tagName  }}
+    - name: Quasar Build
+      run: |
+        cd auth-ui
+        quasar build
+    
