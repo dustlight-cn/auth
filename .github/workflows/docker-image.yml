@@ -18,9 +18,17 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - uses: actions/checkout@v2
-    - name: Build the Maven project
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.5
+    - name: Build Auth-UI
+      run: |
+        cd auth-ui
+        npm i
+        sudo npm install -g @quasar/cli
+        quasar build
+    - name: Build Auth-Service
       run: mvn package -DskipTests
-    - name: Copy files
+    - name: Copy Jar
       run: |
         cd auth-service/target
         find -name "*-sources.jar" -exec rm {} \;
@@ -36,23 +44,15 @@ jobs:
       with:
         context: .
         push: true
-        tags: dustlightcn/auth-service:${{  env.tagName  }}
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2.1.5
-    - name: Build the Vue project
-      run: |
-        cd auth-ui
-        npm i
-        sudo npm install -g @quasar/cli
-        quasar build
+        tags: |
+          dustlightcn/auth-service:${{  env.tagName  }}
+          dustlightcn/auth-service:latest
     - name: Build and push UI Docker images
       uses: docker/build-push-action@v2.3.0
       with:
         context: auth-ui
         push: true
-        tags: dustlightcn/auth-ui:${{  env.tagName  }}
-    - name: Quasar Build
-      run: |
-        cd auth-ui
-        quasar build
+        tags: |
+          dustlightcn/auth-ui:${{  env.tagName  }}
+          dustlightcn/auth-ui:latest
     
