@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: auth-cache
+  namespace: auth
+  labels:
+    app: auth-cache
+spec:
+  serviceName: auth-cache
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-cache
+  template:
+    metadata:
+      labels:
+        app: auth-cache
+    spec:
+      containers:
+      - name: auth-cache
+        image: redis:latest
+        ports:
+        - containerPort: 6379
+          name: cache-port
+        volumeMounts:
+        - name: cache-data
+          mountPath: /data
+      dnsPolicy: ClusterFirst
+  volumeClaimTemplates:
+  - metadata:
+      name: cache-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-cache
+  namespace: auth
+  labels:
+    app: auth-cache
+spec:
+  ports:
+  - port: 6379
+    name: cache-port
+  selector:
+    app: auth-cache
