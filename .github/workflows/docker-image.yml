@@ -43,7 +43,7 @@ jobs:
       run: |
         cd auth-ui
         npm i
-        npm install @quasar/cli
+        sudo npm install -g @quasar/cli
         quasar build
     - name: Build and push UI Docker images
       uses: docker/build-push-action@v2.3.0
