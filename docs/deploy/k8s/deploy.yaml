@@ -328,9 +328,11 @@ spec:
       initContainers:
       - name: init-cache
         image: busybox
+        imagePullPolicy: IfNotPresent
         command: ['sh', '-c', "until nc -z auth-cache 6379; do echo waiting for cache; sleep 2; done"]
       - name: init-database
         image: busybox
+        imagePullPolicy: IfNotPresent
         command: ['sh', '-c', "until nc -z auth-database 3306; do echo waiting for database; sleep 2; done"]
       volumes:
         - name: config
@@ -387,6 +389,7 @@ spec:
       initContainers:
         - name: init-service
           image: busybox
+          imagePullPolicy: IfNotPresent
           command: ['sh', '-c', "until nc -z auth-service 80; do echo waiting for auth-service; sleep 2; done"]
 ---
 apiVersion: v1
