@@ -9,7 +9,7 @@
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/dustlightcn/auth-service?logo=docker)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dustlightcn/auth-service?label=image%20version&logo=docker)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
 
-[简介](#简介) | [文档](docs) | [部署](docs/deploy) | [构建](docs/Build.md) | [鸣谢](#鸣谢)
+[简介](#简介) | [快速开始](#快速开始) | [文档](docs) | [部署](docs/deploy) | [构建](docs/Build.md) | [鸣谢](#鸣谢)
 
 ## 简介
 
@@ -40,11 +40,8 @@
 * 密码模式 *password* （默认不启用，如需启用可以创建授权模式。）
 
 ## 快速开始
-您可以参考 [部署文档](docs/deploy) 开始使用 **Auth**。
+### Kubernetes 一键部署服务
 
-构建、配置请参考 [文档](docs)。
-
-### Kubernetes 部署后端服务
 > 使用 ```kubectl``` 一键部署服务，集群中需要至少两个持久卷（```PersistentVolume```）用于 MySQL 数据库 与 Redis 的持久化。
 
 ```bash
@@ -53,8 +50,7 @@ kubectl apply -f https://raw.githubusercontent.com/dustlight-cn/auth/master/docs
 
 其他部署方式请参考：[部署文档](docs/deploy)
 
-### 前端部署
-请参考：[部署文档](docs/deploy)
+构建、配置请参考 [文档](docs)。
 
 ## 展示
 ### 在线展示
@@ -95,19 +91,19 @@ kubectl apply -f https://raw.githubusercontent.com/dustlight-cn/auth/master/docs
 | Swagger UI | [https://api.dustlight.cn/v1/swagger-ui](https://api.dustlight.cn/v1/swagger-ui) |
 
 ### 图片展示
-#### 授权
-![authorize](https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/authorize.jpeg)
+#### 应用授权
+<img width="350" alt="authorize" src="https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/authorize.jpeg"/>
 
 #### 用户详情
-![user details](https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/user_details.jpeg)
+<img width="350" alt="user_details" src="https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/user_details.jpeg"/>
 
 #### 应用详情
-![client details](https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/client_details.jpeg)
+<img width="350" alt="client_details" src="https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/client_details.jpeg"/>
 
 #### 系统设置
-![settings](https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/settings.jpeg)
+<img width="350" alt="settings" src="https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/settings.jpeg"/>
 
-## 实现原理
+## 实现细节
 ### 后端
 
 * 通过重写 **Spring Security OAuth2** 中的 Endpoint 实现前后端分离架构，使用 **Redis** 存储 Token、授权码、验证码等。
