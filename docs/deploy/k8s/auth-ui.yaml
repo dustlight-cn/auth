@@ -27,6 +27,7 @@ spec:
       initContainers:
       - name: init-service
         image: busybox
+        imagePullPolicy: IfNotPresent
         command: ['sh', '-c', "until nc -z auth-service 80; do echo waiting for auth-service; sleep 2; done"]
 ---
 apiVersion: v1
