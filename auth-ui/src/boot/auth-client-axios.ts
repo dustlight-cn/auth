@@ -148,7 +148,7 @@ export default boot(({Vue}) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 
   Vue.prototype.$s = new S(Vue.prototype.$q.localStorage);
-  let path = config.host || BASE_PATH;
+  let path = config.host != null ? config.host : BASE_PATH;
   Vue.prototype.$apiCfg = new Configuration({
     basePath: path,
     accessToken: () => {

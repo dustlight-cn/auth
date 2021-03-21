@@ -6,7 +6,7 @@ export interface Config {
   /**
    * API路径
    */
-  host: string,
+  host: string | null | undefined,
   /**
    * 谷歌 reCAPTCHA 客户端密钥
    */
