@@ -103,7 +103,7 @@ server {
 
 其他 Web 服务器配置请 [参考此处](http://www.quasarchs.com/quasar-cli/developing-spa/deploying/) ，或者搜索对应的关键字 ”单页面应用 部署“。
 
-> 正式部署时需要更改后端接口的地址，可以在 ```js/app.*.js``` 中搜索 ```host:""```，
+> 正式部署时需要更改后端接口的地址，可以在 ```js/app.*.js``` 中搜索 ```host:"."```，
 > 并将其替换为后端域名，如 ```host:"https://api.dustlight.cn"```。若需要更改更多参数，如用户名正则、谷歌验证码 Key，建议选择手动构建。（修改前端项目的配置文件 ```src/config.ts```）
 
 ### 腾讯云 COS 部署
