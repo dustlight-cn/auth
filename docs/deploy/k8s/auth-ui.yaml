@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-ui
+  namespace: auth
+  labels:
+    app: auth-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-ui
+  template:
+    metadata:
+      labels:
+        app: auth-ui
+    spec:
+      containers:
+        - name: auth-ui
+          image: dustlightcn/auth-ui:latest
+          env:
+            - name: API_BACKEND
+              value: http://auth-service
+          ports:
+          - containerPort: 80
+            name: auth-ui-port
+      initContainers:
+      - name: init-service
+        image: busybox
+        command: ['sh', '-c', "until nc -z auth-service 80; do echo waiting for auth-service; sleep 2; done"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-ui
+  namespace: auth
+  labels:
+    app: auth-ui
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    name: auth-ui-port
+  selector:
+    app: auth-ui
+  type: NodePort

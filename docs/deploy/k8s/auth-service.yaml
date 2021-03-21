@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: dustlightcn/auth-service:1.0.5-alpha
+          image: dustlightcn/auth-service:latest
           # 配置 SMTP 服务后开启健康检查，否则检查将失败。
           # livenessProbe:
           #   failureThreshold: 3
@@ -75,4 +75,4 @@ spec:
     name: auth-port
   selector:
     app: auth-service
-  type: NodePort
+  type: ClusterIP
