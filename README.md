@@ -1,23 +1,31 @@
+<img width="100%" alt="auth-logo" src="https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/auth.png"/>
+
 # Auth
 
-
 [![Docker Build Status](https://img.shields.io/github/workflow/status/dustlight-cn/auth/Docker%20Image%20CI)](https://github.com/dustlight-cn/auth/actions/)
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/dustlight-cn/auth?include_prereleases)](https://github.com/dustlight-cn/auth/releases)
 [![License](https://img.shields.io/github/license/dustlight-cn/auth)](LICENSE)
-
-
-[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/dustlightcn/auth-service?logo=docker)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/dustlight-cn/auth?include_prereleases)](https://github.com/dustlight-cn/auth/releases)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dustlightcn/auth-service?label=image%20version&logo=docker)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
 
-[简介](#简介) | [快速开始](#快速开始) | [文档](docs) | [部署](docs/deploy) | [构建](docs/Build.md) | [鸣谢](#鸣谢)
+[简介](#简介)
+|
+[快速开始](#快速开始)
+|
+[文档](docs)
+|
+[部署](docs/deploy)
+|
+[构建](docs/Build.md)
+|
+[鸣谢](#鸣谢)
 
 ## 简介
 
 **Auth** 是一个前后端分离的 OAuth2.0 授权中心与用户中心，适用于 **微服务鉴权**、**单点登录**、**企业开放平台** 等场景。
 
-#### [👀 在线展示](#在线展示)
-
-#### [🕵️‍♀️ 图片展示](#图片展示)
+**[👀 在线展示](#在线展示)**
+|
+**[🕵️‍♀️ 图片展示](#图片展示)**
 
 ### 功能包括
 * 用户管理

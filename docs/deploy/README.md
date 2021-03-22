@@ -31,7 +31,8 @@ java -jar auth-service-*.jar
 
 #### 拉取镜像
 
-镜像： ```dustlightcn/auth-service``` [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dustlightcn/auth-service?label=version)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
+镜像： ```dustlightcn/auth-service``` [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dustlightcn/auth-service?label=version)](https://hub.docker.com/repository/docker/dustlightcn/auth-service) [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/dustlightcn/auth-service?logo=docker)](https://hub.docker.com/repository/docker/dustlightcn/auth-service)
+
 
 拉取镜像：
 ```
