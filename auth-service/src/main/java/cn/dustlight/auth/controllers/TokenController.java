@@ -109,11 +109,10 @@ public class TokenController {
         }
     }
 
-    @Operation(summary = "检查令牌有效性", security = @SecurityRequirement(name = "ClientCredentials"))
+    @Operation(summary = "检查令牌有效性")
     @RequestMapping(value = {"token/validity"}, method = {RequestMethod.GET, RequestMethod.POST})
     public Map<String, ?> checkOAuthToken(@RequestParam("token") String value,
                                           HttpServletRequest request) {
-        Client client = getClient(request);
         OAuth2AccessToken token = this.resourceServerTokenServices.readAccessToken(value);
         if (token == null) {
             throw new InvalidTokenException("Token was not recognised");
