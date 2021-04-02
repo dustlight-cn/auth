@@ -5,7 +5,7 @@ import cn.dustlight.auth.entities.DefaultPublicUser;
 import cn.dustlight.auth.entities.DefaultUser;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.User;
-import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
+import cn.dustlight.auth.services.oauth.EnhancedTokenStore;
 import cn.dustlight.auth.services.storages.StorageHandler;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.Constants;
@@ -55,7 +55,7 @@ public class UserResource {
     protected StorageHandler storageHandler;
 
     @Autowired
-    protected EnhancedRedisTokenStore enhancedRedisTokenStore;
+    protected EnhancedTokenStore enhancedTokenStore;
 
     /**
      * 判断 Client 与用户是否拥有某权限。
@@ -115,7 +115,7 @@ public class UserResource {
             ErrorEnum.DELETE_USER_AVATAR_FAIL.details(e.getMessage());
         }
         try {
-            enhancedRedisTokenStore.deleteUserToken(user.getUsername());
+            enhancedTokenStore.deleteUserToken(user.getUsername());
         } catch (IOException e) {
             ErrorEnum.DELETE_USER_TOKEN_FAIL.throwException();
         }
@@ -185,7 +185,7 @@ public class UserResource {
         if(!enabled){
             DefaultUser user = userService.loadUser(uid);
             try {
-                enhancedRedisTokenStore.deleteUserToken(user.getUsername());
+                enhancedTokenStore.deleteUserToken(user.getUsername());
             } catch (IOException e) {
                 ErrorEnum.DELETE_USER_TOKEN_FAIL.throwException();
             }
