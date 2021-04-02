@@ -136,6 +136,12 @@ export interface AuthorizationClient {
     authorities?: Array<string>;
     /**
      * 
+     * @type {string}
+     * @memberof AuthorizationClient
+     */
+    clientSecret?: string;
+    /**
+     * 
      * @type {Set<string>}
      * @memberof AuthorizationClient
      */
@@ -152,12 +158,6 @@ export interface AuthorizationClient {
      * @memberof AuthorizationClient
      */
     refreshTokenValiditySeconds?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof AuthorizationClient
-     */
-    clientSecret?: string;
     /**
      * 
      * @type {string}
@@ -265,6 +265,12 @@ export interface Client {
     status?: number;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof Client
+     */
+    authorities?: Array<string>;
+    /**
+     * 
      * @type {string}
      * @memberof Client
      */
@@ -275,12 +281,6 @@ export interface Client {
      * @memberof Client
      */
     scopes?: Array<ClientScope>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof Client
-     */
-    authorities?: Array<string>;
     /**
      * 
      * @type {number}
@@ -299,6 +299,30 @@ export interface Client {
      * @memberof Client
      */
     updatedAt?: string;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof Client
+     */
+    resources?: Set<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    cid?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    secret?: string;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof Client
+     */
+    extra?: { [key: string]: object; };
     /**
      * 
      * @type {Set<string>}
@@ -323,30 +347,6 @@ export interface Client {
      * @memberof Client
      */
     refreshTokenValidity?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
-    cid?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
-    secret?: string;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    resources?: Set<string>;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof Client
-     */
-    extra?: { [key: string]: object; };
 }
 /**
  * 
@@ -374,16 +374,16 @@ export interface ClientScope {
     description?: string;
     /**
      * 
-     * @type {string}
-     * @memberof ClientScope
-     */
-    subtitle?: string;
-    /**
-     * 
      * @type {number}
      * @memberof ClientScope
      */
     sid?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ClientScope
+     */
+    subtitle?: string;
 }
 /**
  * 
@@ -448,28 +448,28 @@ export interface OAuth2AccessToken {
     scope?: Set<string>;
     /**
      * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    tokenType?: string;
-    /**
-     * 
      * @type {OAuth2RefreshToken}
      * @memberof OAuth2AccessToken
      */
     refreshToken?: OAuth2RefreshToken;
     /**
      * 
-     * @type {{ [key: string]: object; }}
+     * @type {string}
      * @memberof OAuth2AccessToken
      */
-    additionalInformation?: { [key: string]: object; };
+    tokenType?: string;
     /**
      * 
      * @type {boolean}
      * @memberof OAuth2AccessToken
      */
     expired?: boolean;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof OAuth2AccessToken
+     */
+    additionalInformation?: { [key: string]: object; };
     /**
      * 
      * @type {number}
@@ -507,12 +507,6 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    unlockedAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
     avatar?: string;
     /**
      * 
@@ -520,6 +514,12 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     gender?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicUser
+     */
+    unlockedAt?: string;
     /**
      * 
      * @type {string}
@@ -741,7 +741,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
+    accountExpiredAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    credentialsExpiredAt?: string;
     /**
      * 
      * @type {string}
@@ -759,19 +765,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
+    unlockedAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
     nickname?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    accountExpiredAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    credentialsExpiredAt?: string;
     /**
      * 
      * @type {boolean}
@@ -7550,15 +7550,9 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-
-            // authentication ClientCredentials required
-            // http basic authentication required
-            if (configuration && (configuration.username || configuration.password)) {
-                localVarRequestOptions["auth"] = { username: configuration.username, password: configuration.password };
-            }
 
             if (token !== undefined) {
                 localVarQueryParameter['token'] = token;
@@ -7585,15 +7579,11 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @summary 检查令牌有效性
-         * @param {string} token 
+         * @param {string} [token] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        checkOAuthToken1: async (token: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'token' is not null or undefined
-            if (token === null || token === undefined) {
-                throw new RequiredError('token','Required parameter token was null or undefined when calling checkOAuthToken1.');
-            }
+        checkOAuthTokenPost: async (token?: string, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/token/validity`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
@@ -7602,21 +7592,18 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new URLSearchParams();
 
-            // authentication ClientCredentials required
-            // http basic authentication required
-            if (configuration && (configuration.username || configuration.password)) {
-                localVarRequestOptions["auth"] = { username: configuration.username, password: configuration.password };
+
+            if (token !== undefined) { 
+                localVarFormParams.set('token', token as any);
             }
-
-            if (token !== undefined) {
-                localVarQueryParameter['token'] = token;
-            }
-
-
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'application/x-www-form-urlencoded';
     
             const queryParameters = new URLSearchParams(localVarUrlObj.search);
             for (const key in localVarQueryParameter) {
@@ -7628,6 +7615,7 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
             localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams.toString();
 
             return {
                 url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
@@ -7650,6 +7638,89 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
             }
 
             const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 获取 JWT 公钥（JWK）
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getJwk: async (options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/jwk`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 获取签名 JWT（JWS）
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getJws: async (options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/jws`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -7838,12 +7909,12 @@ export const TokenApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 检查令牌有效性
-         * @param {string} token 
+         * @param {string} [token] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async checkOAuthToken1(token: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: object; }>> {
-            const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).checkOAuthToken1(token, options);
+        async checkOAuthTokenPost(token?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: object; }>> {
+            const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).checkOAuthTokenPost(token, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -7857,6 +7928,32 @@ export const TokenApiFp = function(configuration?: Configuration) {
          */
         async deleteToken(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).deleteToken(options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary 获取 JWT 公钥（JWK）
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getJwk(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: object; }>> {
+            const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).getJwk(options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary 获取签名 JWT（JWS）
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getJws(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OAuth2AccessToken>> {
+            const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).getJws(options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -7918,12 +8015,12 @@ export const TokenApiFactory = function (configuration?: Configuration, basePath
         /**
          * 
          * @summary 检查令牌有效性
-         * @param {string} token 
+         * @param {string} [token] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        checkOAuthToken1(token: string, options?: any): AxiosPromise<{ [key: string]: object; }> {
-            return TokenApiFp(configuration).checkOAuthToken1(token, options).then((request) => request(axios, basePath));
+        checkOAuthTokenPost(token?: string, options?: any): AxiosPromise<{ [key: string]: object; }> {
+            return TokenApiFp(configuration).checkOAuthTokenPost(token, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7933,6 +8030,24 @@ export const TokenApiFactory = function (configuration?: Configuration, basePath
          */
         deleteToken(options?: any): AxiosPromise<void> {
             return TokenApiFp(configuration).deleteToken(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 获取 JWT 公钥（JWK）
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getJwk(options?: any): AxiosPromise<{ [key: string]: object; }> {
+            return TokenApiFp(configuration).getJwk(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 获取签名 JWT（JWS）
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getJws(options?: any): AxiosPromise<OAuth2AccessToken> {
+            return TokenApiFp(configuration).getJws(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7985,13 +8100,13 @@ export class TokenApi extends BaseAPI {
     /**
      * 
      * @summary 检查令牌有效性
-     * @param {string} token 
+     * @param {string} [token] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TokenApi
      */
-    public checkOAuthToken1(token: string, options?: any) {
-        return TokenApiFp(this.configuration).checkOAuthToken1(token, options).then((request) => request(this.axios, this.basePath));
+    public checkOAuthTokenPost(token?: string, options?: any) {
+        return TokenApiFp(this.configuration).checkOAuthTokenPost(token, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8003,6 +8118,28 @@ export class TokenApi extends BaseAPI {
      */
     public deleteToken(options?: any) {
         return TokenApiFp(this.configuration).deleteToken(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 获取 JWT 公钥（JWK）
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TokenApi
+     */
+    public getJwk(options?: any) {
+        return TokenApiFp(this.configuration).getJwk(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 获取签名 JWT（JWS）
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TokenApi
+     */
+    public getJws(options?: any) {
+        return TokenApiFp(this.configuration).getJws(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

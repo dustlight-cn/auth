@@ -27,7 +27,7 @@
                 </div>
                 <q-separator/>
                 <q-list class="q-mb-md">
-                  <q-item class="q-pa-none q-mt-md" v-for="index in 6">
+                  <q-item class="q-pa-none q-mt-md" v-for="index in 6" :key="index">
                     <q-item-section>
                       <q-item-label header class="q-pl-none">
                         <q-skeleton type="text" width="15%"/>

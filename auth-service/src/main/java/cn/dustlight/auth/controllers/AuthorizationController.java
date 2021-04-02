@@ -4,7 +4,7 @@ import cn.dustlight.auth.controllers.resources.ClientResource;
 import cn.dustlight.auth.controllers.resources.UserResource;
 import cn.dustlight.auth.entities.*;
 import cn.dustlight.auth.services.ClientService;
-import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
+import cn.dustlight.auth.services.oauth.EnhancedTokenStore;
 import cn.dustlight.auth.util.Constants;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,7 +69,7 @@ public class AuthorizationController {
     private TokenStore authTokenStore;
 
     @Autowired
-    private EnhancedRedisTokenStore enhancedRedisTokenStore;
+    private EnhancedTokenStore enhancedTokenStore;
 
     @Autowired
     private OAuth2RequestFactory oAuth2RequestFactory;
@@ -159,7 +159,7 @@ public class AuthorizationController {
             response.setClient(ClientResource.setLogo(authorizationClient));
             response.setOwner(UserResource.setAvatar((DefaultPublicUser) owner));
             response.setApproved(approved);
-            response.setCount(enhancedRedisTokenStore.countClientToken(clientId));
+            response.setCount(enhancedTokenStore.countClientToken(clientId));
 
             return response;
         } catch (RuntimeException e) {
