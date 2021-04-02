@@ -1,15 +1,15 @@
 package cn.dustlight.auth.configurations.security;
 
-import cn.dustlight.captcha.annotations.EnableCaptcha;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @EnableWebSecurity
-@EnableCaptcha
+@Import(CaptchaConfiguration.class)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean

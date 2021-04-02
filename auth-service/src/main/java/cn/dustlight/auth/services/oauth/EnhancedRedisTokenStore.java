@@ -15,7 +15,7 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 import java.io.IOException;
 import java.util.Set;
 
-public class EnhancedRedisTokenStore {
+public class EnhancedRedisTokenStore implements EnhancedTokenStore {
 
     private static final String CLIENT_ID_TO_ACCESS = "client_id_to_access:";
 
@@ -58,12 +58,14 @@ public class EnhancedRedisTokenStore {
         return this.redisConnectionFactory.getConnection();
     }
 
+    @Override
     public Long countClientToken(String clientId) {
         try (RedisConnection conn = getConnection()) {
             return conn.setCommands().sCard(serializeKey(CLIENT_ID_TO_ACCESS + clientId));
         }
     }
 
+    @Override
     public void deleteUserToken(String username) throws IOException {
         try (RedisConnection conn = getConnection()) {
             try (Cursor<byte[]> cursor = conn.keyCommands().scan(ScanOptions.scanOptions()

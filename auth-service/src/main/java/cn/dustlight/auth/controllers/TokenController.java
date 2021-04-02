@@ -1,6 +1,7 @@
 package cn.dustlight.auth.controllers;
 
 import cn.dustlight.auth.ErrorEnum;
+import cn.dustlight.auth.configurations.components.TokenConfiguration;
 import cn.dustlight.auth.entities.Client;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.util.Constants;
@@ -18,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,6 +62,9 @@ public class TokenController {
 
     @Autowired
     private TokenStore tokenStore;
+
+    @Autowired
+    private TokenConfiguration.Jwt jwt;
 
     @Autowired
     private AuthorizationServerTokenServices authorizationServerTokenServices;
@@ -110,9 +115,8 @@ public class TokenController {
     }
 
     @Operation(summary = "检查令牌有效性")
-    @RequestMapping(value = {"token/validity"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public Map<String, ?> checkOAuthToken(@RequestParam("token") String value,
-                                          HttpServletRequest request) {
+    @GetMapping(value = "token/validity")
+    public Map<String, ?> checkOAuthToken(@RequestParam("token") String value) {
         OAuth2AccessToken token = this.resourceServerTokenServices.readAccessToken(value);
         if (token == null) {
             throw new InvalidTokenException("Token was not recognised");
@@ -122,6 +126,12 @@ public class TokenController {
             OAuth2Authentication authentication = this.resourceServerTokenServices.loadAuthentication(token.getValue());
             return this.accessTokenConverter.convertAccessToken(token, authentication);
         }
+    }
+
+    @Operation(summary = "检查令牌有效性")
+    @PostMapping(value = "token/validity", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public Map<String, ?> checkOAuthTokenPost(TokenForm tokenForm) {
+        return checkOAuthToken(tokenForm.getToken());
     }
 
     @Operation(summary = "颁发 OAuth2 令牌", security = @SecurityRequirement(name = "ClientCredentials"))
@@ -169,6 +179,20 @@ public class TokenController {
         return getResponse(token);
     }
 
+
+    @Operation(summary = "获取签名 JWT（JWS）", security = @SecurityRequirement(name = "AccessToken"))
+    @GetMapping(value = "jws")
+    public OAuth2AccessToken getJws(OAuth2Authentication authentication) {
+        OAuth2AccessToken token = authorizationServerTokenServices.createAccessToken(new OAuth2Authentication(authentication.getOAuth2Request(), authentication));
+        return jwt.convert(token, authentication);
+    }
+
+    @Operation(summary = "获取 JWT 公钥（JWK）")
+    @GetMapping(value = "jwk")
+    public Map<String, ?> getJwk() {
+        return jwt.keys();
+    }
+
     protected Client getClient(HttpServletRequest request) {
         UsernamePasswordAuthenticationToken clientPrincipal = basicConverter.convert(request);
         if (clientPrincipal == null)
@@ -199,5 +223,18 @@ public class TokenController {
 
     private boolean isAuthCodeRequest(Map<String, String> parameters) {
         return "authorization_code".equals(parameters.get("grant_type")) && parameters.get("code") != null;
+    }
+
+    public static class TokenForm {
+
+        private String token;
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
     }
 }
