@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.endpoint.RedirectResolver;
+import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -53,6 +54,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private TokenStore authTokenStore;
 
     @Autowired
+    private AccessTokenConverter accessTokenConverter;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -78,6 +82,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.userDetailsService(userService)
                 .tokenStore(authTokenStore)
+                .accessTokenConverter(accessTokenConverter)
                 .authorizationCodeServices(authorizationCodeServices)
                 .authenticationManager(authenticationManager);
     }
