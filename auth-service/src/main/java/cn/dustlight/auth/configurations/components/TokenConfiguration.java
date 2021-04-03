@@ -5,6 +5,9 @@ import cn.dustlight.auth.entities.User;
 import cn.dustlight.auth.properties.AuthorizationCodeProperties;
 import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
 import cn.dustlight.auth.services.oauth.RedisAuthorizationCodeService;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +75,8 @@ public class TokenConfiguration {
     }
 
     @Bean
-    public Jwt jwtAccessTokenConverter(@Autowired TokenProperties properties,
-                                       @Autowired AccessTokenConverter accessTokenConverter) {
+    public Jwt jwt(@Autowired TokenProperties properties,
+                   @Autowired AccessTokenConverter accessTokenConverter) {
 
         JwtAccessTokenConverter jwtAccessTokenConverter = null;
         if (StringUtils.hasText(properties.getSigningKey()) && StringUtils.hasText(properties.getVerifierKey())) {
@@ -144,6 +147,8 @@ public class TokenConfiguration {
     public static class Jwt {
 
         private JwtAccessTokenConverter converter;
+        private int _hash;
+        private JWKSet jwkSet;
 
         public Jwt(JwtAccessTokenConverter jwtAccessTokenConverter) {
             this.converter = jwtAccessTokenConverter;
@@ -155,11 +160,19 @@ public class TokenConfiguration {
             return this.converter.enhance(accessToken, authentication);
         }
 
-        public Map<String, ?> keys() {
+        public JWKSet keys() {
             if (converter == null)
                 ErrorEnum.OAUTH_ERROR.details("Jwt is not support, cause RSA key not set.").throwException();
-            return converter.getKey();
+            try {
+                String pem = converter.getKey().get("value");
+                if (jwkSet == null || _hash != pem.hashCode()) {
+                    jwkSet = new JWKSet(JWK.parseFromPEMEncodedObjects(pem));
+                    _hash = pem.hashCode();
+                }
+            } catch (JOSEException e) {
+                ErrorEnum.OAUTH_ERROR.details(e.getMessage()).throwException();
+            }
+            return jwkSet;
         }
-
     }
 }
