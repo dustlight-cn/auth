@@ -9,6 +9,7 @@ import cn.dustlight.auth.util.Constants;
 import cn.dustlight.captcha.annotations.Store;
 import cn.dustlight.captcha.annotations.Verifier;
 import cn.dustlight.captcha.annotations.VerifyCode;
+import com.nimbusds.jose.jwk.JWKSet;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -179,7 +180,6 @@ public class TokenController {
         return getResponse(token);
     }
 
-
     @Operation(summary = "获取签名 JWT（JWS）", security = @SecurityRequirement(name = "AccessToken"))
     @GetMapping(value = "jws")
     public OAuth2AccessToken getJws(OAuth2Authentication authentication) {
@@ -188,9 +188,9 @@ public class TokenController {
     }
 
     @Operation(summary = "获取 JWT 公钥（JWK）")
-    @GetMapping(value = "jwk")
-    public Map<String, ?> getJwk() {
-        return jwt.keys();
+    @GetMapping(value = "jwk", produces = {JWKSet.MIME_TYPE, MediaType.APPLICATION_JSON_VALUE})
+    public Object getJwk() {
+        return jwt.keys().toJSONObject();
     }
 
     protected Client getClient(HttpServletRequest request) {
