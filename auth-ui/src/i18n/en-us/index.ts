@@ -142,7 +142,7 @@ export default {
     "email": "E-mail",
 
     "other": "Other",
-    "otherDesc": "Additional information。",
+    "otherDesc": "Additional information.",
     "username": "Username",
     "roles": "Roles",
     "regtime": "Join At"

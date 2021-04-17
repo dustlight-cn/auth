@@ -257,6 +257,9 @@ export default {
         if (this.client.scopes[index].value)
           return true;
       return false;
+    },
+    withJwt(){
+      return this.$route.query.jwt
     }
   },
   methods: {

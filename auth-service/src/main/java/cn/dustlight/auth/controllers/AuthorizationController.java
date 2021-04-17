@@ -103,6 +103,7 @@ public class AuthorizationController {
                                                   @RequestParam(value = "redirect_uri", required = false) String redirectUri,
                                                   @RequestParam(value = "scope", required = false) Collection<String> scopes,
                                                   @RequestParam(value = "state", required = false) String state,
+                                                  @RequestParam(value = "jwt", required = false) String isJwt,
                                                   HttpServletRequest httpServletRequest,
                                                   Principal principal) {
         try {
