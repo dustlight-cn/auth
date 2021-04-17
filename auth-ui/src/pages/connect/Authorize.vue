@@ -52,11 +52,11 @@
               <q-separator/>
               <q-item class="q-pt-lg">
                 <q-item-section class="q-ma-md">
-                  <q-skeleton type="QButton" class="full-width"/>
+                  <q-skeleton type="QBtn" class="full-width"/>
                 </q-item-section>
                 <q-space/>
                 <q-item-section class="q-ma-md">
-                  <q-skeleton type="QButton" class="full-width"/>
+                  <q-skeleton type="QBtn" class="full-width"/>
                 </q-item-section>
               </q-item>
               <div class="q-pb-md">
@@ -259,7 +259,7 @@ export default {
       return false;
     },
     withJwt(){
-      return this.$route.query.jwt
+      return this.$route.query.jwt != null ? Boolean(this.$route.query.jwt) : false
     }
   },
   methods: {
@@ -272,7 +272,8 @@ export default {
         query.response_type,
         query.redirect_uri,
         query.scope,
-        query.state)
+        query.state,
+        this.withJwt)
         .then(res => {
           if (res.data.client && res.data.client.scopes)
             res.data.client.scopes.forEach(s => {
@@ -299,17 +300,24 @@ export default {
           s += scope.name;
         }
       })
-      this.$authorizationAi.createAuthorization(true, s)
+
+      this.$authorizationAi.createAuthorization(true, s, this.withJwt)
         .then(res => window.location = res.data.redirect)
-        .catch((e) => this.approving = false);
+        .catch((e) => {
+          this.approving = false
+          return Promise.reject(e)
+        });
     },
     cancel() {
       if (this.canceling)
         return;
       this.canceling = true;
-      this.$authorizationAi.createAuthorization(false, [])
+      this.$authorizationAi.createAuthorization(false, [], this.withJwt)
         .then(res => window.location = res.data.redirect)
-        .catch((e) => this.canceling = false);
+        .catch((e) => {
+          this.canceling = false
+          return Promise.reject(e)
+        });
     }
   }
   ,

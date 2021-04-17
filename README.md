@@ -35,17 +35,17 @@
 * 应用授权与鉴权
 
 ### 特点
-* 无状态的 Restful 服务
+* 无状态的 **Restful** 服务
 * 简洁、自适应、双语言的前端页面
-* 支持快速微服务部署
+* 快速部署微服务
 
 ### 支持的授权模式
 
-* 授权码模式 *authorization_code* ✔
-* 客户端凭据模式 *client_credentials* ✔
-* 隐式授权模式 *implicit* ✔
-* 令牌刷新 *refresh_token* ✔
-* 密码模式 *password* （默认不启用，如需启用可以创建授权模式。）
+* [X] 授权码模式 *authorization_code* 
+* [X] 客户端凭据模式 *client_credentials*
+* [X] 隐式授权模式 *implicit*
+* [X] 令牌刷新 *refresh_token*
+* [ ] 密码模式 *password* （出于安全考虑默认不启用，如需启用可以自行创建。）
 
 ## 快速开始
 ### Kubernetes 一键部署服务
@@ -89,6 +89,9 @@ kubectl apply -f https://raw.githubusercontent.com/dustlight-cn/auth/master/docs
 | 颁发 OAuth 令牌 | [/v1/oauth/token](https://api.dustlight.cn/v1/oauth/token) | ```POST``` |
 | 销毁令牌 | [/v1/token](https://api.dustlight.cn/v1/token) | ```DELETE``` |
 | 检查令牌有效性 | [/v1/token/validity](https://api.dustlight.cn/v1/token/validity) | ```GET``` / ```POST``` |
+| 颁发签名 JWT | [/v1/jws](https://api.dustlight.cn/v1/jws) | ```POST``` |
+| 转换 JWT | [/v1/jws](https://api.dustlight.cn/v1/jws) | ```GET``` |
+| 获取 JWT 公钥 （JWK） | [/v1/jwk](https://api.dustlight.cn/v1/jwk) | ```GET``` |
 
 #### 接口浏览
 
@@ -100,16 +103,16 @@ kubectl apply -f https://raw.githubusercontent.com/dustlight-cn/auth/master/docs
 
 ### 图片展示
 #### 应用授权
-<img width="350" alt="authorize" src="https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/authorize.jpeg"/>
+<img width="350" alt="authorize" src="docs/img/authorize.jpeg?raw=true"/>
 
 #### 用户详情
-<img width="350" alt="user_details" src="https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/user_details.jpeg"/>
+<img width="350" alt="user_details" src="docs/img/user_details.jpeg?raw=true"/>
 
 #### 应用详情
-<img width="350" alt="client_details" src="https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/client_details.jpeg"/>
+<img width="350" alt="client_details" src="docs/img/client_details.jpeg?raw=true"/>
 
 #### 系统设置
-<img width="350" alt="settings" src="https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/settings.jpeg"/>
+<img width="350" alt="settings" src="docs/img/settings.jpeg?raw=true"/>
 
 ## 实现细节
 ### 后端
@@ -127,4 +130,4 @@ kubectl apply -f https://raw.githubusercontent.com/dustlight-cn/auth/master/docs
 
 ## 鸣谢
 
-[![JetBrains](https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/img/jetbrains.svg)](https://www.jetbrains.com/?from=Auth)
+[![JetBrains](docs/img/jetbrains.svg?raw=true)](https://www.jetbrains.com/?from=Auth)

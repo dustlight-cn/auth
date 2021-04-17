@@ -36,7 +36,7 @@ java -jar auth-service-*.jar
 
 拉取镜像：
 ```
-docker pull dustlightcn/auth-service:版本号（如 1.0.5-alpha）
+docker pull dustlightcn/auth-service:版本号（如 1.0.6-alpha-3）
 ```
 
 #### 启动容器

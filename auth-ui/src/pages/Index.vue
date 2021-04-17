@@ -4,6 +4,7 @@
       <img
         alt="Auth logo"
         width="100%"
+        style="max-width: 600px"
         src="~assets/auth.png"
       >
     </q-page>

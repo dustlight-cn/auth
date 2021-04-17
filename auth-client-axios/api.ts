@@ -136,12 +136,6 @@ export interface AuthorizationClient {
     authorities?: Array<string>;
     /**
      * 
-     * @type {number}
-     * @memberof AuthorizationClient
-     */
-    accessTokenValiditySeconds?: number;
-    /**
-     * 
      * @type {Set<string>}
      * @memberof AuthorizationClient
      */
@@ -152,6 +146,12 @@ export interface AuthorizationClient {
      * @memberof AuthorizationClient
      */
     refreshTokenValiditySeconds?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AuthorizationClient
+     */
+    accessTokenValiditySeconds?: number;
     /**
      * 
      * @type {string}
@@ -301,10 +301,16 @@ export interface Client {
     updatedAt?: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof Client
      */
-    accessTokenValidity?: number;
+    cid?: string;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof Client
+     */
+    extra?: { [key: string]: object; };
     /**
      * 
      * @type {Set<string>}
@@ -319,22 +325,16 @@ export interface Client {
     refreshTokenValidity?: number;
     /**
      * 
+     * @type {number}
+     * @memberof Client
+     */
+    accessTokenValidity?: number;
+    /**
+     * 
      * @type {Set<string>}
      * @memberof Client
      */
     grantTypes?: Set<string>;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    resources?: Set<string>;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
-    cid?: string;
     /**
      * 
      * @type {string}
@@ -343,10 +343,10 @@ export interface Client {
     secret?: string;
     /**
      * 
-     * @type {{ [key: string]: object; }}
+     * @type {Set<string>}
      * @memberof Client
      */
-    extra?: { [key: string]: object; };
+    resources?: Set<string>;
 }
 /**
  * 
@@ -454,6 +454,12 @@ export interface OAuth2AccessToken {
     expired?: boolean;
     /**
      * 
+     * @type {{ [key: string]: object; }}
+     * @memberof OAuth2AccessToken
+     */
+    additionalInformation?: { [key: string]: object; };
+    /**
+     * 
      * @type {string}
      * @memberof OAuth2AccessToken
      */
@@ -464,12 +470,6 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     refreshToken?: OAuth2RefreshToken;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof OAuth2AccessToken
-     */
-    additionalInformation?: { [key: string]: object; };
     /**
      * 
      * @type {number}
@@ -504,12 +504,6 @@ export interface PublicUser {
     uid?: number;
     /**
      * 
-     * @type {number}
-     * @memberof PublicUser
-     */
-    gender?: number;
-    /**
-     * 
      * @type {string}
      * @memberof PublicUser
      */
@@ -519,13 +513,19 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    avatar?: string;
+    unlockedAt?: string;
     /**
      * 
      * @type {string}
      * @memberof PublicUser
      */
-    unlockedAt?: string;
+    avatar?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PublicUser
+     */
+    gender?: number;
     /**
      * 
      * @type {boolean}
@@ -738,12 +738,6 @@ export interface User {
     email?: string;
     /**
      * 
-     * @type {number}
-     * @memberof User
-     */
-    gender?: number;
-    /**
-     * 
      * @type {string}
      * @memberof User
      */
@@ -753,13 +747,19 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    avatar?: string;
+    unlockedAt?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
+    avatar?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    gender?: number;
     /**
      * 
      * @type {string}
@@ -1858,10 +1858,11 @@ export const AuthorizationApiAxiosParamCreator = function (configuration?: Confi
          * @summary 应用授权
          * @param {boolean} approved 
          * @param {Set<string>} scope 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createAuthorization: async (approved: boolean, scope: Set<string>, options: any = {}): Promise<RequestArgs> => {
+        createAuthorization: async (approved: boolean, scope: Set<string>, jwt?: boolean, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'approved' is not null or undefined
             if (approved === null || approved === undefined) {
                 throw new RequiredError('approved','Required parameter approved was null or undefined when calling createAuthorization.');
@@ -1899,6 +1900,10 @@ export const AuthorizationApiAxiosParamCreator = function (configuration?: Confi
                 localVarQueryParameter['scope'] = scope;
             }
 
+            if (jwt !== undefined) {
+                localVarQueryParameter['jwt'] = jwt;
+            }
+
 
     
             const queryParameters = new URLSearchParams(localVarUrlObj.search);
@@ -1925,10 +1930,11 @@ export const AuthorizationApiAxiosParamCreator = function (configuration?: Confi
          * @param {string} [redirectUri] 
          * @param {Array<string>} [scope] 
          * @param {string} [state] 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAuthorization: async (clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, options: any = {}): Promise<RequestArgs> => {
+        getAuthorization: async (clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, jwt?: boolean, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'clientId' is not null or undefined
             if (clientId === null || clientId === undefined) {
                 throw new RequiredError('clientId','Required parameter clientId was null or undefined when calling getAuthorization.');
@@ -1974,6 +1980,10 @@ export const AuthorizationApiAxiosParamCreator = function (configuration?: Confi
                 localVarQueryParameter['state'] = state;
             }
 
+            if (jwt !== undefined) {
+                localVarQueryParameter['jwt'] = jwt;
+            }
+
 
     
             const queryParameters = new URLSearchParams(localVarUrlObj.search);
@@ -2006,11 +2016,12 @@ export const AuthorizationApiFp = function(configuration?: Configuration) {
          * @summary 应用授权
          * @param {boolean} approved 
          * @param {Set<string>} scope 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createAuthorization(approved: boolean, scope: Set<string>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>> {
-            const localVarAxiosArgs = await AuthorizationApiAxiosParamCreator(configuration).createAuthorization(approved, scope, options);
+        async createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>> {
+            const localVarAxiosArgs = await AuthorizationApiAxiosParamCreator(configuration).createAuthorization(approved, scope, jwt, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -2024,11 +2035,12 @@ export const AuthorizationApiFp = function(configuration?: Configuration) {
          * @param {string} [redirectUri] 
          * @param {Array<string>} [scope] 
          * @param {string} [state] 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>> {
-            const localVarAxiosArgs = await AuthorizationApiAxiosParamCreator(configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, options);
+        async getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, jwt?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>> {
+            const localVarAxiosArgs = await AuthorizationApiAxiosParamCreator(configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, jwt, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -2048,11 +2060,12 @@ export const AuthorizationApiFactory = function (configuration?: Configuration, 
          * @summary 应用授权
          * @param {boolean} approved 
          * @param {Set<string>} scope 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createAuthorization(approved: boolean, scope: Set<string>, options?: any): AxiosPromise<AuthorizationResponse> {
-            return AuthorizationApiFp(configuration).createAuthorization(approved, scope, options).then((request) => request(axios, basePath));
+        createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any): AxiosPromise<AuthorizationResponse> {
+            return AuthorizationApiFp(configuration).createAuthorization(approved, scope, jwt, options).then((request) => request(axios, basePath));
         },
         /**
          * 获取包含应用信息、所属用户信息、回调地址以及是否已授权。应用需要 AUTHORIZE 权限。
@@ -2062,11 +2075,12 @@ export const AuthorizationApiFactory = function (configuration?: Configuration, 
          * @param {string} [redirectUri] 
          * @param {Array<string>} [scope] 
          * @param {string} [state] 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, options?: any): AxiosPromise<AuthorizationResponse> {
-            return AuthorizationApiFp(configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, options).then((request) => request(axios, basePath));
+        getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, jwt?: boolean, options?: any): AxiosPromise<AuthorizationResponse> {
+            return AuthorizationApiFp(configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, jwt, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2083,12 +2097,13 @@ export class AuthorizationApi extends BaseAPI {
      * @summary 应用授权
      * @param {boolean} approved 
      * @param {Set<string>} scope 
+     * @param {boolean} [jwt] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthorizationApi
      */
-    public createAuthorization(approved: boolean, scope: Set<string>, options?: any) {
-        return AuthorizationApiFp(this.configuration).createAuthorization(approved, scope, options).then((request) => request(this.axios, this.basePath));
+    public createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any) {
+        return AuthorizationApiFp(this.configuration).createAuthorization(approved, scope, jwt, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2099,12 +2114,13 @@ export class AuthorizationApi extends BaseAPI {
      * @param {string} [redirectUri] 
      * @param {Array<string>} [scope] 
      * @param {string} [state] 
+     * @param {boolean} [jwt] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthorizationApi
      */
-    public getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, options?: any) {
-        return AuthorizationApiFp(this.configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, options).then((request) => request(this.axios, this.basePath));
+    public getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, jwt?: boolean, options?: any) {
+        return AuthorizationApiFp(this.configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, jwt, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
