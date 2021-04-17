@@ -1,5 +1,6 @@
 package cn.dustlight.auth.controllers;
 
+import cn.dustlight.auth.configurations.components.TokenConfiguration;
 import cn.dustlight.auth.controllers.resources.ClientResource;
 import cn.dustlight.auth.controllers.resources.UserResource;
 import cn.dustlight.auth.entities.*;
@@ -87,6 +88,9 @@ public class AuthorizationController {
     private TokenGranter tokenGranter;
 
     @Autowired
+    TokenConfiguration.Jwt jwt;
+
+    @Autowired
     private AuthorizationCodeServices authorizationCodeServices;
 
     private Object implicitLock = new Object();
@@ -103,8 +107,10 @@ public class AuthorizationController {
                                                   @RequestParam(value = "redirect_uri", required = false) String redirectUri,
                                                   @RequestParam(value = "scope", required = false) Collection<String> scopes,
                                                   @RequestParam(value = "state", required = false) String state,
+                                                  @RequestParam(value = "jwt", required = false) Boolean isJwt,
                                                   HttpServletRequest httpServletRequest,
                                                   Principal principal) {
+        logger.info("？？？？？？？？？" + isJwt);
         try {
             AuthorizationRequest authorizationRequest = oAuth2RequestFactory.createAuthorizationRequest(parameters);
 
@@ -145,9 +151,9 @@ public class AuthorizationController {
             response.setRedirect(resolvedRedirect);
             if (authorizationRequest.isApproved()) {
                 if (responseTypes.contains("token")) {
-                    response.setRedirect(getImplicitGrantRedirect(authorizationRequest));
+                    response.setRedirect(getImplicitGrantRedirect(authorizationRequest, (Authentication) principal, isJwt));
                 } else if (responseTypes.contains("code")) {
-                    response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, (Authentication) principal));
+                    response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, (Authentication) principal, isJwt));
                 }
             }
 
@@ -177,8 +183,10 @@ public class AuthorizationController {
     @PostMapping("oauth/authorization")
     public AuthorizationResponse createAuthorization(@RequestParam("approved") boolean approved,
                                                      @RequestParam("scope") Set<String> scopes,
+                                                     @RequestParam(value = "jwt", required = false) Boolean isJwt,
                                                      HttpServletRequest httpServletRequest,
                                                      Principal principal) {
+        logger.info("!!!!!!!!!!!" + isJwt);
         Map<String, String> approvalParameters = new LinkedHashMap<>();
         approvalParameters.put("user_oauth_approval", approved ? "true" : "false");
         for (String scope : scopes)
@@ -230,9 +238,9 @@ public class AuthorizationController {
                         new UserDeniedAuthorizationException("User denied access"),
                         responseTypes.contains("token")));
             } else if (responseTypes.contains("token")) {
-                response.setRedirect(getImplicitGrantRedirect(authorizationRequest));
+                response.setRedirect(getImplicitGrantRedirect(authorizationRequest, (Authentication) principal, isJwt));
             } else {
-                response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, (Authentication) principal));
+                response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, (Authentication) principal, isJwt));
             }
             return response;
         } finally {
@@ -346,10 +354,12 @@ public class AuthorizationController {
     /**
      * @see AuthorizationEndpoint
      */
-    private String getAuthorizationCodeRedirect(AuthorizationRequest authorizationRequest, Authentication authUser) {
+    private String getAuthorizationCodeRedirect(AuthorizationRequest authorizationRequest,
+                                                Authentication authUser,
+                                                boolean isJwt) {
         AuthorizationResponse response = new AuthorizationResponse();
         try {
-            return getSuccessfulRedirect(authorizationRequest, generateCode(authorizationRequest, authUser));
+            return getSuccessfulRedirect(authorizationRequest, generateCode(authorizationRequest, authUser), isJwt);
         } catch (OAuth2Exception e) {
             return getUnsuccessfulRedirect(authorizationRequest, e, false);
         }
@@ -358,13 +368,18 @@ public class AuthorizationController {
     /**
      * @see AuthorizationEndpoint
      */
-    private String getImplicitGrantRedirect(AuthorizationRequest authorizationRequest) {
+    private String getImplicitGrantRedirect(AuthorizationRequest authorizationRequest,
+                                            Authentication authentication,
+                                            boolean isJwt) {
         try {
             TokenRequest tokenRequest = oAuth2RequestFactory.createTokenRequest(authorizationRequest, "implicit");
             OAuth2Request storedOAuth2Request = oAuth2RequestFactory.createOAuth2Request(authorizationRequest);
             OAuth2AccessToken accessToken = getAccessTokenForImplicitGrant(tokenRequest, storedOAuth2Request);
             if (accessToken == null) {
                 throw new UnsupportedResponseTypeException("Unsupported response type: token");
+            }
+            if (isJwt) {
+                accessToken = jwt.convert(accessToken, new OAuth2Authentication(storedOAuth2Request, authentication));
             }
             return appendAccessToken(authorizationRequest, accessToken);
         } catch (OAuth2Exception e) {
@@ -441,12 +456,16 @@ public class AuthorizationController {
     /**
      * @see AuthorizationEndpoint
      */
-    private String getSuccessfulRedirect(AuthorizationRequest authorizationRequest, String authorizationCode) {
+    private String getSuccessfulRedirect(AuthorizationRequest authorizationRequest,
+                                         String authorizationCode,
+                                         boolean isJwt) {
         if (authorizationCode == null) {
             throw new IllegalStateException("No authorization code found in the current request scope.");
         }
         Map<String, String> query = new LinkedHashMap<String, String>();
         query.put("code", authorizationCode);
+        if (isJwt)
+            query.put("jwt", "true");
         String state = authorizationRequest.getState();
         if (state != null) {
             query.put("state", state);
