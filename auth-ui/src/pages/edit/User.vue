@@ -182,6 +182,13 @@
                              @click="editRoles"/>
                     </q-item-section>
                   </q-item>
+                  <!--  用户ID, UID-->
+                  <q-item class="q-pa-none q-mt-md" v-if="targetUser && targetUser.createdAt">
+                    <q-item-section>
+                      <q-item-label header class="q-pl-none">{{ $tt("PersonalInfo", "regtime") }}</q-item-label>
+                      <q-item-label class="code">{{ $util.dateFormat(targetUser.createdAt) }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
                 </q-list>
 
                 <!-- 操作按钮 -->

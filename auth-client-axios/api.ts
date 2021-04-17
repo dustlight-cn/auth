@@ -136,12 +136,6 @@ export interface AuthorizationClient {
     authorities?: Array<string>;
     /**
      * 
-     * @type {string}
-     * @memberof AuthorizationClient
-     */
-    clientSecret?: string;
-    /**
-     * 
      * @type {Set<string>}
      * @memberof AuthorizationClient
      */
@@ -151,13 +145,19 @@ export interface AuthorizationClient {
      * @type {number}
      * @memberof AuthorizationClient
      */
-    accessTokenValiditySeconds?: number;
+    refreshTokenValiditySeconds?: number;
     /**
      * 
      * @type {number}
      * @memberof AuthorizationClient
      */
-    refreshTokenValiditySeconds?: number;
+    accessTokenValiditySeconds?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuthorizationClient
+     */
+    clientSecret?: string;
     /**
      * 
      * @type {string}
@@ -265,12 +265,6 @@ export interface Client {
     status?: number;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof Client
-     */
-    authorities?: Array<string>;
-    /**
-     * 
      * @type {string}
      * @memberof Client
      */
@@ -281,6 +275,12 @@ export interface Client {
      * @memberof Client
      */
     scopes?: Array<ClientScope>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof Client
+     */
+    authorities?: Array<string>;
     /**
      * 
      * @type {number}
@@ -301,22 +301,10 @@ export interface Client {
     updatedAt?: string;
     /**
      * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    resources?: Set<string>;
-    /**
-     * 
      * @type {string}
      * @memberof Client
      */
     cid?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
-    secret?: string;
     /**
      * 
      * @type {{ [key: string]: object; }}
@@ -331,10 +319,10 @@ export interface Client {
     redirectUri?: Set<string>;
     /**
      * 
-     * @type {Set<string>}
+     * @type {number}
      * @memberof Client
      */
-    grantTypes?: Set<string>;
+    refreshTokenValidity?: number;
     /**
      * 
      * @type {number}
@@ -343,10 +331,22 @@ export interface Client {
     accessTokenValidity?: number;
     /**
      * 
-     * @type {number}
+     * @type {Set<string>}
      * @memberof Client
      */
-    refreshTokenValidity?: number;
+    grantTypes?: Set<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    secret?: string;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof Client
+     */
+    resources?: Set<string>;
 }
 /**
  * 
@@ -448,18 +448,6 @@ export interface OAuth2AccessToken {
     scope?: Set<string>;
     /**
      * 
-     * @type {OAuth2RefreshToken}
-     * @memberof OAuth2AccessToken
-     */
-    refreshToken?: OAuth2RefreshToken;
-    /**
-     * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    tokenType?: string;
-    /**
-     * 
      * @type {boolean}
      * @memberof OAuth2AccessToken
      */
@@ -470,6 +458,18 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     additionalInformation?: { [key: string]: object; };
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    tokenType?: string;
+    /**
+     * 
+     * @type {OAuth2RefreshToken}
+     * @memberof OAuth2AccessToken
+     */
+    refreshToken?: OAuth2RefreshToken;
     /**
      * 
      * @type {number}
@@ -507,13 +507,7 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    avatar?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof PublicUser
-     */
-    gender?: number;
+    nickname?: string;
     /**
      * 
      * @type {string}
@@ -525,7 +519,13 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    nickname?: string;
+    avatar?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PublicUser
+     */
+    gender?: number;
     /**
      * 
      * @type {boolean}
@@ -543,12 +543,6 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    accountNonExpired?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof PublicUser
-     */
     accountNonLocked?: boolean;
     /**
      * 
@@ -556,6 +550,12 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     credentialsNonExpired?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PublicUser
+     */
+    accountNonExpired?: boolean;
     /**
      * 
      * @type {string}
@@ -741,13 +741,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    accountExpiredAt?: string;
+    nickname?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    credentialsExpiredAt?: string;
+    unlockedAt?: string;
     /**
      * 
      * @type {string}
@@ -765,13 +765,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
+    credentialsExpiredAt?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    nickname?: string;
+    accountExpiredAt?: string;
     /**
      * 
      * @type {boolean}
@@ -789,12 +789,6 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    accountNonExpired?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
     accountNonLocked?: boolean;
     /**
      * 
@@ -802,6 +796,12 @@ export interface User {
      * @memberof User
      */
     credentialsNonExpired?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof User
+     */
+    accountNonExpired?: boolean;
     /**
      * 
      * @type {string}
@@ -1858,10 +1858,11 @@ export const AuthorizationApiAxiosParamCreator = function (configuration?: Confi
          * @summary 应用授权
          * @param {boolean} approved 
          * @param {Set<string>} scope 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createAuthorization: async (approved: boolean, scope: Set<string>, options: any = {}): Promise<RequestArgs> => {
+        createAuthorization: async (approved: boolean, scope: Set<string>, jwt?: boolean, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'approved' is not null or undefined
             if (approved === null || approved === undefined) {
                 throw new RequiredError('approved','Required parameter approved was null or undefined when calling createAuthorization.');
@@ -1899,6 +1900,10 @@ export const AuthorizationApiAxiosParamCreator = function (configuration?: Confi
                 localVarQueryParameter['scope'] = scope;
             }
 
+            if (jwt !== undefined) {
+                localVarQueryParameter['jwt'] = jwt;
+            }
+
 
     
             const queryParameters = new URLSearchParams(localVarUrlObj.search);
@@ -1925,10 +1930,11 @@ export const AuthorizationApiAxiosParamCreator = function (configuration?: Confi
          * @param {string} [redirectUri] 
          * @param {Array<string>} [scope] 
          * @param {string} [state] 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAuthorization: async (clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, options: any = {}): Promise<RequestArgs> => {
+        getAuthorization: async (clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, jwt?: boolean, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'clientId' is not null or undefined
             if (clientId === null || clientId === undefined) {
                 throw new RequiredError('clientId','Required parameter clientId was null or undefined when calling getAuthorization.');
@@ -1974,6 +1980,10 @@ export const AuthorizationApiAxiosParamCreator = function (configuration?: Confi
                 localVarQueryParameter['state'] = state;
             }
 
+            if (jwt !== undefined) {
+                localVarQueryParameter['jwt'] = jwt;
+            }
+
 
     
             const queryParameters = new URLSearchParams(localVarUrlObj.search);
@@ -2006,11 +2016,12 @@ export const AuthorizationApiFp = function(configuration?: Configuration) {
          * @summary 应用授权
          * @param {boolean} approved 
          * @param {Set<string>} scope 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createAuthorization(approved: boolean, scope: Set<string>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>> {
-            const localVarAxiosArgs = await AuthorizationApiAxiosParamCreator(configuration).createAuthorization(approved, scope, options);
+        async createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>> {
+            const localVarAxiosArgs = await AuthorizationApiAxiosParamCreator(configuration).createAuthorization(approved, scope, jwt, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -2024,11 +2035,12 @@ export const AuthorizationApiFp = function(configuration?: Configuration) {
          * @param {string} [redirectUri] 
          * @param {Array<string>} [scope] 
          * @param {string} [state] 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>> {
-            const localVarAxiosArgs = await AuthorizationApiAxiosParamCreator(configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, options);
+        async getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, jwt?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>> {
+            const localVarAxiosArgs = await AuthorizationApiAxiosParamCreator(configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, jwt, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -2048,11 +2060,12 @@ export const AuthorizationApiFactory = function (configuration?: Configuration, 
          * @summary 应用授权
          * @param {boolean} approved 
          * @param {Set<string>} scope 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createAuthorization(approved: boolean, scope: Set<string>, options?: any): AxiosPromise<AuthorizationResponse> {
-            return AuthorizationApiFp(configuration).createAuthorization(approved, scope, options).then((request) => request(axios, basePath));
+        createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any): AxiosPromise<AuthorizationResponse> {
+            return AuthorizationApiFp(configuration).createAuthorization(approved, scope, jwt, options).then((request) => request(axios, basePath));
         },
         /**
          * 获取包含应用信息、所属用户信息、回调地址以及是否已授权。应用需要 AUTHORIZE 权限。
@@ -2062,11 +2075,12 @@ export const AuthorizationApiFactory = function (configuration?: Configuration, 
          * @param {string} [redirectUri] 
          * @param {Array<string>} [scope] 
          * @param {string} [state] 
+         * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, options?: any): AxiosPromise<AuthorizationResponse> {
-            return AuthorizationApiFp(configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, options).then((request) => request(axios, basePath));
+        getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, jwt?: boolean, options?: any): AxiosPromise<AuthorizationResponse> {
+            return AuthorizationApiFp(configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, jwt, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2083,12 +2097,13 @@ export class AuthorizationApi extends BaseAPI {
      * @summary 应用授权
      * @param {boolean} approved 
      * @param {Set<string>} scope 
+     * @param {boolean} [jwt] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthorizationApi
      */
-    public createAuthorization(approved: boolean, scope: Set<string>, options?: any) {
-        return AuthorizationApiFp(this.configuration).createAuthorization(approved, scope, options).then((request) => request(this.axios, this.basePath));
+    public createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any) {
+        return AuthorizationApiFp(this.configuration).createAuthorization(approved, scope, jwt, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2099,12 +2114,13 @@ export class AuthorizationApi extends BaseAPI {
      * @param {string} [redirectUri] 
      * @param {Array<string>} [scope] 
      * @param {string} [state] 
+     * @param {boolean} [jwt] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthorizationApi
      */
-    public getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, options?: any) {
-        return AuthorizationApiFp(this.configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, options).then((request) => request(this.axios, this.basePath));
+    public getAuthorization(clientId: string, responseType?: string, redirectUri?: string, scope?: Array<string>, state?: string, jwt?: boolean, options?: any) {
+        return AuthorizationApiFp(this.configuration).getAuthorization(clientId, responseType, redirectUri, scope, state, jwt, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -7753,6 +7769,74 @@ export const TokenApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @summary 颁发签名 JWT（JWS）
+         * @param {string} [code] 
+         * @param {string} [grantType] 
+         * @param {string} [redirectUri] 
+         * @param {string} [username] 
+         * @param {string} [password] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        grantJws: async (code?: string, grantType?: string, redirectUri?: string, username?: string, password?: string, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/jws`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ClientCredentials required
+            // http basic authentication required
+            if (configuration && (configuration.username || configuration.password)) {
+                localVarRequestOptions["auth"] = { username: configuration.username, password: configuration.password };
+            }
+
+            if (code !== undefined) {
+                localVarQueryParameter['code'] = code;
+            }
+
+            if (grantType !== undefined) {
+                localVarQueryParameter['grant_type'] = grantType;
+            }
+
+            if (redirectUri !== undefined) {
+                localVarQueryParameter['redirect_uri'] = redirectUri;
+            }
+
+            if (username !== undefined) {
+                localVarQueryParameter['username'] = username;
+            }
+
+            if (password !== undefined) {
+                localVarQueryParameter['password'] = password;
+            }
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 颁发 OAuth2 令牌
          * @param {string} [code] 
          * @param {string} [grantType] 
@@ -7939,7 +8023,7 @@ export const TokenApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getJwk(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: object; }>> {
+        async getJwk(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).getJwk(options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
@@ -7954,6 +8038,24 @@ export const TokenApiFp = function(configuration?: Configuration) {
          */
         async getJws(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OAuth2AccessToken>> {
             const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).getJws(options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary 颁发签名 JWT（JWS）
+         * @param {string} [code] 
+         * @param {string} [grantType] 
+         * @param {string} [redirectUri] 
+         * @param {string} [username] 
+         * @param {string} [password] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async grantJws(code?: string, grantType?: string, redirectUri?: string, username?: string, password?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OAuth2AccessToken>> {
+            const localVarAxiosArgs = await TokenApiAxiosParamCreator(configuration).grantJws(code, grantType, redirectUri, username, password, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -8037,7 +8139,7 @@ export const TokenApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getJwk(options?: any): AxiosPromise<{ [key: string]: object; }> {
+        getJwk(options?: any): AxiosPromise<object> {
             return TokenApiFp(configuration).getJwk(options).then((request) => request(axios, basePath));
         },
         /**
@@ -8048,6 +8150,20 @@ export const TokenApiFactory = function (configuration?: Configuration, basePath
          */
         getJws(options?: any): AxiosPromise<OAuth2AccessToken> {
             return TokenApiFp(configuration).getJws(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 颁发签名 JWT（JWS）
+         * @param {string} [code] 
+         * @param {string} [grantType] 
+         * @param {string} [redirectUri] 
+         * @param {string} [username] 
+         * @param {string} [password] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        grantJws(code?: string, grantType?: string, redirectUri?: string, username?: string, password?: string, options?: any): AxiosPromise<OAuth2AccessToken> {
+            return TokenApiFp(configuration).grantJws(code, grantType, redirectUri, username, password, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8140,6 +8256,22 @@ export class TokenApi extends BaseAPI {
      */
     public getJws(options?: any) {
         return TokenApiFp(this.configuration).getJws(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 颁发签名 JWT（JWS）
+     * @param {string} [code] 
+     * @param {string} [grantType] 
+     * @param {string} [redirectUri] 
+     * @param {string} [username] 
+     * @param {string} [password] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TokenApi
+     */
+    public grantJws(code?: string, grantType?: string, redirectUri?: string, username?: string, password?: string, options?: any) {
+        return TokenApiFp(this.configuration).grantJws(code, grantType, redirectUri, username, password, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

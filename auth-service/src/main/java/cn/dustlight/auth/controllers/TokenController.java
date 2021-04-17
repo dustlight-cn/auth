@@ -180,6 +180,21 @@ public class TokenController {
         return getResponse(token);
     }
 
+    @Operation(summary = "颁发签名 JWT（JWS）", security = @SecurityRequirement(name = "ClientCredentials"))
+    @PostMapping("jws")
+    public ResponseEntity<OAuth2AccessToken> grantJws(@RequestParam(value = "code", required = false) String code,
+                                                      @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
+                                                      @RequestParam(value = "redirect_uri", required = false) String redirectUri,
+                                                      @RequestParam(value = "username", required = false) String username,
+                                                      @RequestParam(value = "password", required = false) String password,
+                                                      @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
+                                                      HttpServletRequest request) {
+        ResponseEntity<OAuth2AccessToken> response = grantOAuthToken(code, grantType, redirectUri, username, password, parameters, request);
+        OAuth2AccessToken token = response.getBody();
+        OAuth2Authentication auth = resourceServerTokenServices.loadAuthentication(token.getValue());
+        return getResponse(jwt.convert(token, auth));
+    }
+
     @Operation(summary = "获取签名 JWT（JWS）", security = @SecurityRequirement(name = "AccessToken"))
     @GetMapping(value = "jws")
     public OAuth2AccessToken getJws(OAuth2Authentication authentication) {
