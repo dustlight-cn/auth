@@ -44,4 +44,23 @@ spec:
     name: auth-ui-port
   selector:
     app: auth-ui
-  type: NodePort
+  type: ClusterIP
+---
+# 创建 Ingress
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: auth-ui
+  namespace: auth
+  annotations:
+    nginx.org/client-max-body-size: 20m
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: auth-ui
+              servicePort: 80
+      host: accounts.wgv
