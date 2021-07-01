@@ -126,12 +126,12 @@ declare module 'vue/types/vue' {
 let app_obj: any = null
 
 const errorHandler = (error: any): any => {
-  
+
   let res = error == null ? null : error.response;
-  const message = app_obj.i18n.messages[app_obj.i18n?.locale].errors[res.data.code]
 
   let e: AuthException;
   if (res != null && res.data != null) {
+    const message = app_obj.i18n.messages[app_obj.i18n?.locale].errors[res.data.code] || res.data.message
     e = new AuthException(res.data.code, message, res.data.details);
   } else {
     e = new AuthException(-10, error.name || "Error", error.message);
