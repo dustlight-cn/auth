@@ -321,9 +321,9 @@ export default {
     "0": "Unknown error",
     "1": "Unauthorized",
     "2": "Access denied",
-    "3": "Sign in fail",
-    "4": "Register fail",
-    "5": "Verify fail",
+    "3": "Sign in failed",
+    "4": "Register failed",
+    "5": "Verify failed",
     "10": "OAuth2 Error",
     // 1000-1999
     "1000": "Input invalid",
@@ -358,8 +358,8 @@ export default {
     "5004": "Fail to update scope",
     "5005": "Fail to update client",
     "5006": "Fail to update grant type",
-    "5007": "Fail to update password", 
-    "5008": "Fail to update password", 
+    "5007": "Fail to update password",
+    "5008": "Fail to update password",
     // 6000-6999
     "6000": "Fail to delete resource",
     "6001": "Fail to delete user",
