@@ -314,5 +314,62 @@ export default {
     "clients": "Apps",
     "users": "Users",
     "systemSettings": "System Settings"
+  },
+  "errors": {
+    // 0-10
+    "-1": "No errors",
+    "0": "Unknown error",
+    "1": "Unauthorized",
+    "2": "Access denied",
+    "3": "Sign in fail",
+    "4": "Register fail",
+    "5": "Verify fail",
+    "10": "OAuth2 Error",
+    // 1000-1999
+    "1000": "Input invalid",
+    "1001": "Email invalid",
+    "1002": "Username invalid",
+    "1003": "Password invalid",
+    "1004": "Phone invalid",
+    "1005": "Code invalid",
+    // 2000-2999
+    "2000": "Resource not found",
+    "2001": "Email not found",
+    "2002": "User not found",
+    "2003": "Client not found",
+    // 3000-3999
+    "3000": "Resource already exists",
+    "3001": "Email already exists",
+    "3002": "User already exists",
+    "3003": "Client already exists",
+    // 4000-4999
+    "4000": "Fail to create resource",
+    "4001": "Fail to create user",
+    "4002": "Fail to create role",
+    "4003": "Fail to create authority",
+    "4004": "Fail to create scope",
+    "4005": "Fail to create client",
+    "4006": "Fail to create grant type",
+    // 5000-5999
+    "5000": "Fail to update resource",
+    "5001": "Fail to update user",
+    "5002": "Fail to update role",
+    "5003": "Fail to update authority",
+    "5004": "Fail to update scope",
+    "5005": "Fail to update client",
+    "5006": "Fail to update grant type",
+    "5007": "Fail to update password", 
+    "5008": "Fail to update password", 
+    // 6000-6999
+    "6000": "Fail to delete resource",
+    "6001": "Fail to delete user",
+    "6002": "Fail to delete role",
+    "6003": "Fail to delete authority",
+    "6004": "Fail to delete scope",
+    "6005": "Fail to delete client",
+    "6006": "Fail to delete grant type",
+    "6007": "Fail to delete user's avatar",
+    "6008": "Fail to delete user's token",
+    "6009": "Fail to delete client's logo"
   }
 };
