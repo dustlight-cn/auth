@@ -123,11 +123,16 @@ declare module 'vue/types/vue' {
   }
 }
 
+let app_obj: any = null
+
 const errorHandler = (error: any): any => {
+  
   let res = error == null ? null : error.response;
+  const message = app_obj.i18n.messages[app_obj.i18n?.locale].errors[res.data.code]
+
   let e: AuthException;
   if (res != null && res.data != null) {
-    e = new AuthException(res.data.code, res.data.message, res.data.details);
+    e = new AuthException(res.data.code, message, res.data.details);
   } else {
     e = new AuthException(-10, error.name || "Error", error.message);
   }
@@ -144,9 +149,12 @@ const withCredentials = globalAxios.create({
 })
 withCredentials.interceptors.response.use(res => res, errorHandler);
 
-export default boot(({Vue}) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 
+
+
+export default boot(({Vue,app}) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  app_obj = app
   Vue.prototype.$s = new S(Vue.prototype.$q.localStorage);
   let path = config.host != null ? config.host : BASE_PATH;
   Vue.prototype.$apiCfg = new Configuration({
