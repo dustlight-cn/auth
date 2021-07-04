@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,14 +56,15 @@ public class UserController {
 
     @VerifyCode("Register")
     @PostMapping("user")
-    @Operation(summary = "用户注册（通过邮箱验证码）")
+    @Operation(summary = "用户注册（通过邮箱验证码或者手机号）")
     public User register(@RequestParam("username") String username,
                          @RequestParam("password") String password,
                          @RequestParam("code") @CodeValue("Register") String code,
-                         @Parameter(hidden = true) @CodeParam(value = "Register", name = "email") String email) {
+                         @Parameter(hidden = true) @CodeParam(value = "Register", name = "email") String email,
+                         @Parameter(hidden = true) @CodeParam(value = "Register", name = "phone") String phone) {
         DefaultUserRole defaultRole = new DefaultUserRole();
         defaultRole.setRoleName("User");
-        userService.createUser(username, password, email, username, 0,
+        userService.createUser(username, password, phone, email, username, 0,
                 Arrays.asList(defaultRole), null, null, null,
                 true);
         if (logger.isDebugEnabled())

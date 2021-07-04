@@ -16,6 +16,7 @@ public class DefaultUser implements User {
     private String password;
     private String nickname;
     private String email;
+    private String phone;
     private String avatar;
     private int gender;
     private Date createdAt;
@@ -29,6 +30,11 @@ public class DefaultUser implements User {
     @Override
     public Long getUid() {
         return uid;
+    }
+
+    @Override
+    public String getPhone() {
+        return phone;
     }
 
     @Override
@@ -156,6 +162,10 @@ public class DefaultUser implements User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public void setEmail(String email) {

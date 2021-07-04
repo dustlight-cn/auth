@@ -22,6 +22,7 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      *
      * @param username             用户名
      * @param password             密码
+     * @param phone                注册手机号
      * @param email                注册邮箱
      * @param nickname             昵称
      * @param gender               性别
@@ -31,7 +32,7 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      * @param unlockedAt           账号解锁时间
      * @param enabled              账号是否启用
      */
-    void createUser(String username, String password, String email, String nickname, int gender,
+    void createUser(String username, String password,String phone, String email, String nickname, int gender,
                     Collection<UserRole> roles, Date accountExpiredAt, Date credentialsExpiredAt, Date unlockedAt, boolean enabled);
 
     /**
@@ -45,11 +46,11 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
     /**
      * 通过用户名或邮箱获取用户
      *
-     * @param uoe 用户名或邮箱
+     * @param uoeop 用户名或邮箱或手机号
      * @return 用户对象
      */
     @Override
-    T loadUserByUsername(String uoe);
+    T loadUserByUsername(String uoeop);
 
     /**
      * 通过uid集合获取用户（公开）集合
@@ -124,6 +125,14 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
     void updatePasswordByEmail(String email, String password);
 
     /**
+     * 通过邮箱更新密码
+     *
+     * @param phone    用户手机号
+     * @param password 新密码
+     */
+    void updatePasswordByPhone(String phone, String password);
+
+    /**
      * 更新用户昵称
      *
      * @param uid      用户uid
@@ -146,6 +155,14 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      * @param email 用户邮箱
      */
     void updateEmail(Long uid, String email);
+
+    /**
+     * 更新用户手机号
+     *
+     * @param uid   用户uid
+     * @param phone 用户手机号
+     */
+    void updatePhone(Long uid, String phone);
 
     /**
      * 为用户添加角色
@@ -225,4 +242,12 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      * @return 邮箱是否存在
      */
     boolean isEmailExists(String email);
+
+    /**
+     * 检查手机号是否存在
+     *
+     * @param phone 手机号
+     * @return 邮箱是否存在
+     */
+    boolean isPhoneExists(String phone);
 }
