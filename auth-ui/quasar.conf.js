@@ -79,7 +79,7 @@ module.exports = configure(function (/* ctx */) {
       port: 80,
       open: true, // opens browser window automatically
       proxy: {
-        '/v1':{
+        '/v1': {
           target: 'http://127.0.0.1:8080',
           changeOrigin: true,
         }

@@ -10,7 +10,7 @@ export interface Config {
   /**
    * 谷歌 reCAPTCHA 客户端密钥
    */
-  recaptchaKey: string,
+  recaptchaKey: string | undefined,
   /**
    * 表单正则
    */
@@ -32,9 +32,7 @@ export interface Config {
 }
 
 const config: Config = {
-  // host: "http://accounts.wgv",
-  host:"",
-  // host: "https://api.dustlight.cn",
+  host: ".",
   recaptchaKey: "6Lcp1xAaAAAAAEp6YI3vE4rLG5Ehgj4EeMip04er",
   pattern: {
     username: /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$/,
