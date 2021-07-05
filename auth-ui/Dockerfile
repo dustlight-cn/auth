@@ -3,8 +3,8 @@
 #
 FROM node:14-alpine AS build
 
-# 复制源代码以及 SDK 依赖
-COPY ../auth-client-axios /
+# 复制源代码以及SDK依赖
+COPY auth-client-axios /auth-client-axios
 COPY . /app
 WORKDIR /app
 
