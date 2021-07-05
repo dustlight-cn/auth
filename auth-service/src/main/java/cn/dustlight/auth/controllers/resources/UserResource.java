@@ -203,6 +203,16 @@ public class UserResource {
         userService.updateEmail(uid, email);
     }
 
+    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_USER_PHONE')) and #oauth2.clientHasRole('WRITE_USER_PHONE')")
+    @VerifyCode(value = "ChangePhone", store = @Store("userCodeStore"))
+    @PutMapping("users/{uid}/phone")
+    @Operation(summary = "更新用户手机号码", description = "应用和用户需拥有 WRITE_USER_PHONE 权限。")
+    public void updateUserPhone(@PathVariable Long uid,
+                                @CodeValue("ChangePhone") @RequestParam String code,
+                                @CodeParam(value = "ChangePhone", name = "phone") @Parameter(hidden = true) String phone) {
+        userService.updatePhone(uid, phone);
+    }
+
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('WRITE_USER')) and #oauth2.clientHasRole('WRITE_USER')")
     @PutMapping("users/{uid}/gender")
     @Operation(summary = "更新用户性别", description = "应用和用户（修改自身信息除外）需要拥有 WRITE_USER 权限。")

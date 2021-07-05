@@ -39,9 +39,9 @@ public class VerifiedSmsSender implements CodeSender<String> {
             smsSender.send(code, parameters);
         else {
             if (target)
-                ErrorEnum.EMAIL_NOT_FOUND.throwException();
+                ErrorEnum.PHONE_NOT_FOUND.throwException();
             else
-                ErrorEnum.EMAIL_EXISTS.throwException();
+                ErrorEnum.PHONE_EXISTS.throwException();
         }
     }
 

@@ -68,7 +68,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     @Transactional
     @Override
-    public void createUser(String username, String password,  String phone, String email, String nickname, int gender,
+    public void createUser(String username, String password, String phone, String email, String nickname, int gender,
                            Collection<UserRole> roles, Date accountExpiredAt, Date credentialsExpiredAt, Date unlockedAt, boolean enabled) {
         Long id = idGenerator.generate();
         if (usernamePattern != null && !usernamePattern.matcher(username).matches())
@@ -77,15 +77,18 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
             ErrorEnum.PASSWORD_INVALID.throwException();
         if (StringUtils.hasText(email) && emailPattern != null && !emailPattern.matcher(email).matches())
             ErrorEnum.EMAIL_INVALID.throwException();
-        if(StringUtils.hasText(phone) && phonePattern != null && !phonePattern.matcher(phone).matches())
+        if (StringUtils.hasText(phone) && phonePattern != null && !phonePattern.matcher(phone).matches())
             ErrorEnum.PHONE_INVALID.throwException();
 
         if (!StringUtils.hasText(email) && !StringUtils.hasText(phone))
             ErrorEnum.INPUT_INVALID.details("Phone and email is empty").throwException();
-
+        if (!StringUtils.hasText(email))
+            email = null;
+        if (!StringUtils.hasText(phone))
+            phone = null;
         try {
             // 先创建用户
-            if (!userMapper.insertUser(id, username, encodePassword(password),phone, email, nickname, gender,
+            if (!userMapper.insertUser(id, username, encodePassword(password), phone, email, nickname, gender,
                     accountExpiredAt, credentialsExpiredAt, unlockedAt, enabled))
                 ErrorEnum.CREATE_USER_FAIL.throwException();
             // 再添加角色
@@ -162,7 +165,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     public void updatePasswordByPhone(String phone, String password) {
         if (passwordPattern != null && !passwordPattern.matcher(password).matches())
             ErrorEnum.PASSWORD_INVALID.throwException();
-        if(phonePattern != null && !phonePattern.matcher(phone).matches())
+        if (phonePattern != null && !phonePattern.matcher(phone).matches())
             ErrorEnum.PHONE_INVALID.throwException();
         if (!userMapper.updatePasswordByPhone(phone, encodePassword(password)))
             ErrorEnum.UPDATE_USER_FAIL.details("fail to update password by phone").throwException();
@@ -192,7 +195,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     @Override
     public void updatePhone(Long uid, String phone) {
-        if(phonePattern != null && !phonePattern.matcher(phone).matches())
+        if (phonePattern != null && !phonePattern.matcher(phone).matches())
             ErrorEnum.PHONE_INVALID.throwException();
         if (!userMapper.updatePhone(uid, phone))
             ErrorEnum.UPDATE_USER_FAIL.details("fail to update phone").throwException();
@@ -261,7 +264,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     @Override
     public boolean isPhoneExists(String phone) {
-        if(phonePattern != null && !phonePattern.matcher(phone).matches())
+        if (phonePattern != null && !phonePattern.matcher(phone).matches())
             ErrorEnum.PHONE_INVALID.throwException();
         return userMapper.isPhoneExists(phone);
     }

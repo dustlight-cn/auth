@@ -86,9 +86,9 @@ public class UserController {
                     .throwException();
         User user = (User) oAuth2Authentication.getPrincipal();
         user = userService.loadUser(user.getUid());
-        if (user.getEmail() == null || user.getEmail().trim().length() == 0)
-            ErrorEnum.UPDATE_PASSWORD_FAIL_EMAIL_NOT_EXIST
-                    .details("Can't change password without binding email address.")
+        if (!StringUtils.hasText(user.getEmail()) && !StringUtils.hasText(user.getPhone()))
+            ErrorEnum.UPDATE_PASSWORD_FAIL_EMAIL_OR_PHONE_NOT_EXIST
+                    .details("Can't change password without binding email address or phone.")
                     .throwException();
         if (!passwordEncoder.matches(oldPassword, user.getPassword()))
             ErrorEnum.PASSWORD_INVALID.throwException();
@@ -97,15 +97,22 @@ public class UserController {
             logger.debug(String.format("【用户更改密码】 用户名：%s。", user.getUsername()));
     }
 
-    @VerifyCode("ResetPasswordByEmail")
+    @VerifyCode("ResetPassword")
     @PutMapping("password")
-    @Operation(summary = "邮箱重置密码")
-    public void resetPasswordWithEmail(@RequestParam("password") String password,
-                                       @RequestParam("code") @CodeValue("ResetPasswordByEmail") String code,
-                                       @CodeParam(value = "ResetPasswordByEmail", name = "email") String email) {
-        userService.updatePasswordByEmail(email, password);
-        if (logger.isDebugEnabled())
-            logger.debug(String.format("【用户通过邮箱重置密码】 邮箱：%s。", email));
+    @Operation(summary = "邮箱或手机重置密码")
+    public void resetPassword(@RequestParam("password") String password,
+                              @RequestParam("code") @CodeValue("ResetPassword") String code,
+                              @Parameter(hidden = true) @CodeParam(value = "ResetPassword", name = "email") String email,
+                              @Parameter(hidden = true) @CodeParam(value = "ResetPassword", name = "phone") String phone) {
+        if (StringUtils.hasText(email)) {
+            userService.updatePasswordByEmail(email, password);
+            if (logger.isDebugEnabled())
+                logger.debug(String.format("【用户通过邮箱重置密码】 邮箱：%s。", email));
+        } else if (StringUtils.hasText(phone)) {
+            userService.updatePasswordByPhone(phone, password);
+            if (logger.isDebugEnabled())
+                logger.debug(String.format("【用户通过手机重置密码】 号码：%s。", phone));
+        }
     }
 
     @PreAuthorize("#oauth2.clientHasRole('WRITE_USER_EMAIL')")
@@ -115,7 +122,6 @@ public class UserController {
             description = "应用需要 WRITE_USER_EMAIL 权限。",
             security = @SecurityRequirement(name = "AccessToken"))
     public void resetEmail(OAuth2Authentication oAuth2Authentication,
-                           HttpServletRequest request,
                            @RequestParam("password") String password,
                            @CodeValue("ChangeEmail") @RequestParam("code") String code,
                            @CodeParam(value = "ChangeEmail", name = "email") @Parameter(hidden = true) String email) {
@@ -126,6 +132,25 @@ public class UserController {
         userService.updateEmail(user.getUid(), email);
         if (logger.isDebugEnabled())
             logger.debug(String.format("【用户更改邮箱】 用户名：%s，邮箱：%s。", user.getUsername(), email));
+    }
+
+    @PreAuthorize("#oauth2.clientHasRole('WRITE_USER_PHONE')")
+    @VerifyCode(value = "ChangePhone", store = @Store("userCodeStore"))
+    @PutMapping("user/phone")
+    @Operation(summary = "通过密码更改手机号码",
+            description = "应用需要 WRITE_USER_PHONE 权限。",
+            security = @SecurityRequirement(name = "AccessToken"))
+    public void resetPhone(OAuth2Authentication oAuth2Authentication,
+                           @RequestParam("password") String password,
+                           @CodeValue("ChangePhone") @RequestParam("code") String code,
+                           @CodeParam(value = "ChangePhone", name = "phone") @Parameter(hidden = true) String phone) {
+        User user = (User) oAuth2Authentication.getPrincipal();
+        user = userService.loadUser(user.getUid());
+        if (!passwordEncoder.matches(password, user.getPassword()))
+            ErrorEnum.PASSWORD_INVALID.throwException();
+        userService.updatePhone(user.getUid(), phone);
+        if (logger.isDebugEnabled())
+            logger.debug(String.format("【用户更改手机号码】 用户名：%s，号码：%s。", user.getUsername(), phone));
     }
 
     @GetMapping("username/{username}")
@@ -140,4 +165,9 @@ public class UserController {
         return userService.isEmailExists(email);
     }
 
+    @GetMapping("phone/{phone}")
+    @Operation(summary = "检查手机号码是否存在")
+    public boolean isPhoneExists(@PathVariable(name = "phone") String phone) {
+        return userService.isPhoneExists(phone);
+    }
 }

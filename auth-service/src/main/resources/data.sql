@@ -18,7 +18,8 @@ IGNORE INTO `authorities` (`aid`,`authorityName`,`authorityDescription`) VALUES
 (4,'WRITE_USER','修改任意用户的昵称、头像以及性别。'),
 (5,'WRITE_USER_PASSWORD','修改任意用户的密码。'),
 (6,'WRITE_USER_EMAIL','修改任意用户的邮箱地址。'),
-(7,'WRITE_CLIENT','创建、修改以及删除任意应用，包括应用详情、应用权限、应用授权模式以及应用授权作用域。'),
+(7,'WRITE_USER_PHONE','修改任意用户的手机号码。'),
+(8,'WRITE_CLIENT','创建、修改以及删除任意应用，包括应用详情、应用权限、应用授权模式以及应用授权作用域。'),
 
 (100,'READ_USER','读取任意用户的全部信息，包括个人详情和角色信息。'),
 (101,'READ_CLIENT','读取任意应用的全部信息，包括应用详情、应用权限、应用授权模式以及应用授权作用域。'),
