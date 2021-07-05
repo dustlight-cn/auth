@@ -1,9 +1,10 @@
 #
-# Node 项目构建环境，用于构建单页面应用 
+# Node 项目构建环境，用于构建单页面应用
 #
 FROM node:14-alpine AS build
 
-# 复制源代码
+# 复制源代码以及 SDK 依赖
+COPY ../auth-client-axios /app
 COPY . /app
 WORKDIR /app
 
@@ -11,12 +12,12 @@ WORKDIR /app
 USER root
 RUN npm install -g @quasar/cli && \
     npm install -g @vue/cli && \
-    npm install -g @vue/cli-init 
+    npm install -g @vue/cli-init
 RUN npm install
 RUN quasar build
 
 #
-# Nginx 部署环境 
+# Nginx 部署环境
 #
 FROM nginx:alpine
 COPY --from=build /app/dist/spa /usr/share/nginx/html
