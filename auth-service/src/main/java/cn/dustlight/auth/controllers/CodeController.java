@@ -29,10 +29,37 @@ public class CodeController {
     @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
     @PostMapping("code/registration")
     @Operation(summary = "获取注册邮箱验证码", description = "发送验证码到邮箱，用于注册。")
+    @Deprecated
     public void createRegistrationCode(@RequestParam("g-recaptcha-response") String recaptchaResponse,
                                        @CodeValue("Register") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code,
                                        @RequestParam @CodeParam(value = "Register", name = "email") String email) {
         logger.debug(String.format("发送邮箱注册验证码：%s\t邮箱：%s", code, email));
+    }
+
+    @SendCode(value = "Register", sender = @Sender("verifiedEmailSender"), parameters = {
+            @Parameter(name = "SUBJECT", value = "邮箱注册"),
+            @Parameter(name = "TEMPLATE", value = "mail/EmailCode.html"),
+            @Parameter(name = "CHECK_EXISTS", value = "false") // 检查邮箱是否不存在
+    })
+    @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
+    @PostMapping("code/registration/email")
+    @Operation(summary = "获取注册邮箱验证码", description = "发送验证码到邮箱，用于注册。")
+    public void createRegistrationEmailCode(@RequestParam("g-recaptcha-response") String recaptchaResponse,
+                                            @CodeValue("Register") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code,
+                                            @RequestParam @CodeParam(value = "Register", name = "email") String email) {
+        logger.debug(String.format("发送邮箱注册验证码：%s\t邮箱：%s", code, email));
+    }
+
+    @SendCode(value = "Register", sender = @Sender("verifiedSmsSender"), parameters = {
+            @Parameter(name = "CHECK_EXISTS", value = "false") // 检查号码是否不存在
+    })
+    @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
+    @PostMapping("code/registration/phone")
+    @Operation(summary = "获取注册手机验证码", description = "发送验证码到手机，用于注册。")
+    public void createRegistrationPhoneCode(@RequestParam("g-recaptcha-response") String recaptchaResponse,
+                                            @CodeValue("Register") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code,
+                                            @RequestParam @CodeParam(value = "Register", name = "phone") String phone) {
+        logger.debug(String.format("发送邮箱注册验证码：%s\t手机：%s", code, phone));
     }
 
     @SendCode(value = "ChangeEmail",
@@ -53,7 +80,24 @@ public class CodeController {
         logger.debug(String.format("发送更新邮箱验证码：%s\t邮箱：%s", code, email));
     }
 
-    @SendCode(value = "ResetPasswordByEmail",
+    @SendCode(value = "ChangePhone",
+            sender = @Sender("verifiedSmsSender"),
+            store = @Store("userCodeStore"),
+            parameters = {
+                    @Parameter(name = "TEMPLATE_CODE", value = "changePhone"),
+                    @Parameter(name = "CHECK_EXISTS", value = "false") // 检查号码是否不存在
+            })
+    @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
+    @PostMapping("code/phone")
+    @Operation(summary = "获取更换手机号码验证码", description = "发送验证码到手机，用于更改手机号码。", security = @SecurityRequirement(name = "AccessToken"))
+    public void createUpdatePhoneCode(@RequestParam("g-recaptcha-response") String recaptchaResponse,
+                                      @CodeValue("ChangePhone") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code,
+                                      @RequestParam @CodeParam("ChangePhone") String phone,
+                                      HttpServletRequest request) {
+        logger.debug(String.format("发送更新手机验证码：%s\t号码：%s", code, phone));
+    }
+
+    @SendCode(value = "ResetPassword",
             sender = @Sender("verifiedEmailSender"),
             parameters = {
                     @Parameter(name = "SUBJECT", value = "重置密码"),
@@ -61,10 +105,24 @@ public class CodeController {
             })
     @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
     @PostMapping("code/password/email")
-    @Operation(summary = "获取重置密码邮箱验证码", description = "发送验证码到邮箱，用于更改邮箱。")
+    @Operation(summary = "获取重置密码邮箱验证码", description = "发送验证码到邮箱，用于更改密码。")
     public void createUpdatePasswordEmailCode(@RequestParam("g-recaptcha-response") String recaptchaResponse,
-                                              @CodeValue("ResetPasswordByEmail") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code,
-                                              @RequestParam @CodeParam("ResetPasswordByEmail") String email) {
+                                              @CodeValue("ResetPassword") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code,
+                                              @RequestParam @CodeParam("ResetPassword") String email) {
         logger.debug(String.format("发送密码重置邮箱验证码：%s\t邮箱：%s", code, email));
+    }
+
+    @SendCode(value = "ResetPassword",
+            sender = @Sender("verifiedSmsSender"),
+            parameters = {
+                    @Parameter(name = "TEMPLATE_CODE", value = "resetPassword"),
+            })
+    @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
+    @PostMapping("code/password/phone")
+    @Operation(summary = "获取重置密码手机验证码", description = "发送验证码到手机，用于更改密码。")
+    public void createUpdatePasswordPhoneCode(@RequestParam("g-recaptcha-response") String recaptchaResponse,
+                                              @CodeValue("ResetPassword") @io.swagger.v3.oas.annotations.Parameter(hidden = true) String code,
+                                              @RequestParam @CodeParam("ResetPassword") String phone) {
+        logger.debug(String.format("发送密码重置手机验证码：%s\t号码：%s", code, phone));
     }
 }

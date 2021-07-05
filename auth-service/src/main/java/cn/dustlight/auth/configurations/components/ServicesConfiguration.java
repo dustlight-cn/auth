@@ -40,6 +40,8 @@ public class ServicesConfiguration {
                 userService.setPasswordPattern(Pattern.compile(properties.getPassword()));
             if (properties.getEmail() != null)
                 userService.setEmailPattern(Pattern.compile(properties.getEmail()));
+            if(properties.getPhone() != null)
+                userService.setPhonePattern(Pattern.compile(properties.getPhone()));
         }
         return userService;
     }

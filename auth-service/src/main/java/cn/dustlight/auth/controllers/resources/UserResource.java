@@ -88,13 +88,14 @@ public class UserResource {
 
     @PreAuthorize("(#oauth2.client or hasAuthority('CREATE_USER')) and #oauth2.clientHasRole('CREATE_USER')")
     @PostMapping("users")
-    @Operation(summary = "创建用户（用户名和邮箱不可重复）", description = "应用和用户需要 CREATE_USER 权限。")
+    @Operation(summary = "创建用户（用户名、邮箱、手机号码不可重复）", description = "应用和用户需要 CREATE_USER 权限。")
     public User createUser(@RequestParam(name = "username") String username,
                            @RequestParam(name = "password") String password,
-                           @RequestParam(name = "email") String email) {
+                           @RequestParam(name = "email",required = false) String email,
+                           @RequestParam(name = "phone",required = false) String phone) {
         DefaultUserRole defaultRole = new DefaultUserRole();
         defaultRole.setRoleName("User");
-        userService.createUser(username, password, email, username, 0,
+        userService.createUser(username, password, phone,email, username, 0,
                 Arrays.asList(defaultRole), null, null, null,
                 true);
         logger.debug(String.format("创建用户: [%s] 邮箱：[%s]", username, email));
@@ -200,6 +201,16 @@ public class UserResource {
                                 @CodeValue("ChangeEmail") @RequestParam String code,
                                 @CodeParam(value = "ChangeEmail", name = "email") @Parameter(hidden = true) String email) {
         userService.updateEmail(uid, email);
+    }
+
+    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_USER_PHONE')) and #oauth2.clientHasRole('WRITE_USER_PHONE')")
+    @VerifyCode(value = "ChangePhone", store = @Store("userCodeStore"))
+    @PutMapping("users/{uid}/phone")
+    @Operation(summary = "更新用户手机号码", description = "应用和用户需拥有 WRITE_USER_PHONE 权限。")
+    public void updateUserPhone(@PathVariable Long uid,
+                                @CodeValue("ChangePhone") @RequestParam String code,
+                                @CodeParam(value = "ChangePhone", name = "phone") @Parameter(hidden = true) String phone) {
+        userService.updatePhone(uid, phone);
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('WRITE_USER')) and #oauth2.clientHasRole('WRITE_USER')")

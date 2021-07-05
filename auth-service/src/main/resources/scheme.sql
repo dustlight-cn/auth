@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS`users` (
   `uid` bigint NOT NULL,
   `username` varchar(64) NOT NULL,
   `password` varchar(128) NOT NULL,
-  `email` varchar(320) NOT NULL,
+  `phone` VARCHAR(20) NULL,
+  `email` varchar(320) NULL,
   `nickname` varchar(32) NOT NULL DEFAULT '',
   `gender` int(2) unsigned zerofill DEFAULT '00',
   `accountExpiredAt` datetime DEFAULT NULL,
@@ -19,8 +20,9 @@ CREATE TABLE IF NOT EXISTS`users` (
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uid`),
   UNIQUE KEY `username_UNIQUE` (`username`),
+  UNIQUE KEY `phone_UNIQUE` (`phone`),
   UNIQUE KEY `email_UNIQUE` (`email`),
-  FULLTEXT KEY `user_keywords` (`username`,`email`,`nickname`) WITH PARSER ngram
+  FULLTEXT KEY `user_keywords` (`username`,`phone`,`email`,`nickname`) WITH PARSER ngram
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /* 角色表 Roles */

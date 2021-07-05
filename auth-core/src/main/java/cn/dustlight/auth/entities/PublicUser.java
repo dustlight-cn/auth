@@ -18,6 +18,10 @@ public interface PublicUser extends User, Serializable {
 
     @JsonIgnore
     @Override
+    String getPhone();
+
+    @JsonIgnore
+    @Override
     Date getAccountExpiredAt();
 
     @JsonIgnore

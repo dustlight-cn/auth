@@ -23,11 +23,13 @@ public enum ErrorEnum {
     EMAIL_NOT_FOUND(2001, "Email not found"),
     USER_NOT_FOUND(2002, "User not found"),
     CLIENT_NOT_FOUND(2003, "Client not found"),
+    PHONE_NOT_FOUND(2004, "Phone not found"),
 
     RESOURCE_EXISTS(3000, "Resource already exists"),
     EMAIL_EXISTS(3001, "Email already exists"),
     USER_EXISTS(3002, "User already exists"),
     CLIENT_EXISTS(3003, "Client already exists"),
+    PHONE_EXISTS(3004, "Phone already exists"),
 
     CREATE_RESOURCE_FAIL(4000, "Fail to create resource"),
     CREATE_USER_FAIL(4001, "Fail to create user"),
@@ -44,7 +46,7 @@ public enum ErrorEnum {
     UPDATE_SCOPE_FAIL(5004, "Fail to update scope"),
     UPDATE_CLIENT_FAIL(5005, "Fail to update client"),
     UPDATE_GRANT_TYPE_FAIL(5006, "Fail to update grant type"),
-    UPDATE_PASSWORD_FAIL_EMAIL_NOT_EXIST(5007, "Fail to update password"),
+    UPDATE_PASSWORD_FAIL_EMAIL_OR_PHONE_NOT_EXIST(5007, "Fail to update password"),
     UPDATE_PASSWORD_FAIL_ORIGINAL_PASSWORD(5008, "Fail to update password"),
 
     DELETE_RESOURCE_FAIL(6000, "Fail to delete resource"),

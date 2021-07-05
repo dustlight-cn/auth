@@ -1,6 +1,6 @@
 {
   "name": "@dustlight/auth-ui",
-  "version": "1.0.6-alpha-3",
+  "version": "1.1.0-alpha",
   "description": "UI for Auth-Service",
   "productName": "Auth-UI",
   "author": "Hansin1997 <hansin@dustlight.cn>",
@@ -30,7 +30,7 @@
     "quasar": "^1.15.7",
     "vue-i18n": "^8.24.1",
     "vue-recaptcha": "1.3.0",
-    "@dustlight/auth-client-axios": "1.0.6-alpha-3",
+    "@dustlight/auth-client-axios": "file:../auth-client-axios",
     "xmldom": "^0.5.0",
     "is-svg": "^4.3.1"
   },
