@@ -120,7 +120,6 @@
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${spring-doc.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -189,6 +188,11 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                    <version>1.3</version>
                 </plugin>
                 <!-- GPG -->
                 <plugin>

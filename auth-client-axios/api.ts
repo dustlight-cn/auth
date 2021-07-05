@@ -144,6 +144,12 @@ export interface AuthorizationClient {
     clientSecret?: string;
     /**
      * 
+     * @type {Set<string>}
+     * @memberof AuthorizationClient
+     */
+    registeredRedirectUri?: Set<string>;
+    /**
+     * 
      * @type {number}
      * @memberof AuthorizationClient
      */
@@ -154,12 +160,6 @@ export interface AuthorizationClient {
      * @memberof AuthorizationClient
      */
     refreshTokenValiditySeconds?: number;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof AuthorizationClient
-     */
-    registeredRedirectUri?: Set<string>;
     /**
      * 
      * @type {string}
@@ -279,16 +279,16 @@ export interface Client {
     uid?: number;
     /**
      * 
-     * @type {string}
-     * @memberof Client
-     */
-    logo?: string;
-    /**
-     * 
      * @type {Array<ClientScope>}
      * @memberof Client
      */
     scopes?: Array<ClientScope>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    logo?: string;
     /**
      * 
      * @type {string}
@@ -327,6 +327,12 @@ export interface Client {
     secret?: string;
     /**
      * 
+     * @type {Set<string>}
+     * @memberof Client
+     */
+    redirectUri?: Set<string>;
+    /**
+     * 
      * @type {number}
      * @memberof Client
      */
@@ -343,12 +349,6 @@ export interface Client {
      * @memberof Client
      */
     grantTypes?: Set<string>;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    redirectUri?: Set<string>;
 }
 /**
  * 
@@ -438,16 +438,16 @@ export interface OAuth2AccessToken {
     value?: string;
     /**
      * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    expiration?: string;
-    /**
-     * 
      * @type {Set<string>}
      * @memberof OAuth2AccessToken
      */
     scope?: Set<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    expiration?: string;
     /**
      * 
      * @type {boolean}
@@ -506,6 +506,18 @@ export interface PublicUser {
     uid?: number;
     /**
      * 
+     * @type {string}
+     * @memberof PublicUser
+     */
+    nickname?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicUser
+     */
+    avatar?: string;
+    /**
+     * 
      * @type {number}
      * @memberof PublicUser
      */
@@ -515,19 +527,7 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    avatar?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
     unlockedAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
-    nickname?: string;
     /**
      * 
      * @type {boolean}
@@ -545,13 +545,13 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    credentialsNonExpired?: boolean;
+    accountNonExpired?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof PublicUser
      */
-    accountNonExpired?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {boolean}
@@ -737,13 +737,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    email?: string;
+    phone?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    phone?: string;
+    email?: string;
     /**
      * 
      * @type {string}
@@ -758,6 +758,18 @@ export interface User {
     accountExpiredAt?: string;
     /**
      * 
+     * @type {string}
+     * @memberof User
+     */
+    nickname?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    avatar?: string;
+    /**
+     * 
      * @type {number}
      * @memberof User
      */
@@ -767,19 +779,7 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    avatar?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
     unlockedAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    nickname?: string;
     /**
      * 
      * @type {boolean}
@@ -797,13 +797,13 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    credentialsNonExpired?: boolean;
+    accountNonExpired?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof User
      */
-    accountNonExpired?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {boolean}
@@ -4272,7 +4272,7 @@ export const CodeApiAxiosParamCreator = function (configuration?: Configuration)
             };
         },
         /**
-         * 发送验证码到邮箱，用于更改邮箱。
+         * 发送验证码到邮箱，用于更改密码。
          * @summary 获取重置密码邮箱验证码
          * @param {string} gRecaptchaResponse 
          * @param {string} email 
@@ -4302,6 +4302,98 @@ export const CodeApiAxiosParamCreator = function (configuration?: Configuration)
 
             if (email !== undefined) {
                 localVarQueryParameter['email'] = email;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 发送验证码到手机，用于更改密码。
+         * @summary 获取重置密码手机验证码
+         * @param {string} gRecaptchaResponse 
+         * @param {string} phone 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createUpdatePasswordPhoneCode: async (gRecaptchaResponse: string, phone: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'gRecaptchaResponse' is not null or undefined
+            assertParamExists('createUpdatePasswordPhoneCode', 'gRecaptchaResponse', gRecaptchaResponse)
+            // verify required parameter 'phone' is not null or undefined
+            assertParamExists('createUpdatePasswordPhoneCode', 'phone', phone)
+            const localVarPath = `/v1/code/password/phone`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (gRecaptchaResponse !== undefined) {
+                localVarQueryParameter['g-recaptcha-response'] = gRecaptchaResponse;
+            }
+
+            if (phone !== undefined) {
+                localVarQueryParameter['phone'] = phone;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 发送验证码到手机，用于更改手机号码。
+         * @summary 获取更换手机号码验证码
+         * @param {string} gRecaptchaResponse 
+         * @param {string} phone 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createUpdatePhoneCode: async (gRecaptchaResponse: string, phone: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'gRecaptchaResponse' is not null or undefined
+            assertParamExists('createUpdatePhoneCode', 'gRecaptchaResponse', gRecaptchaResponse)
+            // verify required parameter 'phone' is not null or undefined
+            assertParamExists('createUpdatePhoneCode', 'phone', phone)
+            const localVarPath = `/v1/code/phone`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (gRecaptchaResponse !== undefined) {
+                localVarQueryParameter['g-recaptcha-response'] = gRecaptchaResponse;
+            }
+
+            if (phone !== undefined) {
+                localVarQueryParameter['phone'] = phone;
             }
 
 
@@ -4374,7 +4466,7 @@ export const CodeApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * 发送验证码到邮箱，用于更改邮箱。
+         * 发送验证码到邮箱，用于更改密码。
          * @summary 获取重置密码邮箱验证码
          * @param {string} gRecaptchaResponse 
          * @param {string} email 
@@ -4383,6 +4475,30 @@ export const CodeApiFp = function(configuration?: Configuration) {
          */
         async createUpdatePasswordEmailCode(gRecaptchaResponse: string, email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.createUpdatePasswordEmailCode(gRecaptchaResponse, email, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 发送验证码到手机，用于更改密码。
+         * @summary 获取重置密码手机验证码
+         * @param {string} gRecaptchaResponse 
+         * @param {string} phone 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createUpdatePasswordPhoneCode(gRecaptchaResponse: string, phone: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createUpdatePasswordPhoneCode(gRecaptchaResponse, phone, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 发送验证码到手机，用于更改手机号码。
+         * @summary 获取更换手机号码验证码
+         * @param {string} gRecaptchaResponse 
+         * @param {string} phone 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createUpdatePhoneCode(gRecaptchaResponse: string, phone: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createUpdatePhoneCode(gRecaptchaResponse, phone, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -4440,7 +4556,7 @@ export const CodeApiFactory = function (configuration?: Configuration, basePath?
             return localVarFp.createUpdateEmailCode(gRecaptchaResponse, email, options).then((request) => request(axios, basePath));
         },
         /**
-         * 发送验证码到邮箱，用于更改邮箱。
+         * 发送验证码到邮箱，用于更改密码。
          * @summary 获取重置密码邮箱验证码
          * @param {string} gRecaptchaResponse 
          * @param {string} email 
@@ -4449,6 +4565,28 @@ export const CodeApiFactory = function (configuration?: Configuration, basePath?
          */
         createUpdatePasswordEmailCode(gRecaptchaResponse: string, email: string, options?: any): AxiosPromise<void> {
             return localVarFp.createUpdatePasswordEmailCode(gRecaptchaResponse, email, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 发送验证码到手机，用于更改密码。
+         * @summary 获取重置密码手机验证码
+         * @param {string} gRecaptchaResponse 
+         * @param {string} phone 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createUpdatePasswordPhoneCode(gRecaptchaResponse: string, phone: string, options?: any): AxiosPromise<void> {
+            return localVarFp.createUpdatePasswordPhoneCode(gRecaptchaResponse, phone, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 发送验证码到手机，用于更改手机号码。
+         * @summary 获取更换手机号码验证码
+         * @param {string} gRecaptchaResponse 
+         * @param {string} phone 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createUpdatePhoneCode(gRecaptchaResponse: string, phone: string, options?: any): AxiosPromise<void> {
+            return localVarFp.createUpdatePhoneCode(gRecaptchaResponse, phone, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -4513,7 +4651,7 @@ export class CodeApi extends BaseAPI {
     }
 
     /**
-     * 发送验证码到邮箱，用于更改邮箱。
+     * 发送验证码到邮箱，用于更改密码。
      * @summary 获取重置密码邮箱验证码
      * @param {string} gRecaptchaResponse 
      * @param {string} email 
@@ -4523,6 +4661,32 @@ export class CodeApi extends BaseAPI {
      */
     public createUpdatePasswordEmailCode(gRecaptchaResponse: string, email: string, options?: any) {
         return CodeApiFp(this.configuration).createUpdatePasswordEmailCode(gRecaptchaResponse, email, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 发送验证码到手机，用于更改密码。
+     * @summary 获取重置密码手机验证码
+     * @param {string} gRecaptchaResponse 
+     * @param {string} phone 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CodeApi
+     */
+    public createUpdatePasswordPhoneCode(gRecaptchaResponse: string, phone: string, options?: any) {
+        return CodeApiFp(this.configuration).createUpdatePasswordPhoneCode(gRecaptchaResponse, phone, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 发送验证码到手机，用于更改手机号码。
+     * @summary 获取更换手机号码验证码
+     * @param {string} gRecaptchaResponse 
+     * @param {string} phone 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CodeApi
+     */
+    public createUpdatePhoneCode(gRecaptchaResponse: string, phone: string, options?: any) {
+        return CodeApiFp(this.configuration).createUpdatePhoneCode(gRecaptchaResponse, phone, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -7246,6 +7410,40 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary 检查手机号码是否存在
+         * @param {string} phone 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        isPhoneExists: async (phone: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'phone' is not null or undefined
+            assertParamExists('isPhoneExists', 'phone', phone)
+            const localVarPath = `/v1/phone/{phone}`
+                .replace(`{${"phone"}}`, encodeURIComponent(String(phone)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 检查用户名是否存在
          * @param {string} username 
          * @param {*} [options] Override http request option.
@@ -7427,18 +7625,17 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @summary 邮箱重置密码
+         * @summary 邮箱或手机重置密码
          * @param {string} password 
          * @param {string} code 
-         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        resetPasswordWithEmail: async (password: string, code: string, body?: string, options: any = {}): Promise<RequestArgs> => {
+        resetPassword1: async (password: string, code: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'password' is not null or undefined
-            assertParamExists('resetPasswordWithEmail', 'password', password)
+            assertParamExists('resetPassword1', 'password', password)
             // verify required parameter 'code' is not null or undefined
-            assertParamExists('resetPasswordWithEmail', 'code', code)
+            assertParamExists('resetPassword1', 'code', code)
             const localVarPath = `/v1/password`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7461,12 +7658,57 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
 
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 应用需要 WRITE_USER_PHONE 权限。
+         * @summary 通过密码更改手机号码
+         * @param {string} password 
+         * @param {string} code 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resetPhone: async (password: string, code: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'password' is not null or undefined
+            assertParamExists('resetPhone', 'password', password)
+            // verify required parameter 'code' is not null or undefined
+            assertParamExists('resetPhone', 'code', code)
+            const localVarPath = `/v1/user/phone`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (password !== undefined) {
+                localVarQueryParameter['password'] = password;
+            }
+
+            if (code !== undefined) {
+                localVarQueryParameter['code'] = code;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -7502,6 +7744,17 @@ export const UserApiFp = function(configuration?: Configuration) {
          */
         async isEmailExists(email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.isEmailExists(email, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 检查手机号码是否存在
+         * @param {string} phone 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async isPhoneExists(phone: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.isPhoneExists(phone, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7554,15 +7807,26 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 邮箱重置密码
+         * @summary 邮箱或手机重置密码
          * @param {string} password 
          * @param {string} code 
-         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async resetPasswordWithEmail(password: string, code: string, body?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.resetPasswordWithEmail(password, code, body, options);
+        async resetPassword1(password: string, code: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.resetPassword1(password, code, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 应用需要 WRITE_USER_PHONE 权限。
+         * @summary 通过密码更改手机号码
+         * @param {string} password 
+         * @param {string} code 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async resetPhone(password: string, code: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.resetPhone(password, code, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -7593,6 +7857,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          */
         isEmailExists(email: string, options?: any): AxiosPromise<boolean> {
             return localVarFp.isEmailExists(email, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 检查手机号码是否存在
+         * @param {string} phone 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        isPhoneExists(phone: string, options?: any): AxiosPromise<boolean> {
+            return localVarFp.isPhoneExists(phone, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7640,15 +7914,25 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @summary 邮箱重置密码
+         * @summary 邮箱或手机重置密码
          * @param {string} password 
          * @param {string} code 
-         * @param {string} [body] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        resetPasswordWithEmail(password: string, code: string, body?: string, options?: any): AxiosPromise<void> {
-            return localVarFp.resetPasswordWithEmail(password, code, body, options).then((request) => request(axios, basePath));
+        resetPassword1(password: string, code: string, options?: any): AxiosPromise<void> {
+            return localVarFp.resetPassword1(password, code, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 应用需要 WRITE_USER_PHONE 权限。
+         * @summary 通过密码更改手机号码
+         * @param {string} password 
+         * @param {string} code 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resetPhone(password: string, code: string, options?: any): AxiosPromise<void> {
+            return localVarFp.resetPhone(password, code, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -7681,6 +7965,18 @@ export class UserApi extends BaseAPI {
      */
     public isEmailExists(email: string, options?: any) {
         return UserApiFp(this.configuration).isEmailExists(email, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 检查手机号码是否存在
+     * @param {string} phone 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public isPhoneExists(phone: string, options?: any) {
+        return UserApiFp(this.configuration).isPhoneExists(phone, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7737,16 +8033,28 @@ export class UserApi extends BaseAPI {
 
     /**
      * 
-     * @summary 邮箱重置密码
+     * @summary 邮箱或手机重置密码
      * @param {string} password 
      * @param {string} code 
-     * @param {string} [body] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public resetPasswordWithEmail(password: string, code: string, body?: string, options?: any) {
-        return UserApiFp(this.configuration).resetPasswordWithEmail(password, code, body, options).then((request) => request(this.axios, this.basePath));
+    public resetPassword1(password: string, code: string, options?: any) {
+        return UserApiFp(this.configuration).resetPassword1(password, code, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 应用需要 WRITE_USER_PHONE 权限。
+     * @summary 通过密码更改手机号码
+     * @param {string} password 
+     * @param {string} code 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public resetPhone(password: string, code: string, options?: any) {
+        return UserApiFp(this.configuration).resetPhone(password, code, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -8305,6 +8613,51 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
+         * 应用和用户需拥有 WRITE_USER_PHONE 权限。
+         * @summary 更新用户手机号码
+         * @param {number} uid 
+         * @param {string} code 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserPhone: async (uid: number, code: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uid' is not null or undefined
+            assertParamExists('updateUserPhone', 'uid', uid)
+            // verify required parameter 'code' is not null or undefined
+            assertParamExists('updateUserPhone', 'code', code)
+            const localVarPath = `/v1/users/{uid}/phone`
+                .replace(`{${"uid"}}`, encodeURIComponent(String(uid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (code !== undefined) {
+                localVarQueryParameter['code'] = code;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 设置用户账号的解锁日期，在此日期日前账号不能使用。设置为 NULL 则不锁定。应用和用户需拥有 LOCK_USER 权限。
          * @summary 设置用户解锁日期
          * @param {number} uid 
@@ -8508,6 +8861,18 @@ export const UsersApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
+         * 应用和用户需拥有 WRITE_USER_PHONE 权限。
+         * @summary 更新用户手机号码
+         * @param {number} uid 
+         * @param {string} code 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateUserPhone(uid: number, code: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserPhone(uid, code, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * 设置用户账号的解锁日期，在此日期日前账号不能使用。设置为 NULL 则不锁定。应用和用户需拥有 LOCK_USER 权限。
          * @summary 设置用户解锁日期
          * @param {number} uid 
@@ -8662,6 +9027,17 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          */
         updateUserPassword(uid: number, password: string, options?: any): AxiosPromise<void> {
             return localVarFp.updateUserPassword(uid, password, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 应用和用户需拥有 WRITE_USER_PHONE 权限。
+         * @summary 更新用户手机号码
+         * @param {number} uid 
+         * @param {string} code 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserPhone(uid: number, code: string, options?: any): AxiosPromise<void> {
+            return localVarFp.updateUserPhone(uid, code, options).then((request) => request(axios, basePath));
         },
         /**
          * 设置用户账号的解锁日期，在此日期日前账号不能使用。设置为 NULL 则不锁定。应用和用户需拥有 LOCK_USER 权限。
@@ -8840,6 +9216,19 @@ export class UsersApi extends BaseAPI {
      */
     public updateUserPassword(uid: number, password: string, options?: any) {
         return UsersApiFp(this.configuration).updateUserPassword(uid, password, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 应用和用户需拥有 WRITE_USER_PHONE 权限。
+     * @summary 更新用户手机号码
+     * @param {number} uid 
+     * @param {string} code 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public updateUserPhone(uid: number, code: string, options?: any) {
+        return UsersApiFp(this.configuration).updateUserPhone(uid, code, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
