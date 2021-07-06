@@ -16,7 +16,7 @@
 #
 # JRE
 #
-FROM openjdk:11.0.11-jre-slim
+FROM openjdk:11.0.11-jre
 
 #COPY --from=builder /app/auth-service.jar app.jar
 COPY auth-service.jar app.jar
@@ -24,4 +24,4 @@ COPY auth-service.jar app.jar
 # 暴露端口
 EXPOSE 8080
 
-ENTRYPOINT [ "java" , "-jar" , "-XX:+UseContainerSupport" , "/app.jar" ]
+ENTRYPOINT [ "java" , "-jar" , "-Djava.awt.headless=true" , "-XX:+UseContainerSupport" , "/app.jar" ]
