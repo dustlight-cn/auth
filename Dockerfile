@@ -16,7 +16,7 @@
 #
 # JRE
 #
-FROM openjdk:8-jre-alpine
+FROM openjdk:11-jre-alpine
 
 #COPY --from=builder /app/auth-service.jar app.jar
 COPY auth-service.jar app.jar
@@ -24,4 +24,4 @@ COPY auth-service.jar app.jar
 # 暴露端口
 EXPOSE 8080
 
-ENTRYPOINT [ "java" , "-jar" , "/app.jar" ]
+ENTRYPOINT [ "java" , "-jar" , "-XX:+UseContainerSupport" , "/app.jar" ]
