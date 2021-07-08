@@ -268,6 +268,7 @@ export default {
         return;
       this.loading = true;
       let query = this.$route.query;
+      console.log(query)
       this.$authorizationAi.getAuthorization(query.client_id,
         query.response_type,
         query.redirect_uri,
@@ -292,15 +293,14 @@ export default {
       if (this.approving)
         return;
       this.approving = true;
-      let s = "";
+      let s = new Set();
       this.client.scopes.forEach(scope => {
         if (scope.value) {
           if (s.length > 0)
             s += ",";
-          s += scope.name;
+          s.add(scope.name);
         }
       })
-
       this.$authorizationAi.createAuthorization(true, s, this.withJwt)
         .then(res => window.location = res.data.redirect)
         .catch((e) => {
