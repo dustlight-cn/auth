@@ -144,16 +144,16 @@ export interface AuthorizationClient {
     clientSecret?: string;
     /**
      * 
-     * @type {Set<string>}
-     * @memberof AuthorizationClient
-     */
-    registeredRedirectUri?: Set<string>;
-    /**
-     * 
      * @type {number}
      * @memberof AuthorizationClient
      */
     accessTokenValiditySeconds?: number;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof AuthorizationClient
+     */
+    registeredRedirectUri?: Set<string>;
     /**
      * 
      * @type {number}
@@ -279,16 +279,16 @@ export interface Client {
     uid?: number;
     /**
      * 
-     * @type {Array<ClientScope>}
-     * @memberof Client
-     */
-    scopes?: Array<ClientScope>;
-    /**
-     * 
      * @type {string}
      * @memberof Client
      */
     logo?: string;
+    /**
+     * 
+     * @type {Array<ClientScope>}
+     * @memberof Client
+     */
+    scopes?: Array<ClientScope>;
     /**
      * 
      * @type {string}
@@ -327,6 +327,18 @@ export interface Client {
     secret?: string;
     /**
      * 
+     * @type {number}
+     * @memberof Client
+     */
+    accessTokenValidity?: number;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof Client
+     */
+    grantTypes?: Set<string>;
+    /**
+     * 
      * @type {Set<string>}
      * @memberof Client
      */
@@ -336,19 +348,7 @@ export interface Client {
      * @type {number}
      * @memberof Client
      */
-    accessTokenValidity?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Client
-     */
     refreshTokenValidity?: number;
-    /**
-     * 
-     * @type {Set<string>}
-     * @memberof Client
-     */
-    grantTypes?: Set<string>;
 }
 /**
  * 
@@ -438,22 +438,16 @@ export interface OAuth2AccessToken {
     value?: string;
     /**
      * 
-     * @type {Set<string>}
-     * @memberof OAuth2AccessToken
-     */
-    scope?: Set<string>;
-    /**
-     * 
      * @type {string}
      * @memberof OAuth2AccessToken
      */
     expiration?: string;
     /**
      * 
-     * @type {boolean}
+     * @type {Set<string>}
      * @memberof OAuth2AccessToken
      */
-    expired?: boolean;
+    scope?: Set<string>;
     /**
      * 
      * @type {{ [key: string]: object; }}
@@ -472,6 +466,12 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     refreshToken?: OAuth2RefreshToken;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OAuth2AccessToken
+     */
+    expired?: boolean;
     /**
      * 
      * @type {number}
@@ -509,13 +509,13 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    nickname?: string;
+    avatar?: string;
     /**
      * 
      * @type {string}
      * @memberof PublicUser
      */
-    avatar?: string;
+    unlockedAt?: string;
     /**
      * 
      * @type {number}
@@ -527,7 +527,7 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    unlockedAt?: string;
+    nickname?: string;
     /**
      * 
      * @type {boolean}
@@ -545,13 +545,13 @@ export interface PublicUser {
      * @type {boolean}
      * @memberof PublicUser
      */
-    accountNonExpired?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof PublicUser
      */
-    credentialsNonExpired?: boolean;
+    accountNonExpired?: boolean;
     /**
      * 
      * @type {boolean}
@@ -737,19 +737,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    phone?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
     email?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    credentialsExpiredAt?: string;
+    phone?: string;
     /**
      * 
      * @type {string}
@@ -761,13 +755,19 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    nickname?: string;
+    credentialsExpiredAt?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
     avatar?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    unlockedAt?: string;
     /**
      * 
      * @type {number}
@@ -779,7 +779,7 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
+    nickname?: string;
     /**
      * 
      * @type {boolean}
@@ -797,13 +797,13 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    accountNonExpired?: boolean;
+    credentialsNonExpired?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof User
      */
-    credentialsNonExpired?: boolean;
+    accountNonExpired?: boolean;
     /**
      * 
      * @type {boolean}
