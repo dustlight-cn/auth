@@ -5,6 +5,7 @@ import cn.dustlight.storage.core.StorableObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 public class CdnStorageProxy implements RestfulStorage {
 
@@ -74,6 +75,11 @@ public class CdnStorageProxy implements RestfulStorage {
     @Override
     public String generateRemoveUrl(String key, Long expiration) throws IOException {
         return storage.generateRemoveUrl(prefix + key, expiration);
+    }
+
+    @Override
+    public String generatePutUrl(String key, int permission, Long expiration, Map<String, String> headers) throws IOException {
+        return storage.generatePutUrl(key, permission, expiration, headers);
     }
 
     public RestfulStorage getStorage() {
