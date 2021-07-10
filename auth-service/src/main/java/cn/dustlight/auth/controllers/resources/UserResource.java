@@ -64,7 +64,8 @@ public class UserResource {
                                        String authority) {
         SimpleGrantedAuthority a = new SimpleGrantedAuthority(authority);
         return auth2Authentication.getOAuth2Request().getAuthorities().contains(a) &&
-                (!auth2Authentication.isClientOnly() && auth2Authentication.getUserAuthentication().getAuthorities().contains(a));
+                (!auth2Authentication.isClientOnly() && auth2Authentication.getUserAuthentication().getAuthorities().contains(a)
+                || auth2Authentication.isClientOnly());
 
     }
 
