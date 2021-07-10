@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StorageHandler {
 
@@ -90,7 +92,9 @@ public class StorageHandler {
         Storage storage = getStorage();
         if (storage instanceof RestfulStorage) {
             RestfulStorage restfulStorage = (RestfulStorage) storage;
-            String redirectUrl = restfulStorage.generatePutUrl(key, Permission.WRITABLE, expiration);
+            Map<String, String> header = new HashMap<>();
+            header.put("Content-Type", request.getContentType());
+            String redirectUrl = restfulStorage.generatePutUrl(key, Permission.WRITABLE, expiration, header);
             response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
             response.setHeader("Location", redirectUrl);
         } else {
