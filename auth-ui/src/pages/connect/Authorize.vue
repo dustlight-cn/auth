@@ -312,7 +312,8 @@ export default {
       if (this.canceling)
         return;
       this.canceling = true;
-      this.$authorizationAi.createAuthorization(false, [], this.withJwt)
+      let s = new Set();
+      this.$authorizationAi.createAuthorization(false, s, this.withJwt)
         .then(res => window.location = res.data.redirect)
         .catch((e) => {
           this.canceling = false
