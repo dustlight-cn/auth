@@ -78,7 +78,11 @@ export default {
       "emailHint": "Your email address, which is used for website login and receive verification codes.",
       "emailRule": "Please enter a valid email address.",
       "usernameExists": "The username is registered, please select a different username.",
-      "emailExists": "This email address has been registered, please select a different email address or retrieve your password."
+      "emailExists": "This email address has been registered, please select a different email address or retrieve your password.",
+      "phone": "Phone",
+      "phoneHint": "Your mobile phone number, used to log in to the website and receive a verification code.",
+      "phoneRule": "Please enter a valid mobile phone number with an international area code.",
+      "phoneExists": "The mobile phone number has been registered, please select another mobile phone number or retrieve the password."
     },
     "step2": {
       "title": "Verify Email",
@@ -277,7 +281,9 @@ export default {
     "confirmPassword": "Confirm Password",
     "confirmPasswordHint": "Confirm the new user's password.",
     "email": "E-mail",
-    "emailHint": "Please enter the new user's email address."
+    "emailHint": "Please enter the new user's email address.",
+    "phone": "Phone",
+    "phoneHint": "Please enter the mobile phone number of the new user."
   },
   "SystemSettings": {
     "title": "System Settings",

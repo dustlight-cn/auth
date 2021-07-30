@@ -24,7 +24,7 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <captcha.version>1.0.0</captcha.version>
+        <captcha.version>1.0.1</captcha.version>
         <storage.version>0.0.5</storage.version>
 
         <spring-cloud.version>Hoxton.SR9</spring-cloud.version>

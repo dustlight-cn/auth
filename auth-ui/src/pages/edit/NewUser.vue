@@ -89,6 +89,26 @@
                     </q-item-label>
                   </q-item-section>
                 </q-item>
+
+                <!-- 手机号码 -->
+                <q-item class="q-pa-none q-mt-sm">
+                  <q-item-section>
+                    <q-item-label header class="q-pa-none">
+                      {{ $tt($options, 'phone') }}
+                    </q-item-label>
+                    <q-item-label>
+                      <q-input
+                        :dense="!wide"
+                        debounce="1000"
+                        :disable="creating"
+                        v-model="data.phone"
+                        :rules="rules.phone"
+                        :placeholder="$tt($options,'phoneHint')"
+                        color="accent" filled>
+                      </q-input>
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
               </q-list>
             </q-card-section>
             <div class="text-right q-mt-lg q-mb-md">
@@ -127,7 +147,8 @@ export default {
         username: "",
         password: "",
         confirmPassword: "",
-        email: ""
+        email: "",
+        phone: ""
       },
       rules: {
         username: [
@@ -142,18 +163,27 @@ export default {
         password: [val => val && val.match(this.$cfg.pattern.password) || this.$tt("SignUp", "step1.passwordRule")],
         confirmPassword: [val => val == this.data.password || this.$tt("SignUp", "step1.confirmPasswordRule")],
         email: [
-          val => val && val.match(this.$cfg.pattern.email) || this.$tt("SignUp", "step1.emailRule"),
-          val => this.querying.email ?
+          val => !val || val.match(this.$cfg.pattern.email) || this.$tt("SignUp", "step1.emailRule"),
+          val => !val || this.querying.email ?
             this.querying.email :
             (this.querying.email = this.$userApi.isEmailExists(val)
                 .then((res) => !res.data || this.$tt("SignUp", "step1.emailExists"))
                 .finally(() => this.querying.email = null)
             )
-        ]
+        ],
+        phone: [
+          val => !val || val.match(this.$cfg.pattern.phone) || this.$tt("SignUp", "step1.phoneRule"),
+          val => !val || this.querying.phone ?
+            this.querying.phone :
+            (this.querying.phone = this.$userApi.isPhoneExists(val)
+                .then((res) => !res.data || this.$tt("SignUp", "step1.phoneExists"))
+                .finally(() => this.querying.phone = null)
+            )]
       },
       querying: {
         username: null,
-        email: null
+        email: null,
+        phone: null
       }
     }
   },
@@ -171,7 +201,7 @@ export default {
       if (this.creating)
         return;
       this.creating = true;
-      this.$usersApi.createUser(this.data.username, this.data.password, this.data.email)
+      this.$usersApi.createUser(this.data.username, this.data.password, this.data.email, this.data.phone)
         .then(res => {
           this.showCreateSuccessMessage();
           this.$router.push({name: "user", params: {id: res.data.uid}});

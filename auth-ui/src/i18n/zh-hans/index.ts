@@ -78,7 +78,11 @@ export default {
       "emailHint": "您的电子邮箱，用于登录网站和接收验证码。",
       "emailRule": "请输入有效的邮箱地址。",
       "usernameExists": "该用户名已被注册，请选择其他用户名。",
-      "emailExists": "该邮箱已被注册，请选择其他邮箱或者找回密码。"
+      "emailExists": "该邮箱已被注册，请选择其他邮箱或者找回密码。",
+      "phone": "手机号码",
+      "phoneHint": "您的手机号码，用于登录网站和接收验证码。",
+      "phoneRule": "请输入带有国际区号的有效手机号码。",
+      "phoneExists": "该手机号码已被注册，请选择其他手机号码或者找回密码。",
     },
     "step2": {
       "title": "邮箱验证",
@@ -277,7 +281,9 @@ export default {
     "confirmPassword": "确认密码",
     "confirmPasswordHint": "确认新用户的密码。",
     "email": "电子邮箱",
-    "emailHint": "请输入新用户的电子邮箱。"
+    "emailHint": "请输入新用户的电子邮箱。",
+    "phone": "手机号码",
+    "phoneHint": "请输入新用户的手机号码。"
   },
   "SystemSettings": {
     "title": "系统设置",

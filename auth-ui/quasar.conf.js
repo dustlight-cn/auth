@@ -80,7 +80,7 @@ module.exports = configure(function (/* ctx */) {
       open: true, // opens browser window automatically
       proxy: {
         '/v1': {
-          target: 'http://api.wgv',
+          target: 'http://localhost:8080',
           changeOrigin: true,
         }
       }
