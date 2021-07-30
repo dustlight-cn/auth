@@ -142,7 +142,7 @@
               </q-item>
               <div class="q-pb-md text-caption text-grey text-center">
                 {{ $tt($options, 'redirect') }}
-                <div><b>{{ $route.query.redirect_uri }}</b></div>
+                <div><b style="word-break: break-all">{{ $route.query.redirect_uri }}</b></div>
               </div>
             </q-list>
 
