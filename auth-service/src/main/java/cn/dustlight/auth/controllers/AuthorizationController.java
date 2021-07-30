@@ -110,7 +110,6 @@ public class AuthorizationController {
                                                   @RequestParam(value = "jwt", required = false) Boolean isJwt,
                                                   HttpServletRequest httpServletRequest,
                                                   Principal principal) {
-        logger.info("？？？？？？？？？" + isJwt);
         try {
             AuthorizationRequest authorizationRequest = oAuth2RequestFactory.createAuthorizationRequest(parameters);
 
@@ -182,11 +181,12 @@ public class AuthorizationController {
     @Operation(summary = "应用授权", description = "应用需要 AUTHORIZE 权限。")
     @PostMapping("oauth/authorization")
     public AuthorizationResponse createAuthorization(@RequestParam("approved") boolean approved,
-                                                     @RequestParam("scope") Set<String> scopes,
+                                                     @RequestParam(value = "scope", required = false) Set<String> scopes,
                                                      @RequestParam(value = "jwt", required = false) Boolean isJwt,
                                                      HttpServletRequest httpServletRequest,
                                                      Principal principal) {
-        logger.info("!!!!!!!!!!!" + isJwt);
+        if (scopes == null)
+            scopes = Collections.emptySet();
         Map<String, String> approvalParameters = new LinkedHashMap<>();
         approvalParameters.put("user_oauth_approval", approved ? "true" : "false");
         for (String scope : scopes)

@@ -268,7 +268,6 @@ export default {
         return;
       this.loading = true;
       let query = this.$route.query;
-      console.log(query)
       this.$authorizationAi.getAuthorization(query.client_id,
         query.response_type,
         query.redirect_uri,
