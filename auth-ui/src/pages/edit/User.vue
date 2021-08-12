@@ -120,6 +120,20 @@
                     </q-item-section>
                   </q-item>
 
+                  <!--  用户手机号码, Phone -->
+                  <q-item class="q-pa-none q-mt-md" v-if="targetUser.phone || hasWriteUserPhonePermission">
+                    <q-item-section>
+                      <q-item-label header class="q-pl-none">{{ $tt($options, "phone") }}</q-item-label>
+                      <q-item-label class="code">
+                        {{ targetUser.phone || "-" }}
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section v-if="hasWriteUserPhonePermission" side top>
+                      <q-btn round flat icon="edit"
+                             @click="()=>edit.phone=true"/>
+                    </q-item-section>
+                  </q-item>
+
                   <!--  用户密码, Password -->
                   <q-item class="q-pa-none q-mt-md" v-if="hasWriteUserPasswordPermission">
                     <q-item-section>
@@ -272,6 +286,11 @@
                :user="targetUser"
                :on-success="()=>edit.email=false"
                :on-cancel="()=>edit.email=false"/>
+        <phone :without-password="true"
+               v-if="edit.phone"
+               :user="targetUser"
+               :on-success="()=>edit.phone=false"
+               :on-cancel="()=>edit.phone=false"/>
         <password :without-old-password="true"
                   v-if="edit.password"
                   :user="targetUser"
@@ -465,10 +484,11 @@ import Gender from "./Gender";
 import Email from "./Email";
 import Password from "./Password";
 import NoResults from "../../components/NoResults";
+import Phone from "./Phone";
 
 export default {
   name: "User",
-  components: {NoResults, Password, Email, Gender, Nickname, EditAvatar, Avatar, RequireAuthorization, EditPage},
+  components: {Phone, NoResults, Password, Email, Gender, Nickname, EditAvatar, Avatar, RequireAuthorization, EditPage},
   data() {
     return {
       user_: null,
@@ -483,6 +503,7 @@ export default {
         gender: false,
         avatar: false,
         email: false,
+        phone: false,
         password: false,
         roles: false,
         role: null
@@ -506,13 +527,16 @@ export default {
   },
   computed: {
     isEditing() {
-      return this.edit.nickname || this.edit.gender || this.edit.avatar || this.edit.email || this.edit.password;
+      return this.edit.nickname || this.edit.gender || this.edit.avatar || this.edit.email || this.edit.phone || this.edit.password;
     },
     hasWriteUserPermission() {
       return this.hasPermission("WRITE_USER");
     },
     hasWriteUserEmailPermission() {
       return this.hasPermission("WRITE_USER_EMAIL");
+    },
+    hasWriteUserPhonePermission() {
+      return this.hasPermission("WRITE_USER_PHONE");
     },
     hasWriteUserPasswordPermission() {
       return this.hasPermission("WRITE_USER_PASSWORD");

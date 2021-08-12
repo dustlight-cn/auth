@@ -194,6 +194,20 @@ export default {
       "captionWithoutPassword": "Please enter your email verification code."
     }
   },
+  "Phone": {
+    "title": "Phone",
+    "operator": "Update Phone Number",
+    "step1": {
+      "title": "Your Phone Number",
+      "caption": "Please enter your new phone number."
+    },
+    "step2": {
+      "title": "Your Password And Verification Code",
+      "titleWithoutPassword": "Your Verification Code",
+      "caption": "Please enter your account password and SMS verification code.",
+      "captionWithoutPassword": "Please enter your SMS verification code."
+    }
+  },
   "Clients": {
     "title": "Apps",
     "subtitle": "Manage OAuth2 clients, including app name, details, and more.",
@@ -251,6 +265,7 @@ export default {
     "nickname": "Nickname",
     "gender": "Gender",
     "email": "E-mail",
+    "phone": "Phone",
     "password": "Password",
     "roles": "Roles",
     "expiredAt": "Expired At",

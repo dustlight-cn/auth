@@ -194,6 +194,20 @@ export default {
       "captionWithoutPassword": "请输入邮箱验证码。"
     }
   },
+  "Phone": {
+    "title": "手机号码",
+    "operator": "更新手机号码",
+    "step1": {
+      "title": "您的手机号码",
+      "caption": "请输入您的新手机号码。"
+    },
+    "step2": {
+      "title": "您的密码和验证码",
+      "titleWithoutPassword": "您的短信验证码",
+      "caption": "请输入您的账号密码与短信验证码。",
+      "captionWithoutPassword": "请输入短信验证码。"
+    }
+  },
   "Clients": {
     "title": "应用",
     "subtitle": "管理 OAuth2 应用，包括应用名称、详情等。",
@@ -251,6 +265,7 @@ export default {
     "nickname": "昵称",
     "gender": "性别",
     "email": "电子邮箱",
+    "phone": "手机号码",
     "password": "密码",
     "roles": "角色",
     "expiredAt": "到期时间",
