@@ -57,10 +57,10 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     }
 
     @Override
-    public DefaultUser loadUserByUsername(String s) {
-        if (!StringUtils.hasText(s))
+    public DefaultUser loadUserByUsername(String account) {
+        if (!StringUtils.hasText(account))
             ErrorEnum.USERNAME_INVALID.throwException();
-        DefaultUser u = userMapper.selectUserByUsernameOrEmail(s);
+        DefaultUser u = userMapper.selectUserByAccount(account);
         if (u == null)
             throw new UsernameNotFoundException("user not found");
         return u;

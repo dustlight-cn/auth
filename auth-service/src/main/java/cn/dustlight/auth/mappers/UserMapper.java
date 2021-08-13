@@ -26,14 +26,14 @@ public interface UserMapper {
                        @Param("unlockedAt") Date unlockedAt,
                        @Param("enabled") boolean enabled);
 
-    @Select("SELECT * FROM users WHERE username=#{uoe} OR email=#{uoe} LIMIT 1")
+    @Select("SELECT * FROM users WHERE username=#{account} OR email=#{account} OR phone=#{account} LIMIT 1")
     @Results(id = "User", value = {
             @Result(column = "uid", property = "uid"),
             @Result(column = "uid",
                     property = "roles",
                     many = @Many(select = "cn.dustlight.auth.mappers.RoleMapper.listUserRoles"))
     })
-    DefaultUser selectUserByUsernameOrEmail(@Param("uoe") String uoe);
+    DefaultUser selectUserByAccount(@Param("account") String account);
 
     @Select("SELECT * FROM users WHERE uid=#{uid} LIMIT 1")
     @ResultMap("User")
