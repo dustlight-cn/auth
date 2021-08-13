@@ -144,6 +144,7 @@ export default {
     "contact": "Contact",
     "contactDesc": "Your contact details.",
     "email": "E-mail",
+    "phone": "Phone",
 
     "other": "Other",
     "otherDesc": "Additional information.",

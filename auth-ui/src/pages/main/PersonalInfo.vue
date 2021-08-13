@@ -77,7 +77,19 @@
               <q-item-label caption>
                 {{ $tt($options, "email") }}
               </q-item-label>
-              <q-item-label>{{ user.email }}</q-item-label>
+              <q-item-label>{{ user.email || "-" }}</q-item-label>
+            </q-item-section>
+            <q-item-label>
+              <q-btn dense rounded flat icon="keyboard_arrow_right"/>
+            </q-item-label>
+          </q-item>
+          <!-- 电子邮箱 -->
+          <q-item v-ripple clickable :to="{name:'phone'}">
+            <q-item-section>
+              <q-item-label caption>
+                {{ $tt($options, "phone") }}
+              </q-item-label>
+              <q-item-label>{{ user.phone || "-" }}</q-item-label>
             </q-item-section>
             <q-item-label>
               <q-btn dense rounded flat icon="keyboard_arrow_right"/>

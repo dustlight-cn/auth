@@ -67,11 +67,11 @@ public interface UserMapper {
                                       @Param("offset") Integer offset,
                                       @Param("limit") Integer limit);
 
-    @Select("SELECT count(uid) FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})")
+    @Select("SELECT count(uid) FROM users WHERE MATCH (username,phone,email,nickname) AGAINST(#{keywords})")
     Integer countSearch(@Param("keywords") String keywords);
 
     @Select("<script>SELECT users.* FROM users," +
-            "(SELECT uid FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})" +
+            "(SELECT uid FROM users WHERE MATCH (username,phone,email,nickname) AGAINST(#{keywords})" +
             "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
             "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")
@@ -82,7 +82,7 @@ public interface UserMapper {
                                         @Param("limit") Integer limit);
 
     @Select("<script>SELECT users.* FROM users," +
-            "(SELECT uid FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})" +
+            "(SELECT uid FROM users WHERE MATCH (username,phone,email,nickname) AGAINST(#{keywords})" +
             "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
             "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")

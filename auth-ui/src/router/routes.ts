@@ -31,6 +31,7 @@ const routes: RouteConfig[] = [
       {path: 'personal-info/password', name: "password", component: () => import('pages/edit/Password.vue')},
       {path: 'personal-info/avatar', name: "avatar", component: () => import('pages/edit/Avatar.vue')},
       {path: 'personal-info/email', name: "email", component: () => import('pages/edit/Email.vue')},
+      {path: 'personal-info/phone', name: "phone", component: () => import('pages/edit/Phone.vue')},
 
       {path: 'clients/new', name: "new-client", component: () => import('pages/edit/NewClient.vue')},
       {path: 'client/:id', name: "client", component: () => import ('pages/edit/Client.vue')},

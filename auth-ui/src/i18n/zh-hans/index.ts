@@ -142,8 +142,9 @@ export default {
     "password": "密码",
 
     "contact": "联系方式",
-    "contactDesc": "您的联系方式，例如电子邮箱等。",
+    "contactDesc": "您的联系方式。",
     "email": "电子邮箱",
+    "phone": "手机号码",
 
     "other": "其他信息",
     "otherDesc": "您的其他信息，例如用户名、角色以及注册时间。",

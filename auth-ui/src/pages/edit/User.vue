@@ -48,7 +48,7 @@
                   <avatar v-else :size="100" :user="targetUser"/>
                   <div class="text-h5 q-mb-sm q-mt-sm" style="word-break: break-all;">
                     {{
-                      targetUser.nickname && targetUser.nickname.trim() ? targetUser.nickname.trim() : targetUser.username()
+                      targetUser.nickname && targetUser.nickname.trim() ? targetUser.nickname.trim() : targetUser.username
                     }}
                   </div>
                   <div v-if="targetUser.email" style="word-break: break-all;" class="text-subtitle1 text-grey">

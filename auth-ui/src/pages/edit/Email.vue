@@ -34,7 +34,7 @@
             :disable="isBusy"
             debounce="1000"
             color="accent"
-            v-model="model.email == null ? (model.email = (model.user = user).email) : model.email"
+            v-model="model.email == null ? (model.email = ((model.user = user).email || '')) : model.email"
             autocomplete="email"
             :label="$tt('SignUp','step1.email')"
             :hint="$tt('SignUp','step1.emailHint')"

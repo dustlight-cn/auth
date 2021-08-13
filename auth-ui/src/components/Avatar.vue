@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="user-select: none;">
     <q-avatar v-if="error || user != null && user.uid != null && user.avatar == null && src==null" color="grey"
               text-color="white"
               :size="computedSize">

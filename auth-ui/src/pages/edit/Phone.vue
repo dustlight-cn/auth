@@ -34,7 +34,7 @@
             :disable="isBusy"
             debounce="1000"
             color="accent"
-            v-model="model.phone == null ? (model.phone = (model.user = user).phone) : model.phone"
+            v-model="model.phone == null ? (model.phone = ((model.user = user).phone || '')) : model.phone"
             autocomplete="phone"
             :label="$tt('SignUp','step1.phone')"
             :hint="$tt('SignUp','step1.phoneHint')"
