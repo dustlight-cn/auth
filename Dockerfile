@@ -16,7 +16,7 @@
 #
 # JRE
 #
-FROM openjdk:11.0.11-jre
+FROM registry.cn-hangzhou.aliyuncs.com/wgv/openjdk:11.0.11-jre
 
 #COPY --from=builder /app/auth-service.jar app.jar
 COPY auth-service.jar app.jar
