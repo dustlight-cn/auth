@@ -1,5 +1,5 @@
 <template>
-  <div class="text-transform：uppercase">
+  <div class="text-transform：uppercase" style="user-select: none;">
     <q-avatar rounded v-if="error || client != null && client.cid != null && client.logo == null && src == null"
               color="grey"
               text-color="white"
