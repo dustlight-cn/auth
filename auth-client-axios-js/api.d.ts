@@ -113,6 +113,12 @@ export interface AuthorizationClient {
     resources?: Array<Resource>;
     /**
      *
+     * @type {Array<string>}
+     * @memberof AuthorizationClient
+     */
+    members?: Array<string>;
+    /**
+     *
      * @type {Array<AuthorizationClientScope>}
      * @memberof AuthorizationClient
      */
@@ -137,16 +143,16 @@ export interface AuthorizationClient {
     clientSecret?: string;
     /**
      *
-     * @type {number}
-     * @memberof AuthorizationClient
-     */
-    accessTokenValiditySeconds?: number;
-    /**
-     *
      * @type {Set<string>}
      * @memberof AuthorizationClient
      */
     registeredRedirectUri?: Set<string>;
+    /**
+     *
+     * @type {number}
+     * @memberof AuthorizationClient
+     */
+    accessTokenValiditySeconds?: number;
     /**
      *
      * @type {number}
@@ -242,18 +248,6 @@ export interface AuthorizationResponse {
 export interface Client {
     /**
      *
-     * @type {string}
-     * @memberof Client
-     */
-    name?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Client
-     */
-    description?: string;
-    /**
-     *
      * @type {Array<string>}
      * @memberof Client
      */
@@ -282,6 +276,24 @@ export interface Client {
      * @memberof Client
      */
     scopes?: Array<ClientScope>;
+    /**
+     *
+     * @type {string}
+     * @memberof Client
+     */
+    name?: string;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof Client
+     */
+    members?: Array<string>;
+    /**
+     *
+     * @type {string}
+     * @memberof Client
+     */
+    description?: string;
     /**
      *
      * @type {string}
@@ -322,10 +334,10 @@ export interface Client {
     secret?: string;
     /**
      *
-     * @type {number}
+     * @type {Set<string>}
      * @memberof Client
      */
-    accessTokenValidity?: number;
+    redirectUri?: Set<string>;
     /**
      *
      * @type {Set<string>}
@@ -334,10 +346,10 @@ export interface Client {
     grantTypes?: Set<string>;
     /**
      *
-     * @type {Set<string>}
+     * @type {number}
      * @memberof Client
      */
-    redirectUri?: Set<string>;
+    accessTokenValidity?: number;
     /**
      *
      * @type {number}
@@ -359,18 +371,6 @@ export interface ClientScope {
     autoApprove?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof ClientScope
-     */
-    name?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ClientScope
-     */
-    description?: string;
-    /**
-     *
      * @type {number}
      * @memberof ClientScope
      */
@@ -381,6 +381,18 @@ export interface ClientScope {
      * @memberof ClientScope
      */
     subtitle?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof ClientScope
+     */
+    name?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof ClientScope
+     */
+    description?: string;
 }
 /**
  *
@@ -430,12 +442,6 @@ export interface OAuth2AccessToken {
      * @type {string}
      * @memberof OAuth2AccessToken
      */
-    value?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
     expiration?: string;
     /**
      *
@@ -443,6 +449,12 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     scope?: Set<string>;
+    /**
+     *
+     * @type {boolean}
+     * @memberof OAuth2AccessToken
+     */
+    expired?: boolean;
     /**
      *
      * @type {{ [key: string]: object; }}
@@ -465,16 +477,16 @@ export interface OAuth2AccessToken {
     refreshToken?: OAuth2RefreshToken;
     /**
      *
-     * @type {boolean}
-     * @memberof OAuth2AccessToken
-     */
-    expired?: boolean;
-    /**
-     *
      * @type {number}
      * @memberof OAuth2AccessToken
      */
     expiresIn?: number;
+    /**
+     *
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    value?: string;
 }
 /**
  *
@@ -506,19 +518,13 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    avatar?: string;
+    unlockedAt?: string;
     /**
      *
      * @type {string}
      * @memberof PublicUser
      */
-    unlockedAt?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof PublicUser
-     */
-    gender?: number;
+    avatar?: string;
     /**
      *
      * @type {string}
@@ -527,10 +533,10 @@ export interface PublicUser {
     nickname?: string;
     /**
      *
-     * @type {boolean}
+     * @type {number}
      * @memberof PublicUser
      */
-    enabled?: boolean;
+    gender?: number;
     /**
      *
      * @type {string}
@@ -555,6 +561,12 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     accountNonLocked?: boolean;
+    /**
+     *
+     * @type {boolean}
+     * @memberof PublicUser
+     */
+    enabled?: boolean;
     /**
      *
      * @type {string}
@@ -611,13 +623,13 @@ export interface Resource {
      * @type {string}
      * @memberof Resource
      */
-    name?: string;
+    rid?: string;
     /**
      *
      * @type {string}
      * @memberof Resource
      */
-    rid?: string;
+    name?: string;
     /**
      *
      * @type {string}
@@ -758,19 +770,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    avatar?: string;
+    unlockedAt?: string;
     /**
      *
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof User
-     */
-    gender?: number;
+    avatar?: string;
     /**
      *
      * @type {string}
@@ -779,10 +785,10 @@ export interface User {
     nickname?: string;
     /**
      *
-     * @type {boolean}
+     * @type {number}
      * @memberof User
      */
-    enabled?: boolean;
+    gender?: number;
     /**
      *
      * @type {string}
@@ -807,6 +813,12 @@ export interface User {
      * @memberof User
      */
     accountNonLocked?: boolean;
+    /**
+     *
+     * @type {boolean}
+     * @memberof User
+     */
+    enabled?: boolean;
     /**
      *
      * @type {string}
@@ -1248,12 +1260,12 @@ export declare const AuthorizationApiAxiosParamCreator: (configuration?: Configu
      * 应用需要 AUTHORIZE 权限。
      * @summary 应用授权
      * @param {boolean} approved
-     * @param {Set<string>} scope
+     * @param {Set<string>} [scope]
      * @param {boolean} [jwt]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createAuthorization: (approved: boolean, scope: Set<string>, jwt?: boolean, options?: any) => Promise<RequestArgs>;
+    createAuthorization: (approved: boolean, scope?: Set<string>, jwt?: boolean, options?: any) => Promise<RequestArgs>;
     /**
      * 获取包含应用信息、所属用户信息、回调地址以及是否已授权。应用需要 AUTHORIZE 权限。
      * @summary 获取应用授权
@@ -1277,12 +1289,12 @@ export declare const AuthorizationApiFp: (configuration?: Configuration) => {
      * 应用需要 AUTHORIZE 权限。
      * @summary 应用授权
      * @param {boolean} approved
-     * @param {Set<string>} scope
+     * @param {Set<string>} [scope]
      * @param {boolean} [jwt]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>>;
+    createAuthorization(approved: boolean, scope?: Set<string>, jwt?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>>;
     /**
      * 获取包含应用信息、所属用户信息、回调地址以及是否已授权。应用需要 AUTHORIZE 权限。
      * @summary 获取应用授权
@@ -1306,12 +1318,12 @@ export declare const AuthorizationApiFactory: (configuration?: Configuration, ba
      * 应用需要 AUTHORIZE 权限。
      * @summary 应用授权
      * @param {boolean} approved
-     * @param {Set<string>} scope
+     * @param {Set<string>} [scope]
      * @param {boolean} [jwt]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any): AxiosPromise<AuthorizationResponse>;
+    createAuthorization(approved: boolean, scope?: Set<string>, jwt?: boolean, options?: any): AxiosPromise<AuthorizationResponse>;
     /**
      * 获取包含应用信息、所属用户信息、回调地址以及是否已授权。应用需要 AUTHORIZE 权限。
      * @summary 获取应用授权
@@ -1337,13 +1349,13 @@ export declare class AuthorizationApi extends BaseAPI {
      * 应用需要 AUTHORIZE 权限。
      * @summary 应用授权
      * @param {boolean} approved
-     * @param {Set<string>} scope
+     * @param {Set<string>} [scope]
      * @param {boolean} [jwt]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthorizationApi
      */
-    createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any): Promise<import("axios").AxiosResponse<AuthorizationResponse>>;
+    createAuthorization(approved: boolean, scope?: Set<string>, jwt?: boolean, options?: any): Promise<import("axios").AxiosResponse<AuthorizationResponse>>;
     /**
      * 获取包含应用信息、所属用户信息、回调地址以及是否已授权。应用需要 AUTHORIZE 权限。
      * @summary 获取应用授权
@@ -1364,6 +1376,25 @@ export declare class AuthorizationApi extends BaseAPI {
  * @export
  */
 export declare const ClientsApiAxiosParamCreator: (configuration?: Configuration) => {
+    /**
+     * 应用和用户需要 WRITE_CLIENT 权限。
+     * @summary 添加应用成员
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addClientMembers: (cid: string, uids: Array<number>, options?: any) => Promise<RequestArgs>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+     * @summary 添加应用成员
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addUserClientMembers: (uid: number, cid: string, uids: Array<number>, options?: any) => Promise<RequestArgs>;
     /**
      * 应用和用户需要 WRITE_CLIENT 权限。
      * @summary 创建应用
@@ -1461,6 +1492,15 @@ export declare const ClientsApiAxiosParamCreator: (configuration?: Configuration
     removeClient: (cid: string, options?: any) => Promise<RequestArgs>;
     /**
      * 应用和用户需要 WRITE_CLIENT 权限。
+     * @summary 移除应用成员
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeClientMembers: (cid: string, uids: Array<number>, options?: any) => Promise<RequestArgs>;
+    /**
+     * 应用和用户需要 WRITE_CLIENT 权限。
      * @summary 删除应用
      * @param {Array<string>} cids
      * @param {*} [options] Override http request option.
@@ -1476,6 +1516,16 @@ export declare const ClientsApiAxiosParamCreator: (configuration?: Configuration
      * @throws {RequiredError}
      */
     removeUserClient: (uid: number, cid: string, options?: any) => Promise<RequestArgs>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+     * @summary 移除应用成员
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeUserClientMembers: (uid: number, cid: string, uids: Array<number>, options?: any) => Promise<RequestArgs>;
     /**
      * 应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。
      * @summary 删除用户应用
@@ -1613,6 +1663,25 @@ export declare const ClientsApiAxiosParamCreator: (configuration?: Configuration
 export declare const ClientsApiFp: (configuration?: Configuration) => {
     /**
      * 应用和用户需要 WRITE_CLIENT 权限。
+     * @summary 添加应用成员
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addClientMembers(cid: string, uids: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+     * @summary 添加应用成员
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     * 应用和用户需要 WRITE_CLIENT 权限。
      * @summary 创建应用
      * @param {number} uid
      * @param {string} name
@@ -1708,6 +1777,15 @@ export declare const ClientsApiFp: (configuration?: Configuration) => {
     removeClient(cid: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
      * 应用和用户需要 WRITE_CLIENT 权限。
+     * @summary 移除应用成员
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeClientMembers(cid: string, uids: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     * 应用和用户需要 WRITE_CLIENT 权限。
      * @summary 删除应用
      * @param {Array<string>} cids
      * @param {*} [options] Override http request option.
@@ -1723,6 +1801,16 @@ export declare const ClientsApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     removeUserClient(uid: number, cid: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+     * @summary 移除应用成员
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
      * 应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。
      * @summary 删除用户应用
@@ -1860,6 +1948,25 @@ export declare const ClientsApiFp: (configuration?: Configuration) => {
 export declare const ClientsApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
     /**
      * 应用和用户需要 WRITE_CLIENT 权限。
+     * @summary 添加应用成员
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addClientMembers(cid: string, uids: Array<number>, options?: any): AxiosPromise<void>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+     * @summary 添加应用成员
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any): AxiosPromise<void>;
+    /**
+     * 应用和用户需要 WRITE_CLIENT 权限。
      * @summary 创建应用
      * @param {number} uid
      * @param {string} name
@@ -1955,6 +2062,15 @@ export declare const ClientsApiFactory: (configuration?: Configuration, basePath
     removeClient(cid: string, options?: any): AxiosPromise<void>;
     /**
      * 应用和用户需要 WRITE_CLIENT 权限。
+     * @summary 移除应用成员
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeClientMembers(cid: string, uids: Array<number>, options?: any): AxiosPromise<void>;
+    /**
+     * 应用和用户需要 WRITE_CLIENT 权限。
      * @summary 删除应用
      * @param {Array<string>} cids
      * @param {*} [options] Override http request option.
@@ -1970,6 +2086,16 @@ export declare const ClientsApiFactory: (configuration?: Configuration, basePath
      * @throws {RequiredError}
      */
     removeUserClient(uid: number, cid: string, options?: any): AxiosPromise<void>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+     * @summary 移除应用成员
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any): AxiosPromise<void>;
     /**
      * 应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。
      * @summary 删除用户应用
@@ -2109,6 +2235,27 @@ export declare const ClientsApiFactory: (configuration?: Configuration, basePath
 export declare class ClientsApi extends BaseAPI {
     /**
      * 应用和用户需要 WRITE_CLIENT 权限。
+     * @summary 添加应用成员
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientsApi
+     */
+    addClientMembers(cid: string, uids: Array<number>, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+     * @summary 添加应用成员
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientsApi
+     */
+    addUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     * 应用和用户需要 WRITE_CLIENT 权限。
      * @summary 创建应用
      * @param {number} uid
      * @param {string} name
@@ -2213,6 +2360,16 @@ export declare class ClientsApi extends BaseAPI {
     removeClient(cid: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
     /**
      * 应用和用户需要 WRITE_CLIENT 权限。
+     * @summary 移除应用成员
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientsApi
+     */
+    removeClientMembers(cid: string, uids: Array<number>, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     * 应用和用户需要 WRITE_CLIENT 权限。
      * @summary 删除应用
      * @param {Array<string>} cids
      * @param {*} [options] Override http request option.
@@ -2230,6 +2387,17 @@ export declare class ClientsApi extends BaseAPI {
      * @memberof ClientsApi
      */
     removeUserClient(uid: number, cid: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+     * @summary 移除应用成员
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} uids
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientsApi
+     */
+    removeUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any): Promise<import("axios").AxiosResponse<void>>;
     /**
      * 应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。
      * @summary 删除用户应用

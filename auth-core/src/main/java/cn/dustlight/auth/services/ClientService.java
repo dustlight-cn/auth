@@ -88,7 +88,7 @@ public interface ClientService<T extends Client> extends ClientDetailsService {
      * @return Client
      */
     T create(Long uid, String name, String description, String redirectUri, Collection<Long> scopes, Collection<Long> grantTypes,
-                  Integer accessTokenValidity, Integer refreshTokenValidity, String additionalInformation, int status);
+             Integer accessTokenValidity, Integer refreshTokenValidity, String additionalInformation, int status);
 
     /**
      * 创建应用
@@ -127,6 +127,15 @@ public interface ClientService<T extends Client> extends ClientDetailsService {
      * @return 应用是否属于用户
      */
     boolean isOwner(String cid, Long uid);
+
+    /**
+     * 判断用户是否拥有应用的管理权
+     *
+     * @param cid 应用id
+     * @param uid 用户id
+     * @return 应用是否属于用户
+     */
+    boolean isOwnerOrMember(String cid, Long uid);
 
     /**
      * 更新应用密钥
@@ -396,4 +405,12 @@ public interface ClientService<T extends Client> extends ClientDetailsService {
      * @param aids 权限ID集合
      */
     void removeAuthorities(String cid, Long uid, Collection<Long> aids);
+
+    void addMembers(String cid, Collection<Long> uids);
+
+    void addMembers(String cid, Long uid, Collection<Long> uids);
+
+    void removeMembers(String cid, Collection<Long> uids);
+
+    void removeMembers(String cid, Long uid, Collection<Long> uids);
 }

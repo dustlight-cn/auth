@@ -253,13 +253,20 @@
               appear
               enter-active-class="animated fadeIn"
               leave-active-class="animated fadeOut">
-              <q-item clickable v-ripple @click="()=>data.owner=u" v-close-popup>
+              <q-item style="word-break: break-all;" clickable v-ripple @click="()=>data.owner=u" v-close-popup>
                 <q-item-section avatar>
                   <avatar :user="u"/>
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label>{{ u.nickname.trim() || u.username }}</q-item-label>
-                  <q-item-label caption>{{ u.email }}</q-item-label>
+                  <q-item-label>{{ u.nickname && u.nickname.trim() ? u.nickname.trim() : u.username }}</q-item-label>
+                  <q-item-label v-if="u.email" caption>
+                    <q-icon name="email"/>
+                    <span> {{ u.email }}</span>
+                  </q-item-label>
+                  <q-item-label v-if="u.phone" caption>
+                    <q-icon name="phone"/>
+                    <span> {{ u.phone }}</span>
+                  </q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-icon name="keyboard_arrow_right"/>

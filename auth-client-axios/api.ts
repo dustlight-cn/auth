@@ -120,6 +120,12 @@ export interface AuthorizationClient {
     resources?: Array<Resource>;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof AuthorizationClient
+     */
+    members?: Array<string>;
+    /**
+     * 
      * @type {Array<AuthorizationClientScope>}
      * @memberof AuthorizationClient
      */
@@ -144,16 +150,16 @@ export interface AuthorizationClient {
     clientSecret?: string;
     /**
      * 
-     * @type {number}
-     * @memberof AuthorizationClient
-     */
-    accessTokenValiditySeconds?: number;
-    /**
-     * 
      * @type {Set<string>}
      * @memberof AuthorizationClient
      */
     registeredRedirectUri?: Set<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof AuthorizationClient
+     */
+    accessTokenValiditySeconds?: number;
     /**
      * 
      * @type {number}
@@ -249,18 +255,6 @@ export interface AuthorizationResponse {
 export interface Client {
     /**
      * 
-     * @type {string}
-     * @memberof Client
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
-    description?: string;
-    /**
-     * 
      * @type {Array<string>}
      * @memberof Client
      */
@@ -289,6 +283,24 @@ export interface Client {
      * @memberof Client
      */
     scopes?: Array<ClientScope>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    name?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof Client
+     */
+    members?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Client
+     */
+    description?: string;
     /**
      * 
      * @type {string}
@@ -327,10 +339,10 @@ export interface Client {
     secret?: string;
     /**
      * 
-     * @type {number}
+     * @type {Set<string>}
      * @memberof Client
      */
-    accessTokenValidity?: number;
+    redirectUri?: Set<string>;
     /**
      * 
      * @type {Set<string>}
@@ -339,10 +351,10 @@ export interface Client {
     grantTypes?: Set<string>;
     /**
      * 
-     * @type {Set<string>}
+     * @type {number}
      * @memberof Client
      */
-    redirectUri?: Set<string>;
+    accessTokenValidity?: number;
     /**
      * 
      * @type {number}
@@ -364,18 +376,6 @@ export interface ClientScope {
     autoApprove?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof ClientScope
-     */
-    name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ClientScope
-     */
-    description?: string;
-    /**
-     * 
      * @type {number}
      * @memberof ClientScope
      */
@@ -386,6 +386,18 @@ export interface ClientScope {
      * @memberof ClientScope
      */
     subtitle?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ClientScope
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ClientScope
+     */
+    description?: string;
 }
 /**
  * 
@@ -435,12 +447,6 @@ export interface OAuth2AccessToken {
      * @type {string}
      * @memberof OAuth2AccessToken
      */
-    value?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
     expiration?: string;
     /**
      * 
@@ -448,6 +454,12 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     scope?: Set<string>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OAuth2AccessToken
+     */
+    expired?: boolean;
     /**
      * 
      * @type {{ [key: string]: object; }}
@@ -468,16 +480,16 @@ export interface OAuth2AccessToken {
     refreshToken?: OAuth2RefreshToken;
     /**
      * 
-     * @type {boolean}
-     * @memberof OAuth2AccessToken
-     */
-    expired?: boolean;
-    /**
-     * 
      * @type {number}
      * @memberof OAuth2AccessToken
      */
     expiresIn?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    value?: string;
 }
 /**
  * 
@@ -509,19 +521,13 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
-    avatar?: string;
+    unlockedAt?: string;
     /**
      * 
      * @type {string}
      * @memberof PublicUser
      */
-    unlockedAt?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof PublicUser
-     */
-    gender?: number;
+    avatar?: string;
     /**
      * 
      * @type {string}
@@ -530,10 +536,10 @@ export interface PublicUser {
     nickname?: string;
     /**
      * 
-     * @type {boolean}
+     * @type {number}
      * @memberof PublicUser
      */
-    enabled?: boolean;
+    gender?: number;
     /**
      * 
      * @type {string}
@@ -558,6 +564,12 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     accountNonLocked?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PublicUser
+     */
+    enabled?: boolean;
     /**
      * 
      * @type {string}
@@ -614,13 +626,13 @@ export interface Resource {
      * @type {string}
      * @memberof Resource
      */
-    name?: string;
+    rid?: string;
     /**
      * 
      * @type {string}
      * @memberof Resource
      */
-    rid?: string;
+    name?: string;
     /**
      * 
      * @type {string}
@@ -761,19 +773,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    avatar?: string;
+    unlockedAt?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof User
-     */
-    gender?: number;
+    avatar?: string;
     /**
      * 
      * @type {string}
@@ -782,10 +788,10 @@ export interface User {
     nickname?: string;
     /**
      * 
-     * @type {boolean}
+     * @type {number}
      * @memberof User
      */
-    enabled?: boolean;
+    gender?: number;
     /**
      * 
      * @type {string}
@@ -810,6 +816,12 @@ export interface User {
      * @memberof User
      */
     accountNonLocked?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof User
+     */
+    enabled?: boolean;
     /**
      * 
      * @type {string}
@@ -1677,16 +1689,14 @@ export const AuthorizationApiAxiosParamCreator = function (configuration?: Confi
          * 应用需要 AUTHORIZE 权限。
          * @summary 应用授权
          * @param {boolean} approved 
-         * @param {Set<string>} scope 
+         * @param {Set<string>} [scope] 
          * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createAuthorization: async (approved: boolean, scope: Set<string>, jwt?: boolean, options: any = {}): Promise<RequestArgs> => {
+        createAuthorization: async (approved: boolean, scope?: Set<string>, jwt?: boolean, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'approved' is not null or undefined
             assertParamExists('createAuthorization', 'approved', approved)
-            // verify required parameter 'scope' is not null or undefined
-            assertParamExists('createAuthorization', 'scope', scope)
             const localVarPath = `/v1/oauth/authorization`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1806,12 +1816,12 @@ export const AuthorizationApiFp = function(configuration?: Configuration) {
          * 应用需要 AUTHORIZE 权限。
          * @summary 应用授权
          * @param {boolean} approved 
-         * @param {Set<string>} scope 
+         * @param {Set<string>} [scope] 
          * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>> {
+        async createAuthorization(approved: boolean, scope?: Set<string>, jwt?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.createAuthorization(approved, scope, jwt, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1845,12 +1855,12 @@ export const AuthorizationApiFactory = function (configuration?: Configuration, 
          * 应用需要 AUTHORIZE 权限。
          * @summary 应用授权
          * @param {boolean} approved 
-         * @param {Set<string>} scope 
+         * @param {Set<string>} [scope] 
          * @param {boolean} [jwt] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any): AxiosPromise<AuthorizationResponse> {
+        createAuthorization(approved: boolean, scope?: Set<string>, jwt?: boolean, options?: any): AxiosPromise<AuthorizationResponse> {
             return localVarFp.createAuthorization(approved, scope, jwt, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1882,13 +1892,13 @@ export class AuthorizationApi extends BaseAPI {
      * 应用需要 AUTHORIZE 权限。
      * @summary 应用授权
      * @param {boolean} approved 
-     * @param {Set<string>} scope 
+     * @param {Set<string>} [scope] 
      * @param {boolean} [jwt] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthorizationApi
      */
-    public createAuthorization(approved: boolean, scope: Set<string>, jwt?: boolean, options?: any) {
+    public createAuthorization(approved: boolean, scope?: Set<string>, jwt?: boolean, options?: any) {
         return AuthorizationApiFp(this.configuration).createAuthorization(approved, scope, jwt, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -1917,6 +1927,100 @@ export class AuthorizationApi extends BaseAPI {
  */
 export const ClientsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 应用和用户需要 WRITE_CLIENT 权限。
+         * @summary 添加应用成员
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addClientMembers: async (cid: string, uids: Array<number>, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'cid' is not null or undefined
+            assertParamExists('addClientMembers', 'cid', cid)
+            // verify required parameter 'uids' is not null or undefined
+            assertParamExists('addClientMembers', 'uids', uids)
+            const localVarPath = `/v1/clients/{cid}/members`
+                .replace(`{${"cid"}}`, encodeURIComponent(String(cid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (uids) {
+                localVarQueryParameter['uids'] = uids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+         * @summary 添加应用成员
+         * @param {number} uid 
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addUserClientMembers: async (uid: number, cid: string, uids: Array<number>, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uid' is not null or undefined
+            assertParamExists('addUserClientMembers', 'uid', uid)
+            // verify required parameter 'cid' is not null or undefined
+            assertParamExists('addUserClientMembers', 'cid', cid)
+            // verify required parameter 'uids' is not null or undefined
+            assertParamExists('addUserClientMembers', 'uids', uids)
+            const localVarPath = `/v1/users/{uid}/clients/{cid}/members`
+                .replace(`{${"uid"}}`, encodeURIComponent(String(uid)))
+                .replace(`{${"cid"}}`, encodeURIComponent(String(cid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (uids) {
+                localVarQueryParameter['uids'] = uids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 应用和用户需要 WRITE_CLIENT 权限。
          * @summary 创建应用
@@ -2390,6 +2494,51 @@ export const ClientsApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 应用和用户需要 WRITE_CLIENT 权限。
+         * @summary 移除应用成员
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeClientMembers: async (cid: string, uids: Array<number>, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'cid' is not null or undefined
+            assertParamExists('removeClientMembers', 'cid', cid)
+            // verify required parameter 'uids' is not null or undefined
+            assertParamExists('removeClientMembers', 'uids', uids)
+            const localVarPath = `/v1/clients/{cid}/members`
+                .replace(`{${"cid"}}`, encodeURIComponent(String(cid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (uids) {
+                localVarQueryParameter['uids'] = uids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 应用和用户需要 WRITE_CLIENT 权限。
          * @summary 删除应用
          * @param {Array<string>} cids 
          * @param {*} [options] Override http request option.
@@ -2459,6 +2608,55 @@ export const ClientsApiAxiosParamCreator = function (configuration?: Configurati
             // authentication AccessToken required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+         * @summary 移除应用成员
+         * @param {number} uid 
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeUserClientMembers: async (uid: number, cid: string, uids: Array<number>, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uid' is not null or undefined
+            assertParamExists('removeUserClientMembers', 'uid', uid)
+            // verify required parameter 'cid' is not null or undefined
+            assertParamExists('removeUserClientMembers', 'cid', cid)
+            // verify required parameter 'uids' is not null or undefined
+            assertParamExists('removeUserClientMembers', 'uids', uids)
+            const localVarPath = `/v1/users/{uid}/clients/{cid}/members`
+                .replace(`{${"uid"}}`, encodeURIComponent(String(uid)))
+                .replace(`{${"cid"}}`, encodeURIComponent(String(cid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication AccessToken required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (uids) {
+                localVarQueryParameter['uids'] = uids;
+            }
 
 
     
@@ -3117,6 +3315,31 @@ export const ClientsApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 应用和用户需要 WRITE_CLIENT 权限。
+         * @summary 添加应用成员
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addClientMembers(cid: string, uids: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addClientMembers(cid, uids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+         * @summary 添加应用成员
+         * @param {number} uid 
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addUserClientMembers(uid, cid, uids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 应用和用户需要 WRITE_CLIENT 权限。
          * @summary 创建应用
          * @param {number} uid 
          * @param {string} name 
@@ -3239,6 +3462,18 @@ export const ClientsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 应用和用户需要 WRITE_CLIENT 权限。
+         * @summary 移除应用成员
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removeClientMembers(cid: string, uids: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.removeClientMembers(cid, uids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 应用和用户需要 WRITE_CLIENT 权限。
          * @summary 删除应用
          * @param {Array<string>} cids 
          * @param {*} [options] Override http request option.
@@ -3258,6 +3493,19 @@ export const ClientsApiFp = function(configuration?: Configuration) {
          */
         async removeUserClient(uid: number, cid: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.removeUserClient(uid, cid, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+         * @summary 移除应用成员
+         * @param {number} uid 
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removeUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.removeUserClientMembers(uid, cid, uids, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -3443,6 +3691,29 @@ export const ClientsApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 应用和用户需要 WRITE_CLIENT 权限。
+         * @summary 添加应用成员
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addClientMembers(cid: string, uids: Array<number>, options?: any): AxiosPromise<void> {
+            return localVarFp.addClientMembers(cid, uids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+         * @summary 添加应用成员
+         * @param {number} uid 
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any): AxiosPromise<void> {
+            return localVarFp.addUserClientMembers(uid, cid, uids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 应用和用户需要 WRITE_CLIENT 权限。
          * @summary 创建应用
          * @param {number} uid 
          * @param {string} name 
@@ -3556,6 +3827,17 @@ export const ClientsApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 应用和用户需要 WRITE_CLIENT 权限。
+         * @summary 移除应用成员
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeClientMembers(cid: string, uids: Array<number>, options?: any): AxiosPromise<void> {
+            return localVarFp.removeClientMembers(cid, uids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 应用和用户需要 WRITE_CLIENT 权限。
          * @summary 删除应用
          * @param {Array<string>} cids 
          * @param {*} [options] Override http request option.
@@ -3574,6 +3856,18 @@ export const ClientsApiFactory = function (configuration?: Configuration, basePa
          */
         removeUserClient(uid: number, cid: string, options?: any): AxiosPromise<void> {
             return localVarFp.removeUserClient(uid, cid, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+         * @summary 移除应用成员
+         * @param {number} uid 
+         * @param {string} cid 
+         * @param {Array<number>} uids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any): AxiosPromise<void> {
+            return localVarFp.removeUserClientMembers(uid, cid, uids, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。
@@ -3744,6 +4038,33 @@ export const ClientsApiFactory = function (configuration?: Configuration, basePa
 export class ClientsApi extends BaseAPI {
     /**
      * 应用和用户需要 WRITE_CLIENT 权限。
+     * @summary 添加应用成员
+     * @param {string} cid 
+     * @param {Array<number>} uids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientsApi
+     */
+    public addClientMembers(cid: string, uids: Array<number>, options?: any) {
+        return ClientsApiFp(this.configuration).addClientMembers(cid, uids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+     * @summary 添加应用成员
+     * @param {number} uid 
+     * @param {string} cid 
+     * @param {Array<number>} uids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientsApi
+     */
+    public addUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any) {
+        return ClientsApiFp(this.configuration).addUserClientMembers(uid, cid, uids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 应用和用户需要 WRITE_CLIENT 权限。
      * @summary 创建应用
      * @param {number} uid 
      * @param {string} name 
@@ -3875,6 +4196,19 @@ export class ClientsApi extends BaseAPI {
 
     /**
      * 应用和用户需要 WRITE_CLIENT 权限。
+     * @summary 移除应用成员
+     * @param {string} cid 
+     * @param {Array<number>} uids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientsApi
+     */
+    public removeClientMembers(cid: string, uids: Array<number>, options?: any) {
+        return ClientsApiFp(this.configuration).removeClientMembers(cid, uids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 应用和用户需要 WRITE_CLIENT 权限。
      * @summary 删除应用
      * @param {Array<string>} cids 
      * @param {*} [options] Override http request option.
@@ -3896,6 +4230,20 @@ export class ClientsApi extends BaseAPI {
      */
     public removeUserClient(uid: number, cid: string, options?: any) {
         return ClientsApiFp(this.configuration).removeUserClient(uid, cid, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。
+     * @summary 移除应用成员
+     * @param {number} uid 
+     * @param {string} cid 
+     * @param {Array<number>} uids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientsApi
+     */
+    public removeUserClientMembers(uid: number, cid: string, uids: Array<number>, options?: any) {
+        return ClientsApiFp(this.configuration).removeUserClientMembers(uid, cid, uids, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

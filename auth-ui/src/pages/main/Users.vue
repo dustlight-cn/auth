@@ -50,7 +50,12 @@
                       {{ user.nickname && user.nickname.trim() ? user.nickname.trim() : user.username }}
                     </q-item-label>
                     <q-item-label v-if="user.email" caption style="word-break: break-all;">
-                      {{ user.email }}
+                      <q-icon name="email"/>
+                      <span> {{ user.email }}</span>
+                    </q-item-label>
+                    <q-item-label v-if="user.phone" caption style="word-break: break-all;">
+                      <q-icon name="phone"/>
+                      <span> {{ user.phone }}</span>
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side>
