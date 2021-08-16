@@ -25,6 +25,11 @@ public class DefaultAuthorityService implements AuthorityService {
     }
 
     @Override
+    public Collection<? extends Authority> listAuthorities(String cid) {
+        return authorityMapper.listAuthoritiesWithClientId(cid);
+    }
+
+    @Override
     public Collection<? extends Authority> getAuthorities(Collection<Long> aids) {
         return authorityMapper.selectAuthorities(aids);
     }
@@ -53,8 +58,20 @@ public class DefaultAuthorityService implements AuthorityService {
     }
 
     @Override
+    public void removeAuthority(Long aid, String cid) {
+        if (!authorityMapper.deleteAuthorityWithClientId(aid, cid))
+            ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
+    }
+
+    @Override
     public void removeAuthorities(Collection<Long> aids) {
         if (!authorityMapper.deleteAuthorities(aids))
+            ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
+    }
+
+    @Override
+    public void removeAuthorities(Collection<Long> aids, String cid) {
+        if (!authorityMapper.deleteAuthoritiesWithClientId(aids, cid))
             ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
     }
 }

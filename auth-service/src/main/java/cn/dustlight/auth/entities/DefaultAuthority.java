@@ -8,7 +8,7 @@ import java.util.Date;
 public class DefaultAuthority implements Authority {
 
     private Long aid;
-    private String authorityName, authorityDescription;
+    private String authorityName, authorityDescription, cid;
     private Date createdAt, updatedAt;
 
     @Override
@@ -34,6 +34,11 @@ public class DefaultAuthority implements Authority {
         return authorityDescription;
     }
 
+    @Override
+    public String getCid() {
+        return cid;
+    }
+
     public void setAuthorityDescription(String authorityDescription) {
         this.authorityDescription = authorityDescription;
     }
@@ -54,5 +59,9 @@ public class DefaultAuthority implements Authority {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
     }
 }

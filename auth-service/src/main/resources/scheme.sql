@@ -56,17 +56,22 @@ CREATE TABLE IF NOT EXISTS `types`
   COLLATE = utf8mb4_general_ci;
 
 /* 权限表 Authorities */
-CREATE TABLE IF NOT EXISTS `authorities`
+CREATE TABLE `authorities`
 (
-    `aid`                  bigint      NOT NULL,
-    `authorityName`        varchar(64) NOT NULL,
-    `authorityDescription` varchar(128) DEFAULT NULL,
-    `createdAt`            datetime     DEFAULT CURRENT_TIMESTAMP,
-    `updatedAt`            datetime     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `aid`                  bigint                                                       NOT NULL,
+    `authorityName`        varchar(64) CHARACTER SET utf8                               NOT NULL,
+    `cid`                  varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    `authorityDescription` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
+    `createdAt`            datetime                        DEFAULT CURRENT_TIMESTAMP,
+    `updatedAt`            datetime                        DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`aid`),
-    UNIQUE KEY `authorityName_UNIQUE` (`authorityName`)
+    UNIQUE KEY `authorityName_cid_UNIQUE` (`authorityName`, `cid`) /*!80000 INVISIBLE */,
+    KEY `authorities_authorityName` (`authorityName`),
+    KEY `authorities_cid` (`cid`),
+    CONSTRAINT `authorities_cid` FOREIGN KEY (`cid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;
 
 /* 授权作用域表 Scopes */
 CREATE TABLE IF NOT EXISTS `scopes`

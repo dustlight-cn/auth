@@ -17,6 +17,9 @@ public interface AuthorityMapper {
     @Select("SELECT * FROM authorities")
     Collection<DefaultAuthority> listAuthorities();
 
+    @Select("SELECT * FROM authorities WHERE cid=#{cid}")
+    Collection<DefaultAuthority> listAuthoritiesWithClientId(@Param("cid") String cid);
+
     @Select("SELECT * FROM authorities WHERE aid=#{aid} LIMIT 1")
     DefaultAuthority selectAuthority(@Param("aid") Long aid);
 
@@ -31,19 +34,27 @@ public interface AuthorityMapper {
                             @Param("authorityName") String authorityName,
                             @Param("authorityDescription") String authorityDescription);
 
-    @Insert("<script>INSERT INTO authorities (aid,authorityName,authorityDescription) VALUES " +
+    @Insert("<script>INSERT INTO authorities (aid,authorityName,authorityDescription,cid) VALUES " +
             "<foreach collection='authorities' item='authority' separator=','>" +
-            "(#{authority.aid},#{authority.authorityName},#{authority.authorityDescription})" +
-            "</foreach> ON DUPLICATE KEY UPDATE authorityName=VALUES(authorityName),authorityDescription=VALUES(authorityDescription)</script>")
+            "(#{authority.aid},#{authority.authorityName},#{authority.authorityDescription},#{authority.cid})" +
+            "</foreach> ON DUPLICATE KEY UPDATE authorityName=VALUES(authorityName),authorityDescription=VALUES(authorityDescription),cid=VALUES(cid)</script>")
     Boolean insertAuthorities(@Param("authorities") Collection<? extends Authority> authorities);
 
     @Delete("DELETE FROM authorities WHERE aid=#{aid}")
     Boolean deleteAuthority(@Param("aid") Long aid);
 
+    @Delete("DELETE FROM authorities WHERE aid=#{aid} AND cid=#{cid}")
+    Boolean deleteAuthorityWithClientId(@Param("aid") Long aid, @Param("cid") String cid);
+
     @Delete("<script>DELETE FROM authorities WHERE aid IN " +
             "<foreach collection='aids' item='aid' open='(' separator=',' close=')'>" +
             "#{aid}</foreach></script>")
     Boolean deleteAuthorities(@Param("aids") Collection<Long> aids);
+
+    @Delete("<script>DELETE FROM authorities WHERE cid=#{cid} AND aid IN " +
+            "<foreach collection='aids' item='aid' open='(' separator=',' close=')'>" +
+            "#{aid}</foreach></script>")
+    Boolean deleteAuthoritiesWithClientId(@Param("aids") Collection<Long> aids, @Param("cid") String cid);
 
     /* ------------------------------------------------------------------------------------------------ */
 

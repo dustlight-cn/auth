@@ -17,6 +17,14 @@ public interface AuthorityService {
     Collection<? extends Authority> listAuthorities();
 
     /**
+     * 获取应用下全部权限
+     *
+     * @param cid 应用id
+     * @return 权限集合
+     */
+    Collection<? extends Authority> listAuthorities(String cid);
+
+    /**
      * 获取权限
      *
      * @param aids 权限id集合
@@ -57,7 +65,23 @@ public interface AuthorityService {
     /**
      * 删除权限
      *
+     * @param aid 权限id
+     * @param cid 应用id
+     */
+    void removeAuthority(Long aid, String cid);
+
+    /**
+     * 删除权限
+     *
      * @param aids 权限id集合
      */
     void removeAuthorities(Collection<Long> aids);
+
+    /**
+     * 删除权限
+     *
+     * @param aids 权限id集合
+     * @param cid  应用id
+     */
+    void removeAuthorities(Collection<Long> aids, String cid);
 }
