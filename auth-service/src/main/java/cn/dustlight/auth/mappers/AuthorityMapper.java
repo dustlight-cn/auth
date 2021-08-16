@@ -28,11 +28,12 @@ public interface AuthorityMapper {
             "#{aid}</foreach></script>")
     Collection<DefaultAuthority> selectAuthorities(@Param("aids") Collection<Long> aids);
 
-    @Insert("INSERT INTO authorities (aid,authorityName,authorityDescription) VALUES (#{aid},#{authorityName},#{authorityDescription}) " +
-            "ON DUPLICATE KEY UPDATE authorityName=VALUES(authorityName),authorityDescription=VALUES(authorityDescription)")
+    @Insert("INSERT INTO authorities (aid,authorityName,authorityDescription,cid) VALUES (#{aid},#{authorityName},#{authorityDescription},#{cid}) " +
+            "ON DUPLICATE KEY UPDATE authorityName=VALUES(authorityName),authorityDescription=VALUES(authorityDescription),cid=VALUES(cid)")
     Boolean insertAuthority(@Param("aid") Long aid,
                             @Param("authorityName") String authorityName,
-                            @Param("authorityDescription") String authorityDescription);
+                            @Param("authorityDescription") String authorityDescription,
+                            @Param("cid") String cid);
 
     @Insert("<script>INSERT INTO authorities (aid,authorityName,authorityDescription,cid) VALUES " +
             "<foreach collection='authorities' item='authority' separator=','>" +

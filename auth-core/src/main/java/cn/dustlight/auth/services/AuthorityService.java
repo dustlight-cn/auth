@@ -45,8 +45,9 @@ public interface AuthorityService {
      *
      * @param name        权限名
      * @param description 权限描述
+     * @param cid         应用ID
      */
-    void createAuthority(String name, String description);
+    void createAuthority(String name, String description, String cid);
 
     /**
      * 创建权限

@@ -21,6 +21,9 @@ public interface RoleMapper {
     @Select("SELECT * FROM roles")
     Collection<DefaultRole> listRoles();
 
+    @Select("SELECT * FROM roles WHERE cid=#{cid}")
+    Collection<DefaultRole> listRolesWithClientId(@Param("cid") String cid);
+
     @Select("<script>SELECT * FROM roles WHERE rid IN " +
             "<foreach collection='rids' item='rid' open='(' separator=',' close=')'>" +
             "#{rid}</foreach></script>")
@@ -29,25 +32,37 @@ public interface RoleMapper {
     @Select("SELECT * FROM roles WHERE rid=#{rid} LIMIT 1")
     DefaultRole selectRole(@Param("rid") Long rid);
 
-    @Insert("INSERT INTO roles (rid,roleName,roleDescription) VALUES (#{rid},#{roleName},#{roleDescription}) " +
-            "ON DUPLICATE KEY UPDATE roleName=VALUES(roleName),roleDescription=VALUES(roleDescription)")
+    @Insert("INSERT INTO roles (rid,roleName,roleDescription,cid) VALUES (#{rid},#{roleName},#{roleDescription},#{cid}) " +
+            "ON DUPLICATE KEY UPDATE roleName=VALUES(roleName),roleDescription=VALUES(roleDescription),cid=#{cid}")
     Boolean insertRole(@Param("rid") Long rid,
                        @Param("roleName") String roleName,
-                       @Param("roleDescription") String roleDescription);
+                       @Param("roleDescription") String roleDescription,
+                       @Param("cid") String cid);
 
-    @Insert("<script>INSERT INTO roles (rid,roleName,roleDescription) VALUES " +
+    @Insert("<script>INSERT INTO roles (rid,roleName,roleDescription,cid) VALUES " +
             "<foreach collection='roles' item='role' separator=','>" +
-            "(#{role.rid},#{role.roleName},#{role.roleDescription})" +
+            "(#{role.rid},#{role.roleName},#{role.roleDescription},#{cid})" +
             "</foreach> ON DUPLICATE KEY UPDATE roleName=VALUES(roleName),roleDescription=VALUES(roleDescription)</script>")
-    Boolean insertRoles(@Param("roles") Collection<? extends Role> roles);
+    Boolean insertRoles(@Param("roles") Collection<? extends Role> roles,
+                        @Param("cid") String cid);
 
     @Delete("DELETE FROM roles WHERE rid=#{rid}")
     Boolean deleteRole(@Param("rid") Long rid);
+
+    @Delete("DELETE FROM roles WHERE rid=#{rid} AND cid=#{cid}")
+    Boolean deleteRoleWithClientId(@Param("rid") Long rid,
+                                   @Param("cid") String cid);
 
     @Delete("<script>DELETE FROM roles WHERE rid IN " +
             "<foreach collection='rids' item='rid' open='(' separator=',' close=')'>" +
             "#{rid}</foreach></script>")
     Boolean deleteRoles(@Param("rids") Collection<Long> rids);
+
+    @Delete("<script>DELETE FROM roles WHERE cid=#{cid} rid IN " +
+            "<foreach collection='rids' item='rid' open='(' separator=',' close=')'>" +
+            "#{rid}</foreach></script>")
+    Boolean deleteRolesWithClientId(@Param("rids") Collection<Long> rids,
+                                    @Param("cid") String cid);
 
     /* ----------------------------------------------------------------------------------------------------- */
 

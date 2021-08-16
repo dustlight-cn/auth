@@ -40,8 +40,8 @@ public class DefaultAuthorityService implements AuthorityService {
     }
 
     @Override
-    public void createAuthority(String name, String description) {
-        if (!authorityMapper.insertAuthority(idGenerator.generate(), name, description))
+    public void createAuthority(String name, String description, String cid) {
+        if (!authorityMapper.insertAuthority(idGenerator.generate(), name, description,cid))
             ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
     }
 

@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -36,27 +37,30 @@ public class RoleResource {
 
     @GetMapping("roles")
     @Operation(summary = "获取角色")
-    public Collection<? extends Role> getRoles(@RequestParam(required = false) Collection<Long> id) {
+    public Collection<? extends Role> getRoles(@RequestParam(required = false) Collection<Long> id,
+                                               OAuth2Authentication authentication) {
         if (id == null)
-            return roleService.listRoles();
+            return roleService.listRolesWithClientId(authentication.getOAuth2Request().getClientId());
         return roleService.getRoles(id);
     }
 
     @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_ROLE')) and #oauth2.clientHasAnyRole('WRITE_ROLE')")
     @PutMapping("roles")
     @Operation(summary = "修改或添加角色", description = "应用和用户需要 WRITE_ROLE 权限。")
-    public void setRoles(@RequestBody Collection<DefaultRole> roles) {
+    public void setRoles(@RequestBody Collection<DefaultRole> roles,
+                         OAuth2Authentication authentication) {
         for (DefaultRole role : roles)
             if (role.getRid() == null)
                 role.setRid(idGenerator.generate());
-        roleService.createRoles(roles);
+        roleService.createRoles(roles, authentication.getOAuth2Request().getClientId());
     }
 
     @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_ROLE')) and #oauth2.clientHasAnyRole('WRITE_ROLE')")
     @DeleteMapping("roles")
     @Operation(summary = "删除角色", description = "应用和用户需要 WRITE_ROLE 权限。")
-    public void deleteRoles(@RequestParam Collection<Long> id) {
-        roleService.removeRoles(id);
+    public void deleteRoles(@RequestParam Collection<Long> id,
+                            OAuth2Authentication authentication) {
+        roleService.removeRolesWithClientId(id, authentication.getOAuth2Request().getClientId());
     }
 
     /* ------------------------------------------------------------------------------------------------- */
