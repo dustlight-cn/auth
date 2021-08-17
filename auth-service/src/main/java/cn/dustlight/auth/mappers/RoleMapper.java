@@ -58,7 +58,7 @@ public interface RoleMapper {
             "#{rid}</foreach></script>")
     Boolean deleteRoles(@Param("rids") Collection<Long> rids);
 
-    @Delete("<script>DELETE FROM roles WHERE cid=#{cid} rid IN " +
+    @Delete("<script>DELETE FROM roles WHERE cid=#{cid} AND rid IN " +
             "<foreach collection='rids' item='rid' open='(' separator=',' close=')'>" +
             "#{rid}</foreach></script>")
     Boolean deleteRolesWithClientId(@Param("rids") Collection<Long> rids,

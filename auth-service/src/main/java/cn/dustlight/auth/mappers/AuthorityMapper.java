@@ -37,9 +37,10 @@ public interface AuthorityMapper {
 
     @Insert("<script>INSERT INTO authorities (aid,authorityName,authorityDescription,cid) VALUES " +
             "<foreach collection='authorities' item='authority' separator=','>" +
-            "(#{authority.aid},#{authority.authorityName},#{authority.authorityDescription},#{authority.cid})" +
+            "(#{authority.aid},#{authority.authorityName},#{authority.authorityDescription},#{cid})" +
             "</foreach> ON DUPLICATE KEY UPDATE authorityName=VALUES(authorityName),authorityDescription=VALUES(authorityDescription),cid=VALUES(cid)</script>")
-    Boolean insertAuthorities(@Param("authorities") Collection<? extends Authority> authorities);
+    Boolean insertAuthorities(@Param("authorities") Collection<? extends Authority> authorities,
+                              @Param("cid") String cid);
 
     @Delete("DELETE FROM authorities WHERE aid=#{aid}")
     Boolean deleteAuthority(@Param("aid") Long aid);

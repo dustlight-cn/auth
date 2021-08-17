@@ -51,12 +51,10 @@ public class AuthorityResource {
     public void setAuthorities(@RequestBody Collection<DefaultAuthority> authorities,
                                OAuth2Authentication authentication) {
         String clientId = authentication.getOAuth2Request().getClientId();
-        for (DefaultAuthority authority : authorities) {
-            authority.setCid(clientId);
+        for (DefaultAuthority authority : authorities)
             if (authority.getAid() == null)
                 authority.setAid(idGenerator.generate());
-        }
-        authorityService.createAuthorities(authorities);
+        authorityService.createAuthorities(authorities, clientId);
     }
 
     @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_AUTHORITY')) and #oauth2.clientHasAnyRole('WRITE_AUTHORITY')")

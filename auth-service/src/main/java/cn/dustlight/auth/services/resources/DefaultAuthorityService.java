@@ -41,13 +41,14 @@ public class DefaultAuthorityService implements AuthorityService {
 
     @Override
     public void createAuthority(String name, String description, String cid) {
-        if (!authorityMapper.insertAuthority(idGenerator.generate(), name, description,cid))
+        if (!authorityMapper.insertAuthority(idGenerator.generate(), name, description, cid))
             ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
     }
 
     @Override
-    public void createAuthorities(Collection<? extends Authority> authorities) {
-        if (!authorityMapper.insertAuthorities(authorities))
+    public void createAuthorities(Collection<? extends Authority> authorities,
+                                  String clientId) {
+        if (!authorityMapper.insertAuthorities(authorities, clientId))
             ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
     }
 

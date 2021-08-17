@@ -33,12 +33,4 @@ public interface Authority extends Datable, Serializable {
      * @return 权限描述
      */
     String getAuthorityDescription();
-
-    /**
-     * 获取应用 ID
-     *
-     * @return 应用 ID
-     */
-    String getCid();
-
 }

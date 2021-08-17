@@ -53,8 +53,10 @@ public interface AuthorityService {
      * 创建权限
      *
      * @param authorities 权限信息集合
+     * @param clientId    应用ID
      */
-    void createAuthorities(Collection<? extends Authority> authorities);
+    void createAuthorities(Collection<? extends Authority> authorities,
+                           String clientId);
 
     /**
      * 删除权限
