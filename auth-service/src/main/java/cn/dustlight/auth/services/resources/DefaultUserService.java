@@ -220,6 +220,11 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     }
 
     @Override
+    public Collection<? extends Role> getRolesWithClientId(Long uid, String clientId) {
+        return roleMapper.listUserRolesWithClientId(uid, clientId);
+    }
+
+    @Override
     public Collection<? extends RoleClient> getRoleClients(Long uid) {
         return userRoleMapper.selectUserRoleClients(uid);
     }

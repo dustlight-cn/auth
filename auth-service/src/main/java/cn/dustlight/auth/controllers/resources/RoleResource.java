@@ -91,22 +91,36 @@ public class RoleResource {
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('READ_USER')) and #oauth2.clientHasAnyRole('READ_USER')")
     @GetMapping("users/{uid}/role-clients")
-    @Operation(summary = "获取用户角色", description = "应用和用户（uid 为当前用户除外）需要 READ_USER 权限。")
+    @Operation(summary = "获取用户的角色应用", description = "应用和用户（uid 为当前用户除外）需要 READ_USER 权限。")
     public Collection<UserRoleClient> getUserRoleClients(@PathVariable Long uid) {
         return userService.getRoleClients(uid);
     }
 
+    /* ----------------------------------------------------------------- */
+
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('READ_USER')) and #oauth2.clientHasAnyRole('READ_USER')")
+    @GetMapping("users/{uid}/clients/{cid}/roles")
+    @Operation(summary = "获取用户角色", description = "应用和用户（uid 为当前用户除外）需要 READ_USER 权限。")
+    public Collection<? extends Role> getUserRoles(@PathVariable Long uid,
+                                                   @PathVariable String cid) {
+        return userService.getRolesWithClientId(uid, cid);
+    }
+
     @PreAuthorize("(#oauth2.client or hasAnyAuthority('GRANT_USER')) and #oauth2.clientHasAnyRole('GRANT_USER')")
-    @PutMapping("users/{uid}/role-clients")
+    @PutMapping("users/{uid}/clients/{cid}/roles")
     @Operation(summary = "为用户添加角色", description = "应用和用户需要 GRANT_USER 权限。")
-    public void setUserRoleClients(@PathVariable Long uid, @RequestBody Collection<DefaultUserRole> roles) {
+    public void setUserRoles(@PathVariable Long uid,
+                             @PathVariable String cid,
+                             @RequestBody Collection<DefaultUserRole> roles) {
         userService.addRoles(uid, roles);
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('GRANT_USER')) and #oauth2.clientHasAnyRole('GRANT_USER')")
-    @DeleteMapping("users/{uid}/role-clients")
+    @DeleteMapping("users/{uid}/clients/{cid}/roles")
     @Operation(summary = "删除用户的角色", description = "应用和用户需要 GRANT_USER 权限。")
-    public void deleteUserRoleClients(@PathVariable Long uid, @RequestParam Collection<Long> id) {
+    public void deleteUserRoles(@PathVariable Long uid,
+                                @PathVariable String cid,
+                                @RequestParam Collection<Long> id) {
         userService.removeRoles(uid, id);
     }
 }

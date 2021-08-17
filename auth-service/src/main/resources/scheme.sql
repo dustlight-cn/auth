@@ -213,17 +213,14 @@ CREATE TABLE IF NOT EXISTS `role_authority`
 /* 用户角色表 UserRoles */
 CREATE TABLE IF NOT EXISTS `user_role`
 (
-    `uid`       bigint                                                       NOT NULL,
-    `rid`       bigint                                                       NOT NULL,
-    `cid`       varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    `uid` bigint NOT NULL,
+    `rid` bigint NOT NULL,
     `expiredAt` datetime DEFAULT NULL,
     `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
     `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`uid`, `rid`, `cid`),
+    PRIMARY KEY (`uid`,`rid`),
     KEY `rid_idx` (`rid`),
     KEY `uid_idx` (`uid`),
-    KEY `cid_idx` (`cid`),
-    CONSTRAINT `user_role_cid` FOREIGN KEY (`cid`) REFERENCES `clients` (`cid`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `user_role_rid` FOREIGN KEY (`rid`) REFERENCES `roles` (`rid`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `user_role_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB

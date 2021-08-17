@@ -78,6 +78,11 @@ public interface RoleMapper {
     })
     Collection<DefaultUserRole> listUserRoles(@Param("uid") Long uid);
 
+    @Select("SELECT uid,r.rid AS rid,roleName,roleDescription,expiredAt FROM user_role AS ur,roles AS r " +
+            "WHERE ur.uid=#{uid} AND ur.rid=r.rid AND r.cid=#{cid}")
+    Collection<DefaultUserRole> listUserRolesWithClientId(@Param("uid") Long uid,
+                                                          @Param("cid") String cid);
+
     @Select("SELECT roleName FROM user_role AS ur,roles AS r " +
             "WHERE ur.uid=#{uid} AND ur.rid=r.rid")
     Collection<String> listUserRoleNames(@Param("uid") Long uid);

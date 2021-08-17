@@ -185,6 +185,8 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      */
     Collection<? extends Role> getRoles(Long uid);
 
+    Collection<? extends Role> getRolesWithClientId(Long uid, String clientId);
+
     /**
      * 获取用户角色
      *
