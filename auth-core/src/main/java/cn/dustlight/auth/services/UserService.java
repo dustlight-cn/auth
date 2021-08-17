@@ -1,10 +1,7 @@
 package cn.dustlight.auth.services;
 
+import cn.dustlight.auth.entities.*;
 import cn.dustlight.auth.util.QueryResults;
-import cn.dustlight.auth.entities.PublicUser;
-import cn.dustlight.auth.entities.Role;
-import cn.dustlight.auth.entities.User;
-import cn.dustlight.auth.entities.UserRole;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
@@ -32,7 +29,7 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      * @param unlockedAt           账号解锁时间
      * @param enabled              账号是否启用
      */
-    void createUser(String username, String password,String phone, String email, String nickname, int gender,
+    void createUser(String username, String password, String phone, String email, String nickname, int gender,
                     Collection<UserRole> roles, Date accountExpiredAt, Date credentialsExpiredAt, Date unlockedAt, boolean enabled);
 
     /**
@@ -187,6 +184,14 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      * @return 用户角色
      */
     Collection<? extends Role> getRoles(Long uid);
+
+    /**
+     * 获取用户角色
+     *
+     * @param uid 用户uid
+     * @return 用户角色应用
+     */
+    Collection<? extends RoleClient> getRoleClients(Long uid);
 
     /**
      * 更新用户解锁时间

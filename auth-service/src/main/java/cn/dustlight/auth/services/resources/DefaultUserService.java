@@ -1,13 +1,11 @@
 package cn.dustlight.auth.services.resources;
 
 import cn.dustlight.auth.ErrorEnum;
-import cn.dustlight.auth.entities.DefaultPublicUser;
-import cn.dustlight.auth.entities.DefaultUser;
-import cn.dustlight.auth.entities.Role;
-import cn.dustlight.auth.entities.UserRole;
+import cn.dustlight.auth.entities.*;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.mappers.RoleMapper;
 import cn.dustlight.auth.mappers.UserMapper;
+import cn.dustlight.auth.mappers.UserRoleMapper;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.OrderBySqlBuilder;
 import cn.dustlight.auth.util.QueryResults;
@@ -27,6 +25,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
+    private final UserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
     private final UniqueGenerator<Long> idGenerator;
     private static final Log logger = LogFactory.getLog(DefaultUserService.class.getName());
@@ -42,10 +41,12 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     public DefaultUserService(UserMapper userMapper,
                               RoleMapper roleMapper,
+                              UserRoleMapper userRoleMapper,
                               PasswordEncoder passwordEncoder,
                               UniqueGenerator<Long> idGenerator) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
+        this.userRoleMapper = userRoleMapper;
         this.idGenerator = idGenerator;
         this.passwordEncoder = passwordEncoder;
     }
@@ -216,6 +217,11 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     @Override
     public Collection<? extends Role> getRoles(Long uid) {
         return roleMapper.listUserRoles(uid);
+    }
+
+    @Override
+    public Collection<? extends RoleClient> getRoleClients(Long uid) {
+        return userRoleMapper.selectUserRoleClients(uid);
     }
 
     @Override

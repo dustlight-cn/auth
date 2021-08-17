@@ -3,6 +3,7 @@ package cn.dustlight.auth.controllers.resources;
 import cn.dustlight.auth.entities.DefaultRole;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.Role;
+import cn.dustlight.auth.entities.UserRoleClient;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.services.RoleService;
 import cn.dustlight.auth.services.UserService;
@@ -83,6 +84,29 @@ public class RoleResource {
     @DeleteMapping("users/{uid}/roles")
     @Operation(summary = "删除用户的角色", description = "应用和用户需要 GRANT_USER 权限。")
     public void deleteUserRoles(@PathVariable Long uid, @RequestParam Collection<Long> id) {
+        userService.removeRoles(uid, id);
+    }
+
+    /* ----------------------------------------------------------------- */
+
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('READ_USER')) and #oauth2.clientHasAnyRole('READ_USER')")
+    @GetMapping("users/{uid}/role-clients")
+    @Operation(summary = "获取用户角色", description = "应用和用户（uid 为当前用户除外）需要 READ_USER 权限。")
+    public Collection<UserRoleClient> getUserRoleClients(@PathVariable Long uid) {
+        return userService.getRoleClients(uid);
+    }
+
+    @PreAuthorize("(#oauth2.client or hasAnyAuthority('GRANT_USER')) and #oauth2.clientHasAnyRole('GRANT_USER')")
+    @PutMapping("users/{uid}/role-clients")
+    @Operation(summary = "为用户添加角色", description = "应用和用户需要 GRANT_USER 权限。")
+    public void setUserRoleClients(@PathVariable Long uid, @RequestBody Collection<DefaultUserRole> roles) {
+        userService.addRoles(uid, roles);
+    }
+
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('GRANT_USER')) and #oauth2.clientHasAnyRole('GRANT_USER')")
+    @DeleteMapping("users/{uid}/role-clients")
+    @Operation(summary = "删除用户的角色", description = "应用和用户需要 GRANT_USER 权限。")
+    public void deleteUserRoleClients(@PathVariable Long uid, @RequestParam Collection<Long> id) {
         userService.removeRoles(uid, id);
     }
 }
