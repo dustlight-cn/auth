@@ -1,42 +1,67 @@
 <template>
   <div>
-    <q-list v-if="roles && roles.length>0">
+    <q-list v-if="loading">
       <q-item
         :dense="dense"
-        v-for="(role,index) in roles"
-        :key="role.rid"
+        v-for="i in 3"
+        :key="i"
         class="q-pl-none"
       >
         <q-item-section avatar style="min-width: 0px;">
           <q-icon name="person"></q-icon>
         </q-item-section>
         <q-item-section>
-          <q-item-label>{{ role.roleName }}</q-item-label>
-          <q-item-label caption>{{ role.roleDescription }}</q-item-label>
+          <q-item-label>
+            <q-skeleton type="text" width="2em"/>
+          </q-item-label>
+          <q-item-label caption>
+            <q-skeleton type="text" width="5em"/>
+          </q-item-label>
         </q-item-section>
-        <q-item-section class="text-right row q-pa-none">
-          <q-item-label v-if="role.expiredAt">
-            <div class="text-caption text-grey" v-if="!(hasGrantUserPermission || isClientOwner || isClientMember)">
-              <span>{{ $tt($options, "expiredAt") }}</span>
-              <span class="q-ml-xs">
-                                            {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
-                                          </span>
-            </div>
-            <q-btn @click="()=>editUserRole(role)" v-else no-caps flat dense
-                   class="text-caption text-grey">
-              <span>{{ $tt($options, "expiredAt") }}</span>
-              <span class="q-ml-xs">
-                                            {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
-                                          </span>
-            </q-btn>
-          </q-item-label>
-          <q-item-label v-else-if="hasGrantUserPermission || isClientOwner || isClientMember">
-            <q-btn @click="()=>editUserRole(role)" class="text-grey" round flat icon="timer"/>
-          </q-item-label>
+        <q-item-section side>
+          <q-skeleton round type="text" width="2em"/>
         </q-item-section>
       </q-item>
     </q-list>
-    <no-results v-else/>
+    <div v-else>
+      <q-list v-if="roles && roles.length>0">
+        <q-item
+          :dense="dense"
+          v-for="(role,index) in roles"
+          :key="role.rid"
+          class="q-pl-none"
+        >
+          <q-item-section avatar style="min-width: 0px;">
+            <q-icon name="person"></q-icon>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ role.roleName }}</q-item-label>
+            <q-item-label caption>{{ role.roleDescription }}</q-item-label>
+          </q-item-section>
+          <q-item-section class="text-right row q-pa-none">
+            <q-item-label v-if="role.expiredAt">
+              <div class="text-caption text-grey" v-if="!(hasGrantUserPermission || isClientOwner || isClientMember)">
+                <span>{{ $tt($options, "expiredAt") }}</span>
+                <span class="q-ml-xs">
+                                            {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
+                                          </span>
+              </div>
+              <q-btn @click="()=>editUserRole(role)" v-else no-caps flat dense
+                     class="text-caption text-grey">
+                <span>{{ $tt($options, "expiredAt") }}</span>
+                <span class="q-ml-xs">
+                                            {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
+                                          </span>
+              </q-btn>
+            </q-item-label>
+            <q-item-label v-else-if="hasGrantUserPermission || isClientOwner || isClientMember">
+              <q-btn @click="()=>editUserRole(role)" class="text-grey" round flat icon="timer"/>
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+      <no-results v-else/>
+    </div>
   </div>
 </template>
 
