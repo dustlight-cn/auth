@@ -305,7 +305,7 @@
                           <no-results/>
                         </q-item-label>
                         <q-item-label v-else>
-                          <q-chip v-for="(member,index) in members" :key="member.uid" clickable
+                          <q-chip loading v-for="(member,index) in members" :key="member.uid" clickable
                                   @click="()=> $router.push({name:'user',params:{id:member.uid}})">
                             <avatar :user="member"/>
                             {{
@@ -743,6 +743,58 @@
           </div>
         </q-card-section>
 
+
+        <q-card-section v-if="edit.members">
+          <div>
+            <no-results class="q-ma-sm" v-if="members==null || members.length == 0"/>
+            <transition
+              v-for="(member,index) in members"
+              :key="member.uid"
+              appear
+              enter-active-class="animated fadeIn"
+              leave-active-class="animated fadeOut"
+            >
+              <q-chip :removable="updating.members.indexOf(member.uid) == -1" loading clickable
+                      @remove="() => removeOrAddMember(member)">
+                <avatar :user="member"/>
+                {{
+                  member.nickname && member.nickname.trim() ? member.nickname.trim() : member.username
+                }}
+                <q-spinner-tail
+                  v-if="updating.members.indexOf(member.uid)>-1"
+                  class="q-pl-sm"
+                  color="grey"
+                  size="1.5em"
+                />
+                <q-tooltip>
+                  <q-item class="q-pa-none">
+                    <q-item-section avatar style="min-width: 0px">
+                      <avatar :user="member"/>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>
+                        {{ member.username }}
+                      </q-item-label>
+                      <q-item-label v-if="member.email">
+                        <q-icon name="email"/>
+                        {{ member.email }}
+                      </q-item-label>
+                      <q-item-label v-if="member.phone">
+                        <q-icon name="phone"/>
+                        {{ member.phone }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-tooltip>
+              </q-chip>
+            </transition>
+          </div>
+        </q-card-section>
+
+        <div class="q-pa-sm">
+          <q-separator/>
+        </div>
+
         <users-list>
           <template v-slot:side="{user}">
             <q-btn
@@ -754,52 +806,6 @@
           </template>
         </users-list>
 
-        <div class="q-pa-sm">
-          <q-separator/>
-        </div>
-        <q-card-section v-if="edit.members" class="q-pa-none">
-          <q-list>
-            <no-results class="q-ma-sm" v-if="members==null || members.length == 0"/>
-            <transition
-              v-for="(member,index) in members"
-              :key="index"
-              appear
-              enter-active-class="animated fadeIn"
-              leave-active-class="animated fadeOut"
-            >
-              <q-item style="word-break: break-all" v-ripple clickable>
-                <q-item-section avatar>
-                  <avatar :user="member"/>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>
-                    {{ member.username }}
-                  </q-item-label>
-                  <q-item-label caption v-if="member.nickname && member.nickname.trim()">
-                    {{ member.nickname.trim() }}
-                  </q-item-label>
-
-                  <q-item-label caption v-if="member.email">
-                    <q-icon name="email"/>
-                    <span> {{ member.email }}</span>
-                  </q-item-label>
-                  <q-item-label caption v-if="member.phone">
-                    <q-icon name="phone"/>
-                    <span> {{ member.phone }}</span>
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn
-                    :disable="updating.members.indexOf(member.uid)>-1"
-                    :loading="updating.members.indexOf(member.uid)>-1"
-                    @click="()=>removeOrAddMember(member)"
-                    flat round
-                    icon='remove'/>
-                </q-item-section>
-              </q-item>
-            </transition>
-          </q-list>
-        </q-card-section>
         <q-card-actions align="right">
           <q-btn :disable="updating.members.length>0"
                  :loading="updating.members.length>0"
