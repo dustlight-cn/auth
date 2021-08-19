@@ -166,8 +166,9 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      *
      * @param uid   用户uid
      * @param roles 角色集合
+     * @param cid   应用ID
      */
-    void addRoles(Long uid, Collection<UserRole> roles);
+    void addRoles(Long uid, Collection<UserRole> roles, String cid);
 
     /**
      * 为用户移除角色

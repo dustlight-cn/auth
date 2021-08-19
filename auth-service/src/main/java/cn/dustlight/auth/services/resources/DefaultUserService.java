@@ -9,6 +9,8 @@ import cn.dustlight.auth.mappers.UserRoleMapper;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.OrderBySqlBuilder;
 import cn.dustlight.auth.util.QueryResults;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DuplicateKeyException;
@@ -35,6 +37,9 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     private Pattern emailPattern;
     private Pattern phonePattern;
     private Pattern passwordPattern;
+    @Getter
+    @Setter
+    private String defaultClientId = "default";
 
     private final OrderBySqlBuilder orderBySqlBuilder = OrderBySqlBuilder.create
             ("uid", "createdAt", "updatedAt", "accountExpiredAt", "credentialsExpiredAt", "unlockedAt");
@@ -93,7 +98,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
                     accountExpiredAt, credentialsExpiredAt, unlockedAt, enabled))
                 ErrorEnum.CREATE_USER_FAIL.throwException();
             // 再添加角色
-            if (roles != null && roles.size() > 0 && !roleMapper.insertUserRoles(id, roles))
+            if (roles != null && roles.size() > 0 && !roleMapper.insertUserRoles(id, roles, defaultClientId))
                 ErrorEnum.CREATE_ROLE_FAIL.details("fail to insert user roles").throwException();
         } catch (DuplicateKeyException e) {
             ErrorEnum.USER_EXISTS.throwException();
@@ -203,8 +208,8 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     }
 
     @Override
-    public void addRoles(Long uid, Collection<UserRole> roles) {
-        if (!roleMapper.insertUserRoles(uid, roles))
+    public void addRoles(Long uid, Collection<UserRole> roles, String cid) {
+        if (!roleMapper.insertUserRoles(uid, roles, cid))
             ErrorEnum.CREATE_ROLE_FAIL.details("fail to add user roles").throwException();
     }
 

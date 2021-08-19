@@ -248,10 +248,28 @@ export interface AuthorizationResponse {
 export interface Client {
     /**
      *
+     * @type {string}
+     * @memberof Client
+     */
+    name?: string;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof Client
+     */
+    members?: Array<string>;
+    /**
+     *
      * @type {Array<string>}
      * @memberof Client
      */
     authorities?: Array<string>;
+    /**
+     *
+     * @type {string}
+     * @memberof Client
+     */
+    description?: string;
     /**
      *
      * @type {number}
@@ -281,24 +299,6 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    name?: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof Client
-     */
-    members?: Array<string>;
-    /**
-     *
-     * @type {string}
-     * @memberof Client
-     */
-    description?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Client
-     */
     createdAt?: string;
     /**
      *
@@ -306,20 +306,6 @@ export interface Client {
      * @memberof Client
      */
     updatedAt?: string;
-    /**
-     *
-     * @type {{ [key: string]: object; }}
-     * @memberof Client
-     */
-    extra?: {
-        [key: string]: object;
-    };
-    /**
-     *
-     * @type {string}
-     * @memberof Client
-     */
-    cid?: string;
     /**
      *
      * @type {Set<string>}
@@ -331,7 +317,21 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
+    cid?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof Client
+     */
     secret?: string;
+    /**
+     *
+     * @type {{ [key: string]: object; }}
+     * @memberof Client
+     */
+    extra?: {
+        [key: string]: object;
+    };
     /**
      *
      * @type {Set<string>}
@@ -371,18 +371,6 @@ export interface ClientScope {
     autoApprove?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof ClientScope
-     */
-    sid?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof ClientScope
-     */
-    subtitle?: string;
-    /**
-     *
      * @type {string}
      * @memberof ClientScope
      */
@@ -393,6 +381,18 @@ export interface ClientScope {
      * @memberof ClientScope
      */
     description?: string;
+    /**
+     *
+     * @type {number}
+     * @memberof ClientScope
+     */
+    sid?: number;
+    /**
+     *
+     * @type {string}
+     * @memberof ClientScope
+     */
+    subtitle?: string;
 }
 /**
  *
@@ -442,6 +442,12 @@ export interface OAuth2AccessToken {
      * @type {string}
      * @memberof OAuth2AccessToken
      */
+    value?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
     expiration?: string;
     /**
      *
@@ -457,14 +463,6 @@ export interface OAuth2AccessToken {
     expired?: boolean;
     /**
      *
-     * @type {{ [key: string]: object; }}
-     * @memberof OAuth2AccessToken
-     */
-    additionalInformation?: {
-        [key: string]: object;
-    };
-    /**
-     *
      * @type {string}
      * @memberof OAuth2AccessToken
      */
@@ -477,16 +475,18 @@ export interface OAuth2AccessToken {
     refreshToken?: OAuth2RefreshToken;
     /**
      *
+     * @type {{ [key: string]: object; }}
+     * @memberof OAuth2AccessToken
+     */
+    additionalInformation?: {
+        [key: string]: object;
+    };
+    /**
+     *
      * @type {number}
      * @memberof OAuth2AccessToken
      */
     expiresIn?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    value?: string;
 }
 /**
  *
@@ -515,10 +515,10 @@ export interface PublicUser {
     uid?: number;
     /**
      *
-     * @type {string}
+     * @type {number}
      * @memberof PublicUser
      */
-    unlockedAt?: string;
+    gender?: number;
     /**
      *
      * @type {string}
@@ -530,13 +530,19 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
+    unlockedAt?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof PublicUser
+     */
     nickname?: string;
     /**
      *
-     * @type {number}
+     * @type {boolean}
      * @memberof PublicUser
      */
-    gender?: number;
+    enabled?: boolean;
     /**
      *
      * @type {string}
@@ -561,12 +567,6 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     accountNonLocked?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PublicUser
-     */
-    enabled?: boolean;
     /**
      *
      * @type {string}
@@ -623,13 +623,13 @@ export interface Resource {
      * @type {string}
      * @memberof Resource
      */
-    rid?: string;
+    name?: string;
     /**
      *
      * @type {string}
      * @memberof Resource
      */
-    name?: string;
+    rid?: string;
     /**
      *
      * @type {string}
@@ -758,19 +758,19 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    accountExpiredAt?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof User
-     */
     credentialsExpiredAt?: string;
     /**
      *
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
+    accountExpiredAt?: string;
+    /**
+     *
+     * @type {number}
+     * @memberof User
+     */
+    gender?: number;
     /**
      *
      * @type {string}
@@ -782,13 +782,19 @@ export interface User {
      * @type {string}
      * @memberof User
      */
+    unlockedAt?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof User
+     */
     nickname?: string;
     /**
      *
-     * @type {number}
+     * @type {boolean}
      * @memberof User
      */
-    gender?: number;
+    enabled?: boolean;
     /**
      *
      * @type {string}
@@ -813,12 +819,6 @@ export interface User {
      * @memberof User
      */
     accountNonLocked?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof User
-     */
-    enabled?: boolean;
     /**
      *
      * @type {string}
@@ -874,6 +874,135 @@ export interface UserRole {
      * @memberof UserRole
      */
     expired?: boolean;
+}
+/**
+ *
+ * @export
+ * @interface UserRoleClient
+ */
+export interface UserRoleClient {
+    /**
+     *
+     * @type {string}
+     * @memberof UserRoleClient
+     */
+    name?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserRoleClient
+     */
+    description?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserRoleClient
+     */
+    logo?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserRoleClient
+     */
+    createdAt?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserRoleClient
+     */
+    updatedAt?: string;
+    /**
+     *
+     * @type {number}
+     * @memberof UserRoleClient
+     */
+    status?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof UserRoleClient
+     */
+    uid?: number;
+    /**
+     *
+     * @type {Set<string>}
+     * @memberof UserRoleClient
+     */
+    resources?: Set<string>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof UserRoleClient
+     */
+    members?: Array<string>;
+    /**
+     *
+     * @type {Array<ClientScope>}
+     * @memberof UserRoleClient
+     */
+    scopes?: Array<ClientScope>;
+    /**
+     *
+     * @type {Array<GrantType>}
+     * @memberof UserRoleClient
+     */
+    types?: Array<GrantType>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof UserRoleClient
+     */
+    authorities?: Array<string>;
+    /**
+     *
+     * @type {number}
+     * @memberof UserRoleClient
+     */
+    count?: number;
+    /**
+     *
+     * @type {string}
+     * @memberof UserRoleClient
+     */
+    clientSecret?: string;
+    /**
+     *
+     * @type {{ [key: string]: object; }}
+     * @memberof UserRoleClient
+     */
+    extra?: {
+        [key: string]: object;
+    };
+    /**
+     *
+     * @type {string}
+     * @memberof UserRoleClient
+     */
+    cid?: string;
+    /**
+     *
+     * @type {Set<string>}
+     * @memberof UserRoleClient
+     */
+    redirectUri?: Set<string>;
+    /**
+     *
+     * @type {Set<string>}
+     * @memberof UserRoleClient
+     */
+    grantTypes?: Set<string>;
+    /**
+     *
+     * @type {number}
+     * @memberof UserRoleClient
+     */
+    accessTokenValidity?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof UserRoleClient
+     */
+    refreshTokenValidity?: number;
 }
 /**
  * AuthoritiesApi - axios parameter creator
@@ -3195,6 +3324,16 @@ export declare const RolesApiAxiosParamCreator: (configuration?: Configuration) 
      * 应用和用户需要 GRANT_USER 权限。
      * @summary 删除用户的角色
      * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteUserClientRoles: (uid: number, cid: string, id: Array<number>, options?: any) => Promise<RequestArgs>;
+    /**
+     * 应用和用户需要 GRANT_USER 权限。
+     * @summary 删除用户的角色
+     * @param {number} uid
      * @param {Array<number>} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3212,6 +3351,23 @@ export declare const RolesApiAxiosParamCreator: (configuration?: Configuration) 
      * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
      * @summary 获取用户角色
      * @param {number} uid
+     * @param {string} cid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserClientRoles: (uid: number, cid: string, options?: any) => Promise<RequestArgs>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
+     * @summary 获取用户的角色应用
+     * @param {number} uid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserRoleClients: (uid: number, options?: any) => Promise<RequestArgs>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
+     * @summary 获取用户角色
+     * @param {number} uid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3224,6 +3380,16 @@ export declare const RolesApiAxiosParamCreator: (configuration?: Configuration) 
      * @throws {RequiredError}
      */
     setRoles: (role: Array<Role>, options?: any) => Promise<RequestArgs>;
+    /**
+     * 应用和用户需要 GRANT_USER 权限。
+     * @summary 为用户添加角色
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<UserRole>} userRole
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setUserClientRoles: (uid: number, cid: string, userRole: Array<UserRole>, options?: any) => Promise<RequestArgs>;
     /**
      * 应用和用户需要 GRANT_USER 权限。
      * @summary 为用户添加角色
@@ -3251,6 +3417,16 @@ export declare const RolesApiFp: (configuration?: Configuration) => {
      * 应用和用户需要 GRANT_USER 权限。
      * @summary 删除用户的角色
      * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteUserClientRoles(uid: number, cid: string, id: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     * 应用和用户需要 GRANT_USER 权限。
+     * @summary 删除用户的角色
+     * @param {number} uid
      * @param {Array<number>} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3268,6 +3444,23 @@ export declare const RolesApiFp: (configuration?: Configuration) => {
      * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
      * @summary 获取用户角色
      * @param {number} uid
+     * @param {string} cid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserClientRoles(uid: number, cid: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Role>>>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
+     * @summary 获取用户的角色应用
+     * @param {number} uid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserRoleClients(uid: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserRoleClient>>>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
+     * @summary 获取用户角色
+     * @param {number} uid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3280,6 +3473,16 @@ export declare const RolesApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     setRoles(role: Array<Role>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     * 应用和用户需要 GRANT_USER 权限。
+     * @summary 为用户添加角色
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<UserRole>} userRole
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setUserClientRoles(uid: number, cid: string, userRole: Array<UserRole>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
      * 应用和用户需要 GRANT_USER 权限。
      * @summary 为用户添加角色
@@ -3307,6 +3510,16 @@ export declare const RolesApiFactory: (configuration?: Configuration, basePath?:
      * 应用和用户需要 GRANT_USER 权限。
      * @summary 删除用户的角色
      * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteUserClientRoles(uid: number, cid: string, id: Array<number>, options?: any): AxiosPromise<void>;
+    /**
+     * 应用和用户需要 GRANT_USER 权限。
+     * @summary 删除用户的角色
+     * @param {number} uid
      * @param {Array<number>} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3324,6 +3537,23 @@ export declare const RolesApiFactory: (configuration?: Configuration, basePath?:
      * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
      * @summary 获取用户角色
      * @param {number} uid
+     * @param {string} cid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserClientRoles(uid: number, cid: string, options?: any): AxiosPromise<Array<Role>>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
+     * @summary 获取用户的角色应用
+     * @param {number} uid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserRoleClients(uid: number, options?: any): AxiosPromise<Array<UserRoleClient>>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
+     * @summary 获取用户角色
+     * @param {number} uid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3336,6 +3566,16 @@ export declare const RolesApiFactory: (configuration?: Configuration, basePath?:
      * @throws {RequiredError}
      */
     setRoles(role: Array<Role>, options?: any): AxiosPromise<void>;
+    /**
+     * 应用和用户需要 GRANT_USER 权限。
+     * @summary 为用户添加角色
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<UserRole>} userRole
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    setUserClientRoles(uid: number, cid: string, userRole: Array<UserRole>, options?: any): AxiosPromise<void>;
     /**
      * 应用和用户需要 GRANT_USER 权限。
      * @summary 为用户添加角色
@@ -3366,6 +3606,17 @@ export declare class RolesApi extends BaseAPI {
      * 应用和用户需要 GRANT_USER 权限。
      * @summary 删除用户的角色
      * @param {number} uid
+     * @param {string} cid
+     * @param {Array<number>} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RolesApi
+     */
+    deleteUserClientRoles(uid: number, cid: string, id: Array<number>, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     * 应用和用户需要 GRANT_USER 权限。
+     * @summary 删除用户的角色
+     * @param {number} uid
      * @param {Array<number>} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3385,6 +3636,25 @@ export declare class RolesApi extends BaseAPI {
      * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
      * @summary 获取用户角色
      * @param {number} uid
+     * @param {string} cid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RolesApi
+     */
+    getUserClientRoles(uid: number, cid: string, options?: any): Promise<import("axios").AxiosResponse<Role[]>>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
+     * @summary 获取用户的角色应用
+     * @param {number} uid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RolesApi
+     */
+    getUserRoleClients(uid: number, options?: any): Promise<import("axios").AxiosResponse<UserRoleClient[]>>;
+    /**
+     * 应用和用户（uid 为当前用户除外）需要 READ_USER 权限。
+     * @summary 获取用户角色
+     * @param {number} uid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RolesApi
@@ -3399,6 +3669,17 @@ export declare class RolesApi extends BaseAPI {
      * @memberof RolesApi
      */
     setRoles(role: Array<Role>, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    /**
+     * 应用和用户需要 GRANT_USER 权限。
+     * @summary 为用户添加角色
+     * @param {number} uid
+     * @param {string} cid
+     * @param {Array<UserRole>} userRole
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RolesApi
+     */
+    setUserClientRoles(uid: number, cid: string, userRole: Array<UserRole>, options?: any): Promise<import("axios").AxiosResponse<void>>;
     /**
      * 应用和用户需要 GRANT_USER 权限。
      * @summary 为用户添加角色

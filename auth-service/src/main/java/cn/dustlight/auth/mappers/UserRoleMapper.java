@@ -25,5 +25,9 @@ public interface UserRoleMapper {
             "ur.uid = #{uid} AND ur.rid = r.rid " +
             "AND c.cid = r.cid " +
             "GROUP BY r.cid")
+    @Results({
+            @Result(column = "cid", property = "cid"),
+            @Result(column = "cid", property = "members", many = @Many(select = "cn.dustlight.auth.mappers.ClientMapper.getClientMemberIds"))
+    })
     Collection<UserRoleClient> selectUserRoleClients(Long uid);
 }

@@ -270,11 +270,6 @@ export default {
     "phone": "Phone",
     "password": "Password",
     "roles": "Roles",
-    "expiredAt": "Expired At",
-    "expiredNull": "No Expiration",
-    "expiredSimple": "Simple Setup",
-    "expiredDetails": "Detailed Settings",
-    "expiredNullDesc": "The role has no expiration time.",
 
     "deleteUser": "Delete",
     "deleteUserTitle": "Delete User",
@@ -330,6 +325,16 @@ export default {
     "createRole": "Create Role",
     "createRoleMsg": "Please enter the name of the new role.",
     "grantRole": "Grant Role"
+  },
+  "UserClientRoles": {
+    "expiredAt": "Expired At",
+  },
+  "UserRoleSettings": {
+    "expiredAt": "Expired At",
+    "expiredNull": "No Expiration",
+    "expiredSimple": "Simple Setup",
+    "expiredDetails": "Detailed Settings",
+    "expiredNullDesc": "The role has no expiration time.",
   },
   "menus": {
     "home": "Home",

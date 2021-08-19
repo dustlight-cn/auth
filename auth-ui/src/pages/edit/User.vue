@@ -147,55 +147,58 @@
                   </q-item>
 
                   <!-- 用户角色, Roles -->
-                  <q-item class="q-pa-none q-mt-md" v-if="targetUser.roles || hasGrantUserPermission">
+                  <q-item :clickable="false" :v-ripple="false" class="q-pa-none q-mt-md" v-if="targetUser.roles || hasGrantUserPermission">
                     <q-item-section>
                       <q-item-label header class="q-pl-none">
                         {{ $tt($options, "roles") }}
                       </q-item-label>
-                      <q-item-label>
-                        <q-list v-if="targetUser.roles && targetUser.roles.length>0">
-                          <q-item
-                            class="q-pr-none"
-                            v-for="(role,index) in targetUser.roles"
-                            :key="role.rid"
-                          >
-                            <q-item-section avatar style="min-width: 0px;">
-                              <q-icon name="person"></q-icon>
-                            </q-item-section>
-                            <q-item-section>
-                              <q-item-label>{{ role.roleName }}</q-item-label>
-                              <q-item-label caption>{{ role.roleDescription }}</q-item-label>
-                            </q-item-section>
-                            <q-item-section class="text-right row q-pa-none">
-                              <q-item-label v-if="role.expiredAt">
-                                <div class="text-caption text-grey" v-if="!hasGrantUserPermission">
-                                  <span>{{ $tt($options, "expiredAt") }}</span>
-                                  <span class="q-ml-xs">
-                                  {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
-                                </span>
-                                </div>
-                                <q-btn @click="()=>editUserRole(role)" v-else no-caps flat dense
-                                       class="text-caption text-grey">
-                                  <span>{{ $tt($options, "expiredAt") }}</span>
-                                  <span class="q-ml-xs">
-                                  {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
-                                </span>
-                                </q-btn>
-                              </q-item-label>
-                              <q-item-label v-else-if="hasGrantUserPermission">
-                                <q-btn @click="()=>editUserRole(role)" class="text-grey" round flat icon="timer"/>
-                              </q-item-label>
-                            </q-item-section>
-                          </q-item>
-                        </q-list>
-                        <no-results v-else/>
-                      </q-item-label>
+<!--                      <q-item-label>-->
+<!--                        <q-list v-if="targetUser.roles && targetUser.roles.length>0">-->
+<!--                          <q-item-->
+<!--                            class="q-pr-none"-->
+<!--                            v-for="(role,index) in targetUser.roles"-->
+<!--                            :key="role.rid"-->
+<!--                          >-->
+<!--                            <q-item-section avatar style="min-width: 0px;">-->
+<!--                              <q-icon name="person"></q-icon>-->
+<!--                            </q-item-section>-->
+<!--                            <q-item-section>-->
+<!--                              <q-item-label>{{ role.roleName }}</q-item-label>-->
+<!--                              <q-item-label caption>{{ role.roleDescription }}</q-item-label>-->
+<!--                            </q-item-section>-->
+<!--                            <q-item-section class="text-right row q-pa-none">-->
+<!--                              <q-item-label v-if="role.expiredAt">-->
+<!--                                <div class="text-caption text-grey" v-if="!hasGrantUserPermission">-->
+<!--                                  <span>{{ $tt($options, "expiredAt") }}</span>-->
+<!--                                  <span class="q-ml-xs">-->
+<!--                                  {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}-->
+<!--                                </span>-->
+<!--                                </div>-->
+<!--                                <q-btn @click="()=>editUserRole(role)" v-else no-caps flat dense-->
+<!--                                       class="text-caption text-grey">-->
+<!--                                  <span>{{ $tt($options, "expiredAt") }}</span>-->
+<!--                                  <span class="q-ml-xs">-->
+<!--                                  {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}-->
+<!--                                </span>-->
+<!--                                </q-btn>-->
+<!--                              </q-item-label>-->
+<!--                              <q-item-label v-else-if="hasGrantUserPermission">-->
+<!--                                <q-btn @click="()=>editUserRole(role)" class="text-grey" round flat icon="timer"/>-->
+<!--                              </q-item-label>-->
+<!--                            </q-item-section>-->
+<!--                          </q-item>-->
+<!--                        </q-list>-->
+<!--                        <no-results v-else/>-->
+<!--                      </q-item-label>-->
+
                     </q-item-section>
                     <q-item-section side top v-if="hasGrantUserPermission" style="padding-left: 0px;">
                       <q-btn round flat icon="edit"
                              @click="editRoles"/>
                     </q-item-section>
                   </q-item>
+                  <user-role-clients :user="targetUser" :current-user="user" />
+
                   <!--  用户ID, UID-->
                   <q-item class="q-pa-none q-mt-md" v-if="targetUser && targetUser.createdAt">
                     <q-item-section>
@@ -485,10 +488,13 @@ import Email from "./Email";
 import Password from "./Password";
 import NoResults from "../../components/NoResults";
 import Phone from "./Phone";
+import UserRoleClients from "../../components/UserRoleClients";
 
 export default {
   name: "User",
-  components: {Phone, NoResults, Password, Email, Gender, Nickname, EditAvatar, Avatar, RequireAuthorization, EditPage},
+  components: {
+    UserRoleClients,
+    Phone, NoResults, Password, Email, Gender, Nickname, EditAvatar, Avatar, RequireAuthorization, EditPage},
   data() {
     return {
       user_: null,

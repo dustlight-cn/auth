@@ -270,11 +270,6 @@ export default {
     "phone": "手机号码",
     "password": "密码",
     "roles": "角色",
-    "expiredAt": "到期时间",
-    "expiredNull": "无期限",
-    "expiredSimple": "简单设置",
-    "expiredDetails": "详细设置",
-    "expiredNullDesc": "角色无到期时间。",
 
     "deleteUser": "删除",
     "deleteUserTitle": "删除用户",
@@ -330,6 +325,16 @@ export default {
     "createRole": "创建角色",
     "createRoleMsg": "请输入新建角色的名称。",
     "grantRole": "角色授权"
+  },
+  "UserClientRoles": {
+    "expiredAt": "到期时间",
+  },
+  "UserRoleSettings":{
+    "expiredAt": "到期时间",
+    "expiredNull": "无期限",
+    "expiredSimple": "简单设置",
+    "expiredDetails": "详细设置",
+    "expiredNullDesc": "角色无到期时间。",
   },
   "menus": {
     "home": "首页",

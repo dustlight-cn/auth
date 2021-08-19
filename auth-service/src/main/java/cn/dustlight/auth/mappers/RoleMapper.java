@@ -100,12 +100,14 @@ public interface RoleMapper {
 
     @Insert("<script>INSERT INTO user_role (uid,rid,expiredAt) VALUES " +
             "<foreach collection='roles' item='role' separator=','>(#{uid},<choose>" +
-            "<when test='role.rid!=null'>#{role.rid}</when>" + // 如果roleId存在
-            "<otherwise>(SELECT rid FROM roles WHERE roleName=#{role.roleName} LIMIT 1)</otherwise>" + // 不存在则查询
+            "<when test='role.rid!=null'>(SELECT rid FROM roles WHERE rid=#{role.rid} AND cid=#{cid} LIMIT 1)</when>" + // 如果roleId存在
+            "<otherwise>(SELECT rid FROM roles WHERE roleName=#{role.roleName} AND cid=#{cid} LIMIT 1)</otherwise>" + // 不存在则查询
             "</choose>,#{role.expiredAt})</foreach>" +
-            " ON DUPLICATE KEY UPDATE expiredAt=VALUES(expiredAt)</script>")
+            "AS ur " +
+            "ON DUPLICATE KEY UPDATE expiredAt=ur.expiredAt</script>")
     <T extends UserRole> Boolean insertUserRoles(@Param("uid") Long uid,
-                                                 @Param("roles") Collection<T> roles);
+                                                 @Param("roles") Collection<T> roles,
+                                                 @Param("cid") String cid);
 
     @Insert("<script>INSERT INTO user_role (uid,rid,expiredAt) " +
             "(SELECT #{uid} as uid,rid,#{expiredAt} as expiredAt FROM roles WHERE roleName IN " +

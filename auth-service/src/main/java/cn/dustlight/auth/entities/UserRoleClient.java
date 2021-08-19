@@ -7,8 +7,5 @@ import lombok.Setter;
 @Setter
 public class UserRoleClient extends DefaultClient implements RoleClient {
 
-    /**
-     * 用户在该应用下的角色数量。
-     */
     private int count;
 }
