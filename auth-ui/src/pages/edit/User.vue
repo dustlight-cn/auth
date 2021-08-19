@@ -365,6 +365,7 @@ export default {
         email: false,
         phone: false,
         password: false,
+        roles: false
       },
       updating: {
         roles: [],
