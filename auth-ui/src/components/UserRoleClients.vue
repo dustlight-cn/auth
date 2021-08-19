@@ -2,11 +2,12 @@
   <div>
     <q-list v-if="roleClients && roleClients.length > 0">
       <q-expansion-item
+        headerClass="q-pa-none"
         :group="user.uid + '-' + 'roleClients'"
         v-for="(client,index) in roleClients"
         :key="client.cid">
         <template v-slot:header>
-          <q-item-section avatar>
+          <q-item-section class="q-pl-xs" avatar style="min-width: 0px">
             <client-logo :client="client"/>
           </q-item-section>
           <q-item-section>
@@ -15,7 +16,7 @@
             </q-item-label>
           </q-item-section>
           <q-item-section side>
-            <q-item-label>
+            <q-item-label caption>
               <q-icon name="person"/>
               <b>{{ client.count }}</b>
             </q-item-label>

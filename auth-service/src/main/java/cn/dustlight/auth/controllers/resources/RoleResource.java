@@ -1,12 +1,10 @@
 package cn.dustlight.auth.controllers.resources;
 
-import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.DefaultRole;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.Role;
 import cn.dustlight.auth.entities.UserRoleClient;
 import cn.dustlight.auth.generator.UniqueGenerator;
-import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.RoleService;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.Constants;
@@ -17,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +29,6 @@ public class RoleResource {
 
     @Autowired
     private RoleService roleService;
-
-    @Autowired
-    private ClientService clientService;
 
     @Autowired
     protected UserService userService;

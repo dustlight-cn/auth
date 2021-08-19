@@ -327,114 +327,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <!-- 角色到期时间设置 -->
-    <q-dialog :persistent="updating.role" :value="edit.role!=null"
-              @input="val=>{if(!val)edit.role=null;}"
-              style="max-width: 400px;">
-      <q-card class="full-width">
-        <q-card-section>
-          <div class="text-h6">{{ $tt($options, "expiredAt") }}</div>
-        </q-card-section>
-        <q-card-section class="q-pa-none">
-          <q-item v-if="edit.role">
-            <q-item-section avatar>
-              <q-icon name="person"/>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>
-                {{ edit.role.roleName }}
-              </q-item-label>
-              <q-item-label caption>
-                {{ edit.role.roleDescription }}
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-card-section>
-        <q-card-section>
-          <q-tabs
-            mobile-arrows
-            outside-arrows
-            no-caps
-            dense
-            v-model="expiredType"
-          >
-            <q-tab name="null" :label="$tt($options,'expiredNull')"/>
-            <q-tab name="simple" :label="$tt($options,'expiredSimple')"/>
-            <q-tab name="details" :label="$tt($options,'expiredDetails')"/>
-          </q-tabs>
-          <q-separator/>
-          <q-tab-panels v-model="expiredType" animated>
-            <q-tab-panel name="null" class="text-center q-pt-xl text-subtitle1 text-grey">
-              {{ $tt($options, "expiredNullDesc") }}
-            </q-tab-panel>
-            <!-- 简单设置 -->
-            <q-tab-panel name="simple" class="text-center q-pt-xl">
-              <q-input v-model="expiredValue.simple" filled color="accent" dense type="number" step="1" min="0">
-                <template v-slot:prepend>
-                  <q-icon name="timer"/>
-                </template>
-                <template v-slot:after>
-                  <div class="q-pa-sm text-subtitle1">
-                    {{ $t("day") }}
-                  </div>
-                </template>
-              </q-input>
-            </q-tab-panel>
-            <!-- 详细设置 -->
-            <q-tab-panel name="details" class="text-center q-pt-xl">
-              <q-input readonly v-model="expiredValue.details.date"
-                       filled color="accent"
-                       dense>
-                <template v-slot:prepend>
-                  <q-icon name="timer"/>
-                </template>
-                <template v-slot:after>
-                  <q-btn icon="edit" flat round>
-                    <q-popup-proxy transition-show="scale" transition-hide="scale">
-                      <q-date no-unset v-model="expiredValue.details.date" color="accent">
-                        <div class="row items-center justify-end q-gutter-sm">
-                          <q-btn :label="$t('done')" color="accent" v-close-popup/>
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-btn>
-                </template>
-              </q-input>
-              <q-input readonly v-model="expiredValue.details.time"
-                       class="q-mt-sm"
-                       filled color="accent"
-                       dense>
-                <template v-slot:prepend>
-                  <q-icon name="timer"/>
-                </template>
-                <template v-slot:after>
-                  <q-btn icon="edit" flat round>
-                    <q-popup-proxy transition-show="scale" transition-hide="scale">
-                      <q-time format24h no-unset v-model="expiredValue.details.time" color="accent">
-                        <div class="row items-center justify-end q-gutter-sm">
-                          <q-btn :label="$t('done')" color="accent" v-close-popup/>
-                        </div>
-                      </q-time>
-                    </q-popup-proxy>
-                  </q-btn>
-                </template>
-              </q-input>
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn :label="$t('cancel')"
-                 flat
-                 :disable="updating.role"
-                 v-close-popup/>
-          <q-btn :label="$t('update')"
-                 color="accent"
-                 @click="updateUserRole"
-                 :disable="updating.role"
-                 :loading="updating.role"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
@@ -473,24 +365,13 @@ export default {
         email: false,
         phone: false,
         password: false,
-        roles: false,
-        role: null
       },
       updating: {
         roles: [],
-        role: false,
         enabled: false
       },
       roles: null,
-      rolesLoading: false,
-      expiredType: null,
-      expiredValue: {
-        simple: 1,
-        details: {
-          date: null,
-          time: null
-        }
-      }
+      rolesLoading: false
     }
   },
   computed: {
@@ -582,49 +463,6 @@ export default {
       }).finally(() => {
         this.updating.roles.splice(this.updating.roles.indexOf(role.rid), 1);
       })
-    },
-    editUserRole(role) {
-      if (this.edit.role != null)
-        return;
-      this.edit.role = role;
-      this.expiredType = role.expiredAt ? "details" : "null";
-      this.expiredValue.simple = role.expiredAt ? Math.ceil((new Date(role.expiredAt) - new Date()) / 1000 / 86400) : 0;
-      this.expiredValue.details.date = this.$util.dateFormat(role.expiredAt || new Date(), "YYYY/mm/dd");
-      this.expiredValue.details.time = this.$util.dateFormat(role.expiredAt || new Date(), "HH:MM:SS");
-    },
-    updateUserRole() {
-      if (this.edit.role == null || this.updating.role)
-        return;
-      let expiredAt = null;
-      switch (this.expiredType) {
-        case 'simple':
-          expiredAt = new Date().getTime() + this.expiredValue.simple * 86400 * 1000;
-          break;
-        case 'details':
-          expiredAt = new Date(this.expiredValue.details.date + " " + this.expiredValue.details.time);
-          break;
-        case 'null':
-        default:
-          expiredAt = null;
-          break
-      }
-      if (this.edit.role.expiredAt == null && expiredAt == null) {
-        this.edit.role = null;
-        return;
-      }
-      let data = {
-        rid: this.edit.role.rid,
-        expiredAt: expiredAt
-      };
-
-      this.updating.role = true;
-      this.$rolesApi.setUserRoles(this.uid, [data])
-        .then(res => {
-          this.targetUser.roles[this.getUserRoleIndex(this.edit.role.rid)].expiredAt = expiredAt;
-          this.edit.role = null;
-          this.showUpdateSuccessMessage();
-        })
-        .finally(() => this.updating.role = false)
     },
     showDeleteSuccessMessage() {
       this.$q.notify({
