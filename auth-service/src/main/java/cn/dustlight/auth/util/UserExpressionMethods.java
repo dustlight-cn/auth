@@ -1,14 +1,18 @@
 package cn.dustlight.auth.util;
 
 import cn.dustlight.auth.entities.User;
-import org.springframework.security.core.Authentication;
+import cn.dustlight.auth.services.ClientService;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 public class UserExpressionMethods {
 
-    private final Authentication authentication;
+    private final OAuth2Authentication authentication;
+    private ClientService clientService;
 
-    public UserExpressionMethods(Authentication authentication) {
+    public UserExpressionMethods(OAuth2Authentication authentication,
+                                 ClientService clientService) {
         this.authentication = authentication;
+        this.clientService = clientService;
     }
 
     /**
@@ -35,6 +39,28 @@ public class UserExpressionMethods {
         if (user == null)
             return false;
         return user.getUsername().equals(username);
+    }
+
+    public boolean isClientOwner(String clientId, Long uid) {
+        return clientService.isOwner(clientId, uid);
+    }
+
+    public boolean isClientOwner(String clientId) {
+        User user = obtainUser();
+        if (user == null)
+            return false;
+        return clientService.isOwner(clientId, user.getUid());
+    }
+
+    public boolean isClientOwnerOrMember(String clientId, Long uid) {
+        return clientService.isOwnerOrMember(clientId, uid);
+    }
+
+    public boolean isClientOwnerOrMember(String clientId) {
+        User user = obtainUser();
+        if (user == null)
+            return false;
+        return clientService.isOwnerOrMember(clientId, user.getUid());
     }
 
     private User obtainUser() {

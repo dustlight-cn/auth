@@ -96,47 +96,40 @@ public class RoleResource {
 
     /* ----------------------------------------------------------------- */
 
-    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('READ_USER')) and #oauth2.clientHasAnyRole('READ_USER')")
+    @PreAuthorize("#oauth2.clientHasAnyRole('READ_USER')")
     @GetMapping("users/{uid}/role-clients")
-    @Operation(summary = "获取用户的角色应用", description = "应用和用户（uid 为当前用户除外）需要 READ_USER 权限。")
+    @Operation(summary = "获取用户的角色应用", description = "应用需要 READ_USER 权限。")
     public Collection<UserRoleClient> getUserRoleClients(@PathVariable Long uid) {
         return ClientResource.setLogo(userService.getRoleClients(uid));
     }
 
     /* ----------------------------------------------------------------- */
 
-    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('READ_USER')) and #oauth2.clientHasAnyRole('READ_USER')")
+    @PreAuthorize("#oauth2.clientHasAnyRole('READ_USER')")
     @GetMapping("users/{uid}/clients/{cid}/roles")
-    @Operation(summary = "获取用户角色", description = "应用和用户（uid 为当前用户除外）需要 READ_USER 权限。")
+    @Operation(summary = "获取用户角色", description = "应用需要 READ_USER 权限。")
     public Collection<? extends Role> getUserClientRoles(@PathVariable Long uid,
                                                          @PathVariable String cid) {
         return userService.getRolesWithClientId(uid, cid);
     }
 
-    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('GRANT_USER')) and #oauth2.clientHasAnyRole('GRANT_USER')")
+    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#cid) or hasAnyAuthority('GRANT_USER')) and #oauth2.clientHasAnyRole('GRANT_USER')")
     @PutMapping("users/{uid}/clients/{cid}/roles")
     @Operation(summary = "为用户添加角色", description = "应用和用户需要 GRANT_USER 权限。")
     public void setUserClientRoles(@PathVariable Long uid,
-                             @PathVariable String cid,
-                             @RequestBody Collection<DefaultUserRole> roles,
-                             OAuth2Authentication authentication) {
-        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("GRANT_USER"))
-                && !clientService.isOwnerOrMember(cid, uid))
-            ErrorEnum.ACCESS_DENIED.throwException();
-
+                                   @PathVariable String cid,
+                                   @RequestBody Collection<DefaultUserRole> roles,
+                                   OAuth2Authentication authentication) {
         userService.addRoles(uid, roles, cid);
     }
 
-    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('GRANT_USER')) and #oauth2.clientHasAnyRole('GRANT_USER')")
+    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#cid) or hasAnyAuthority('GRANT_USER')) and #oauth2.clientHasAnyRole('GRANT_USER')")
     @DeleteMapping("users/{uid}/clients/{cid}/roles")
     @Operation(summary = "删除用户的角色", description = "应用和用户需要 GRANT_USER 权限。")
     public void deleteUserClientRoles(@PathVariable Long uid,
-                                @PathVariable String cid,
-                                @RequestParam Collection<Long> id,
-                                OAuth2Authentication authentication) {
-        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("GRANT_USER"))
-                && !clientService.isOwnerOrMember(cid, uid))
-            ErrorEnum.ACCESS_DENIED.throwException();
+                                      @PathVariable String cid,
+                                      @RequestParam Collection<Long> id,
+                                      OAuth2Authentication authentication) {
         userService.removeRoles(uid, id);
     }
 }

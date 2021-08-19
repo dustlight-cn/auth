@@ -16,7 +16,7 @@
         </q-item-section>
         <q-item-section class="text-right row q-pa-none">
           <q-item-label v-if="role.expiredAt">
-            <div class="text-caption text-grey" v-if="!hasGrantUserPermission">
+            <div class="text-caption text-grey" v-if="!(hasGrantUserPermission || isClientOwner || isClientMember)">
               <span>{{ $tt($options, "expiredAt") }}</span>
               <span class="q-ml-xs">
                                             {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
@@ -30,7 +30,7 @@
                                           </span>
             </q-btn>
           </q-item-label>
-          <q-item-label v-else-if="hasGrantUserPermission">
+          <q-item-label v-else-if="hasGrantUserPermission || isClientOwner || isClientMember">
             <q-btn @click="()=>editUserRole(role)" class="text-grey" round flat icon="timer"/>
           </q-item-label>
         </q-item-section>
@@ -94,26 +94,14 @@ export default {
     }
   },
   computed: {
-    hasWriteUserPermission() {
-      return this.hasPermission("WRITE_USER");
-    },
-    hasWriteUserEmailPermission() {
-      return this.hasPermission("WRITE_USER_EMAIL");
-    },
-    hasWriteUserPhonePermission() {
-      return this.hasPermission("WRITE_USER_PHONE");
-    },
-    hasWriteUserPasswordPermission() {
-      return this.hasPermission("WRITE_USER_PASSWORD");
-    },
     hasGrantUserPermission() {
       return this.hasPermission("GRANT_USER");
     },
-    hasDeleteUserPermission() {
-      return this.hasPermission("DELETE_USER");
+    isClientOwner() {
+      return this.currentUser && this.currentUser.uid && this.client && this.client.owner && this.currentUser.uid == this.client.owner.uid
     },
-    hasLockUserPermission() {
-      return this.hasPermission("LOCK_USER");
+    isClientMember() {
+      return this.currentUser && this.currentUser.uid && this.client && this.client.members && this.client.members.indexOf(this.currentUser.uid) >= 0
     }
   },
   watch: {
