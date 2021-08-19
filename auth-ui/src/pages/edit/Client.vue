@@ -292,22 +292,28 @@
                   <q-item class="q-pa-none q-mt-md">
                     <q-item-section>
                       <q-item-label header class="q-pl-none">{{ $tt($options, "clientMembers") }}</q-item-label>
-                      <q-item-label>
-                        <q-list>
-                          <q-item dense v-for="(member,index) in members" :key="index">
-                            <q-item-section avatar>
-                              <q-btn color="dark"
-                                     rounded dense flat no-caps :to="{name:'user',params:{id:member.uid}}">
-                                <avatar :size="30" :user="member"/>
-                                <span class="q-pl-sm q-pr-xs">{{
-                                    member.nickname && member.nickname.trim() ? member.nickname.trim() : member.username
-                                  }}</span>
-                              </q-btn>
-                            </q-item-section>
-                          </q-item>
-                        </q-list>
-                        <no-results v-if="members == null || members.length == 0"/>
+                      <q-item-label v-if="membersPromise">
+                        <q-chip v-for="i in 3" :key="i">
+                          <q-avatar size="30px">
+                            <q-skeleton size="30px" type="QAvatar"/>
+                          </q-avatar>
+                          <div style="width: 2em"/>
+                        </q-chip>
                       </q-item-label>
+                      <div v-else>
+                        <q-item-label v-if="members == null || members.length == 0">
+                          <no-results/>
+                        </q-item-label>
+                        <q-item-label v-else>
+                          <q-chip v-for="(member,index) in members" :key="member.uid" clickable
+                                  @click="()=> $router.push({name:'user',params:{id:member.uid}})">
+                            <avatar :user="member"/>
+                            {{
+                              member.nickname && member.nickname.trim() ? member.nickname.trim() : member.username
+                            }}
+                          </q-chip>
+                        </q-item-label>
+                      </div>
                     </q-item-section>
                     <q-item-section side top>
                       <q-btn @click="updateMembers" v-if="hasWriteClientPermissionOrOwnClient" flat
