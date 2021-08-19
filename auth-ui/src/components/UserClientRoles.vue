@@ -77,13 +77,14 @@ export default {
     user: Object,
     client: Object,
     currentUser: Object,
-
-    dense: Boolean
+    dense: Boolean,
+    loadOnMounted: Boolean
   },
   data() {
     return {
       roles: [],
-      loading: false
+      loading: false,
+      loaded: false
     }
   },
   methods: {
@@ -115,7 +116,12 @@ export default {
         .finally(() => {
           this.loading = false
         })
-
+    },
+    loadOnce() {
+      if (this.loaded)
+        return
+      this.loaded = true
+      this.load()
     }
   },
   computed: {
@@ -138,7 +144,8 @@ export default {
     }
   },
   mounted() {
-    this.load()
+    if (this.loadOnMounted)
+      this.load()
   }
 }
 </script>

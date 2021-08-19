@@ -17,6 +17,7 @@
       <q-list v-if="roleClients && roleClients.length > 0">
         <q-expansion-item
           headerClass="q-pa-none"
+          @before-show="()=>$refs['user-client-role-'+index][0].loadOnce()"
           :group="user.uid + '-' + 'roleClients'"
           v-for="(client,index) in roleClients"
           :key="client.cid">
@@ -37,7 +38,8 @@
             </q-item-section>
           </template>
           <template v-slot:default>
-            <user-client-roles class="q-pl-md" :user="user" :client="client" :current-user="currentUser" dense/>
+            <user-client-roles :ref="'user-client-role-'+index" class="q-pl-md" :user="user" :client="client"
+                               :current-user="currentUser" dense/>
           </template>
         </q-expansion-item>
       </q-list>
@@ -61,7 +63,8 @@ export default {
   data() {
     return {
       roleClients: [],
-      loading: false
+      loading: false,
+      console: console
     }
   },
   methods: {
