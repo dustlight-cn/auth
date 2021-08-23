@@ -45,6 +45,13 @@ public class RoleResource {
         return roleService.getRoles(id);
     }
 
+    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('READ_CLIENT')) and #oauth2.clientHasAnyRole('READ_CLIENT')")
+    @GetMapping("clients/{clientId}/roles")
+    @Operation(summary = "获取角色")
+    public Collection<? extends Role> getClientRoles(@PathVariable(name = "clientId") String clientId) {
+        return roleService.listRolesWithClientId(clientId);
+    }
+
     @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_ROLE')) and #oauth2.clientHasAnyRole('WRITE_ROLE')")
     @PutMapping("roles")
     @Operation(summary = "修改或添加角色", description = "应用和用户需要 WRITE_ROLE 权限。")
@@ -93,8 +100,11 @@ public class RoleResource {
     @PreAuthorize("#oauth2.clientHasAnyRole('READ_USER')")
     @GetMapping("users/{uid}/role-clients")
     @Operation(summary = "获取用户的角色应用", description = "应用需要 READ_USER 权限。")
-    public Collection<UserRoleClient> getUserRoleClients(@PathVariable Long uid) {
-        return ClientResource.setLogo(userService.getRoleClients(uid));
+    public Collection<UserRoleClient> getUserRoleClients(@PathVariable Long uid,
+                                                         @RequestParam(required = false, defaultValue = "false", name = "managed") boolean managed) {
+        return managed ?
+                ClientResource.setLogo(userService.getManagedRoleClients(uid)) :
+                ClientResource.setLogo(userService.getRoleClients(uid));
     }
 
     /* ----------------------------------------------------------------- */

@@ -197,6 +197,14 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
     Collection<? extends RoleClient> getRoleClients(Long uid);
 
     /**
+     * 获取用户管理并且拥有自定义角色的应用
+     *
+     * @param uid 用户uid
+     * @return 用户角色应用
+     */
+    Collection<? extends RoleClient> getManagedRoleClients(Long uid);
+
+    /**
      * 更新用户解锁时间
      *
      * @param uids       用户uid集合

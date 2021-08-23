@@ -16,7 +16,7 @@ public interface UserRoleMapper {
             "c.createdAt, " +
             "c.updatedAt, " +
             "c.uid, " +
-            "COUNT(r.cid) AS count " +
+            "COUNT(r.rid) AS count " +
             "FROM " +
             "user_role AS ur, " +
             "roles AS r, " +
@@ -24,10 +24,25 @@ public interface UserRoleMapper {
             "WHERE " +
             "ur.uid = #{uid} AND ur.rid = r.rid " +
             "AND c.cid = r.cid " +
-            "GROUP BY r.cid")
+            "GROUP BY c.cid")
     @Results({
             @Result(column = "cid", property = "cid"),
             @Result(column = "cid", property = "members", many = @Many(select = "cn.dustlight.auth.mappers.ClientMapper.getClientMemberIds"))
     })
     Collection<UserRoleClient> selectUserRoleClients(Long uid);
+
+    @Select("SELECT " +
+            "clients.cid, " +
+            "clients.name, " +
+            "clients.createdAt, " +
+            "clients.updatedAt, " +
+            "clients.uid, " +
+            "COUNT(r.rid) AS count " +
+            "FROM " +
+            "clients, " +
+            "((SELECT cid FROM clients WHERE uid = #{uid}) UNION (SELECT cid FROM client_members WHERE uid = #{uid})) AS c, " +
+            "roles AS r " +
+            "WHERE clients.cid = c.cid AND r.cid = c.cid " +
+            "GROUP BY clients.cid")
+    Collection<UserRoleClient> selectManagedUserRoleClients(Long uid);
 }

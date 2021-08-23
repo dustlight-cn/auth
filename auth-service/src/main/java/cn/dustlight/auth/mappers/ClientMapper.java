@@ -79,7 +79,9 @@ public interface ClientMapper {
     Integer countUserClients(@Param("uid") Long uid);
 
     @Select("<script>SELECT clients.* FROM clients," +
-            "(SELECT cid FROM clients WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key}) AND uid=#{uid}" +
+            "(SELECT cid FROM " +
+            "(SELECT * FROM clients WHERE cid IN ((SELECT cid FROM clients WHERE uid=#{uid}) UNION (SELECT cid FROM client_members WHERE uid=#{uid}))) " +
+            "WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key})" +
             "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
             "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> offset #{offset}</if></if>) AS c" +
             " WHERE clients.cid=c.cid</script>")
@@ -89,7 +91,9 @@ public interface ClientMapper {
                                                 @Param("offset") Integer offset,
                                                 @Param("limit") Integer limit);
 
-    @Select("SELECT COUNT(cid) FROM clients WHERE uid=#{uid} AND MATCH(name,description,redirectUri,cid) AGAINST(#{key})")
+    @Select("SELECT COUNT(cid) FROM " +
+            "(SELECT * FROM clients WHERE cid IN ((SELECT cid FROM clients WHERE uid=#{uid}) UNION (SELECT cid FROM client_members WHERE uid=#{uid}))) " +
+            "WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key})")
     Integer countSearchUserClients(@Param("uid") Long uid,
                                    @Param("key") String key);
 

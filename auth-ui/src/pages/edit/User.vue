@@ -153,12 +153,12 @@
                         {{ $tt($options, "roles") }}
                       </q-item-label>
                     </q-item-section>
-                    <q-item-section side top v-if="hasGrantUserPermission" style="padding-left: 0px;">
+                    <q-item-section side top style="padding-left: 0px;">
                       <q-btn round flat icon="edit"
                              @click="editRoles"/>
                     </q-item-section>
                   </q-item>
-                  <user-role-clients :user="targetUser" :current-user="user"/>
+                  <user-role-clients ref="user-role-clients" :user="targetUser" :current-user="user"/>
 
                   <!--  用户ID, UID-->
                   <q-item class="q-pa-none q-mt-md" v-if="targetUser && targetUser.createdAt">
@@ -266,56 +266,12 @@
     <q-dialog :persistent="updating.roles.length>0" v-model="edit.roles" style="max-width: 400px;">
       <q-card class="full-width">
         <q-card-section>
-          <div class="row items-center no-wrap">
-            <div class="text-h6 col">{{ $tt($options, "roles") }}</div>
-            <div class="col-auto text-caption text-grey" v-if="roles">
-              {{ (targetUser && targetUser.roles ? targetUser.roles.length : 0) + " / " + roles.length }}
-            </div>
-          </div>
+          <div class="text-h6">{{ $tt($options, "roles") }}</div>
         </q-card-section>
-        <q-card-section v-if="!rolesLoading" class="q-pa-none">
-          <q-list v-if="roles && roles.length>0">
-            <transition
-              v-for="(role,index) in roles" :key="role.rid"
-              appear
-              enter-active-class="animated fadeIn"
-              leave-active-class="animated fadeOut"
-            >
-              <q-item clickable v-ripple>
-                <q-item-section avatar style="min-width: 0px;">
-                  <q-icon
-                    :color="hasRole(role.rid)?'accent':''"
-                    name="person"/>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>
-                    {{ role.roleName }}
-                  </q-item-label>
-                  <q-item-label caption>
-                    {{ role.roleDescription }}
-                  </q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                </q-item-section>
-                <q-item-section side>
-                  <div class="row">
-                    <q-btn
-                      :disable="updating.roles.indexOf(role.rid)>-1"
-                      :loading="updating.roles.indexOf(role.rid)>-1"
-                      flat round
-                      @click="()=>grantUser(role)"
-                      :icon="hasRole(role.rid)?'remove':'add'"/>
-                  </div>
-                </q-item-section>
-              </q-item>
-            </transition>
-          </q-list>
-          <no-results v-else/>
-        </q-card-section>
-        <q-card-section v-else style="height: 80px;">
-          <q-inner-loading :showing="rolesLoading">
-            <q-spinner-gears size="50px" color="accent"/>
-          </q-inner-loading>
+
+        <q-card-section>
+          <user-role-clients :current-user="user_" :user="targetUser" :managed="true"
+                             :onRoleGrantOrRevoke="(...args)=>$refs['user-role-clients'].updateRole(...args)"/>
         </q-card-section>
 
         <q-card-actions align="right">
