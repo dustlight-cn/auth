@@ -83,7 +83,8 @@ export default {
   props: {
     client: Object,
     removable: Boolean,
-    editable: Boolean
+    editable: Boolean,
+    currentUser: Object
   },
   data() {
     return {
@@ -100,10 +101,13 @@ export default {
         .finally(() => this.loading = false)
     },
     edit(role) {
-      console.log("edit", role)
+      console.log("edit", this.currentUser)
       this.$q.dialog({
         component: EditRole,
-        parent: this
+        parent: this,
+        client: this.client,
+        currentUser: this.currentUser,
+        role: role
       })
     },
     remove(role) {
@@ -114,6 +118,12 @@ export default {
     },
     add() {
       console.log("add")
+      this.$q.dialog({
+        component: EditRole,
+        parent: this,
+        client: this.client,
+        currentUser: this.currentUser
+      })
     }
   },
   mounted() {

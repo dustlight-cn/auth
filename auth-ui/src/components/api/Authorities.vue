@@ -77,7 +77,8 @@ export default {
   props: {
     client: Object,
     removable: Boolean,
-    editable: Boolean
+    editable: Boolean,
+    currentUser: Object
   },
   data() {
     return {
@@ -99,7 +100,7 @@ export default {
     remove(authority) {
       console.log("remove", authority)
     },
-    add(){
+    add() {
       console.log("add")
     }
   },

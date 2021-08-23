@@ -28,12 +28,12 @@
             <q-skeleton class="q-mr-md" type="QBtn"/>
             <q-skeleton type="QBtn"/>
           </q-card-actions>
-          <q-card-actions v-else>
+          <div class="q-gutter-sm text-right q-pa-md">
             <q-space/>
             <q-btn no-caps :disable="busy" @click="()=>onCancel()" flat :label="$t('cancel')" color="grey-7"/>
             <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
                    :label="$t('update')"/>
-          </q-card-actions>
+          </div>
         </q-form>
       </require-authorization>
     </template>

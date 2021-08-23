@@ -92,7 +92,9 @@
                     :loading="$refs['roles'] && $refs['roles'].loading"/>
                   </q-item-section>
                 </q-item>
-                <roles ref="roles" :removable="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
+                <roles ref="roles"
+                       :current-user="user"
+                       :removable="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
                        :editable="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
                        :client="client"/>
 
@@ -113,7 +115,9 @@
                            :loading="$refs['authorities'] && $refs['roles'].loading"/>
                   </q-item-section>
                 </q-item>
-                <authorities ref="authorities" :removable="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
+                <authorities ref="authorities"
+                             :current-user="user"
+                             :removable="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
                              :editable="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
                              :client="client"/>
 
