@@ -75,10 +75,11 @@
 
 <script>
 import NoResults from "../common/NoResults";
+import EditRole from "../dialogs/EditRole";
 
 export default {
   name: "Roles",
-  components: {NoResults},
+  components: {EditRole, NoResults},
   props: {
     client: Object,
     removable: Boolean,
@@ -100,6 +101,10 @@ export default {
     },
     edit(role) {
       console.log("edit", role)
+      this.$q.dialog({
+        component: EditRole,
+        parent: this
+      })
     },
     remove(role) {
       console.log("remove", role)

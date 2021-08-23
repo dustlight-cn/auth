@@ -93,6 +93,7 @@
       </q-card-section>
       <q-card-actions align="right">
         <q-btn :label="$t('cancel')"
+               color="grey-7"
                flat
                :disable="updating"
                v-close-popup/>

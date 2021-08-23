@@ -10,7 +10,7 @@
           <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),busy}"/>
           <q-card-actions>
             <q-space/>
-            <q-btn no-caps :disable="busy" @click="onCancel" flat :label="$t('cancel')"/>
+            <q-btn no-caps :disable="busy" @click="onCancel" flat :label="$t('cancel')" color="grey-7"/>
             <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
                    :label="$t('update')"/>
           </q-card-actions>
@@ -30,7 +30,7 @@
           </q-card-actions>
           <q-card-actions v-else>
             <q-space/>
-            <q-btn no-caps :disable="busy" @click="()=>onCancel()" flat :label="$t('cancel')"/>
+            <q-btn no-caps :disable="busy" @click="()=>onCancel()" flat :label="$t('cancel')" color="grey-7"/>
             <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
                    :label="$t('update')"/>
           </q-card-actions>

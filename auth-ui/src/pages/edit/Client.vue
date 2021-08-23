@@ -137,7 +137,7 @@
                                    :rules="rules.name"
                                    color="accent"
                                    v-model="edit.name"/>
-                          <q-btn :disable="updating.name" no-caps flat :label="$t('cancel')" color="accent"
+                          <q-btn :disable="updating.name" no-caps flat :label="$t('cancel')" color="grey-7"
                                  class="q-mr-sm"
                                  @click="()=>edit.name=null"/>
                           <q-btn :loading="updating.name" type="submit" no-caps :label="$t('update')" color="accent"/>
@@ -171,7 +171,7 @@
                                    :rules="rules.description"
                                    color="accent"
                                    v-model="edit.description"/>
-                          <q-btn :disable="updating.description" no-caps flat :label="$t('cancel')" color="accent"
+                          <q-btn :disable="updating.description" no-caps flat :label="$t('cancel')" color="grey-7"
                                  class="q-mr-sm"
                                  @click="()=>edit.description=null"/>
                           <q-btn :loading="updating.description" type="submit" no-caps :label="$t('update')"
@@ -361,7 +361,7 @@
                             </template>
                           </q-input>
                           <q-btn :disable="updating.accessTokenValidity" no-caps flat :label="$t('cancel')"
-                                 color="accent"
+                                 color="grey-7"
                                  class="q-mr-sm"
                                  @click="()=>edit.accessTokenValidity=null"/>
                           <q-btn :loading="updating.accessTokenValidity" type="submit" no-caps :label="$t('update')"
@@ -414,7 +414,7 @@
                             </template>
                           </q-input>
                           <q-btn :disable="updating.refreshTokenValidity" no-caps flat :label="$t('cancel')"
-                                 color="accent"
+                                 color="grey-7"
                                  class="q-mr-sm"
                                  @click="()=>edit.refreshTokenValidity=null"/>
                           <q-btn :loading="updating.refreshTokenValidity" type="submit" no-caps :label="$t('update')"
@@ -535,7 +535,7 @@
           </q-list>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat :label="$t('cancel')" color="accent" :disable="updating.redirectUri" v-close-popup/>
+          <q-btn flat :label="$t('cancel')" color="grey-7" :disable="updating.redirectUri" v-close-popup/>
           <q-btn :label="$t('update')" color="accent"
                  :disable="updating.redirectUri"
                  :loading="updating.redirectUri"
