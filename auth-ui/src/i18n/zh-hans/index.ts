@@ -252,6 +252,14 @@ export default {
     "roles": "角色",
     "rolesTips": "应用自定义角色"
   },
+  "EditRole": {
+    "edit": "编辑角色",
+    "new": "创建角色",
+    "roleName": "角色名",
+    "roleDescription": "角色描述",
+    "roleNameRule": "角色名不可为空。",
+    "roleDescriptionRule": "角色描述不可为空。"
+  },
   "NewClient": {
     "title": "创建应用",
     "ownerUid": "应用所有者",

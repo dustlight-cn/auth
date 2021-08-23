@@ -252,6 +252,14 @@ export default {
     "roles": "Roles",
     "rolesTips": "Application Custom Roles"
   },
+  "EditRole": {
+    "edit": "Edit Role",
+    "new": "Create Role",
+    "roleName": "Role Name",
+    "roleDescription": "Role Description",
+    "roleNameRule": "Role name can not be empty.",
+    "roleDescriptionRule": "Role description can not be empty."
+  },
   "NewClient": {
     "title": "New OAuth Application",
     "ownerUid": "Application Owner",

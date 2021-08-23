@@ -4,7 +4,9 @@
     <q-card class="full-width">
 
       <q-card-section>
-        <div class="text-h6">{{ role && role.rid ? $tt($options, "edit") : $tt($options, "new") }}</div>
+        <div class="text-h6">
+          {{ role && role.rid ? $tt($options, "edit") : $tt($options, "new") }}
+        </div>
       </q-card-section>
       <q-card-section>
         <q-form @submit="save">
@@ -28,7 +30,7 @@
                    flat
                    :disable="busying"
                    v-close-popup/>
-            <q-btn :label="$t('update')"
+            <q-btn :label="role && role.rid ? $t('update') : $t('create')"
                    type="submit"
                    color="accent"
                    :disable="busying"
