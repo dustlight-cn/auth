@@ -315,10 +315,16 @@ export interface Client {
     updatedAt?: string;
     /**
      * 
+     * @type {{ [key: string]: object; }}
+     * @memberof Client
+     */
+    extra?: { [key: string]: object; };
+    /**
+     * 
      * @type {string}
      * @memberof Client
      */
-    cid?: string;
+    secret?: string;
     /**
      * 
      * @type {Set<string>}
@@ -330,13 +336,7 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    secret?: string;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof Client
-     */
-    extra?: { [key: string]: object; };
+    cid?: string;
     /**
      * 
      * @type {Set<string>}
@@ -462,18 +462,6 @@ export interface OAuth2AccessToken {
     scope?: Set<string>;
     /**
      * 
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    tokenType?: string;
-    /**
-     * 
-     * @type {OAuth2RefreshToken}
-     * @memberof OAuth2AccessToken
-     */
-    refreshToken?: OAuth2RefreshToken;
-    /**
-     * 
      * @type {boolean}
      * @memberof OAuth2AccessToken
      */
@@ -484,6 +472,18 @@ export interface OAuth2AccessToken {
      * @memberof OAuth2AccessToken
      */
     additionalInformation?: { [key: string]: object; };
+    /**
+     * 
+     * @type {OAuth2RefreshToken}
+     * @memberof OAuth2AccessToken
+     */
+    refreshToken?: OAuth2RefreshToken;
+    /**
+     * 
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    tokenType?: string;
     /**
      * 
      * @type {number}
@@ -527,6 +527,12 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
+    unlockedAt?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicUser
+     */
     nickname?: string;
     /**
      * 
@@ -534,12 +540,6 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     avatar?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
-    unlockedAt?: string;
     /**
      * 
      * @type {boolean}
@@ -749,19 +749,25 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    email?: string;
+    phone?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    phone?: string;
+    email?: string;
     /**
      * 
      * @type {number}
      * @memberof User
      */
     gender?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    unlockedAt?: string;
     /**
      * 
      * @type {string}
@@ -779,19 +785,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
+    credentialsExpiredAt?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
     accountExpiredAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    credentialsExpiredAt?: string;
     /**
      * 
      * @type {boolean}
@@ -1016,10 +1016,11 @@ export const AuthoritiesApiAxiosParamCreator = function (configuration?: Configu
          * 应用和用户需要 WRITE_AUTHORITY 权限。
          * @summary 删除权限
          * @param {Array<number>} requestBody 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteAuthorities: async (requestBody: Array<number>, options: any = {}): Promise<RequestArgs> => {
+        deleteAuthorities: async (requestBody: Array<number>, clientId?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'requestBody' is not null or undefined
             assertParamExists('deleteAuthorities', 'requestBody', requestBody)
             const localVarPath = `/v1/authorities`;
@@ -1037,6 +1038,10 @@ export const AuthoritiesApiAxiosParamCreator = function (configuration?: Configu
             // authentication AccessToken required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
+            }
 
 
     
@@ -1146,10 +1151,11 @@ export const AuthoritiesApiAxiosParamCreator = function (configuration?: Configu
          * 
          * @summary 获取权限
          * @param {Array<number>} [id] 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAuthorities: async (id?: Array<number>, options: any = {}): Promise<RequestArgs> => {
+        getAuthorities: async (id?: Array<number>, clientId?: string, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/authorities`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1168,6 +1174,10 @@ export const AuthoritiesApiAxiosParamCreator = function (configuration?: Configu
 
             if (id) {
                 localVarQueryParameter['id'] = id;
+            }
+
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
             }
 
 
@@ -1303,10 +1313,11 @@ export const AuthoritiesApiAxiosParamCreator = function (configuration?: Configu
          * 应用和用户需要 WRITE_AUTHORITY 权限。
          * @summary 修改或添加权限
          * @param {Array<Authority>} authority 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setAuthorities: async (authority: Array<Authority>, options: any = {}): Promise<RequestArgs> => {
+        setAuthorities: async (authority: Array<Authority>, clientId?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'authority' is not null or undefined
             assertParamExists('setAuthorities', 'authority', authority)
             const localVarPath = `/v1/authorities`;
@@ -1324,6 +1335,10 @@ export const AuthoritiesApiAxiosParamCreator = function (configuration?: Configu
             // authentication AccessToken required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
+            }
 
 
     
@@ -1443,11 +1458,12 @@ export const AuthoritiesApiFp = function(configuration?: Configuration) {
          * 应用和用户需要 WRITE_AUTHORITY 权限。
          * @summary 删除权限
          * @param {Array<number>} requestBody 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteAuthorities(requestBody: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAuthorities(requestBody, options);
+        async deleteAuthorities(requestBody: Array<number>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAuthorities(requestBody, clientId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1478,11 +1494,12 @@ export const AuthoritiesApiFp = function(configuration?: Configuration) {
          * 
          * @summary 获取权限
          * @param {Array<number>} [id] 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAuthorities(id?: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Authority>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAuthorities(id, options);
+        async getAuthorities(id?: Array<number>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Authority>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAuthorities(id, clientId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1523,11 +1540,12 @@ export const AuthoritiesApiFp = function(configuration?: Configuration) {
          * 应用和用户需要 WRITE_AUTHORITY 权限。
          * @summary 修改或添加权限
          * @param {Array<Authority>} authority 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async setAuthorities(authority: Array<Authority>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.setAuthorities(authority, options);
+        async setAuthorities(authority: Array<Authority>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.setAuthorities(authority, clientId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1568,11 +1586,12 @@ export const AuthoritiesApiFactory = function (configuration?: Configuration, ba
          * 应用和用户需要 WRITE_AUTHORITY 权限。
          * @summary 删除权限
          * @param {Array<number>} requestBody 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteAuthorities(requestBody: Array<number>, options?: any): AxiosPromise<void> {
-            return localVarFp.deleteAuthorities(requestBody, options).then((request) => request(axios, basePath));
+        deleteAuthorities(requestBody: Array<number>, clientId?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAuthorities(requestBody, clientId, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户需要 GRANT_CLIENT 权限。
@@ -1600,11 +1619,12 @@ export const AuthoritiesApiFactory = function (configuration?: Configuration, ba
          * 
          * @summary 获取权限
          * @param {Array<number>} [id] 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAuthorities(id?: Array<number>, options?: any): AxiosPromise<Array<Authority>> {
-            return localVarFp.getAuthorities(id, options).then((request) => request(axios, basePath));
+        getAuthorities(id?: Array<number>, clientId?: string, options?: any): AxiosPromise<Array<Authority>> {
+            return localVarFp.getAuthorities(id, clientId, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户需要 READ_CLIENT 权限。
@@ -1641,11 +1661,12 @@ export const AuthoritiesApiFactory = function (configuration?: Configuration, ba
          * 应用和用户需要 WRITE_AUTHORITY 权限。
          * @summary 修改或添加权限
          * @param {Array<Authority>} authority 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setAuthorities(authority: Array<Authority>, options?: any): AxiosPromise<void> {
-            return localVarFp.setAuthorities(authority, options).then((request) => request(axios, basePath));
+        setAuthorities(authority: Array<Authority>, clientId?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.setAuthorities(authority, clientId, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户需要 GRANT_CLIENT 权限。
@@ -1683,12 +1704,13 @@ export class AuthoritiesApi extends BaseAPI {
      * 应用和用户需要 WRITE_AUTHORITY 权限。
      * @summary 删除权限
      * @param {Array<number>} requestBody 
+     * @param {string} [clientId] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthoritiesApi
      */
-    public deleteAuthorities(requestBody: Array<number>, options?: any) {
-        return AuthoritiesApiFp(this.configuration).deleteAuthorities(requestBody, options).then((request) => request(this.axios, this.basePath));
+    public deleteAuthorities(requestBody: Array<number>, clientId?: string, options?: any) {
+        return AuthoritiesApiFp(this.configuration).deleteAuthorities(requestBody, clientId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1721,12 +1743,13 @@ export class AuthoritiesApi extends BaseAPI {
      * 
      * @summary 获取权限
      * @param {Array<number>} [id] 
+     * @param {string} [clientId] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthoritiesApi
      */
-    public getAuthorities(id?: Array<number>, options?: any) {
-        return AuthoritiesApiFp(this.configuration).getAuthorities(id, options).then((request) => request(this.axios, this.basePath));
+    public getAuthorities(id?: Array<number>, clientId?: string, options?: any) {
+        return AuthoritiesApiFp(this.configuration).getAuthorities(id, clientId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1770,12 +1793,13 @@ export class AuthoritiesApi extends BaseAPI {
      * 应用和用户需要 WRITE_AUTHORITY 权限。
      * @summary 修改或添加权限
      * @param {Array<Authority>} authority 
+     * @param {string} [clientId] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthoritiesApi
      */
-    public setAuthorities(authority: Array<Authority>, options?: any) {
-        return AuthoritiesApiFp(this.configuration).setAuthorities(authority, options).then((request) => request(this.axios, this.basePath));
+    public setAuthorities(authority: Array<Authority>, clientId?: string, options?: any) {
+        return AuthoritiesApiFp(this.configuration).setAuthorities(authority, clientId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

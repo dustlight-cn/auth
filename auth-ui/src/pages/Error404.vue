@@ -16,7 +16,7 @@
         unelevated
         icon="arrow_back"
         @click="$router.back()"
-        :label="$tt(this,'goBack')"
+        :label="$t('goBack')"
         no-caps
       />
     </div>

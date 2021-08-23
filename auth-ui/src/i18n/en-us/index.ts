@@ -28,9 +28,9 @@ export default {
   "description": "Description",
   "seconds": "Seconds",
   "day": "Day",
+  "goBack": "Go Back",
   "Error404": {
-    "notFound": "Oops. Nothing here...",
-    "goBack": "Go Back"
+    "notFound": "Oops. Nothing here..."
   },
   "AvatarButton": {
     "signIn": "Sign In",
@@ -239,10 +239,18 @@ export default {
     "accessTokenValidityHint": "The validity of the access token, in seconds.",
     "refreshTokenValidity": "Refresh Token Validity",
     "refreshTokenValidityHint": "The validity of the refresh token, in seconds.",
+    "AdvancedSettings": "Advanced Settings",
     "deleteClient": "Delete",
     "deleteClientTitle": "Delete Application",
     "deleteClientMsg": "Are you sure to delete this app?",
     "deleted": "Application Deleted"
+  },
+  "ClientAdvancedSettings": {
+    "title": "Client Advanced Settings",
+    "authorities": "Authorities",
+    "authoritiesTips": "Application Custom Authorities",
+    "roles": "Roles",
+    "rolesTips": "Application Custom Roles"
   },
   "NewClient": {
     "title": "New OAuth Application",

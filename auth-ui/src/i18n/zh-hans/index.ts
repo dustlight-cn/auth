@@ -28,9 +28,9 @@ export default {
   "description": "描述",
   "seconds": "秒",
   "day": "天",
+  "goBack": "返回",
   "Error404": {
-    "notFound": "抱歉，这里空空如也。",
-    "goBack": "返回"
+    "notFound": "抱歉，这里空空如也。"
   },
   "AvatarButton": {
     "signIn": "登录",
@@ -239,10 +239,18 @@ export default {
     "accessTokenValidityHint": "访问令牌的有效时间，单位为秒。",
     "refreshTokenValidity": "Refresh Token 有效期",
     "refreshTokenValidityHint": "刷新令牌的有效时间，单位为秒。",
+    "AdvancedSettings": "高级设置",
     "deleteClient": "删除",
     "deleteClientTitle": "删除应用",
     "deleteClientMsg": "是否确定删除此应用？",
     "deleted": "应用已删除"
+  },
+  "ClientAdvancedSettings": {
+    "title": "应用高级设置",
+    "authorities": "权限",
+    "authoritiesTips": "应用自定义权限",
+    "roles": "角色",
+    "rolesTips": "应用自定义角色"
   },
   "NewClient": {
     "title": "创建应用",
@@ -329,7 +337,7 @@ export default {
   "UserClientRoles": {
     "expiredAt": "到期时间",
   },
-  "UserRoleSettings":{
+  "UserRoleSettings": {
     "expiredAt": "到期时间",
     "expiredNull": "无期限",
     "expiredSimple": "简单设置",

@@ -327,9 +327,7 @@ export default {
       updating: {
         roles: [],
         enabled: false
-      },
-      roles: null,
-      rolesLoading: false
+      }
     }
   },
   computed: {
@@ -391,36 +389,6 @@ export default {
     },
     editRoles() {
       this.edit.roles = true;
-      if (this.roles == null && !this.rolesLoading) {
-        this.rolesLoading = true;
-        this.$rolesApi.getRoles()
-          .then(res => this.roles = res.data)
-          .finally(() => this.rolesLoading = false)
-      }
-    },
-    grantUser(role) {
-      if (this.updating.roles.indexOf(role.rid) >= 0)
-        return;
-      this.updating.roles.push(role.rid);
-      let contains = this.hasRole(role.rid);
-      (contains ?
-          this.$rolesApi.deleteUserRoles(this.uid, role.rid) :
-          this.$rolesApi.setUserRoles(this.uid, [{
-            rid: role.rid
-          }])
-      ).then(res => {
-        if (contains)
-          this.targetUser.roles.splice(this.getUserRoleIndex(role.rid), 1);
-        else
-          this.targetUser.roles.push({
-            rid: role.rid,
-            roleName: role.roleName,
-            roleDescription: role.roleDescription,
-            expiredAt: null
-          })
-      }).finally(() => {
-        this.updating.roles.splice(this.updating.roles.indexOf(role.rid), 1);
-      })
     },
     showDeleteSuccessMessage() {
       this.$q.notify({

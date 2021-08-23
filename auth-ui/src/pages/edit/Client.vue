@@ -430,20 +430,20 @@
                   </q-item>
 
                   <!-- 操作按钮 -->
-                  <q-separator v-if="hasWriteClientPermissionOrOwnClient" class="q-mt-md"/>
-                  <div v-if="hasWriteClientPermissionOrOwnClient">
+                  <q-separator v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient" class="q-mt-md"/>
+                  <div v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
+                       class="text-right q-gutter-sm q-pt-lg">
 
-                    <q-item class="q-pa-none q-mt-lg">
-                      <q-space/>
-                      <q-item-section>
-                        <q-item-label caption>
-                        </q-item-label>
-                      </q-item-section>
-                      <q-item-section side>
-                        <q-btn :loading="deleting" @click="deleteClient" no-caps color="negative" icon="delete"
-                               :label="$tt($options,'deleteClient')"/>
-                      </q-item-section>
-                    </q-item>
+                    <!-- 高级设置 -->
+                    <q-btn
+                      :to="{name:'client-advanced-settings',params:{id:clientId,client: client,owner: owner},query: uid ? {uid:uid}:null}"
+                      color="grey-7"
+                      flat icon="settings" :label="$tt($options,'AdvancedSettings')" no-caps/>
+
+                    <!-- 删除应用 -->
+                    <q-btn v-if="hasWriteClientPermissionOrOwnClient"
+                           :loading="deleting" @click="deleteClient" no-caps color="negative" icon="delete"
+                           :label="$tt($options,'deleteClient')"/>
                   </div>
                 </q-list>
               </div>
@@ -743,7 +743,6 @@
           </div>
         </q-card-section>
 
-
         <q-card-section v-if="edit.members">
           <div>
             <no-results class="q-ma-sm" v-if="members==null || members.length == 0"/>
@@ -800,7 +799,7 @@
             <q-btn
               :disable="updating.members.indexOf(user.uid)>-1"
               :loading="updating.members.indexOf(user.uid)>-1"
-              @click="()=>removeOrAddMember(user)"
+              @click.stop="()=>removeOrAddMember(user)"
               flat round
               :icon="client && client.members && client.members.indexOf(user.uid) >= 0 ? 'remove' : 'add'"/>
           </template>

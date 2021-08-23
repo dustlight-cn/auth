@@ -11,6 +11,7 @@ import cn.dustlight.auth.services.RoleService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,33 +37,41 @@ public class AuthorityResource {
     @Autowired
     private UniqueGenerator<Long> idGenerator;
 
+    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('WRITE_AUTHORITY'))")
     @GetMapping("authorities")
     @Operation(summary = "获取权限")
     public Collection<? extends Authority> getAuthorities(@RequestParam(required = false) Collection<Long> id,
+                                                          @RequestParam(required = false, name = "clientId") String clientId,
                                                           OAuth2Authentication authentication) {
+        if (!StringUtils.hasText(clientId))
+            clientId = authentication.getOAuth2Request().getClientId();
         if (id == null)
-            return authorityService.listAuthorities(authentication.getOAuth2Request().getClientId());
+            return authorityService.listAuthorities(clientId);
         return authorityService.getAuthorities(id);
     }
 
-    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_AUTHORITY')) and #oauth2.clientHasAnyRole('WRITE_AUTHORITY')")
+    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('WRITE_AUTHORITY')) and #oauth2.clientHasAnyRole('WRITE_AUTHORITY')")
     @PutMapping("authorities")
     @Operation(summary = "修改或添加权限", description = "应用和用户需要 WRITE_AUTHORITY 权限。")
     public void setAuthorities(@RequestBody Collection<DefaultAuthority> authorities,
+                               @RequestParam(required = false, name = "clientId") String clientId,
                                OAuth2Authentication authentication) {
-        String clientId = authentication.getOAuth2Request().getClientId();
+        if (!StringUtils.hasText(clientId))
+            clientId = authentication.getOAuth2Request().getClientId();
         for (DefaultAuthority authority : authorities)
             if (authority.getAid() == null)
                 authority.setAid(idGenerator.generate());
         authorityService.createAuthorities(authorities, clientId);
     }
 
-    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_AUTHORITY')) and #oauth2.clientHasAnyRole('WRITE_AUTHORITY')")
+    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('WRITE_AUTHORITY')) and #oauth2.clientHasAnyRole('WRITE_AUTHORITY')")
     @DeleteMapping("authorities")
     @Operation(summary = "删除权限", description = "应用和用户需要 WRITE_AUTHORITY 权限。")
     public void deleteAuthorities(@RequestBody Collection<Long> id,
+                                  @RequestParam(required = false, name = "clientId") String clientId,
                                   OAuth2Authentication authentication) {
-        String clientId = authentication.getOAuth2Request().getClientId();
+        if (!StringUtils.hasText(clientId))
+            clientId = authentication.getOAuth2Request().getClientId();
         authorityService.removeAuthorities(id, clientId);
     }
 

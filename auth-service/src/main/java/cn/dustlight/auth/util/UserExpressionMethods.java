@@ -3,6 +3,7 @@ package cn.dustlight.auth.util;
 import cn.dustlight.auth.entities.User;
 import cn.dustlight.auth.services.ClientService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.util.StringUtils;
 
 public class UserExpressionMethods {
 
@@ -53,10 +54,14 @@ public class UserExpressionMethods {
     }
 
     public boolean isClientOwnerOrMember(String clientId, Long uid) {
+        if (!StringUtils.hasText(clientId))
+            clientId = authentication.getOAuth2Request().getClientId();
         return clientService.isOwnerOrMember(clientId, uid);
     }
 
     public boolean isClientOwnerOrMember(String clientId) {
+        if (!StringUtils.hasText(clientId))
+            clientId = authentication.getOAuth2Request().getClientId();
         User user = obtainUser();
         if (user == null)
             return false;

@@ -308,10 +308,18 @@ export interface Client {
     updatedAt?: string;
     /**
      *
+     * @type {{ [key: string]: object; }}
+     * @memberof Client
+     */
+    extra?: {
+        [key: string]: object;
+    };
+    /**
+     *
      * @type {string}
      * @memberof Client
      */
-    cid?: string;
+    secret?: string;
     /**
      *
      * @type {Set<string>}
@@ -323,15 +331,7 @@ export interface Client {
      * @type {string}
      * @memberof Client
      */
-    secret?: string;
-    /**
-     *
-     * @type {{ [key: string]: object; }}
-     * @memberof Client
-     */
-    extra?: {
-        [key: string]: object;
-    };
+    cid?: string;
     /**
      *
      * @type {Set<string>}
@@ -457,18 +457,6 @@ export interface OAuth2AccessToken {
     scope?: Set<string>;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2AccessToken
-     */
-    tokenType?: string;
-    /**
-     *
-     * @type {OAuth2RefreshToken}
-     * @memberof OAuth2AccessToken
-     */
-    refreshToken?: OAuth2RefreshToken;
-    /**
-     *
      * @type {boolean}
      * @memberof OAuth2AccessToken
      */
@@ -481,6 +469,18 @@ export interface OAuth2AccessToken {
     additionalInformation?: {
         [key: string]: object;
     };
+    /**
+     *
+     * @type {OAuth2RefreshToken}
+     * @memberof OAuth2AccessToken
+     */
+    refreshToken?: OAuth2RefreshToken;
+    /**
+     *
+     * @type {string}
+     * @memberof OAuth2AccessToken
+     */
+    tokenType?: string;
     /**
      *
      * @type {number}
@@ -524,6 +524,12 @@ export interface PublicUser {
      * @type {string}
      * @memberof PublicUser
      */
+    unlockedAt?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof PublicUser
+     */
     nickname?: string;
     /**
      *
@@ -531,12 +537,6 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     avatar?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PublicUser
-     */
-    unlockedAt?: string;
     /**
      *
      * @type {boolean}
@@ -746,19 +746,25 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    email?: string;
+    phone?: string;
     /**
      *
      * @type {string}
      * @memberof User
      */
-    phone?: string;
+    email?: string;
     /**
      *
      * @type {number}
      * @memberof User
      */
     gender?: number;
+    /**
+     *
+     * @type {string}
+     * @memberof User
+     */
+    unlockedAt?: string;
     /**
      *
      * @type {string}
@@ -776,19 +782,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    unlockedAt?: string;
+    credentialsExpiredAt?: string;
     /**
      *
      * @type {string}
      * @memberof User
      */
     accountExpiredAt?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof User
-     */
-    credentialsExpiredAt?: string;
     /**
      *
      * @type {boolean}
@@ -1013,10 +1013,11 @@ export declare const AuthoritiesApiAxiosParamCreator: (configuration?: Configura
      * 应用和用户需要 WRITE_AUTHORITY 权限。
      * @summary 删除权限
      * @param {Array<number>} requestBody
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteAuthorities: (requestBody: Array<number>, options?: any) => Promise<RequestArgs>;
+    deleteAuthorities: (requestBody: Array<number>, clientId?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 应用和用户需要 GRANT_CLIENT 权限。
      * @summary 删除应用权限
@@ -1039,10 +1040,11 @@ export declare const AuthoritiesApiAxiosParamCreator: (configuration?: Configura
      *
      * @summary 获取权限
      * @param {Array<number>} [id]
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getAuthorities: (id?: Array<number>, options?: any) => Promise<RequestArgs>;
+    getAuthorities: (id?: Array<number>, clientId?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 应用和用户需要 READ_CLIENT 权限。
      * @summary 获取应用权限
@@ -1072,10 +1074,11 @@ export declare const AuthoritiesApiAxiosParamCreator: (configuration?: Configura
      * 应用和用户需要 WRITE_AUTHORITY 权限。
      * @summary 修改或添加权限
      * @param {Array<Authority>} authority
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    setAuthorities: (authority: Array<Authority>, options?: any) => Promise<RequestArgs>;
+    setAuthorities: (authority: Array<Authority>, clientId?: string, options?: any) => Promise<RequestArgs>;
     /**
      * 应用和用户需要 GRANT_CLIENT 权限。
      * @summary 添加应用权限
@@ -1104,10 +1107,11 @@ export declare const AuthoritiesApiFp: (configuration?: Configuration) => {
      * 应用和用户需要 WRITE_AUTHORITY 权限。
      * @summary 删除权限
      * @param {Array<number>} requestBody
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteAuthorities(requestBody: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    deleteAuthorities(requestBody: Array<number>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
      * 应用和用户需要 GRANT_CLIENT 权限。
      * @summary 删除应用权限
@@ -1130,10 +1134,11 @@ export declare const AuthoritiesApiFp: (configuration?: Configuration) => {
      *
      * @summary 获取权限
      * @param {Array<number>} [id]
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getAuthorities(id?: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Authority>>>;
+    getAuthorities(id?: Array<number>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Authority>>>;
     /**
      * 应用和用户需要 READ_CLIENT 权限。
      * @summary 获取应用权限
@@ -1163,10 +1168,11 @@ export declare const AuthoritiesApiFp: (configuration?: Configuration) => {
      * 应用和用户需要 WRITE_AUTHORITY 权限。
      * @summary 修改或添加权限
      * @param {Array<Authority>} authority
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    setAuthorities(authority: Array<Authority>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    setAuthorities(authority: Array<Authority>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
      * 应用和用户需要 GRANT_CLIENT 权限。
      * @summary 添加应用权限
@@ -1195,10 +1201,11 @@ export declare const AuthoritiesApiFactory: (configuration?: Configuration, base
      * 应用和用户需要 WRITE_AUTHORITY 权限。
      * @summary 删除权限
      * @param {Array<number>} requestBody
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteAuthorities(requestBody: Array<number>, options?: any): AxiosPromise<void>;
+    deleteAuthorities(requestBody: Array<number>, clientId?: string, options?: any): AxiosPromise<void>;
     /**
      * 应用和用户需要 GRANT_CLIENT 权限。
      * @summary 删除应用权限
@@ -1221,10 +1228,11 @@ export declare const AuthoritiesApiFactory: (configuration?: Configuration, base
      *
      * @summary 获取权限
      * @param {Array<number>} [id]
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getAuthorities(id?: Array<number>, options?: any): AxiosPromise<Array<Authority>>;
+    getAuthorities(id?: Array<number>, clientId?: string, options?: any): AxiosPromise<Array<Authority>>;
     /**
      * 应用和用户需要 READ_CLIENT 权限。
      * @summary 获取应用权限
@@ -1254,10 +1262,11 @@ export declare const AuthoritiesApiFactory: (configuration?: Configuration, base
      * 应用和用户需要 WRITE_AUTHORITY 权限。
      * @summary 修改或添加权限
      * @param {Array<Authority>} authority
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    setAuthorities(authority: Array<Authority>, options?: any): AxiosPromise<void>;
+    setAuthorities(authority: Array<Authority>, clientId?: string, options?: any): AxiosPromise<void>;
     /**
      * 应用和用户需要 GRANT_CLIENT 权限。
      * @summary 添加应用权限
@@ -1288,11 +1297,12 @@ export declare class AuthoritiesApi extends BaseAPI {
      * 应用和用户需要 WRITE_AUTHORITY 权限。
      * @summary 删除权限
      * @param {Array<number>} requestBody
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthoritiesApi
      */
-    deleteAuthorities(requestBody: Array<number>, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    deleteAuthorities(requestBody: Array<number>, clientId?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
     /**
      * 应用和用户需要 GRANT_CLIENT 权限。
      * @summary 删除应用权限
@@ -1317,11 +1327,12 @@ export declare class AuthoritiesApi extends BaseAPI {
      *
      * @summary 获取权限
      * @param {Array<number>} [id]
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthoritiesApi
      */
-    getAuthorities(id?: Array<number>, options?: any): Promise<import("axios").AxiosResponse<Authority[]>>;
+    getAuthorities(id?: Array<number>, clientId?: string, options?: any): Promise<import("axios").AxiosResponse<Authority[]>>;
     /**
      * 应用和用户需要 READ_CLIENT 权限。
      * @summary 获取应用权限
@@ -1354,11 +1365,12 @@ export declare class AuthoritiesApi extends BaseAPI {
      * 应用和用户需要 WRITE_AUTHORITY 权限。
      * @summary 修改或添加权限
      * @param {Array<Authority>} authority
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthoritiesApi
      */
-    setAuthorities(authority: Array<Authority>, options?: any): Promise<import("axios").AxiosResponse<void>>;
+    setAuthorities(authority: Array<Authority>, clientId?: string, options?: any): Promise<import("axios").AxiosResponse<void>>;
     /**
      * 应用和用户需要 GRANT_CLIENT 权限。
      * @summary 添加应用权限

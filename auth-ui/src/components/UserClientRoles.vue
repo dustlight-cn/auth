@@ -55,7 +55,7 @@
             <q-item-section side v-if="managed">
               <q-btn flat round
                      :icon="hasRole(role) ? 'remove' : 'add'"
-                     @click="()=>grantOrRevokeRole(role)"
+                     @click.stop="()=>grantOrRevokeRole(role)"
                      :loading="isRoleUpdating(role)"
               />
             </q-item-section>
@@ -68,7 +68,7 @@
                                             {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
                                           </span>
                 </div>
-                <q-btn @click="()=>editUserRole(role)" v-else no-caps flat dense
+                <q-btn @click.stop="()=>editUserRole(role)" v-else no-caps flat dense
                        class="text-caption text-grey">
                   <span>{{ $tt($options, "expiredAt") }}</span>
                   <span class="q-ml-xs">
@@ -77,7 +77,7 @@
                 </q-btn>
               </q-item-label>
               <q-item-label v-else-if="hasGrantUserPermission || isClientOwner || isClientMember">
-                <q-btn @click="()=>editUserRole(role)" class="text-grey" round flat icon="timer"/>
+                <q-btn @click.stop="()=>editUserRole(role)" class="text-grey" round flat icon="timer"/>
               </q-item-label>
             </q-item-section>
           </q-item>

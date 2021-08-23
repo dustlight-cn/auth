@@ -35,6 +35,11 @@ const routes: RouteConfig[] = [
 
       {path: 'clients/new', name: "new-client", component: () => import('pages/edit/NewClient.vue')},
       {path: 'client/:id', name: "client", component: () => import ('pages/edit/Client.vue')},
+      {
+        path: 'client/:id/advanced-settings',
+        name: "client-advanced-settings",
+        component: () => import ('pages/edit/ClientAdvancedSettings.vue')
+      },
 
       {path: 'users/new', name: "new-user", component: () => import('pages/edit/NewUser.vue')},
       {path: 'user/:id', name: "user", component: () => import('pages/edit/User.vue')}
