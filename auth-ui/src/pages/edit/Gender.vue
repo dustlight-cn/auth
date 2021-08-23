@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import RequireAuthorization from "../../components/RequireAuthorization";
-import UpdateUser from "../../components/UpdateUser";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import UpdateUser from "../../components/api/UpdateUser";
 
 export default {
   name: "Gender",

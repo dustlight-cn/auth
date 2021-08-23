@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import Avatar from './Avatar'
+import Avatar from '../api/Avatar'
 import RequireAuthorization from './RequireAuthorization';
 
 export default {

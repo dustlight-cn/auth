@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import RequireAuthorization from "../../components/RequireAuthorization";
-import UpdateUser from "../../components/UpdateUser";
-import AvatarComponent from "../../components/Avatar"
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import UpdateUser from "../../components/api/UpdateUser";
+import AvatarComponent from "../../components/api/Avatar"
 
 export default {
   name: "Avatar",

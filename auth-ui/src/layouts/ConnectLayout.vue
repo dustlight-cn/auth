@@ -28,9 +28,9 @@
 </template>
 
 <script>
-import LanguageSelector from '../components/LanguageSelector'
-import Logo from "../components/Logo";
-import Footer from "../components/Footer";
+import LanguageSelector from '../components/common/LanguageSelector'
+import Logo from "../components/common/Logo";
+import Footer from "../components/common/Footer";
 
 export default {
   name: 'ConnectLayout',

@@ -41,8 +41,8 @@
 </template>
 
 <script>
-import RequireAuthorization from "./RequireAuthorization";
-import EditPage from "./EditPage";
+import RequireAuthorization from "../common/RequireAuthorization";
+import EditPage from "../common/EditPage";
 
 export default {
   name: "CommonTemplate",

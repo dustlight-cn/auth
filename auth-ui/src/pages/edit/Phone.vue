@@ -98,9 +98,9 @@
 </template>
 
 <script>
-import RequireAuthorization from "../../components/RequireAuthorization";
-import UpdateUser from "../../components/UpdateUser";
-import ReCaptcha from "../../components/ReCaptcha";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import UpdateUser from "../../components/api/UpdateUser";
+import ReCaptcha from "../../components/common/ReCaptcha";
 
 export default {
   name: "Phone",

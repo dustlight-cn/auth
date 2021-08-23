@@ -64,7 +64,7 @@
 
 <script>
 import ClientLogo from "./ClientLogo";
-import NoResults from "./NoResults";
+import NoResults from "../common/NoResults";
 import UserClientRoles from "./UserClientRoles";
 
 export default {

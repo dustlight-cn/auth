@@ -816,12 +816,12 @@
 </template>
 
 <script>
-import EditPage from "../../components/EditPage";
-import Avatar from "../../components/Avatar";
-import RequireAuthorization from "../../components/RequireAuthorization";
-import ClientLogo from "../../components/ClientLogo";
-import NoResults from '../../components/NoResults'
-import UsersList from "../../components/UsersList";
+import EditPage from "../../components/common/EditPage";
+import Avatar from "../../components/api/Avatar";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import ClientLogo from "../../components/api/ClientLogo";
+import NoResults from '../../components/common/NoResults'
+import UsersList from "../../components/api/UsersList";
 
 export default {
   name: "Client",

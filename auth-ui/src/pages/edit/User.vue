@@ -288,17 +288,17 @@
 </template>
 
 <script>
-import EditPage from "../../components/EditPage";
-import RequireAuthorization from "../../components/RequireAuthorization";
-import Avatar from "../../components/Avatar";
+import EditPage from "../../components/common/EditPage";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import Avatar from "../../components/api/Avatar";
 import EditAvatar from "./Avatar";
 import Nickname from "./Nickname";
 import Gender from "./Gender";
 import Email from "./Email";
 import Password from "./Password";
-import NoResults from "../../components/NoResults";
+import NoResults from "../../components/common/NoResults";
 import Phone from "./Phone";
-import UserRoleClients from "../../components/UserRoleClients";
+import UserRoleClients from "../../components/api/UserRoleClients";
 
 export default {
   name: "User",

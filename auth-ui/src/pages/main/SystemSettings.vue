@@ -332,7 +332,7 @@
 </template>
 
 <script>
-import RequireAuthorization from "components/RequireAuthorization.vue";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
 
 export default {
   name: "SystemSettings",

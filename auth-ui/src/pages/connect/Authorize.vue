@@ -210,11 +210,11 @@
 </template>
 
 <script>
-import RequireAuthorization from "../../components/RequireAuthorization";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
 import SignIn from "./SignIn";
-import AvatarButton from "../../components/AvatarButton";
-import ClientLogo from "../../components/ClientLogo";
-import Avatar from "../../components/Avatar";
+import AvatarButton from "../../components/common/AvatarButton";
+import ClientLogo from "../../components/api/ClientLogo";
+import Avatar from "../../components/api/Avatar";
 
 export default {
   name: "Authorize",

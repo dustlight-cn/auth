@@ -171,12 +171,12 @@
 </template>
 
 <script>
-import Avatar from "components/Avatar.vue";
-import RequireAuthorization from "components/RequireAuthorization.vue";
+import Avatar from "../../components/api/Avatar";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
 
 export default {
   name: "PersonalInfo",
-  components: {Avatar, RequireAuthorization}
+  components: {RequireAuthorization, Avatar},
 }
 </script>
 

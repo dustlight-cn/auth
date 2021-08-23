@@ -84,8 +84,8 @@
 </template>
 
 <script>
-import RequireAuthorization from "../../components/RequireAuthorization";
-import Avatar from "../../components/Avatar";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import Avatar from "../../components/api/Avatar";
 
 export default {
   name: "Users",

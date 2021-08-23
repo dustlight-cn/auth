@@ -293,10 +293,10 @@
 </template>
 
 <script>
-import RequireAuthorization from "../../components/RequireAuthorization";
-import EditPage from "../../components/EditPage";
-import Avatar from "../../components/Avatar";
-import NoResults from "../../components/NoResults";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import EditPage from "../../components/common/EditPage";
+import Avatar from "../../components/api/Avatar";
+import NoResults from "../../components/common/NoResults";
 
 export default {
   name: "NewClient",

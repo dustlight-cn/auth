@@ -140,11 +140,11 @@
 </template>
 
 <script>
-import EditPage from "../../components/EditPage";
-import RequireAuthorization from "../../components/RequireAuthorization";
-import Avatar from "../../components/Avatar";
-import Authorities from "../../components/Authorities";
-import Roles from "../../components/Roles";
+import EditPage from "../../components/common/EditPage";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import Avatar from "../../components/api/Avatar";
+import Authorities from "../../components/api/Authorities";
+import Roles from "../../components/api/Roles";
 
 export default {
   name: "ClientAdvancedSettings",

@@ -103,9 +103,9 @@
 </template>
 
 <script>
-import RequireAuthorization from "./RequireAuthorization";
-import NoResults from "./NoResults";
-import UserRoleSettings from "./UserRoleSettings";
+import RequireAuthorization from "../common/RequireAuthorization";
+import NoResults from "../common/NoResults";
+import UserRoleSettings from "../dialogs/UserRoleSettings";
 
 export default {
   name: "UserClientRoles",

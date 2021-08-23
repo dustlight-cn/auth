@@ -10,7 +10,7 @@
           leave-active-class="animated fadeOut">
           <q-item class="q-pl-sm q-pr-sm" clickable v-ripple>
             <q-item-section avatar>
-              <q-icon name="security"/>
+              <q-icon name="person"/>
             </q-item-section>
             <q-item-section>
               <q-item-label>
@@ -31,33 +31,38 @@
       </q-list>
     </div>
     <div v-else>
-      <div v-if="authorities && authorities.length > 0">
+      <div v-if="roles && roles.length > 0">
         <q-list>
           <transition
-            v-for="authority in authorities"
-            :key="authority.aid"
+            v-for="role in roles"
+            :key="role.rid"
             appear
             enter-active-class="animated fadeIn"
             leave-active-class="animated fadeOut">
-            <q-item class="q-pl-sm q-pr-sm" :clickable="editable" v-ripple="editable"
-                    @click="()=>edit(authority)">
+            <q-item class="q-pl-sm q-pr-sm"
+                    :clickable="editable" v-ripple="editable"
+                    @click="()=>edit(role)">
               <q-item-section avatar>
-                <q-icon name="security"/>
+                <q-icon name="person"/>
               </q-item-section>
               <q-item-section>
                 <q-item-label>
-                  {{ authority.authorityName && authority.authorityName.trim() ? authority.authorityName.trim() : "-" }}
+                  {{ role.roleName && role.roleName.trim() ? role.roleName.trim() : "-" }}
                 </q-item-label>
                 <q-item-label caption>
                   {{
-                    authority.authorityDescription && authority.authorityDescription.trim() ? authority.authorityDescription.trim() : "-"
+                    role.roleDescription && role.roleDescription.trim() ? role.roleDescription.trim() : "-"
                   }}
                 </q-item-label>
               </q-item-section>
 
+              <q-item-section no-wrap side v-if="editable">
+                <q-btn flat dense icon="security" round
+                       @click.st.stop="()=>grant(role)"/>
+              </q-item-section>
               <q-item-section no-wrap side v-if="removable" :style="editable?'padding-left: 0px':''">
                 <q-btn flat dense icon="delete" round
-                       @click.stop="()=>remove(authority)"/>
+                       @click.st.stop="()=>remove(role)"/>
               </q-item-section>
             </q-item>
           </transition>
@@ -69,10 +74,10 @@
 </template>
 
 <script>
-import NoResults from "./NoResults";
+import NoResults from "../common/NoResults";
 
 export default {
-  name: "Authorities",
+  name: "Roles",
   components: {NoResults},
   props: {
     client: Object,
@@ -81,7 +86,7 @@ export default {
   },
   data() {
     return {
-      authorities: [],
+      roles: [],
       loading: false
     }
   },
@@ -89,17 +94,20 @@ export default {
     load() {
       if (this.loading) return
       this.loading = true
-      this.$authoritiesApi.getAuthorities(null, this.client.cid)
-        .then(res => this.authorities = res.data)
+      this.$rolesApi.getClientRoles(this.client.cid)
+        .then(res => this.roles = res.data)
         .finally(() => this.loading = false)
     },
-    edit(authority) {
-      console.log("edit", authority)
+    edit(role) {
+      console.log("edit", role)
     },
-    remove(authority) {
-      console.log("remove", authority)
+    remove(role) {
+      console.log("remove", role)
     },
-    add(){
+    grant(role) {
+      console.log("grant", role)
+    },
+    add() {
       console.log("add")
     }
   },

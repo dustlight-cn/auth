@@ -133,8 +133,8 @@
 </template>
 
 <script>
-import EditPage from "../../components/EditPage";
-import RequireAuthorization from "../../components/RequireAuthorization";
+import EditPage from "../../components/common/EditPage";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
 
 export default {
   name: "NewUser",
