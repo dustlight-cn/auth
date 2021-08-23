@@ -271,7 +271,8 @@
 
         <q-card-section>
           <user-role-clients :current-user="user_" :user="targetUser" :managed="true"
-                             :onRoleGrantOrRevoke="(...args)=>$refs['user-role-clients'].updateRole(...args)"/>
+                             :onRoleGrantOrRevoke="(...args)=>$refs['user-role-clients'].updateRole(...args)"
+                             :onRoleUpdating="(roles)=>updating.roles=roles"/>
         </q-card-section>
 
         <q-card-actions align="right">

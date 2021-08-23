@@ -49,6 +49,7 @@
             </template>
             <template v-slot:default>
               <user-client-roles :ref="'user-client-role-'+index" :user="user" :client="client"
+                                 :updating="updating.roles"
                                  :onUpdated="onRoleGrantOrRevoke"
                                  :managed="managed"
                                  :current-user="currentUser" dense/>
@@ -73,13 +74,16 @@ export default {
     user: Object,
     currentUser: Object,
     managed: Boolean,
-    onRoleGrantOrRevoke: Function
+    onRoleGrantOrRevoke: Function,
+    onRoleUpdating: Function
   },
   data() {
     return {
       roleClients: [],
       loading: false,
-      console: console
+      updating: {
+        roles: []
+      }
     }
   },
   methods: {
@@ -126,6 +130,11 @@ export default {
   watch: {
     user() {
       this.load()
+    },
+    "updating.roles"() {
+      if (!this.onRoleUpdating)
+        return
+      this.onRoleUpdating(this.updating.roles)
     }
   }
 }

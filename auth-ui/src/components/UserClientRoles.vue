@@ -23,7 +23,8 @@
             </q-item-label>
           </q-item-section>
           <q-item-section side>
-            <q-skeleton round type="text" width="2em"/>
+            <q-skeleton v-if="managed" type="QAvatar" size="1.5em"/>
+            <q-skeleton v-else type="text" width="2em"/>
           </q-item-section>
         </q-item>
       </transition>
@@ -82,12 +83,18 @@
           </q-item>
         </transition>
 
-        <div v-if="managed">
-          <q-separator class="q-ma-sm"/>
-          <div class="text-center text-caption text-grey ">
-            {{ usersRoles.length + " / " + roles.length }}
+        <transition
+            v-if="managed"
+            appear
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut">
+          <div>
+            <q-separator class="q-ma-sm"/>
+            <div class="text-center text-caption text-grey ">
+              {{ usersRoles.length + " / " + roles.length }}
+            </div>
           </div>
-        </div>
+        </transition>
       </q-list>
       <no-results v-else/>
 
@@ -111,17 +118,15 @@ export default {
     loadOnMounted: Boolean,
     managed: Boolean,
     itemClass: String,
-    onUpdated: Function
+    onUpdated: Function,
+    updating: Array
   },
   data() {
     return {
       usersRoles: [],
       roles: [],
       loading: false,
-      loaded: false,
-      updating: {
-        roles: []
-      }
+      loaded: false
     }
   },
   methods: {
@@ -145,26 +150,26 @@ export default {
       })
     },
     grantOrRevokeRole(role) {
-      if (this.updating.roles.indexOf(role.rid) >= 0)
+      if (this.updating.indexOf(role.rid) >= 0)
         return 0;
       if (this.hasRole(role)) {
-        this.updating.roles.push(role.rid);
+        this.updating.push(role.rid);
         this.$rolesApi.deleteUserClientRoles(this.user.uid, this.client.cid, [role.rid])
             .then(res => {
               this.roleRevoked(role)
               if (this.onUpdated)
                 this.onUpdated(this.client, role, 0, this.usersRoles.length)
             })
-            .finally(() => this.updating.roles.splice(this.updating.roles.indexOf(role.rid), 1))
+            .finally(() => this.updating.splice(this.updating.indexOf(role.rid), 1))
       } else {
-        this.updating.roles.push(role.rid);
+        this.updating.push(role.rid);
         this.$rolesApi.setUserClientRoles(this.user.uid, this.client.cid, [{rid: role.rid}])
             .then(res => {
               this.roleGranted(role)
               if (this.onUpdated)
                 this.onUpdated(this.client, role, 1, this.usersRoles.length)
             })
-            .finally(() => this.updating.roles.splice(this.updating.roles.indexOf(role.rid), 1))
+            .finally(() => this.updating.splice(this.updating.indexOf(role.rid), 1))
       }
     },
     hasPermission(authority) {
@@ -203,7 +208,7 @@ export default {
       return -1;
     },
     isRoleUpdating(role) {
-      return this.updating.roles.indexOf(role.rid) >= 0;
+      return this.updating.indexOf(role.rid) >= 0;
     },
     load() {
       if (this.loading || !this.user || !this.user.uid || !this.client || !this.client.cid)
