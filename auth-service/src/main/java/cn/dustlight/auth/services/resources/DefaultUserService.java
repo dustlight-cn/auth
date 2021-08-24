@@ -69,6 +69,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
         DefaultUser u = userMapper.selectUserByAccount(account);
         if (u == null)
             throw new UsernameNotFoundException("user not found");
+        u.setRoles(getRolesWithClientId(u.getUid(), "default"));
         return u;
     }
 
@@ -107,7 +108,19 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     @Override
     public DefaultUser loadUser(Long uid) {
-        return userMapper.selectUser(uid);
+        DefaultUser usr = userMapper.selectUser(uid);
+        if (usr == null)
+            throw new UsernameNotFoundException("user not found");
+        return usr;
+    }
+
+    @Override
+    public DefaultUser loadUser(Long uid, String clientId) {
+        DefaultUser usr = userMapper.selectUser(uid);
+        if (usr == null)
+            throw new UsernameNotFoundException("user not found");
+        usr.setRoles(getRolesWithClientId(usr.getUid(), clientId));
+        return usr;
     }
 
     @Override
@@ -225,7 +238,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     }
 
     @Override
-    public Collection<? extends Role> getRolesWithClientId(Long uid, String clientId) {
+    public Collection<DefaultUserRole> getRolesWithClientId(Long uid, String clientId) {
         return roleMapper.listUserRolesWithClientId(uid, clientId);
     }
 

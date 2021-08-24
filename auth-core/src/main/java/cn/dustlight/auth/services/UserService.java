@@ -41,6 +41,15 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
     T loadUser(Long uid);
 
     /**
+     * 通过uid获取用户，并获取对应应用的角色权限
+     *
+     * @param uid      用户uid
+     * @param clientId 应用id
+     * @return 用户对象
+     */
+    T loadUser(Long uid, String clientId);
+
+    /**
      * 通过用户名或邮箱获取用户
      *
      * @param uoeop 用户名或邮箱或手机号
@@ -186,7 +195,14 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      */
     Collection<? extends Role> getRoles(Long uid);
 
-    Collection<? extends Role> getRolesWithClientId(Long uid, String clientId);
+    /**
+     * 获取用户角色
+     *
+     * @param uid      用户uid
+     * @param clientId 应用id
+     * @return 用户角色
+     */
+    Collection<? extends UserRole> getRolesWithClientId(Long uid, String clientId);
 
     /**
      * 获取用户角色

@@ -24,7 +24,7 @@ public class DefaultUser implements User {
     private Date accountExpiredAt;
     private Date credentialsExpiredAt;
     private Date unlockedAt;
-    private Collection<UserRole> roles;
+    private Collection<? extends UserRole> roles;
     private boolean enabled;
 
     @Override
@@ -58,7 +58,7 @@ public class DefaultUser implements User {
     }
 
     @Override
-    public Collection<UserRole> getUserRoles() {
+    public Collection<? extends UserRole> getUserRoles() {
         return roles;
     }
 
@@ -192,7 +192,7 @@ public class DefaultUser implements User {
         this.credentialsExpiredAt = credentialsExpiredAt;
     }
 
-    public void setRoles(Collection<UserRole> roles) {
+    public void setRoles(Collection<? extends UserRole> roles) {
         this.roles = roles;
     }
 

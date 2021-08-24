@@ -51,7 +51,7 @@ public class UserController {
         if (!(oAuth2Authentication.getPrincipal() instanceof User))
             ErrorEnum.UNAUTHORIZED.details("Principal is not User").throwException();
         DefaultUser user = (DefaultUser) oAuth2Authentication.getPrincipal();
-        return UserResource.setAvatar(userService.loadUser(user.getUid()));
+        return UserResource.setAvatar(userService.loadUser(user.getUid(), oAuth2Authentication.getOAuth2Request().getClientId()));
     }
 
     @VerifyCode("Register")

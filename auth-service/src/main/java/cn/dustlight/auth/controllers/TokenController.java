@@ -95,6 +95,7 @@ public class TokenController {
         if (userAuth == null || !userAuth.isAuthenticated()) {
             throw new InvalidGrantException("Could not authenticate user: " + username);
         }
+
         Client defaultClient = clientService.loadClientByClientId("default");
         TokenRequest tokenRequest = new TokenRequest(null, defaultClient.getClientId(), defaultClient.getScope(), null);
         OAuth2Request request = tokenRequest.createOAuth2Request(defaultClient);

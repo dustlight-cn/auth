@@ -28,10 +28,7 @@ public interface UserMapper {
 
     @Select("SELECT * FROM users WHERE username=#{account} OR email=#{account} OR phone=#{account} LIMIT 1")
     @Results(id = "User", value = {
-            @Result(column = "uid", property = "uid"),
-            @Result(column = "uid",
-                    property = "roles",
-                    many = @Many(select = "cn.dustlight.auth.mappers.RoleMapper.listUserRoles"))
+            @Result(column = "uid", property = "uid")
     })
     DefaultUser selectUserByAccount(@Param("account") String account);
 

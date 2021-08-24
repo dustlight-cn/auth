@@ -74,7 +74,7 @@ public interface User extends UserDetails, Datable, Serializable {
      */
     @JsonProperty("roles")
     @Schema(name = "roles")
-    Collection<UserRole> getUserRoles();
+    Collection<? extends UserRole> getUserRoles();
 
     /**
      * 获取账号过期时间

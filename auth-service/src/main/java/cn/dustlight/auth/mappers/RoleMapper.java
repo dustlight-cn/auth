@@ -80,6 +80,7 @@ public interface RoleMapper {
 
     @Select("SELECT uid,r.rid AS rid,roleName,roleDescription,expiredAt FROM user_role AS ur,roles AS r " +
             "WHERE ur.uid=#{uid} AND ur.rid=r.rid AND r.cid=#{cid}")
+    @ResultMap("UserRole")
     Collection<DefaultUserRole> listUserRolesWithClientId(@Param("uid") Long uid,
                                                           @Param("cid") String cid);
 
