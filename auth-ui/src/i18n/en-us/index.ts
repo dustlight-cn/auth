@@ -334,7 +334,7 @@ export default {
   },
   "SystemSettings": {
     "title": "System Settings",
-    "subtitle": "Manage roles, authorities, authorization scopes, and so on.",
+    "subtitle": "Manage OAuth2 authorization grant type, authorization scopes, and so on.",
     "grantTypes": "Grant Types",
     "grantTypesDesc": "Manage the OAuth2 authorization grant types.",
     "deleteGrantType": "Delete Grant Type",
@@ -346,20 +346,7 @@ export default {
     "deleteScope": "Delete Scope",
     "deleteScopeMsg": "Are you sure to delete this authorization scope?",
     "createScope": "Create Scope",
-    "createScopeMsg": "Please enter the name of the new authorization scope.",
-    "authorities": "Authorities",
-    "authoritiesDesc": "Management system authorities.",
-    "deleteAuthority": "Delete Authority",
-    "deleteAuthorityMsg": "Are you sure to delete this authority?",
-    "createAuthority": "Create Authority",
-    "createAuthorityMsg": "Please enter the name of the new authority.",
-    "roles": "Roles",
-    "rolesDesc": "Manage roles and authorities for roles.",
-    "deleteRole": "Delete Role",
-    "deleteRoleMsg": "Are you sure to delete this role?",
-    "createRole": "Create Role",
-    "createRoleMsg": "Please enter the name of the new role.",
-    "grantRole": "Grant Role"
+    "createScopeMsg": "Please enter the name of the new authorization scope."
   },
   "UserClientRoles": {
     "expiredAt": "Expired At",

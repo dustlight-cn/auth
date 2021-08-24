@@ -334,7 +334,7 @@ export default {
   },
   "SystemSettings": {
     "title": "系统设置",
-    "subtitle": "管理角色、权限以及授权作用域等。",
+    "subtitle": "管理 OAuth2 授权模式以及授权作用域等。",
     "grantTypes": "授权模式",
     "grantTypesDesc": "管理 OAuth2 授权模式。",
     "deleteGrantType": "删除授权模式",
@@ -346,20 +346,7 @@ export default {
     "deleteScope": "删除授权作用域",
     "deleteScopeMsg": "是否确定要删除此授权作用域？",
     "createScope": "创建授权作用域",
-    "createScopeMsg": "请输入新建授权作用域的名称。",
-    "authorities": "权限",
-    "authoritiesDesc": "管理系统权限。",
-    "deleteAuthority": "删除权限",
-    "deleteAuthorityMsg": "是否确定要删除此权限？",
-    "createAuthority": "创建权限",
-    "createAuthorityMsg": "请输入新建权限的名称。",
-    "roles": "角色",
-    "rolesDesc": "管理角色以及角色的权限。",
-    "deleteRole": "删除角色",
-    "deleteRoleMsg": "是否确定要删除此角色？",
-    "createRole": "创建角色",
-    "createRoleMsg": "请输入新建角色的名称。",
-    "grantRole": "角色授权"
+    "createScopeMsg": "请输入新建授权作用域的名称。"
   },
   "UserClientRoles": {
     "expiredAt": "到期时间",

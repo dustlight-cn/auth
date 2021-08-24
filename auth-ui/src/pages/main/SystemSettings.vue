@@ -135,198 +135,6 @@
           </div>
         </q-card-actions>
       </q-card>
-
-      <!-- 权限 Authorities -->
-      <q-card bordered flat class="q-pa-md q-mt-md">
-        <q-item>
-          <q-item-section class="text-h6 q-pb-md">
-            {{ $tt($options, "authorities") }}
-            <div class="text-caption">
-              {{ $tt($options, "authoritiesDesc") }}
-            </div>
-          </q-item-section>
-          <q-item-section side>
-            <q-btn @click="createAuthority" :loading="loading.authorities"
-                   :disable="loading.authorities || !hasWriteAuthorityPermission" dense
-                   color="accent" rounded
-                   icon="add"/>
-          </q-item-section>
-        </q-item>
-        <q-list separator>
-          <transition
-            v-for="(authority,index) in data.authorities" :key="authority.aid"
-            appear
-            enter-active-class="animated fadeIn"
-            leave-active-class="animated fadeOut">
-            <q-item>
-              <q-item-section avatar>
-                <q-icon name="security"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>
-                  {{ authority.authorityName || "-" }}
-                  <q-popup-edit v-if="hasWriteAuthorityPermission"
-                                @save="(val,initVal)=>updateAuthority(index,'authorityName',initVal)"
-                                :title="$t('name')"
-                                color="accent" v-model="authority.authorityName"
-                                buttons>
-                    <q-input color="accent" type="text" v-model="authority.authorityName" dense autofocus/>
-                  </q-popup-edit>
-                </q-item-label>
-                <q-item-label caption>
-                  {{ authority.authorityDescription || "-" }}
-                  <q-popup-edit v-if="hasWriteAuthorityPermission"
-                                @save="(val,initVal)=>updateAuthority(index,'authorityDescription',initVal)"
-                                :title="$t('description')"
-                                color="accent" v-model="authority.authorityDescription"
-                                buttons>
-                    <q-input color="accent" type="text" v-model="authority.authorityDescription" dense autofocus/>
-                  </q-popup-edit>
-                </q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-btn :disable="!hasWriteAuthorityPermission" @click="()=>deleteAuthority(authority)" rounded flat
-                       dense icon="delete"/>
-              </q-item-section>
-            </q-item>
-          </transition>
-        </q-list>
-        <q-card-actions
-          align="center">
-          <div class="text-caption text-grey" v-if="!data.grantTypes || data.grantTypes.length == 0">
-            {{ $t("noResults") }}
-          </div>
-        </q-card-actions>
-      </q-card>
-
-      <!-- 角色 Roles -->
-      <q-card bordered flat class="q-pa-md q-mt-md">
-        <q-item>
-          <q-item-section class="text-h6 q-pb-md">
-            {{ $tt($options, "roles") }}
-            <div class="text-caption">
-              {{ $tt($options, "rolesDesc") }}
-            </div>
-          </q-item-section>
-          <q-item-section side>
-            <q-btn @click="createRole" :loading="loading.roles" :disable="loading.roles || !hasWriteRolePermission"
-                   dense color="accent" rounded
-                   icon="add"/>
-          </q-item-section>
-        </q-item>
-        <q-list separator>
-          <transition
-            v-for="(role,index) in data.roles" :key="role.rid"
-            appear
-            enter-active-class="animated fadeIn"
-            leave-active-class="animated fadeOut">
-            <q-item>
-              <q-item-section avatar>
-                <q-icon name="person"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>
-                  {{ role.roleName || "-" }}
-                  <q-popup-edit v-if="hasWriteRolePermission"
-                                @save="(val,initVal)=>updateRole(index,'roleName',initVal)"
-                                :title="$t('name')"
-                                color="accent" v-model="role.roleName"
-                                buttons>
-                    <q-input color="accent" type="text" v-model="role.roleName" dense autofocus/>
-                  </q-popup-edit>
-                </q-item-label>
-                <q-item-label caption>
-                  {{ role.roleDescription || "-" }}
-                  <q-popup-edit v-if="hasWriteRolePermission"
-                                @save="(val,initVal)=>updateRole(index,'roleDescription',initVal)"
-                                :title="$t('description')"
-                                color="accent" v-model="role.roleDescription"
-                                buttons>
-                    <q-input color="accent" type="text" v-model="role.roleDescription" dense autofocus/>
-                  </q-popup-edit>
-                </q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-btn :disable="!hasGrantRolePermission" @click="()=>showGrantRoleDialog(role)" rounded flat dense
-                       icon="security"/>
-              </q-item-section>
-              <q-item-section side>
-                <q-btn :disable="!hasWriteRolePermission" @click="()=>deleteRole(role)" rounded flat dense
-                       icon="delete"/>
-              </q-item-section>
-            </q-item>
-          </transition>
-        </q-list>
-        <q-card-actions
-          align="center">
-          <div class="text-caption text-grey" v-if="!data.grantTypes || data.grantTypes.length == 0">
-            {{ $t("noResults") }}
-          </div>
-        </q-card-actions>
-      </q-card>
-
-      <q-dialog :persistent="loading.grantingRole.length>0" style="max-width: 400px;" :value="selectedRole!=null"
-                @input="(val)=>{if(!val)selectedRole=null}">
-        <q-card v-if="selectedRole!=null" class="full-width">
-          <q-card-section>
-            <div class="text-h6">{{ $tt($options, 'grantRole') }}</div>
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            <q-item>
-              <q-item-section avatar>
-                <q-icon name="person"/>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>{{ selectedRole.roleName || "-" }}</q-item-label>
-                <q-item-label caption>{{ selectedRole.roleDescription || "-" }}</q-item-label>
-              </q-item-section>
-              <q-item-section side v-if="data.roleAuthorities && data.authorities">
-                {{ data.roleAuthorities.length + " / " + data.authorities.length }}
-              </q-item-section>
-            </q-item>
-          </q-card-section>
-          <q-card-section class="q-pa-none">
-            <q-list separator v-if="!loading.roleAuthorities && data.roleAuthorities">
-              <transition
-                v-for="(authority,index) in data.authorities"
-                :key="authority.aid"
-                appear
-                enter-active-class="animated fadeIn"
-                leave-active-class="animated fadeOut"
-              >
-                <q-item clickable v-ripple>
-                  <q-item-section avatar style="min-width: 0px;">
-                    <q-icon :color="data.roleAuthorities.indexOf(authority.authorityName)>-1?'accent':''"
-                            name="security"/>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label v-if="data.roleAuthorities.indexOf(authority.authorityName)>-1" class="text-accent">
-                      {{ authority.authorityName || '-' }}
-                    </q-item-label>
-                    <q-item-label v-else>{{ authority.authorityName || '-' }}</q-item-label>
-                    <q-item-label caption>{{ authority.authorityDescription || '-' }}</q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                    <q-btn :disable="isGrantingRole(authority)"
-                           :loading="isGrantingRole(authority)"
-                           round flat
-                           :icon="(data.roleAuthorities.indexOf(authority.authorityName)>-1?'remove':'add')"
-                           @click="()=>grantRole(authority)"/>
-                  </q-item-section>
-                </q-item>
-              </transition>
-            </q-list>
-          </q-card-section>
-          <q-card-section v-if="loading.roleAuthorities" style="height: 80px;">
-            <q-inner-loading :showing="loading.roleAuthorities">
-              <q-spinner-gears size="50px" color="accent"/>
-            </q-inner-loading>
-          </q-card-section>
-          <q-card-actions align="right">
-            <q-btn :label="$t('done')" :loading="loading.grantingRole.length>0" color="accent" v-close-popup/>
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
     </require-authorization>
   </q-page>
 </template>
@@ -342,37 +150,20 @@ export default {
       user_: null,
       data: {
         grantTypes: null,
-        scopes: null,
-        authorities: null,
-        roles: null,
-        roleAuthorities: null,
+        scopes: null
       },
       loading: {
         grantTypes: false,
-        scopes: false,
-        authorities: false,
-        roles: false,
-        roleAuthorities: false,
-        grantingRole: []
-      },
-      selectedRole: null
+        scopes: false
+      }
     }
   },
   computed: {
-    hasWriteAuthorityPermission() {
-      return this.hasPermission("WRITE_AUTHORITY");
-    },
     hasWriteGrantTypePermission() {
       return this.hasPermission("WRITE_TYPE");
     },
     hasWriteScopePermission() {
       return this.hasPermission("WRITE_SCOPE");
-    },
-    hasWriteRolePermission() {
-      return this.hasPermission("WRITE_ROLE");
-    },
-    hasGrantRolePermission() {
-      return this.hasPermission("GRANT_ROLE");
     }
   },
   methods: {
@@ -394,24 +185,6 @@ export default {
           this.data.scopes = res.data;
         }).finally(() => this.loading.scopes = false)
     },
-    loadAuthorities() {
-      if (this.loading.authorities)
-        return;
-      this.loading.authorities = true;
-      this.$authoritiesApi.getAuthorities("")
-        .then(res => {
-          this.data.authorities = res.data;
-        }).finally(() => this.loading.authorities = false)
-    },
-    loadRoles() {
-      if (this.loading.roles)
-        return;
-      this.loading.roles = true;
-      this.$rolesApi.getRoles("")
-        .then(res => {
-          this.data.roles = res.data;
-        }).finally(() => this.loading.roles = false)
-    },
     updateGrantType(index, key, initValue) {
       this.$grantTypesApi.setGrantTypes([this.data.grantTypes[index]])
         .then((res) => this.showSuccessMessage())
@@ -424,20 +197,6 @@ export default {
         .then((res) => this.showSuccessMessage())
         .catch(e => {
           this.data.scopes[index][key] = initValue;
-        })
-    },
-    updateAuthority(index, key, initValue) {
-      this.$authoritiesApi.setAuthorities([this.data.authorities[index]])
-        .then((res) => this.showSuccessMessage())
-        .catch(e => {
-          this.data.authorities[index][key] = initValue;
-        })
-    },
-    updateRole(index, key, initValue) {
-      this.$rolesApi.setRoles([this.data.roles[index]])
-        .then((res) => this.showSuccessMessage())
-        .catch(e => {
-          this.data.roles[index][key] = initValue;
         })
     },
     createGrantType() {
@@ -495,84 +254,6 @@ export default {
             })
             .finally(() => this.loading.scopes = false)
         })
-    },
-    createAuthority() {
-      this.showCreateDialog(this.$tt(this, "createAuthority"), this.$tt(this, "createAuthorityMsg"),
-        (name) => {
-          this.loading.authorities = true;
-          return this.$authoritiesApi.setAuthorities([{
-            authorityName: name,
-            authorityDescription: name + " description"
-          }])
-            .then(() => {
-              this.loading.authorities = false;
-              this.loadAuthorities();
-            })
-            .finally(() => this.loading.authorities = false)
-        }
-      );
-    },
-    deleteAuthority(authority) {
-      this.showDeleteDialog(this.$tt(this, "deleteAuthority") + " '" + authority.authorityName + "'",
-        this.$tt(this, "deleteAuthorityMsg"),
-        () => {
-          this.loading.authorities = true;
-          return this.$authoritiesApi.deleteAuthorities([authority.aid])
-            .then(() => {
-              this.loading.authorities = false;
-              this.loadAuthorities();
-            })
-            .finally(() => this.loading.authorities = false)
-        })
-    },
-    createRole() {
-      this.showCreateDialog(this.$tt(this, "createRole"), this.$tt(this, "createRoleMsg"),
-        (name) => {
-          this.loading.roles = true;
-          return this.$rolesApi.setRoles([{
-            roleName: name,
-            roleDescription: name + " description"
-          }])
-            .then(() => {
-              this.loading.roles = false;
-              this.loadRoles();
-            })
-            .finally(() => this.loading.roles = false)
-        }
-      );
-    },
-    deleteRole(role) {
-      this.showDeleteDialog(this.$tt(this, "deleteRole") + " '" + role.roleName + "'",
-        this.$tt(this, "deleteRoleMsg"),
-        () => {
-          this.loading.roles = true;
-          return this.$rolesApi.deleteRoles([role.rid])
-            .then(() => {
-              this.loading.roles = false;
-              this.loadRoles();
-            })
-            .finally(() => this.loading.roles = false)
-        })
-    },
-    grantRole(authority) {
-      if (this.loading.grantingRole.indexOf(authority.authorityName) >= 0)
-        return;
-      this.loading.grantingRole.push(authority.authorityName);
-      let index = this.data.roleAuthorities.indexOf(authority.authorityName);
-      let p = index >= 0 ?
-        this.$authoritiesApi.deleteRoleAuthorities(this.selectedRole.rid, [authority.aid]) :
-        this.$authoritiesApi.setRoleAuthorities(this.selectedRole.rid, [authority.aid]);
-      p.then(() => {
-        if (index >= 0) {
-          this.data.roleAuthorities.splice(this.data.roleAuthorities.indexOf(authority.authorityName), 1);
-        } else {
-          this.data.roleAuthorities.push(authority.authorityName);
-        }
-      })
-        .finally(() => this.loading.grantingRole.splice(this.loading.grantingRole.indexOf(authority.authorityName), 1));
-    },
-    isGrantingRole(authority) {
-      return this.loading.grantingRole.indexOf(authority.authorityName) >= 0;
     },
     showSuccessMessage() {
       this.$q.notify({
@@ -646,12 +327,8 @@ export default {
     user_() {
       if (this.data.grantTypes == null)
         this.loadGrantTypes();
-      if (this.data.authorities == null)
-        this.loadAuthorities();
       if (this.data.scopes == null)
         this.loadScopes();
-      if (this.data.roles == null)
-        this.loadRoles();
     }
   }
 }
