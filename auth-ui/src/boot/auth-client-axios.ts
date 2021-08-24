@@ -129,7 +129,7 @@ const errorHandler = (error: any): any => {
   let res = error == null ? null : error.response;
   let e: AuthException;
 
-  if (res != null && res.data != null) {
+  if (res != null && res.data != null && res.data.message) {
     const message = app_obj.i18n.messages[app_obj.i18n?.locale].errors[res.data.code] || res.data.message
     e = new AuthException(res.data.code, message, res.data.details);
   } else {
