@@ -4,7 +4,7 @@
       <q-form @submit="save">
         <q-card-section>
           <div class="text-h6">
-            {{ role && role.rid ? $tt($options, "edit") : $tt($options, "new") }}
+            {{ authority && authority.aid ? $tt($options, "edit") : $tt($options, "new") }}
           </div>
         </q-card-section>
         <q-card-section>
@@ -13,13 +13,13 @@
                      color="accent" filled
                      :rules="rules.name"
                      v-model="model.name"
-                     :label="$tt($options,'roleName')"/>
+                     :label="$tt($options,'authorityName')"/>
 
             <q-input :loading="busying" :disable="busying"
                      color="accent" filled
                      :rules="rules.description"
                      v-model="model.description"
-                     :label="$tt($options,'roleDescription')"/>
+                     :label="$tt($options,'authorityDescription')"/>
           </div>
         </q-card-section>
 
@@ -30,7 +30,7 @@
                  :disable="busying"
                  @click.stop="onCancelClick"
                  v-close-popup/>
-          <q-btn :label="role && role.rid ? $t('update') : $t('create')"
+          <q-btn :label="authority && authority.aid ? $t('update') : $t('create')"
                  type="submit"
                  color="accent"
                  :disable="busying"
@@ -43,11 +43,11 @@
 
 <script>
 export default {
-  name: "EditRole",
+  name: "EditAuthority",
   props: {
     client: Object,
     currentUser: Object,
-    role: Object,
+    authority: Object,
     onSaved: Function,
     onSave: Function,
     persistentOnBusying: {
@@ -61,12 +61,12 @@ export default {
     return {
       busying: false,
       model: {
-        name: this.role ? this.role.roleName : "",
-        description: this.role ? this.role.roleDescription : "",
+        name: this.authority ? this.authority.authorityName : "",
+        description: this.authority ? this.authority.authorityDescription : "",
       },
       rules: {
-        name: [val => val && val.trim().length > 0 || this.$tt(this, 'roleNameRule')],
-        description: [val => val && val.trim().length > 0 || this.$tt(this, 'roleDescriptionRule')],
+        name: [val => val && val.trim().length > 0 || this.$tt(this, 'authorityNameRule')],
+        description: [val => val && val.trim().length > 0 || this.$tt(this, 'authorityDescriptionRule')],
       }
     }
   },
@@ -78,18 +78,18 @@ export default {
       if (this.busying)
         return
       this.busying = true
-      this.$rolesApi.setRoles([{
-        rid: this.role ? this.role.rid : null,
-        roleName: this.model.name.trim(),
-        roleDescription: this.model.description.trim()
+      this.$authoritiesApi.setAuthorities([{
+        aid: this.authority ? this.authority.rid : null,
+        authorityName: this.model.name.trim(),
+        authorityDescription: this.model.description.trim()
       }], this.client.cid)
         .then((res) => {
-          if (this.role && this.role.rid) {
-            this.role.roleName = this.model.name.trim()
-            this.role.roleDescription = this.model.description.trim()
+          if (this.authority && this.authority.aid) {
+            this.authority.authorityName = this.model.name.trim()
+            this.authority.authorityDescription = this.model.description.trim()
             this.showUpdateSuccessMessage()
             if (this.onSaved)
-              this.onSaved(this.role)
+              this.onSaved(this.authority)
           } else {
             this.showCreateSuccessMessage()
             if (this.onSaved)
@@ -100,12 +100,12 @@ export default {
         })
         .finally(() => this.busying = false)
       if (this.onSave) {
-        if (this.role && this.role.rid) {
-          this.onSave(this.role)
+        if (this.authority && this.authority.aid) {
+          this.onSave(this.authority)
         } else {
           this.onSave({
-            roleName: this.model.name.trim(),
-            roleDescription: this.model.description.trim()
+            authorityName: this.model.name.trim(),
+            authorityDescription: this.model.description.trim()
           })
         }
       }

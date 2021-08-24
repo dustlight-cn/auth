@@ -133,7 +133,7 @@ export default {
         this.$tt(this, "deleteRoleMsg"),
         () => {
           this.updatingRoles.push(role.rid)
-          return this.$rolesApi.deleteRoles([role.rid])
+          return this.$rolesApi.deleteRoles([role.rid], this.client.cid)
             .then(() => {
               this.roles.splice(this.roles.indexOf(role), 1)
             })
@@ -151,12 +151,12 @@ export default {
         currentUser: this.currentUser,
         persistentOnBusying: false,
         onSave: (role) => {
-          role.rid = role.roleName + new Date().getTime()
+          role.rid = role.roleName + "__TEMPORARY_ID"
           this.roles.push(role)
           this.updatingRoles.push(role.rid)
         },
         onSaved: (role) => {
-          this.updatingRoles.splice(this.updatingRoles.indexOf(role.roleName), 1)
+          this.updatingRoles.splice(this.updatingRoles.indexOf(role.roleName + "__TEMPORARY_ID"), 1)
           for (let i in this.roles)
             if (this.roles[i].roleName == role.roleName) {
               this.roles[i].rid = role.rid
