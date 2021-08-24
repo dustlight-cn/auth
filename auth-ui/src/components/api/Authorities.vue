@@ -23,9 +23,6 @@
             <q-item-section side>
               <q-skeleton type="QBtn" size="1.5em"/>
             </q-item-section>
-            <q-item-section side>
-              <q-skeleton type="QBtn" size="1.5em"/>
-            </q-item-section>
           </q-item>
         </transition>
       </q-list>

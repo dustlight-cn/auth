@@ -38,9 +38,8 @@
           enter-active-class="animated fadeIn"
           leave-active-class="animated fadeOut">
           <q-item
-            :dense="dense"
             :class="itemClass"
-            clickable v-ripple
+            :clickable="editable" v-ripple="editable"
           >
             <q-item-section avatar style="min-width: 0px;">
               <q-icon name="person" :color="managed && hasRole(role) ? 'accent' : ''"></q-icon>
@@ -54,6 +53,7 @@
             <!-- 添加或删除角色 -->
             <q-item-section side v-if="managed">
               <q-btn flat round
+                     :dense="dense"
                      :icon="hasRole(role) ? 'remove' : 'add'"
                      @click.stop="()=>grantOrRevokeRole(role)"
                      :loading="isRoleUpdating(role)"
@@ -62,13 +62,15 @@
             <!-- 对角色时限进行编辑 -->
             <q-item-section side v-else>
               <q-item-label v-if="role.expiredAt">
-                <div class="text-caption text-grey" v-if="!(hasGrantUserPermission || isClientOwner || isClientMember)">
+                <div class="text-caption text-grey"
+                     v-if="!(hasGrantUserPermission || isClientOwner || isClientMember) || !editable">
                   <span>{{ $tt($options, "expiredAt") }}</span>
                   <span class="q-ml-xs">
                                             {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
                                           </span>
                 </div>
-                <q-btn @click.stop="()=>editUserRole(role)" v-else no-caps flat dense
+                <q-btn @click.stop="()=>editUserRole(role)" v-else no-caps flat
+                       :dense="dense"
                        class="text-caption text-grey">
                   <span>{{ $tt($options, "expiredAt") }}</span>
                   <span class="q-ml-xs">
@@ -76,8 +78,9 @@
                                           </span>
                 </q-btn>
               </q-item-label>
-              <q-item-label v-else-if="hasGrantUserPermission || isClientOwner || isClientMember">
-                <q-btn @click.stop="()=>editUserRole(role)" class="text-grey" round flat icon="timer"/>
+              <q-item-label v-else-if="(hasGrantUserPermission || isClientOwner || isClientMember) && editable">
+                <q-btn @click.stop="()=>editUserRole(role)" class="text-grey"
+                       :dense="dense" round flat icon="timer"/>
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -119,7 +122,13 @@ export default {
     managed: Boolean,
     itemClass: String,
     onUpdated: Function,
-    updating: Array
+    updating: Array,
+    editable: {
+      type: Boolean,
+      default() {
+        return true
+      }
+    }
   },
   data() {
     return {

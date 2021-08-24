@@ -49,6 +49,7 @@
             </template>
             <template v-slot:default>
               <user-client-roles :ref="'user-client-role-'+index" :user="user" :client="client"
+                                 :editable="editable"
                                  :updating="updating.roles"
                                  :onUpdated="onRoleGrantOrRevoke"
                                  :managed="managed"
@@ -75,7 +76,13 @@ export default {
     currentUser: Object,
     managed: Boolean,
     onRoleGrantOrRevoke: Function,
-    onRoleUpdating: Function
+    onRoleUpdating: Function,
+    editable: {
+      type: Boolean,
+      default() {
+        return true
+      }
+    }
   },
   data() {
     return {

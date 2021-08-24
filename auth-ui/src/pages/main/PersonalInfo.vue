@@ -129,27 +129,8 @@
               <q-item-label caption>
                 {{ $tt($options, "roles") }}
               </q-item-label>
-              <q-item-label class="content">
-                <q-list>
-                  <q-item class="q-pl-none" v-for="(role,i) in user.roles" :key="role.rid">
-                    <q-item-section avatar style="min-width: 0px;">
-                      <q-icon name="person"/>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label>{{ role.roleDescription }}
-                        <q-badge color="dark" transparent align="top" v-if="role.expiredAt">
-                          <span>{{ $tt("User", "expiredAt") }}</span>
-                          <span class="q-ml-xs">
-                          {{ $util.dateFormat(role.expiredAt, "YYYY/mm/dd HH:MM:SS") }}
-                        </span>
-                        </q-badge>
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-                <!--                <q-chip icon="person" v-for="(role,i) in user.roles" :key="i">-->
-                <!--                  {{ role.roleDescription }}-->
-                <!--                </q-chip>-->
+              <q-item-label class="content-small">
+                <user-role-clients :editable="false" :current-user="user" :user="user"/>
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -173,10 +154,11 @@
 <script>
 import Avatar from "../../components/api/Avatar";
 import RequireAuthorization from "../../components/common/RequireAuthorization";
+import UserRoleClients from "../../components/api/UserRoleClients";
 
 export default {
   name: "PersonalInfo",
-  components: {RequireAuthorization, Avatar},
+  components: {UserRoleClients, RequireAuthorization, Avatar},
 }
 </script>
 
@@ -184,5 +166,10 @@ export default {
 .content {
   font-family: Consolas;
   font-size: 16px;
+}
+
+.content-small {
+  font-family: Consolas;
+  font-size: 10px;
 }
 </style>
