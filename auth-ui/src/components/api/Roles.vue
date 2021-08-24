@@ -80,6 +80,7 @@
 <script>
 import NoResults from "../common/NoResults";
 import EditRole from "../dialogs/EditRole";
+import RoleAuthorities from "../dialogs/RoleAuthorities";
 
 export default {
   name: "Roles",
@@ -88,7 +89,8 @@ export default {
     client: Object,
     removable: Boolean,
     editable: Boolean,
-    currentUser: Object
+    currentUser: Object,
+    authorities: Array | Function
   },
   data() {
     return {
@@ -141,7 +143,14 @@ export default {
         })
     },
     grant(role) {
-      console.log("grant", role)
+      this.$q.dialog({
+        component: RoleAuthorities,
+        parent: this,
+        role: role,
+        authorities: this.authorities,
+        currentUser: this.currentUser,
+        client: this.client
+      })
     },
     add() {
       this.$q.dialog({

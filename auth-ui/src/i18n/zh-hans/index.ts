@@ -276,6 +276,9 @@ export default {
     "authorityNameRule": "权限名不可为空。",
     "authorityDescriptionRule": "权限描述不可为空。"
   },
+  "RoleAuthorities": {
+    "title": "角色授权"
+  },
   "NewClient": {
     "title": "创建应用",
     "ownerUid": "应用所有者",

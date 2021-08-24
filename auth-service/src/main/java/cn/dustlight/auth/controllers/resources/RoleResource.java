@@ -136,8 +136,7 @@ public class RoleResource {
     @Operation(summary = "删除用户的角色", description = "应用和用户需要 GRANT_USER 权限。")
     public void deleteUserClientRoles(@PathVariable Long uid,
                                       @PathVariable String cid,
-                                      @RequestParam Collection<Long> id,
-                                      OAuth2Authentication authentication) {
+                                      @RequestParam Collection<Long> id) {
         userService.removeRoles(uid, id);
     }
 }

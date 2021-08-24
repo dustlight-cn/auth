@@ -53,8 +53,8 @@ public class AuthorityResource {
     @PutMapping("authorities")
     @Operation(summary = "修改或添加权限", description = "应用和用户需要 WRITE_AUTHORITY 权限。")
     public Collection<DefaultAuthority> setAuthorities(@RequestBody Collection<DefaultAuthority> authorities,
-                               @RequestParam(required = false, name = "clientId") String clientId,
-                               OAuth2Authentication authentication) {
+                                                       @RequestParam(required = false, name = "clientId") String clientId,
+                                                       OAuth2Authentication authentication) {
         if (!StringUtils.hasText(clientId))
             clientId = authentication.getOAuth2Request().getClientId();
         for (DefaultAuthority authority : authorities)
@@ -83,17 +83,24 @@ public class AuthorityResource {
         return roleService.listRoleAuthorities(rid);
     }
 
-    @PreAuthorize("(#oauth2.client or hasAnyAuthority('GRANT_ROLE')) and #oauth2.clientHasAnyRole('GRANT_ROLE')")
+    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('GRANT_ROLE')) and #oauth2.clientHasAnyRole('GRANT_ROLE')")
     @PutMapping("roles/{rid}/authorities")
     @Operation(summary = "添加角色权限", description = "应用和用户需要 GRANT_ROLE 权限。")
-    public void setRoleAuthorities(@PathVariable("rid") Long rid, @RequestParam Collection<Long> authorityId) {
-        roleService.createRoleAuthorities(rid, authorityId);
+    public void setRoleAuthorities(@PathVariable("rid") Long rid,
+                                   @RequestParam Collection<Long> authorityId,
+                                   @RequestParam(required = false, name = "clientId") String clientId,
+                                   OAuth2Authentication authentication) {
+        if (!StringUtils.hasText(clientId))
+            clientId = authentication.getOAuth2Request().getClientId();
+        roleService.createRoleAuthorities(rid, authorityId, clientId);
     }
 
-    @PreAuthorize("(#oauth2.client or hasAnyAuthority('GRANT_ROLE')) and #oauth2.clientHasAnyRole('GRANT_ROLE')")
+    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('GRANT_ROLE')) and #oauth2.clientHasAnyRole('GRANT_ROLE')")
     @DeleteMapping("roles/{rid}/authorities")
     @Operation(summary = "删除角色权限", description = "应用和用户需要 GRANT_ROLE 权限。")
-    public void deleteRoleAuthorities(@PathVariable("rid") Long rid, @RequestParam Collection<Long> authorityId) {
+    public void deleteRoleAuthorities(@PathVariable("rid") Long rid,
+                                      @RequestParam Collection<Long> authorityId,
+                                      @RequestParam(required = false, name = "clientId") String clientId) {
         roleService.removeRoleAuthorities(rid, authorityId);
     }
 

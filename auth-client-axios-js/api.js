@@ -118,10 +118,11 @@ const AuthoritiesApiAxiosParamCreator = function (configuration) {
          * @summary 删除角色权限
          * @param {number} rid
          * @param {Array<number>} authorityId
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRoleAuthorities: (rid, authorityId, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        deleteRoleAuthorities: (rid, authorityId, clientId, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'rid' is not null or undefined
             common_1.assertParamExists('deleteRoleAuthorities', 'rid', rid);
             // verify required parameter 'authorityId' is not null or undefined
@@ -142,6 +143,9 @@ const AuthoritiesApiAxiosParamCreator = function (configuration) {
             yield common_1.setBearerAuthToObject(localVarHeaderParameter, configuration);
             if (authorityId) {
                 localVarQueryParameter['authorityId'] = authorityId;
+            }
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
             }
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -367,10 +371,11 @@ const AuthoritiesApiAxiosParamCreator = function (configuration) {
          * @summary 添加角色权限
          * @param {number} rid
          * @param {Array<number>} authorityId
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setRoleAuthorities: (rid, authorityId, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        setRoleAuthorities: (rid, authorityId, clientId, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'rid' is not null or undefined
             common_1.assertParamExists('setRoleAuthorities', 'rid', rid);
             // verify required parameter 'authorityId' is not null or undefined
@@ -391,6 +396,9 @@ const AuthoritiesApiAxiosParamCreator = function (configuration) {
             yield common_1.setBearerAuthToObject(localVarHeaderParameter, configuration);
             if (authorityId) {
                 localVarQueryParameter['authorityId'] = authorityId;
+            }
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
             }
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -443,12 +451,13 @@ const AuthoritiesApiFp = function (configuration) {
          * @summary 删除角色权限
          * @param {number} rid
          * @param {Array<number>} authorityId
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRoleAuthorities(rid, authorityId, options) {
+        deleteRoleAuthorities(rid, authorityId, clientId, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.deleteRoleAuthorities(rid, authorityId, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.deleteRoleAuthorities(rid, authorityId, clientId, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -539,12 +548,13 @@ const AuthoritiesApiFp = function (configuration) {
          * @summary 添加角色权限
          * @param {number} rid
          * @param {Array<number>} authorityId
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setRoleAuthorities(rid, authorityId, options) {
+        setRoleAuthorities(rid, authorityId, clientId, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.setRoleAuthorities(rid, authorityId, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.setRoleAuthorities(rid, authorityId, clientId, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -585,11 +595,12 @@ const AuthoritiesApiFactory = function (configuration, basePath, axios) {
          * @summary 删除角色权限
          * @param {number} rid
          * @param {Array<number>} authorityId
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRoleAuthorities(rid, authorityId, options) {
-            return localVarFp.deleteRoleAuthorities(rid, authorityId, options).then((request) => request(axios, basePath));
+        deleteRoleAuthorities(rid, authorityId, clientId, options) {
+            return localVarFp.deleteRoleAuthorities(rid, authorityId, clientId, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -660,11 +671,12 @@ const AuthoritiesApiFactory = function (configuration, basePath, axios) {
          * @summary 添加角色权限
          * @param {number} rid
          * @param {Array<number>} authorityId
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setRoleAuthorities(rid, authorityId, options) {
-            return localVarFp.setRoleAuthorities(rid, authorityId, options).then((request) => request(axios, basePath));
+        setRoleAuthorities(rid, authorityId, clientId, options) {
+            return localVarFp.setRoleAuthorities(rid, authorityId, clientId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -705,12 +717,13 @@ class AuthoritiesApi extends base_1.BaseAPI {
      * @summary 删除角色权限
      * @param {number} rid
      * @param {Array<number>} authorityId
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthoritiesApi
      */
-    deleteRoleAuthorities(rid, authorityId, options) {
-        return exports.AuthoritiesApiFp(this.configuration).deleteRoleAuthorities(rid, authorityId, options).then((request) => request(this.axios, this.basePath));
+    deleteRoleAuthorities(rid, authorityId, clientId, options) {
+        return exports.AuthoritiesApiFp(this.configuration).deleteRoleAuthorities(rid, authorityId, clientId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -787,12 +800,13 @@ class AuthoritiesApi extends base_1.BaseAPI {
      * @summary 添加角色权限
      * @param {number} rid
      * @param {Array<number>} authorityId
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthoritiesApi
      */
-    setRoleAuthorities(rid, authorityId, options) {
-        return exports.AuthoritiesApiFp(this.configuration).setRoleAuthorities(rid, authorityId, options).then((request) => request(this.axios, this.basePath));
+    setRoleAuthorities(rid, authorityId, clientId, options) {
+        return exports.AuthoritiesApiFp(this.configuration).setRoleAuthorities(rid, authorityId, clientId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 exports.AuthoritiesApi = AuthoritiesApi;

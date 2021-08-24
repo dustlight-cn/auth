@@ -85,8 +85,8 @@ public class DefaultRoleService implements RoleService {
     }
 
     @Override
-    public void createRoleAuthorities(Long rid, Collection<Long> aids) {
-        if (!authorityMapper.insertRoleAuthorities(rid, aids))
+    public void createRoleAuthorities(Long rid, Collection<Long> aids, String clientId) {
+        if (!authorityMapper.insertRoleAuthorities(rid, aids, clientId))
             ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
     }
 

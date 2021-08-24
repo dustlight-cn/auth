@@ -82,9 +82,10 @@ public interface RoleService {
      *
      * @param rid  角色id
      * @param aids 权限id集合
+     * @param clientId 应用id
      * @return
      */
-    void createRoleAuthorities(Long rid, Collection<Long> aids);
+    void createRoleAuthorities(Long rid, Collection<Long> aids, String clientId);
 
     /**
      * 删除角色权限

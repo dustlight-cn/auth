@@ -68,9 +68,14 @@ public interface AuthorityMapper {
 
     @Insert("<script>INSERT IGNORE INTO role_authority (rid,aid) VALUES " +
             "<foreach collection='aids' item='aid' separator=','>" +
-            "(#{rid},#{aid})</foreach></script>")
+            "(" +
+            "(SELECT rid FROM roles WHERE rid=#{rid} AND cid=#{cid} LIMIT 1)" +
+            "," +
+            "(SELECT aid FROM authorities WHERE aid=#{aid} AND cid=#{cid} LIMIT 1)" +
+            ")</foreach></script>")
     Boolean insertRoleAuthorities(@Param("rid") Long rid,
-                                  @Param("aids") Collection<Long> aids);
+                                  @Param("aids") Collection<Long> aids,
+                                  @Param("cid") String cid);
 
     @Delete("<script>DELETE FROM role_authority WHERE rid=#{rid} AND aid IN " +
             "<foreach collection='aids' item='aid' open='(' separator=',' close=')'>" +

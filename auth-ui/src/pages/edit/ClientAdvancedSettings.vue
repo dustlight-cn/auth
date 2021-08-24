@@ -89,13 +89,14 @@
                   </q-item-section>
                   <q-item-section side>
                     <q-btn dense flat round icon="add" @click.stop="()=>$refs['roles'].add()"
-                    :loading="$refs['roles'] && $refs['roles'].loading"/>
+                           :loading="$refs['roles'] && $refs['roles'].loading"/>
                   </q-item-section>
                 </q-item>
                 <roles ref="roles"
                        :current-user="user"
                        :removable="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
                        :editable="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
+                       :authorities="()=> $refs.authorities.authorities"
                        :client="client"/>
 
                 <!-- 应用自定义权限, Client Custom Authorities -->

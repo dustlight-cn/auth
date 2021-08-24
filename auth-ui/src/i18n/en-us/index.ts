@@ -276,6 +276,9 @@ export default {
     "authorityNameRule": "Authority name can not be empty.",
     "authorityDescriptionRule": "Authority description can not be empty."
   },
+  "RoleAuthorities": {
+    "title": "Grant Role"
+  },
   "NewClient": {
     "title": "New OAuth Application",
     "ownerUid": "Application Owner",
