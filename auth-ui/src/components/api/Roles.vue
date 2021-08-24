@@ -151,7 +151,7 @@ export default {
         currentUser: this.currentUser,
         persistentOnBusying: false,
         onSave: (role) => {
-          role.rid = role.roleName
+          role.rid = role.roleName + new Date().getTime()
           this.roles.push(role)
           this.updatingRoles.push(role.rid)
         },
