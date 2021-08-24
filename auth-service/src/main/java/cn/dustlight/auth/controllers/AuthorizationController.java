@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -135,10 +136,17 @@ public class AuthorizationController {
             if (!StringUtils.hasText(resolvedRedirect))
                 throw new RedirectMismatchException("A redirectUri must be either supplied or preconfigured in the ClientDetails");
 
+            /* ------------------------------------------------------------------------------------------ */
             DefaultUser user = (DefaultUser) ((Authentication) principal).getPrincipal();
             Collection<UserRole> roles = userService.getRolesWithClientId(user.getUid(), clientId);
             user.setRoles(roles);
-            authorizationRequest.setAuthorities(user.getAuthorities());
+            Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+            authorizationRequest.setAuthorities(authorities);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(((Authentication) principal).getPrincipal(),
+                    ((Authentication) principal).getCredentials(),
+                    authorities);
+            usernamePasswordAuthenticationToken.setDetails(((Authentication) principal).getDetails());
+            /* ------------------------------------------------------------------------------------------ */
 
             authorizationRequest.setRedirectUri(resolvedRedirect);
 
@@ -159,9 +167,9 @@ public class AuthorizationController {
             response.setRedirect(resolvedRedirect);
             if (authorizationRequest.isApproved()) {
                 if (responseTypes.contains("token")) {
-                    response.setRedirect(getImplicitGrantRedirect(authorizationRequest, (Authentication) principal, isJwt));
+                    response.setRedirect(getImplicitGrantRedirect(authorizationRequest, usernamePasswordAuthenticationToken, isJwt));
                 } else if (responseTypes.contains("code")) {
-                    response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, (Authentication) principal, isJwt));
+                    response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, usernamePasswordAuthenticationToken, isJwt));
                 }
             }
 
