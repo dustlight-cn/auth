@@ -259,7 +259,7 @@ export default {
       return false;
     },
     withJwt(){
-      return this.$route.query.jwt != null ? Boolean(this.$route.query.jwt) : false
+      return this.$route.query.jwt != null ? this.$route.query.jwt.toUpperCase() == "TRUE" : false
     }
   },
   methods: {
