@@ -1220,10 +1220,10 @@ export default {
       p.then(res => {
         if (contains) {
           this.client.members.splice(this.client.members.indexOf(member.uid), 1)
-          this.members.splice(this.indexOfMember(member), 1)
+          // this.members.splice(this.indexOfMember(member), 1)
         } else {
           this.client.members.push(member.uid)
-          this.members.push(member)
+          // this.members.push(member)
         }
       }).finally(() => {
         this.updating.members.splice(this.updating.members.indexOf(member.uid), 1);
