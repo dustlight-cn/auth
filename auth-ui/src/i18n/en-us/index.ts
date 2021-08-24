@@ -252,6 +252,10 @@ export default {
     "roles": "Roles",
     "rolesTips": "Application Custom Roles"
   },
+  "Roles": {
+    "deleteRole": "Delete Role",
+    "deleteRoleMsg": "Are you sure to delete this role?",
+  },
   "EditRole": {
     "edit": "Edit Role",
     "new": "Create Role",
@@ -259,6 +263,18 @@ export default {
     "roleDescription": "Role Description",
     "roleNameRule": "Role name can not be empty.",
     "roleDescriptionRule": "Role description can not be empty."
+  },
+  "Authorities": {
+    "deleteAuthority": "Delete Authority",
+    "deleteAuthorityMsg": "Are you sure to delete this authority?",
+  },
+  "EditAuthority": {
+    "edit": "Edit Authority",
+    "new": "Create Authority",
+    "authorityName": "Authority Name",
+    "authorityDescription": "Authority Description",
+    "authorityNameRule": "Authority name can not be empty.",
+    "authorityDescriptionRule": "Authority description can not be empty."
   },
   "NewClient": {
     "title": "New OAuth Application",

@@ -37,7 +37,6 @@ public class AuthorityResource {
     @Autowired
     private UniqueGenerator<Long> idGenerator;
 
-    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('WRITE_AUTHORITY'))")
     @GetMapping("authorities")
     @Operation(summary = "获取权限")
     public Collection<? extends Authority> getAuthorities(@RequestParam(required = false) Collection<Long> id,
@@ -53,7 +52,7 @@ public class AuthorityResource {
     @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('WRITE_AUTHORITY')) and #oauth2.clientHasAnyRole('WRITE_AUTHORITY')")
     @PutMapping("authorities")
     @Operation(summary = "修改或添加权限", description = "应用和用户需要 WRITE_AUTHORITY 权限。")
-    public void setAuthorities(@RequestBody Collection<DefaultAuthority> authorities,
+    public Collection<DefaultAuthority> setAuthorities(@RequestBody Collection<DefaultAuthority> authorities,
                                @RequestParam(required = false, name = "clientId") String clientId,
                                OAuth2Authentication authentication) {
         if (!StringUtils.hasText(clientId))
@@ -62,6 +61,7 @@ public class AuthorityResource {
             if (authority.getAid() == null)
                 authority.setAid(idGenerator.generate());
         authorityService.createAuthorities(authorities, clientId);
+        return authorities;
     }
 
     @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('WRITE_AUTHORITY')) and #oauth2.clientHasAnyRole('WRITE_AUTHORITY')")

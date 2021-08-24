@@ -40,6 +40,8 @@
             enter-active-class="animated fadeIn"
             leave-active-class="animated fadeOut">
             <q-item class="q-pl-sm q-pr-sm"
+                    :ref="'role-' + role.rid"
+                    :disable="updatingRoles.indexOf(role.rid) >= 0"
                     :clickable="editable" v-ripple="editable"
                     @click="()=>edit(role)">
               <q-item-section avatar>
@@ -58,11 +60,13 @@
 
               <q-item-section no-wrap side v-if="editable">
                 <q-btn flat dense icon="security" round
-                       @click.st.stop="()=>grant(role)"/>
+                       :disable="updatingRoles.indexOf(role.rid) >= 0"
+                       @click.stop="()=>grant(role)"/>
               </q-item-section>
               <q-item-section no-wrap side v-if="removable" :style="editable?'padding-left: 0px':''">
                 <q-btn flat dense icon="delete" round
-                       @click.st.stop="()=>remove(role)"/>
+                       :loading="updatingRoles.indexOf(role.rid) >= 0"
+                       @click.stop="()=>remove(role)"/>
               </q-item-section>
             </q-item>
           </transition>
@@ -89,40 +93,99 @@ export default {
   data() {
     return {
       roles: [],
-      loading: false
+      loading: false,
+      isEditing: false,
+      updatingRoles: []
     }
   },
   methods: {
     load() {
       if (this.loading) return
       this.loading = true
-      this.$rolesApi.getClientRoles(this.client.cid)
+      this.$rolesApi.getRoles(null, this.client.cid)
         .then(res => this.roles = res.data)
         .finally(() => this.loading = false)
     },
     edit(role) {
-      console.log("edit", this.currentUser)
+      if (this.isEditing)
+        return
+      this.isEditing = true
       this.$q.dialog({
         component: EditRole,
         parent: this,
         client: this.client,
         currentUser: this.currentUser,
-        role: role
+        role: role,
+        persistentOnBusying: false,
+        onSave: (role) => {
+          this.updatingRoles.push(role.rid)
+        },
+        onSaved: (role) => {
+          this.updatingRoles.splice(this.updatingRoles.indexOf(role.roleName), 1)
+        }
       })
+        .onDismiss(() => this.isEditing = false)
     },
     remove(role) {
-      console.log("remove", role)
+      if (this.updatingRoles.indexOf(role.rid) >= 0)
+        return
+      this.showDeleteDialog(this.$tt(this, "deleteRole") + " '" + role.roleName + "'",
+        this.$tt(this, "deleteRoleMsg"),
+        () => {
+          this.updatingRoles.push(role.rid)
+          return this.$rolesApi.deleteRoles([role.rid])
+            .then(() => {
+              this.roles.splice(this.roles.indexOf(role), 1)
+            })
+            .finally(() => this.updatingRoles.splice(this.updatingRoles.indexOf(role.rid), 1))
+        })
     },
     grant(role) {
       console.log("grant", role)
     },
     add() {
-      console.log("add")
       this.$q.dialog({
         component: EditRole,
         parent: this,
         client: this.client,
-        currentUser: this.currentUser
+        currentUser: this.currentUser,
+        persistentOnBusying: false,
+        onSave: (role) => {
+          role.rid = role.roleName
+          this.roles.push(role)
+          this.updatingRoles.push(role.rid)
+        },
+        onSaved: (role) => {
+          this.updatingRoles.splice(this.updatingRoles.indexOf(role.roleName), 1)
+          for (let i in this.roles)
+            if (this.roles[i].roleName == role.roleName) {
+              this.roles[i].rid = role.rid
+              break;
+            }
+        }
+      })
+    },
+    showDeleteDialog(title, msg, todo) {
+      this.$q.dialog({
+        title: title,
+        message: msg,
+        cancel: {
+          color: "grey-7",
+          flat: true
+        },
+        color: "negative",
+        ok: {
+          label: this.$t("delete")
+        },
+      }).onOk(() => {
+        if (todo != null)
+          todo().then(() => this.showDeleteSuccessMessage());
+      })
+    },
+    showDeleteSuccessMessage() {
+      this.$q.notify({
+        message: this.$t("deleteSuccess"),
+        type: 'positive'
       })
     }
   },

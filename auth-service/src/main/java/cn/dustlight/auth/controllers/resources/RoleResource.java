@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -39,36 +40,39 @@ public class RoleResource {
     @GetMapping("roles")
     @Operation(summary = "获取角色")
     public Collection<? extends Role> getRoles(@RequestParam(required = false) Collection<Long> id,
+                                               @RequestParam(required = false, name = "clientId") String clientId,
                                                OAuth2Authentication authentication) {
+        if (!StringUtils.hasText(clientId))
+            clientId = authentication.getOAuth2Request().getClientId();
         if (id == null)
-            return roleService.listRolesWithClientId(authentication.getOAuth2Request().getClientId());
+            return roleService.listRolesWithClientId(clientId);
         return roleService.getRoles(id);
     }
 
-    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('READ_CLIENT')) and #oauth2.clientHasAnyRole('READ_CLIENT')")
-    @GetMapping("clients/{clientId}/roles")
-    @Operation(summary = "获取角色")
-    public Collection<? extends Role> getClientRoles(@PathVariable(name = "clientId") String clientId) {
-        return roleService.listRolesWithClientId(clientId);
-    }
-
-    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_ROLE')) and #oauth2.clientHasAnyRole('WRITE_ROLE')")
+    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('WRITE_ROLE')) and #oauth2.clientHasAnyRole('WRITE_ROLE')")
     @PutMapping("roles")
     @Operation(summary = "修改或添加角色", description = "应用和用户需要 WRITE_ROLE 权限。")
-    public void setRoles(@RequestBody Collection<DefaultRole> roles,
+    public Collection<DefaultRole> setRoles(@RequestBody Collection<DefaultRole> roles,
+                         @RequestParam(required = false, name = "clientId") String clientId,
                          OAuth2Authentication authentication) {
+        if (!StringUtils.hasText(clientId))
+            clientId = authentication.getOAuth2Request().getClientId();
         for (DefaultRole role : roles)
             if (role.getRid() == null)
                 role.setRid(idGenerator.generate());
-        roleService.createRoles(roles, authentication.getOAuth2Request().getClientId());
+        roleService.createRoles(roles, clientId);
+        return roles;
     }
 
-    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_ROLE')) and #oauth2.clientHasAnyRole('WRITE_ROLE')")
+    @PreAuthorize("(#oauth2.client or #user.isClientOwnerOrMember(#clientId) or hasAnyAuthority('WRITE_ROLE')) and #oauth2.clientHasAnyRole('WRITE_ROLE')")
     @DeleteMapping("roles")
     @Operation(summary = "删除角色", description = "应用和用户需要 WRITE_ROLE 权限。")
     public void deleteRoles(@RequestParam Collection<Long> id,
+                            @RequestParam(required = false, name = "clientId") String clientId,
                             OAuth2Authentication authentication) {
-        roleService.removeRolesWithClientId(id, authentication.getOAuth2Request().getClientId());
+        if (!StringUtils.hasText(clientId))
+            clientId = authentication.getOAuth2Request().getClientId();
+        roleService.removeRolesWithClientId(id, clientId);
     }
 
     /* ------------------------------------------------------------------------------------------------- */

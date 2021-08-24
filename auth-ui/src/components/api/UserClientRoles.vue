@@ -2,14 +2,14 @@
   <div>
     <q-list v-if="loading">
       <transition
-          v-for="i in 3"
-          :key="i"
-          appear
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut">
+        v-for="i in 3"
+        :key="i"
+        appear
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut">
         <q-item
-            :dense="dense"
-            :class="itemClass"
+          :dense="dense"
+          :class="itemClass"
         >
           <q-item-section avatar style="min-width: 0px;">
             <q-icon name="person"></q-icon>
@@ -32,15 +32,15 @@
     <div v-else>
       <q-list v-if="targetRoles && targetRoles.length>0">
         <transition
-            v-for="(role,index) in targetRoles"
-            :key="role.rid"
-            appear
-            enter-active-class="animated fadeIn"
-            leave-active-class="animated fadeOut">
+          v-for="(role,index) in targetRoles"
+          :key="role.rid"
+          appear
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut">
           <q-item
-              :dense="dense"
-              :class="itemClass"
-              clickable v-ripple
+            :dense="dense"
+            :class="itemClass"
+            clickable v-ripple
           >
             <q-item-section avatar style="min-width: 0px;">
               <q-icon name="person" :color="managed && hasRole(role) ? 'accent' : ''"></q-icon>
@@ -84,10 +84,10 @@
         </transition>
 
         <transition
-            v-if="managed"
-            appear
-            enter-active-class="animated fadeIn"
-            leave-active-class="animated fadeOut">
+          v-if="managed"
+          appear
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut">
           <div>
             <q-separator class="q-ma-sm"/>
             <div class="text-center text-caption text-grey ">
@@ -155,21 +155,21 @@ export default {
       if (this.hasRole(role)) {
         this.updating.push(role.rid);
         this.$rolesApi.deleteUserClientRoles(this.user.uid, this.client.cid, [role.rid])
-            .then(res => {
-              this.roleRevoked(role)
-              if (this.onUpdated)
-                this.onUpdated(this.client, role, 0, this.usersRoles.length)
-            })
-            .finally(() => this.updating.splice(this.updating.indexOf(role.rid), 1))
+          .then(res => {
+            this.roleRevoked(role)
+            if (this.onUpdated)
+              this.onUpdated(this.client, role, 0, this.usersRoles.length)
+          })
+          .finally(() => this.updating.splice(this.updating.indexOf(role.rid), 1))
       } else {
         this.updating.push(role.rid);
         this.$rolesApi.setUserClientRoles(this.user.uid, this.client.cid, [{rid: role.rid}])
-            .then(res => {
-              this.roleGranted(role)
-              if (this.onUpdated)
-                this.onUpdated(this.client, role, 1, this.usersRoles.length)
-            })
-            .finally(() => this.updating.splice(this.updating.indexOf(role.rid), 1))
+          .then(res => {
+            this.roleGranted(role)
+            if (this.onUpdated)
+              this.onUpdated(this.client, role, 1, this.usersRoles.length)
+          })
+          .finally(() => this.updating.splice(this.updating.indexOf(role.rid), 1))
       }
     },
     hasPermission(authority) {
@@ -215,20 +215,20 @@ export default {
         return
       this.loading = true
       this.$rolesApi.getUserClientRoles(this.user.uid, this.client.cid)
-          .then(res => {
-            this.usersRoles = res.data
-            if (this.managed)
-              return this.$rolesApi.getClientRoles(this.client.cid).then(res => this.roles = res.data);
-          })
-          .catch(e => {
-            this.usersRoles = []
-            if (this.managed)
-              this.roles = []
-            return Promise.reject(e)
-          })
-          .finally(() => {
-            this.loading = false
-          })
+        .then(res => {
+          this.usersRoles = res.data
+          if (this.managed)
+            return this.$rolesApi.getRoles(null, this.client.cid).then(res => this.roles = res.data);
+        })
+        .catch(e => {
+          this.usersRoles = []
+          if (this.managed)
+            this.roles = []
+          return Promise.reject(e)
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     loadOnce() {
       if (this.loaded)

@@ -1,15 +1,13 @@
 <template>
-  <q-dialog :persistent="busying" ref="dialog" @hide="onDialogHide">
-
+  <q-dialog :persistent="persistentOnBusying && busying" ref="dialog" @hide="onDialogHide">
     <q-card class="full-width">
-
-      <q-card-section>
-        <div class="text-h6">
-          {{ role && role.rid ? $tt($options, "edit") : $tt($options, "new") }}
-        </div>
-      </q-card-section>
-      <q-card-section>
-        <q-form @submit="save">
+      <q-form @submit="save">
+        <q-card-section>
+          <div class="text-h6">
+            {{ role && role.rid ? $tt($options, "edit") : $tt($options, "new") }}
+          </div>
+        </q-card-section>
+        <q-card-section>
           <div class="q-gutter-sm">
             <q-input :loading="busying" :disable="busying"
                      color="accent" filled
@@ -23,23 +21,22 @@
                      v-model="model.description"
                      :label="$tt($options,'roleDescription')"/>
           </div>
+        </q-card-section>
 
-          <div class="text-right q-gutter-sm q-pt-sm">
-            <q-btn :label="$t('cancel')"
-                   color="grey-7"
-                   flat
-                   :disable="busying"
-                   v-close-popup/>
-            <q-btn :label="role && role.rid ? $t('update') : $t('create')"
-                   type="submit"
-                   color="accent"
-                   :disable="busying"
-                   :loading="busying"/>
-          </div>
-        </q-form>
-      </q-card-section>
-
-
+        <div class="text-right q-gutter-sm q-pa-md">
+          <q-btn :label="$t('cancel')"
+                 color="grey-7"
+                 flat
+                 :disable="busying"
+                 @click.stop="onCancelClick"
+                 v-close-popup/>
+          <q-btn :label="role && role.rid ? $t('update') : $t('create')"
+                 type="submit"
+                 color="accent"
+                 :disable="busying"
+                 :loading="busying"/>
+        </div>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>
@@ -51,8 +48,14 @@ export default {
     client: Object,
     currentUser: Object,
     role: Object,
-    onUpdated: Function,
-    onInserted: Function
+    onSaved: Function,
+    onSave: Function,
+    persistentOnBusying: {
+      type: Boolean,
+      default() {
+        return true
+      }
+    }
   },
   data() {
     return {
@@ -75,27 +78,39 @@ export default {
       if (this.busying)
         return
       this.busying = true
-      this.$rolesApi.setUserClientRoles(this.currentUser.uid, this.client.cid, [{
+      this.$rolesApi.setRoles([{
         rid: this.role ? this.role.rid : null,
         roleName: this.model.name.trim(),
         roleDescription: this.model.description.trim()
-      }])
+      }], this.client.cid)
         .then((res) => {
           if (this.role) {
             this.role.roleName = this.model.name.trim()
             this.role.roleDescription = this.model.description.trim()
-            if (this.onUpdated)
-              this.onUpdated(this.role)
+            this.showUpdateSuccessMessage()
+            if (this.onSaved)
+              this.onSaved(this.role)
           } else {
-            if (this.onInserted)
-              this.onInserted({
-                roleName: this.model.name.trim(),
-                roleDescription: this.model.description.trim()
-              })
+            this.showCreateSuccessMessage()
+            if (this.onSaved)
+              this.onSaved(res.data[0])
           }
-          this.hide()
+          if (this.persistentOnBusying)
+            this.hide()
         })
         .finally(() => this.busying = false)
+      if (this.onSave) {
+        if (this.role && this.role.rid) {
+          this.onSave(this.role)
+        } else {
+          this.onSave({
+            roleName: this.model.name.trim(),
+            roleDescription: this.model.description.trim()
+          })
+        }
+      }
+      if (!this.persistentOnBusying)
+        this.hide()
     },
     // 以下方法是必需的
     // (不要改变它的名称 --> "show")
@@ -129,6 +144,18 @@ export default {
     onCancelClick() {
       // 我们只需要隐藏对话框
       this.hide()
+    },
+    showUpdateSuccessMessage() {
+      this.$q.notify({
+        message: this.$t("updateSuccess"),
+        type: 'positive'
+      })
+    },
+    showCreateSuccessMessage() {
+      this.$q.notify({
+        message: this.$t("createSuccess"),
+        type: 'positive'
+      })
     }
   }
 }

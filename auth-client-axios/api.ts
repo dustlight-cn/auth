@@ -150,10 +150,10 @@ export interface AuthorizationClient {
     clientSecret?: string;
     /**
      * 
-     * @type {Set<string>}
+     * @type {number}
      * @memberof AuthorizationClient
      */
-    registeredRedirectUri?: Set<string>;
+    refreshTokenValiditySeconds?: number;
     /**
      * 
      * @type {number}
@@ -162,10 +162,10 @@ export interface AuthorizationClient {
     accessTokenValiditySeconds?: number;
     /**
      * 
-     * @type {number}
+     * @type {Set<string>}
      * @memberof AuthorizationClient
      */
-    refreshTokenValiditySeconds?: number;
+    registeredRedirectUri?: Set<string>;
     /**
      * 
      * @type {string}
@@ -282,13 +282,13 @@ export interface Client {
      * @type {number}
      * @memberof Client
      */
-    status?: number;
+    uid?: number;
     /**
      * 
      * @type {number}
      * @memberof Client
      */
-    uid?: number;
+    status?: number;
     /**
      * 
      * @type {string}
@@ -315,18 +315,6 @@ export interface Client {
     updatedAt?: string;
     /**
      * 
-     * @type {{ [key: string]: object; }}
-     * @memberof Client
-     */
-    extra?: { [key: string]: object; };
-    /**
-     * 
-     * @type {string}
-     * @memberof Client
-     */
-    secret?: string;
-    /**
-     * 
      * @type {Set<string>}
      * @memberof Client
      */
@@ -339,6 +327,30 @@ export interface Client {
     cid?: string;
     /**
      * 
+     * @type {string}
+     * @memberof Client
+     */
+    secret?: string;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof Client
+     */
+    extra?: { [key: string]: object; };
+    /**
+     * 
+     * @type {number}
+     * @memberof Client
+     */
+    refreshTokenValidity?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Client
+     */
+    accessTokenValidity?: number;
+    /**
+     * 
      * @type {Set<string>}
      * @memberof Client
      */
@@ -349,18 +361,6 @@ export interface Client {
      * @memberof Client
      */
     redirectUri?: Set<string>;
-    /**
-     * 
-     * @type {number}
-     * @memberof Client
-     */
-    accessTokenValidity?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Client
-     */
-    refreshTokenValidity?: number;
 }
 /**
  * 
@@ -462,16 +462,10 @@ export interface OAuth2AccessToken {
     scope?: Set<string>;
     /**
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof OAuth2AccessToken
      */
-    expired?: boolean;
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof OAuth2AccessToken
-     */
-    additionalInformation?: { [key: string]: object; };
+    tokenType?: string;
     /**
      * 
      * @type {OAuth2RefreshToken}
@@ -480,10 +474,16 @@ export interface OAuth2AccessToken {
     refreshToken?: OAuth2RefreshToken;
     /**
      * 
-     * @type {string}
+     * @type {{ [key: string]: object; }}
      * @memberof OAuth2AccessToken
      */
-    tokenType?: string;
+    additionalInformation?: { [key: string]: object; };
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OAuth2AccessToken
+     */
+    expired?: boolean;
     /**
      * 
      * @type {number}
@@ -518,18 +518,6 @@ export interface PublicUser {
     uid?: number;
     /**
      * 
-     * @type {number}
-     * @memberof PublicUser
-     */
-    gender?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof PublicUser
-     */
-    unlockedAt?: string;
-    /**
-     * 
      * @type {string}
      * @memberof PublicUser
      */
@@ -540,6 +528,18 @@ export interface PublicUser {
      * @memberof PublicUser
      */
     avatar?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PublicUser
+     */
+    gender?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicUser
+     */
+    unlockedAt?: string;
     /**
      * 
      * @type {boolean}
@@ -758,6 +758,18 @@ export interface User {
     email?: string;
     /**
      * 
+     * @type {string}
+     * @memberof User
+     */
+    nickname?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    avatar?: string;
+    /**
+     * 
      * @type {number}
      * @memberof User
      */
@@ -773,25 +785,13 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    nickname?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    avatar?: string;
+    accountExpiredAt?: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
     credentialsExpiredAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    accountExpiredAt?: string;
     /**
      * 
      * @type {boolean}
@@ -982,6 +982,18 @@ export interface UserRoleClient {
     cid?: string;
     /**
      * 
+     * @type {number}
+     * @memberof UserRoleClient
+     */
+    refreshTokenValidity?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UserRoleClient
+     */
+    accessTokenValidity?: number;
+    /**
+     * 
      * @type {Set<string>}
      * @memberof UserRoleClient
      */
@@ -992,18 +1004,6 @@ export interface UserRoleClient {
      * @memberof UserRoleClient
      */
     redirectUri?: Set<string>;
-    /**
-     * 
-     * @type {number}
-     * @memberof UserRoleClient
-     */
-    accessTokenValidity?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof UserRoleClient
-     */
-    refreshTokenValidity?: number;
 }
 
 /**
@@ -1544,7 +1544,7 @@ export const AuthoritiesApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async setAuthorities(authority: Array<Authority>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async setAuthorities(authority: Array<Authority>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Authority>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.setAuthorities(authority, clientId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1665,7 +1665,7 @@ export const AuthoritiesApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setAuthorities(authority: Array<Authority>, clientId?: string, options?: any): AxiosPromise<void> {
+        setAuthorities(authority: Array<Authority>, clientId?: string, options?: any): AxiosPromise<Array<Authority>> {
             return localVarFp.setAuthorities(authority, clientId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -5944,10 +5944,11 @@ export const RolesApiAxiosParamCreator = function (configuration?: Configuration
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 删除角色
          * @param {Array<number>} id 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRoles: async (id: Array<number>, options: any = {}): Promise<RequestArgs> => {
+        deleteRoles: async (id: Array<number>, clientId?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteRoles', 'id', id)
             const localVarPath = `/v1/roles`;
@@ -5968,6 +5969,10 @@ export const RolesApiAxiosParamCreator = function (configuration?: Configuration
 
             if (id) {
                 localVarQueryParameter['id'] = id;
+            }
+
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
             }
 
 
@@ -6078,49 +6083,12 @@ export const RolesApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @summary 获取角色
-         * @param {string} clientId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getClientRoles: async (clientId: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'clientId' is not null or undefined
-            assertParamExists('getClientRoles', 'clientId', clientId)
-            const localVarPath = `/v1/clients/{clientId}/roles`
-                .replace(`{${"clientId"}}`, encodeURIComponent(String(clientId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication AccessToken required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 获取角色
          * @param {Array<number>} [id] 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRoles: async (id?: Array<number>, options: any = {}): Promise<RequestArgs> => {
+        getRoles: async (id?: Array<number>, clientId?: string, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/roles`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6139,6 +6107,10 @@ export const RolesApiAxiosParamCreator = function (configuration?: Configuration
 
             if (id) {
                 localVarQueryParameter['id'] = id;
+            }
+
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
             }
 
 
@@ -6279,10 +6251,11 @@ export const RolesApiAxiosParamCreator = function (configuration?: Configuration
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 修改或添加角色
          * @param {Array<Role>} role 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setRoles: async (role: Array<Role>, options: any = {}): Promise<RequestArgs> => {
+        setRoles: async (role: Array<Role>, clientId?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'role' is not null or undefined
             assertParamExists('setRoles', 'role', role)
             const localVarPath = `/v1/roles`;
@@ -6300,6 +6273,10 @@ export const RolesApiAxiosParamCreator = function (configuration?: Configuration
             // authentication AccessToken required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
+            }
 
 
     
@@ -6421,11 +6398,12 @@ export const RolesApiFp = function(configuration?: Configuration) {
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 删除角色
          * @param {Array<number>} id 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteRoles(id: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteRoles(id, options);
+        async deleteRoles(id: Array<number>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteRoles(id, clientId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -6456,23 +6434,13 @@ export const RolesApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 获取角色
-         * @param {string} clientId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getClientRoles(clientId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Role>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getClientRoles(clientId, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 获取角色
          * @param {Array<number>} [id] 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getRoles(id?: Array<number>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Role>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getRoles(id, options);
+        async getRoles(id?: Array<number>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Role>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRoles(id, clientId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -6514,11 +6482,12 @@ export const RolesApiFp = function(configuration?: Configuration) {
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 修改或添加角色
          * @param {Array<Role>} role 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async setRoles(role: Array<Role>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.setRoles(role, options);
+        async setRoles(role: Array<Role>, clientId?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Role>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.setRoles(role, clientId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -6560,11 +6529,12 @@ export const RolesApiFactory = function (configuration?: Configuration, basePath
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 删除角色
          * @param {Array<number>} id 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRoles(id: Array<number>, options?: any): AxiosPromise<void> {
-            return localVarFp.deleteRoles(id, options).then((request) => request(axios, basePath));
+        deleteRoles(id: Array<number>, clientId?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteRoles(id, clientId, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户需要 GRANT_USER 权限。
@@ -6592,22 +6562,13 @@ export const RolesApiFactory = function (configuration?: Configuration, basePath
         /**
          * 
          * @summary 获取角色
-         * @param {string} clientId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getClientRoles(clientId: string, options?: any): AxiosPromise<Array<Role>> {
-            return localVarFp.getClientRoles(clientId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 获取角色
          * @param {Array<number>} [id] 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRoles(id?: Array<number>, options?: any): AxiosPromise<Array<Role>> {
-            return localVarFp.getRoles(id, options).then((request) => request(axios, basePath));
+        getRoles(id?: Array<number>, clientId?: string, options?: any): AxiosPromise<Array<Role>> {
+            return localVarFp.getRoles(id, clientId, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用需要 READ_USER 权限。
@@ -6645,11 +6606,12 @@ export const RolesApiFactory = function (configuration?: Configuration, basePath
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 修改或添加角色
          * @param {Array<Role>} role 
+         * @param {string} [clientId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setRoles(role: Array<Role>, options?: any): AxiosPromise<void> {
-            return localVarFp.setRoles(role, options).then((request) => request(axios, basePath));
+        setRoles(role: Array<Role>, clientId?: string, options?: any): AxiosPromise<Array<Role>> {
+            return localVarFp.setRoles(role, clientId, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户需要 GRANT_USER 权限。
@@ -6688,12 +6650,13 @@ export class RolesApi extends BaseAPI {
      * 应用和用户需要 WRITE_ROLE 权限。
      * @summary 删除角色
      * @param {Array<number>} id 
+     * @param {string} [clientId] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RolesApi
      */
-    public deleteRoles(id: Array<number>, options?: any) {
-        return RolesApiFp(this.configuration).deleteRoles(id, options).then((request) => request(this.axios, this.basePath));
+    public deleteRoles(id: Array<number>, clientId?: string, options?: any) {
+        return RolesApiFp(this.configuration).deleteRoles(id, clientId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -6726,25 +6689,14 @@ export class RolesApi extends BaseAPI {
     /**
      * 
      * @summary 获取角色
-     * @param {string} clientId 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof RolesApi
-     */
-    public getClientRoles(clientId: string, options?: any) {
-        return RolesApiFp(this.configuration).getClientRoles(clientId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 获取角色
      * @param {Array<number>} [id] 
+     * @param {string} [clientId] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RolesApi
      */
-    public getRoles(id?: Array<number>, options?: any) {
-        return RolesApiFp(this.configuration).getRoles(id, options).then((request) => request(this.axios, this.basePath));
+    public getRoles(id?: Array<number>, clientId?: string, options?: any) {
+        return RolesApiFp(this.configuration).getRoles(id, clientId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -6789,12 +6741,13 @@ export class RolesApi extends BaseAPI {
      * 应用和用户需要 WRITE_ROLE 权限。
      * @summary 修改或添加角色
      * @param {Array<Role>} role 
+     * @param {string} [clientId] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RolesApi
      */
-    public setRoles(role: Array<Role>, options?: any) {
-        return RolesApiFp(this.configuration).setRoles(role, options).then((request) => request(this.axios, this.basePath));
+    public setRoles(role: Array<Role>, clientId?: string, options?: any) {
+        return RolesApiFp(this.configuration).setRoles(role, clientId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -4610,10 +4610,11 @@ const RolesApiAxiosParamCreator = function (configuration) {
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 删除角色
          * @param {Array<number>} id
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRoles: (id, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        deleteRoles: (id, clientId, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'id' is not null or undefined
             common_1.assertParamExists('deleteRoles', 'id', id);
             const localVarPath = `/v1/roles`;
@@ -4631,6 +4632,9 @@ const RolesApiAxiosParamCreator = function (configuration) {
             yield common_1.setBearerAuthToObject(localVarHeaderParameter, configuration);
             if (id) {
                 localVarQueryParameter['id'] = id;
+            }
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
             }
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4723,43 +4727,12 @@ const RolesApiAxiosParamCreator = function (configuration) {
         /**
          *
          * @summary 获取角色
-         * @param {string} clientId
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getClientRoles: (clientId, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            // verify required parameter 'clientId' is not null or undefined
-            common_1.assertParamExists('getClientRoles', 'clientId', clientId);
-            const localVarPath = `/v1/clients/{clientId}/roles`
-                .replace(`{${"clientId"}}`, encodeURIComponent(String(clientId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = Object.assign(Object.assign({ method: 'GET' }, baseOptions), options);
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            // authentication AccessToken required
-            // http bearer authentication required
-            yield common_1.setBearerAuthToObject(localVarHeaderParameter, configuration);
-            common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = Object.assign(Object.assign(Object.assign({}, localVarHeaderParameter), headersFromBaseOptions), options.headers);
-            return {
-                url: common_1.toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        }),
-        /**
-         *
-         * @summary 获取角色
          * @param {Array<number>} [id]
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRoles: (id, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        getRoles: (id, clientId, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const localVarPath = `/v1/roles`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
@@ -4775,6 +4748,9 @@ const RolesApiAxiosParamCreator = function (configuration) {
             yield common_1.setBearerAuthToObject(localVarHeaderParameter, configuration);
             if (id) {
                 localVarQueryParameter['id'] = id;
+            }
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
             }
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4892,10 +4868,11 @@ const RolesApiAxiosParamCreator = function (configuration) {
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 修改或添加角色
          * @param {Array<Role>} role
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setRoles: (role, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        setRoles: (role, clientId, options = {}) => __awaiter(this, void 0, void 0, function* () {
             // verify required parameter 'role' is not null or undefined
             common_1.assertParamExists('setRoles', 'role', role);
             const localVarPath = `/v1/roles`;
@@ -4911,6 +4888,9 @@ const RolesApiAxiosParamCreator = function (configuration) {
             // authentication AccessToken required
             // http bearer authentication required
             yield common_1.setBearerAuthToObject(localVarHeaderParameter, configuration);
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
+            }
             localVarHeaderParameter['Content-Type'] = 'application/json';
             common_1.setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -5013,12 +4993,13 @@ const RolesApiFp = function (configuration) {
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 删除角色
          * @param {Array<number>} id
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRoles(id, options) {
+        deleteRoles(id, clientId, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.deleteRoles(id, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.deleteRoles(id, clientId, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -5054,26 +5035,14 @@ const RolesApiFp = function (configuration) {
         /**
          *
          * @summary 获取角色
-         * @param {string} clientId
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getClientRoles(clientId, options) {
-            return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.getClientRoles(clientId, options);
-                return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-            });
-        },
-        /**
-         *
-         * @summary 获取角色
          * @param {Array<number>} [id]
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRoles(id, options) {
+        getRoles(id, clientId, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.getRoles(id, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.getRoles(id, clientId, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -5122,12 +5091,13 @@ const RolesApiFp = function (configuration) {
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 修改或添加角色
          * @param {Array<Role>} role
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setRoles(role, options) {
+        setRoles(role, clientId, options) {
             return __awaiter(this, void 0, void 0, function* () {
-                const localVarAxiosArgs = yield localVarAxiosParamCreator.setRoles(role, options);
+                const localVarAxiosArgs = yield localVarAxiosParamCreator.setRoles(role, clientId, options);
                 return common_1.createRequestFunction(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
             });
         },
@@ -5174,11 +5144,12 @@ const RolesApiFactory = function (configuration, basePath, axios) {
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 删除角色
          * @param {Array<number>} id
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteRoles(id, options) {
-            return localVarFp.deleteRoles(id, options).then((request) => request(axios, basePath));
+        deleteRoles(id, clientId, options) {
+            return localVarFp.deleteRoles(id, clientId, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户需要 GRANT_USER 权限。
@@ -5206,22 +5177,13 @@ const RolesApiFactory = function (configuration, basePath, axios) {
         /**
          *
          * @summary 获取角色
-         * @param {string} clientId
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getClientRoles(clientId, options) {
-            return localVarFp.getClientRoles(clientId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary 获取角色
          * @param {Array<number>} [id]
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRoles(id, options) {
-            return localVarFp.getRoles(id, options).then((request) => request(axios, basePath));
+        getRoles(id, clientId, options) {
+            return localVarFp.getRoles(id, clientId, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用需要 READ_USER 权限。
@@ -5259,11 +5221,12 @@ const RolesApiFactory = function (configuration, basePath, axios) {
          * 应用和用户需要 WRITE_ROLE 权限。
          * @summary 修改或添加角色
          * @param {Array<Role>} role
+         * @param {string} [clientId]
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setRoles(role, options) {
-            return localVarFp.setRoles(role, options).then((request) => request(axios, basePath));
+        setRoles(role, clientId, options) {
+            return localVarFp.setRoles(role, clientId, options).then((request) => request(axios, basePath));
         },
         /**
          * 应用和用户需要 GRANT_USER 权限。
@@ -5302,12 +5265,13 @@ class RolesApi extends base_1.BaseAPI {
      * 应用和用户需要 WRITE_ROLE 权限。
      * @summary 删除角色
      * @param {Array<number>} id
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RolesApi
      */
-    deleteRoles(id, options) {
-        return exports.RolesApiFp(this.configuration).deleteRoles(id, options).then((request) => request(this.axios, this.basePath));
+    deleteRoles(id, clientId, options) {
+        return exports.RolesApiFp(this.configuration).deleteRoles(id, clientId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 应用和用户需要 GRANT_USER 权限。
@@ -5337,24 +5301,14 @@ class RolesApi extends base_1.BaseAPI {
     /**
      *
      * @summary 获取角色
-     * @param {string} clientId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof RolesApi
-     */
-    getClientRoles(clientId, options) {
-        return exports.RolesApiFp(this.configuration).getClientRoles(clientId, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary 获取角色
      * @param {Array<number>} [id]
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RolesApi
      */
-    getRoles(id, options) {
-        return exports.RolesApiFp(this.configuration).getRoles(id, options).then((request) => request(this.axios, this.basePath));
+    getRoles(id, clientId, options) {
+        return exports.RolesApiFp(this.configuration).getRoles(id, clientId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 应用需要 READ_USER 权限。
@@ -5395,12 +5349,13 @@ class RolesApi extends base_1.BaseAPI {
      * 应用和用户需要 WRITE_ROLE 权限。
      * @summary 修改或添加角色
      * @param {Array<Role>} role
+     * @param {string} [clientId]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RolesApi
      */
-    setRoles(role, options) {
-        return exports.RolesApiFp(this.configuration).setRoles(role, options).then((request) => request(this.axios, this.basePath));
+    setRoles(role, clientId, options) {
+        return exports.RolesApiFp(this.configuration).setRoles(role, clientId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 应用和用户需要 GRANT_USER 权限。

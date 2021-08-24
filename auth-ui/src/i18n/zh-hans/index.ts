@@ -252,6 +252,10 @@ export default {
     "roles": "角色",
     "rolesTips": "应用自定义角色"
   },
+  "Roles": {
+    "deleteRole": "删除角色",
+    "deleteRoleMsg": "是否确定要删除此角色？",
+  },
   "EditRole": {
     "edit": "编辑角色",
     "new": "创建角色",
@@ -259,6 +263,18 @@ export default {
     "roleDescription": "角色描述",
     "roleNameRule": "角色名不可为空。",
     "roleDescriptionRule": "角色描述不可为空。"
+  },
+  "Authorities": {
+    "deleteAuthority": "删除权限",
+    "deleteAuthorityMsg": "是否确定要删除此权限？",
+  },
+  "EditAuthority": {
+    "edit": "编辑权限",
+    "new": "创建权限",
+    "authorityName": "权限名",
+    "authorityDescription": "权限描述",
+    "authorityNameRule": "权限名不可为空。",
+    "authorityDescriptionRule": "权限描述不可为空。"
   },
   "NewClient": {
     "title": "创建应用",
