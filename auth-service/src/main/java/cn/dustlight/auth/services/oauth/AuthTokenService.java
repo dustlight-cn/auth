@@ -215,7 +215,7 @@ public class AuthTokenService implements AuthorizationServerTokenServices, Resou
         OAuth2AccessToken accessToken = isJwt ? jwt.getJwtTokenStore().readAccessToken(accessTokenValue) : tokenStore.readAccessToken(accessTokenValue);
         if (accessToken == null) {
             throw new InvalidTokenException("Invalid access token: " + accessTokenValue);
-        } else if (accessToken.isExpired() && !isJwt) {
+        } else if (accessToken.isExpired()) {
             getRealTokenStore(accessTokenValue).removeAccessToken(accessToken);
             throw new InvalidTokenException("Access token expired: " + accessTokenValue);
         }
