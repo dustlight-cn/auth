@@ -48,7 +48,7 @@ const config = {
     pkg: pkg
   },
   prod: {
-    host: "https://api.goodvoice.com",
+    host: "https://api.worldgoodvoices.com",
     recaptchaKey: "6LczCyMcAAAAAAjPRqR0jyQy-PXV06tAe5D1h2Q7",
     pattern: {
       username: /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$/,
