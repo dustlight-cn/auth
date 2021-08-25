@@ -1,5 +1,6 @@
 package cn.dustlight.auth.controllers.resources;
 
+import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.DefaultRole;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.Role;
@@ -53,14 +54,18 @@ public class RoleResource {
     @PutMapping("roles")
     @Operation(summary = "修改或添加角色", description = "应用和用户需要 WRITE_ROLE 权限。")
     public Collection<DefaultRole> setRoles(@RequestBody Collection<DefaultRole> roles,
-                         @RequestParam(required = false, name = "clientId") String clientId,
-                         OAuth2Authentication authentication) {
+                                            @RequestParam(required = false, name = "clientId") String clientId,
+                                            OAuth2Authentication authentication) {
         if (!StringUtils.hasText(clientId))
             clientId = authentication.getOAuth2Request().getClientId();
         for (DefaultRole role : roles)
             if (role.getRid() == null)
                 role.setRid(idGenerator.generate());
-        roleService.createRoles(roles, clientId);
+        try {
+            roleService.createRoles(roles, clientId);
+        } catch (Exception e) {
+            ErrorEnum.CREATE_ROLE_FAIL.details(e.getMessage()).throwException();
+        }
         return roles;
     }
 
@@ -72,7 +77,11 @@ public class RoleResource {
                             OAuth2Authentication authentication) {
         if (!StringUtils.hasText(clientId))
             clientId = authentication.getOAuth2Request().getClientId();
-        roleService.removeRolesWithClientId(id, clientId);
+        try {
+            roleService.removeRolesWithClientId(id, clientId);
+        } catch (Exception e) {
+            ErrorEnum.DELETE_ROLE_FAIL.details(e.getMessage()).throwException();
+        }
     }
 
     /* ------------------------------------------------------------------------------------------------- */
