@@ -79,7 +79,7 @@ export default {
         return
       this.busying = true
       this.$authoritiesApi.setAuthorities([{
-        aid: this.authority ? this.authority.rid : null,
+        aid: this.authority ? this.authority.aid : null,
         authorityName: this.model.name.trim(),
         authorityDescription: this.model.description.trim()
       }], this.client.cid)
