@@ -1,9 +1,9 @@
 package cn.dustlight.auth.configurations.components;
 
 import cn.dustlight.auth.ErrorEnum;
-import cn.dustlight.auth.entities.User;
 import cn.dustlight.auth.properties.AuthorizationCodeProperties;
 import cn.dustlight.auth.services.oauth.AuthTokenService;
+import cn.dustlight.auth.services.oauth.AuthUserAuthenticationConverter;
 import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
 import cn.dustlight.auth.services.oauth.RedisAuthorizationCodeService;
 import com.nimbusds.jose.JOSEException;
@@ -21,9 +21,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -32,9 +32,9 @@ import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
@@ -53,13 +53,14 @@ public class TokenConfiguration {
     @Bean
     public AuthTokenService authTokenService(@Autowired TokenStore tokenStore,
                                              @Autowired ClientDetailsService clientDetailsService,
-                                             @Autowired UserDetailsService userDetailsService) {
+                                             @Autowired UserDetailsService userDetailsService,
+                                             @Autowired Jwt jwt) {
         AuthTokenService tokenServices = new AuthTokenService();
         tokenServices.setTokenStore(tokenStore);
         tokenServices.setSupportRefreshToken(true);
         tokenServices.setReuseRefreshToken(true);
         tokenServices.setClientDetailsService(clientDetailsService);
-//        tokenServices.setTokenEnhancer(tokenEnhancer);
+        tokenServices.setJwt(jwt);
         PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
         provider.setPreAuthenticatedUserDetailsService(new UserDetailsByNameServiceWrapper<>(
                 userDetailsService));
@@ -86,17 +87,7 @@ public class TokenConfiguration {
                 return claims;
             }
         };
-        DefaultUserAuthenticationConverter userAuthenticationConverter = new DefaultUserAuthenticationConverter() {
-            @Override
-            public Map<String, ?> convertUserAuthentication(Authentication authentication) {
-                Map response = super.convertUserAuthentication(authentication);
-                if (authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-                    User user = (User) authentication.getPrincipal();
-                    response.put("username", user.getUid() != null ? user.getUid().toString() : null);
-                }
-                return response;
-            }
-        };
+        AuthUserAuthenticationConverter userAuthenticationConverter = new AuthUserAuthenticationConverter();
         accessTokenConverter.setUserTokenConverter(userAuthenticationConverter);
         return accessTokenConverter;
     }
@@ -110,7 +101,11 @@ public class TokenConfiguration {
             jwtAccessTokenConverter = new JwtAccessTokenConverter();
             jwtAccessTokenConverter.setAccessTokenConverter(accessTokenConverter);
             jwtAccessTokenConverter.setSigningKey(properties.getSigningKey());
-            jwtAccessTokenConverter.setVerifierKey(properties.getVerifierKey());
+            String verifierKey = properties.getVerifierKey();
+            if (StringUtils.hasText(verifierKey)) {
+                jwtAccessTokenConverter.setVerifierKey(verifierKey);
+                jwtAccessTokenConverter.setVerifier(new RsaVerifier(verifierKey));
+            }
         }
         return new Jwt(jwtAccessTokenConverter);
     }
@@ -176,15 +171,24 @@ public class TokenConfiguration {
         private JwtAccessTokenConverter converter;
         private int _hash;
         private JWKSet jwkSet;
+        private JwtTokenStore jwtTokenStore;
 
         public Jwt(JwtAccessTokenConverter jwtAccessTokenConverter) {
             this.converter = jwtAccessTokenConverter;
+            if (this.converter != null)
+                jwtTokenStore = new JwtTokenStore(converter);
         }
 
         public OAuth2AccessToken convert(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
             if (converter == null)
                 ErrorEnum.OAUTH_ERROR.details("Jwt is not support, cause RSA key not set.").throwException();
             return this.converter.enhance(accessToken, authentication);
+        }
+
+        public JwtTokenStore getJwtTokenStore() {
+            if (converter == null)
+                ErrorEnum.OAUTH_ERROR.details("Jwt is not support, cause RSA key not set.").throwException();
+            return jwtTokenStore;
         }
 
         public JWKSet keys() {

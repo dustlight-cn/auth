@@ -1,5 +1,6 @@
 package cn.dustlight.auth.services.oauth;
 
+import cn.dustlight.auth.configurations.components.TokenConfiguration;
 import cn.dustlight.auth.entities.DefaultUser;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +33,8 @@ public class AuthTokenService implements AuthorizationServerTokenServices, Resou
 
     private TokenStore tokenStore;
 
+    private TokenConfiguration.Jwt jwt;
+
     private ClientDetailsService clientDetailsService;
 
     private TokenEnhancer accessTokenEnhancer;
@@ -43,6 +46,7 @@ public class AuthTokenService implements AuthorizationServerTokenServices, Resou
      */
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(tokenStore, "tokenStore must be set");
+        Assert.notNull(jwt, "jwt must be set");
     }
 
     @Transactional
@@ -103,12 +107,12 @@ public class AuthTokenService implements AuthorizationServerTokenServices, Resou
             throw new InvalidGrantException("Invalid refresh token: " + refreshTokenValue);
         }
 
-        OAuth2RefreshToken refreshToken = tokenStore.readRefreshToken(refreshTokenValue);
+        OAuth2RefreshToken refreshToken = getRealTokenStore(refreshTokenValue).readRefreshToken(refreshTokenValue);
         if (refreshToken == null) {
             throw new InvalidGrantException("Invalid refresh token: " + refreshTokenValue);
         }
 
-        OAuth2Authentication authentication = tokenStore.readAuthenticationForRefreshToken(refreshToken);
+        OAuth2Authentication authentication = getRealTokenStore(refreshTokenValue).readAuthenticationForRefreshToken(refreshToken);
         if (this.authenticationManager != null && !authentication.isClientOnly()) {
             // The client has already been authenticated, but the user authentication might be old now, so give it a
             // chance to re-authenticate.
@@ -131,24 +135,24 @@ public class AuthTokenService implements AuthorizationServerTokenServices, Resou
 
         // clear out any access tokens already associated with the refresh
         // token.
-        tokenStore.removeAccessTokenUsingRefreshToken(refreshToken);
+        getRealTokenStore(refreshTokenValue).removeAccessTokenUsingRefreshToken(refreshToken);
 
         if (isExpired(refreshToken)) {
-            tokenStore.removeRefreshToken(refreshToken);
+            getRealTokenStore(refreshTokenValue).removeRefreshToken(refreshToken);
             throw new InvalidTokenException("Invalid refresh token (expired): " + refreshToken);
         }
 
         authentication = createRefreshedAuthentication(authentication, tokenRequest);
 
         if (!reuseRefreshToken) {
-            tokenStore.removeRefreshToken(refreshToken);
+            getRealTokenStore(refreshTokenValue).removeRefreshToken(refreshToken);
             refreshToken = createRefreshToken(authentication);
         }
 
         OAuth2AccessToken accessToken = createAccessToken(authentication, refreshToken);
-        tokenStore.storeAccessToken(accessToken, authentication);
+        getRealTokenStore(refreshTokenValue).storeAccessToken(accessToken, authentication);
         if (!reuseRefreshToken) {
-            tokenStore.storeRefreshToken(accessToken.getRefreshToken(), authentication);
+            getRealTokenStore(refreshTokenValue).storeRefreshToken(accessToken.getRefreshToken(), authentication);
         }
         return accessToken;
     }
@@ -191,21 +195,32 @@ public class AuthTokenService implements AuthorizationServerTokenServices, Resou
         return false;
     }
 
+    public boolean isJwt(String accessToken) {
+        if (accessToken != null && accessToken.length() > 36)
+            return true;
+        return false;
+    }
+
+    protected TokenStore getRealTokenStore(String accessToken) {
+        return isJwt(accessToken) ? jwt.getJwtTokenStore() : tokenStore;
+    }
+
     public OAuth2AccessToken readAccessToken(String accessToken) {
-        return tokenStore.readAccessToken(accessToken);
+        return getRealTokenStore(accessToken).readAccessToken(accessToken);
     }
 
     public OAuth2Authentication loadAuthentication(String accessTokenValue) throws AuthenticationException,
             InvalidTokenException {
-        OAuth2AccessToken accessToken = tokenStore.readAccessToken(accessTokenValue);
+        boolean isJwt = isJwt(accessTokenValue);
+        OAuth2AccessToken accessToken = isJwt ? jwt.getJwtTokenStore().readAccessToken(accessTokenValue) : tokenStore.readAccessToken(accessTokenValue);
         if (accessToken == null) {
             throw new InvalidTokenException("Invalid access token: " + accessTokenValue);
-        } else if (accessToken.isExpired()) {
-            tokenStore.removeAccessToken(accessToken);
+        } else if (accessToken.isExpired() && !isJwt) {
+            getRealTokenStore(accessTokenValue).removeAccessToken(accessToken);
             throw new InvalidTokenException("Access token expired: " + accessTokenValue);
         }
 
-        OAuth2Authentication result = tokenStore.readAuthentication(accessToken);
+        OAuth2Authentication result = isJwt ? jwt.getJwtTokenStore().readAuthentication(accessToken) : tokenStore.readAuthentication(accessToken);
         if (result == null) {
             // in case of race condition
             throw new InvalidTokenException("Invalid access token: " + accessTokenValue);
@@ -222,7 +237,7 @@ public class AuthTokenService implements AuthorizationServerTokenServices, Resou
     }
 
     public String getClientId(String tokenValue) {
-        OAuth2Authentication authentication = tokenStore.readAuthentication(tokenValue);
+        OAuth2Authentication authentication = getRealTokenStore(tokenValue).readAuthentication(tokenValue);
         if (authentication == null) {
             throw new InvalidTokenException("Invalid access token: " + tokenValue);
         }
@@ -234,14 +249,14 @@ public class AuthTokenService implements AuthorizationServerTokenServices, Resou
     }
 
     public boolean revokeToken(String tokenValue) {
-        OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
+        OAuth2AccessToken accessToken = getRealTokenStore(tokenValue).readAccessToken(tokenValue);
         if (accessToken == null) {
             return false;
         }
         if (accessToken.getRefreshToken() != null) {
-            tokenStore.removeRefreshToken(accessToken.getRefreshToken());
+            getRealTokenStore(tokenValue).removeRefreshToken(accessToken.getRefreshToken());
         }
-        tokenStore.removeAccessToken(accessToken);
+        getRealTokenStore(tokenValue).removeAccessToken(accessToken);
         return true;
     }
 
@@ -396,4 +411,11 @@ public class AuthTokenService implements AuthorizationServerTokenServices, Resou
         this.clientDetailsService = clientDetailsService;
     }
 
+    public TokenConfiguration.Jwt getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(TokenConfiguration.Jwt jwt) {
+        this.jwt = jwt;
+    }
 }
