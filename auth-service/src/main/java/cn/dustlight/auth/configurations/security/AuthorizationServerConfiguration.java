@@ -6,6 +6,7 @@ import cn.dustlight.auth.configurations.components.ServicesConfiguration;
 import cn.dustlight.auth.configurations.components.TokenConfiguration;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.UserService;
+import cn.dustlight.auth.services.oauth.AuthTokenService;
 import cn.dustlight.auth.services.oauth.granters.AuthImplicitTokenGranter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -58,7 +59,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private AuthorizationCodeServices authorizationCodeServices;
 
     @Autowired
-    private TokenStore authTokenStore;
+    private AuthTokenService authTokenService;
 
     @Autowired
     private AccessTokenConverter accessTokenConverter;
@@ -88,7 +89,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.userDetailsService(userService)
-                .tokenStore(authTokenStore)
+                .tokenServices(authTokenService)
                 .accessTokenConverter(accessTokenConverter)
                 .authorizationCodeServices(authorizationCodeServices)
                 .authenticationManager(authenticationManager);
@@ -124,7 +125,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     }
 
     @Bean
-    @ConditionalOnMissingBean
     public AuthorizationServerTokenServices authorizationServerTokenServices(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
         return configurer.getTokenServices();
     }

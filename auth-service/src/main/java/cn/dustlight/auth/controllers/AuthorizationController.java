@@ -11,6 +11,7 @@ import cn.dustlight.auth.util.Constants;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -108,6 +109,7 @@ public class AuthorizationController {
     @GetMapping("oauth/authorization")
     public AuthorizationResponse getAuthorization(@Parameter(hidden = true) @RequestParam Map<String, String> parameters,
                                                   @RequestParam("client_id") String clientId,
+                                                  @Parameter(schema = @Schema(allowableValues = {"code", "token"}, defaultValue = "code"))
                                                   @RequestParam(value = "response_type", defaultValue = "code") String responseType,
                                                   @RequestParam(value = "redirect_uri", required = false) String redirectUri,
                                                   @RequestParam(value = "scope", required = false) Collection<String> scopes,

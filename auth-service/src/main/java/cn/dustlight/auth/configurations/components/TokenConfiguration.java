@@ -3,6 +3,7 @@ package cn.dustlight.auth.configurations.components;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.User;
 import cn.dustlight.auth.properties.AuthorizationCodeProperties;
+import cn.dustlight.auth.services.oauth.AuthTokenService;
 import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
 import cn.dustlight.auth.services.oauth.RedisAuthorizationCodeService;
 import com.nimbusds.jose.JOSEException;
@@ -18,8 +19,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
@@ -27,8 +33,11 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.Map;
 
 @EnableConfigurationProperties(TokenConfiguration.TokenProperties.class)
@@ -39,6 +48,24 @@ public class TokenConfiguration {
     @Bean
     public RedisTokenStore redisTokenStore(@Autowired RedisConnectionFactory redisConnectionFactory) {
         return new RedisTokenStore(redisConnectionFactory);
+    }
+
+    @Bean
+    public AuthTokenService authTokenService(@Autowired TokenStore tokenStore,
+                                             @Autowired ClientDetailsService clientDetailsService,
+                                             @Autowired UserDetailsService userDetailsService) {
+        AuthTokenService tokenServices = new AuthTokenService();
+        tokenServices.setTokenStore(tokenStore);
+        tokenServices.setSupportRefreshToken(true);
+        tokenServices.setReuseRefreshToken(true);
+        tokenServices.setClientDetailsService(clientDetailsService);
+//        tokenServices.setTokenEnhancer(tokenEnhancer);
+        PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
+        provider.setPreAuthenticatedUserDetailsService(new UserDetailsByNameServiceWrapper<>(
+                userDetailsService));
+        tokenServices
+                .setAuthenticationManager(new ProviderManager(Arrays.<AuthenticationProvider>asList(provider)));
+        return tokenServices;
     }
 
     @Bean
