@@ -32,18 +32,36 @@ export interface Config {
   pkg: typeof pkg
 }
 
-const config: Config = {
-  host: ".",
-  recaptchaKey: "6Lcp1xAaAAAAAEp6YI3vE4rLG5Ehgj4EeMip04er",
-  pattern: {
-    username: /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$/,
-    email: /^\S+@\S+$/,
-    phone: /^\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/,
-    password: /^.{6,20}$/,
-    account: /^\S{1,20}$/
+const config = {
+  dev: {
+    host: ".",
+    recaptchaKey: "6Lcp1xAaAAAAAEp6YI3vE4rLG5Ehgj4EeMip04er",
+    pattern: {
+      username: /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$/,
+      email: /^\S+@\S+$/,
+      phone: /^\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/,
+      password: /^.{6,20}$/,
+      account: /^\S{1,20}$/
+    },
+    storage: Vue.prototype.$q.localStorage,
+    getUserFrequency: 60000, // 60秒
+    pkg: pkg
   },
-  storage: Vue.prototype.$q.localStorage,
-  getUserFrequency: 60000, // 60秒
-  pkg: pkg
+  prod: {
+    host: "https://api.goodvoice.com",
+    recaptchaKey: "6LczCyMcAAAAAAjPRqR0jyQy-PXV06tAe5D1h2Q7",
+    pattern: {
+      username: /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$/,
+      email: /^\S+@\S+$/,
+      phone: /^\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/,
+      password: /^.{6,20}$/,
+      account: /^\S{1,20}$/
+    },
+    storage: Vue.prototype.$q.localStorage,
+    getUserFrequency: 60000, // 60秒
+    pkg: pkg
+  }
 }
-export default config
+
+// @ts-ignore
+export default config[process.env.mode] || config['dev']

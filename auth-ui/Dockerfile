@@ -8,13 +8,15 @@ COPY auth-client-axios /auth-client-axios
 COPY . /app
 WORKDIR /app
 
+ARG mode=dev
+
 # 构建前端项目
 USER root
 RUN npm install -g @quasar/cli && \
     npm install -g @vue/cli && \
     npm install -g @vue/cli-init
 RUN npm install
-RUN quasar build
+RUN cross-env mode=${mode} quasar build
 
 #
 # Nginx 部署环境
