@@ -234,6 +234,19 @@ public class AuthorizationController {
         }
 
         try {
+
+            /* ------------------------------------------------------------------------------------------ */
+            DefaultUser user = (DefaultUser) ((Authentication) principal).getPrincipal();
+            Collection<UserRole> roles = userService.getRolesWithClientId(user.getUid(), authorizationRequest.getClientId());
+            user.setRoles(roles);
+            Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+            authorizationRequest.setAuthorities(authorities);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(((Authentication) principal).getPrincipal(),
+                    ((Authentication) principal).getCredentials(),
+                    authorities);
+            usernamePasswordAuthenticationToken.setDetails(((Authentication) principal).getDetails());
+            /* ------------------------------------------------------------------------------------------ */
+
             Set<String> responseTypes = authorizationRequest.getResponseTypes();
 
             authorizationRequest.setApprovalParameters(approvalParameters);
@@ -255,9 +268,9 @@ public class AuthorizationController {
                         new UserDeniedAuthorizationException("User denied access"),
                         responseTypes.contains("token")));
             } else if (responseTypes.contains("token")) {
-                response.setRedirect(getImplicitGrantRedirect(authorizationRequest, (Authentication) principal, isJwt));
+                response.setRedirect(getImplicitGrantRedirect(authorizationRequest, usernamePasswordAuthenticationToken, isJwt));
             } else {
-                response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, (Authentication) principal, isJwt));
+                response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, usernamePasswordAuthenticationToken, isJwt));
             }
             return response;
         } finally {
