@@ -79,7 +79,7 @@ public class CdnStorageProxy implements RestfulStorage {
 
     @Override
     public String generatePutUrl(String key, int permission, Long expiration, Map<String, String> headers) throws IOException {
-        return storage.generatePutUrl(key, permission, expiration, headers);
+        return storage.generatePutUrl(prefix + key, permission, expiration, headers);
     }
 
     public RestfulStorage getStorage() {
