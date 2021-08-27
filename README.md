@@ -50,7 +50,7 @@
 ## 快速开始
 ### Kubernetes 一键部署服务
 
-> 使用 ```kubectl``` 一键部署服务，集群中需要至少两个持久卷（```PersistentVolume```）用于 MySQL 数据库 与 Redis 的持久化。
+> 使用 ```kubectl``` 一键部署服务，集群中需要至少三个持久卷（```PersistentVolume```）用于 MySQL 数据库 与 Redis 以及上传文件的持久化。
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/deploy/k8s/deploy.yaml

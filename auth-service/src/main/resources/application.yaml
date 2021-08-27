@@ -6,6 +6,7 @@ mysql:
   ssl: false          # 连接启用 SSL
   username: "root"    # 数据库用户名
   password: "123456"  # 数据库密码
+  allowPublicKeyRetrieval: false
 redis:
   host: "localhost"  # Redis 服务器地址
   port: 6379         # Redis 服务端口
@@ -130,7 +131,7 @@ spring:
       reload:
         enabled: true # 是否监听 Kubernetes 配置更改
   datasource:
-    url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}
+    url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}&allowPublicKeyRetrieval=${mysql.allowPublicKeyRetrieval$:false}
     username: ${mysql.username}
     password: ${mysql.password}
     hikari:
