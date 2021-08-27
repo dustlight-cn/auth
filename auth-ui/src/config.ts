@@ -48,8 +48,8 @@ const config = {
     pkg: pkg
   },
   prod: {
-    host: "https://api.worldgoodvoices.com",
-    recaptchaKey: "6LczCyMcAAAAAAjPRqR0jyQy-PXV06tAe5D1h2Q7",
+    host: "https://api.dustlight.cn",
+    recaptchaKey: "6Lcp1xAaAAAAAEp6YI3vE4rLG5Ehgj4EeMip04er",
     pattern: {
       username: /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$/,
       email: /^\S+@\S+$/,
