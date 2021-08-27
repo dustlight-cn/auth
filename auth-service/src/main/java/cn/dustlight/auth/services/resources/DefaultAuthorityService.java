@@ -25,11 +25,6 @@ public class DefaultAuthorityService implements AuthorityService {
     }
 
     @Override
-    public Collection<? extends Authority> listAuthorities(String cid) {
-        return authorityMapper.listAuthoritiesWithClientId(cid);
-    }
-
-    @Override
     public Collection<? extends Authority> getAuthorities(Collection<Long> aids) {
         return authorityMapper.selectAuthorities(aids);
     }
@@ -40,64 +35,26 @@ public class DefaultAuthorityService implements AuthorityService {
     }
 
     @Override
-    public void createAuthority(String name, String description, String cid) {
-        try {
-            if (!authorityMapper.insertAuthority(idGenerator.generate(), name, description, cid))
-                ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
-        } catch (Exception e) {
-            ErrorEnum.CREATE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
-        }
+    public void createAuthority(String name, String description) {
+        if (!authorityMapper.insertAuthority(idGenerator.generate(), name, description))
+            ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
     }
 
     @Override
-    public void createAuthorities(Collection<? extends Authority> authorities,
-                                  String clientId) {
-        try {
-            if (!authorityMapper.insertAuthorities(authorities, clientId))
-                ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
-        } catch (Exception e) {
-            ErrorEnum.CREATE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
-        }
-
+    public void createAuthorities(Collection<? extends Authority> authorities) {
+        if (!authorityMapper.insertAuthorities(authorities))
+            ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
     }
 
     @Override
     public void removeAuthority(Long aid) {
-        try {
-            if (!authorityMapper.deleteAuthority(aid))
-                ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
-        } catch (Exception e) {
-            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
-        }
-    }
-
-    @Override
-    public void removeAuthority(Long aid, String cid) {
-        try {
-            if (!authorityMapper.deleteAuthorityWithClientId(aid, cid))
-                ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
-        } catch (Exception e) {
-            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
-        }
+        if (!authorityMapper.deleteAuthority(aid))
+            ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
     }
 
     @Override
     public void removeAuthorities(Collection<Long> aids) {
-        try {
-            if (!authorityMapper.deleteAuthorities(aids))
-                ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
-        } catch (Exception e) {
-            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
-        }
-    }
-
-    @Override
-    public void removeAuthorities(Collection<Long> aids, String cid) {
-        try {
-            if (!authorityMapper.deleteAuthoritiesWithClientId(aids, cid))
-                ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
-        } catch (Exception e) {
-            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
-        }
+        if (!authorityMapper.deleteAuthorities(aids))
+            ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
     }
 }
