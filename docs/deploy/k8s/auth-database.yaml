@@ -17,35 +17,35 @@ spec:
         app: auth-database
     spec:
       containers:
-      - name: auth-database
-        image: mysql:latest
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: "123456"
-        ports:
-        - containerPort: 3306
-          name: db-port
-        volumeMounts:
-        - name: mysql-data
-          mountPath: /var/lib/mysql
-        - name: mysql-initdb
-          mountPath: /docker-entrypoint-initdb.d
+        - name: auth-database
+          image: mysql:latest
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "123456"
+          ports:
+            - containerPort: 3306
+              name: db-port
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
       dnsPolicy: ClusterFirst
       volumes:
-      - name: mysql-initdb
-        configMap:
-          name: auth-database-config
-          items: 
-          - key: initdb.sql
-            path: initdb.sql
+        - name: mysql-initdb
+          configMap:
+            name: auth-database-config
+            items:
+              - key: initdb.sql
+                path: initdb.sql
   volumeClaimTemplates:
-  - metadata:
-      name: mysql-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: mysql-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
@@ -56,7 +56,7 @@ metadata:
     app: auth-database
 spec:
   ports:
-  - port: 3306
-    name: db-port
+    - port: 3306
+      name: db-port
   selector:
     app: auth-database

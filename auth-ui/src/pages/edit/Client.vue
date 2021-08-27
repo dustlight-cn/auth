@@ -2,7 +2,6 @@
   <div>
     <require-authorization>
       <template v-slot="{user}">
-
         {{ "", user_ == null || user != null && user_.uid != user.uid ? user_ = user : "" }}
         <q-file
           style="width: 0px;height: 0px;"
@@ -91,7 +90,7 @@
                       <q-item-label class="code">{{ client.secret || "******" }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-btn v-if="hasWriteClientPermissionOrOwnClient" :disable="secretRegenerating"
+                      <q-btn v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient" :disable="secretRegenerating"
                              :loading="secretRegenerating"
                              dense no-caps
                              color="negative" :label="$tt($options,'regenerateSecret')"
@@ -105,14 +104,15 @@
                     <q-item-section>
                       <q-item-label header class="q-pl-none">{{ $tt($options, "clientLogo") }}</q-item-label>
                       <q-item-label>
-                        <q-btn flat dense @click="changeLogo" v-if="hasWriteClientPermissionOrOwnClient">
+                        <q-btn flat dense @click="changeLogo"
+                               v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient">
                           <client-logo :src="logo" :size="118" :client="client"/>
                         </q-btn>
                         <client-logo v-else :src="logo" :size="118" :client="client"/>
                       </q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-btn v-if="hasWriteClientPermissionOrOwnClient"
+                      <q-btn v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
                              :disable="logoUploading" :loading="logoUploading"
                              @click="changeLogo" dense no-caps
                              :label="$tt($options,'upload')" icon="upload"/>
@@ -137,7 +137,7 @@
                                    :rules="rules.name"
                                    color="accent"
                                    v-model="edit.name"/>
-                          <q-btn :disable="updating.name" no-caps flat :label="$t('cancel')" color="accent"
+                          <q-btn :disable="updating.name" no-caps flat :label="$t('cancel')" color="grey-7"
                                  class="q-mr-sm"
                                  @click="()=>edit.name=null"/>
                           <q-btn :loading="updating.name" type="submit" no-caps :label="$t('update')" color="accent"/>
@@ -145,7 +145,8 @@
                       </q-item-label>
                     </q-item-section>
                     <q-item-section side top v-if="edit.name==null">
-                      <q-btn @click="updateName" v-if="hasWriteClientPermissionOrOwnClient" flat round size="12px"
+                      <q-btn @click="updateName" v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient" flat round
+                             size="12px"
                              no-caps
                              icon="edit"/>
                     </q-item-section>
@@ -170,7 +171,7 @@
                                    :rules="rules.description"
                                    color="accent"
                                    v-model="edit.description"/>
-                          <q-btn :disable="updating.description" no-caps flat :label="$t('cancel')" color="accent"
+                          <q-btn :disable="updating.description" no-caps flat :label="$t('cancel')" color="grey-7"
                                  class="q-mr-sm"
                                  @click="()=>edit.description=null"/>
                           <q-btn :loading="updating.description" type="submit" no-caps :label="$t('update')"
@@ -179,7 +180,8 @@
                       </q-item-label>
                     </q-item-section>
                     <q-item-section side top v-if="edit.description==null">
-                      <q-btn @click="updateDescription" v-if="hasWriteClientPermissionOrOwnClient" flat round
+                      <q-btn @click="updateDescription" v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient" flat
+                             round
                              size="12px"
                              no-caps
                              icon="edit"/>
@@ -205,7 +207,8 @@
                       </q-item-label>
                     </q-item-section>
                     <q-item-section side top>
-                      <q-btn @click="updateRedirectUri" v-if="hasWriteClientPermissionOrOwnClient" flat round
+                      <q-btn @click="updateRedirectUri" v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient" flat
+                             round
                              size="12px"
                              no-caps
                              icon="edit"/>
@@ -233,7 +236,8 @@
                       </q-item-label>
                     </q-item-section>
                     <q-item-section side top>
-                      <q-btn @click="updateScopes" v-if="hasWriteClientPermissionOrOwnClient" flat round size="12px"
+                      <q-btn @click="updateScopes" v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient" flat round
+                             size="12px"
                              no-caps
                              icon="edit"/>
                     </q-item-section>
@@ -277,7 +281,43 @@
                       </q-item-label>
                     </q-item-section>
                     <q-item-section side top>
-                      <q-btn @click="updateGrantTypes" v-if="hasWriteClientPermissionOrOwnClient" flat round size="12px"
+                      <q-btn @click="updateGrantTypes" v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient" flat
+                             round size="12px"
+                             no-caps
+                             icon="edit"/>
+                    </q-item-section>
+                  </q-item>
+
+                  <!-- 应用成员, Client Members -->
+                  <q-item class="q-pa-none q-mt-md">
+                    <q-item-section>
+                      <q-item-label header class="q-pl-none">{{ $tt($options, "clientMembers") }}</q-item-label>
+                      <q-item-label v-if="membersPromise">
+                        <q-chip v-for="i in 3" :key="i">
+                          <q-avatar size="30px">
+                            <q-skeleton size="30px" type="QAvatar"/>
+                          </q-avatar>
+                          <div style="width: 2em"/>
+                        </q-chip>
+                      </q-item-label>
+                      <div v-else>
+                        <q-item-label v-if="members == null || members.length == 0">
+                          <no-results/>
+                        </q-item-label>
+                        <q-item-label v-else>
+                          <q-chip loading v-for="(member,index) in members" :key="member.uid" clickable
+                                  @click="()=> $router.push({name:'user',params:{id:member.uid}})">
+                            <avatar :user="member"/>
+                            {{
+                              member.nickname && member.nickname.trim() ? member.nickname.trim() : member.username
+                            }}
+                          </q-chip>
+                        </q-item-label>
+                      </div>
+                    </q-item-section>
+                    <q-item-section side top>
+                      <q-btn @click="updateMembers" v-if="hasWriteClientPermissionOrOwnClient" flat
+                             round size="12px"
                              no-caps
                              icon="edit"/>
                     </q-item-section>
@@ -321,7 +361,7 @@
                             </template>
                           </q-input>
                           <q-btn :disable="updating.accessTokenValidity" no-caps flat :label="$t('cancel')"
-                                 color="accent"
+                                 color="grey-7"
                                  class="q-mr-sm"
                                  @click="()=>edit.accessTokenValidity=null"/>
                           <q-btn :loading="updating.accessTokenValidity" type="submit" no-caps :label="$t('update')"
@@ -374,7 +414,7 @@
                             </template>
                           </q-input>
                           <q-btn :disable="updating.refreshTokenValidity" no-caps flat :label="$t('cancel')"
-                                 color="accent"
+                                 color="grey-7"
                                  class="q-mr-sm"
                                  @click="()=>edit.refreshTokenValidity=null"/>
                           <q-btn :loading="updating.refreshTokenValidity" type="submit" no-caps :label="$t('update')"
@@ -390,20 +430,20 @@
                   </q-item>
 
                   <!-- 操作按钮 -->
-                  <q-separator v-if="hasWriteClientPermissionOrOwnClient" class="q-mt-md"/>
-                  <div v-if="hasWriteClientPermissionOrOwnClient">
+                  <q-separator v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient" class="q-mt-md"/>
+                  <div v-if="hasWriteClientPermissionOrOwnClientOrMemberOfClient"
+                       class="text-right q-gutter-sm q-pt-lg">
 
-                    <q-item class="q-pa-none q-mt-lg">
-                      <q-space/>
-                      <q-item-section>
-                        <q-item-label caption>
-                        </q-item-label>
-                      </q-item-section>
-                      <q-item-section side>
-                        <q-btn :loading="deleting" @click="deleteClient" no-caps color="negative" icon="delete"
-                               :label="$tt($options,'deleteClient')"/>
-                      </q-item-section>
-                    </q-item>
+                    <!-- 高级设置 -->
+                    <q-btn
+                      :to="{name:'client-advanced-settings',params:{id:clientId,client: client,owner: owner},query: uid ? {uid:uid}:null}"
+                      color="grey-7"
+                      flat icon="settings" :label="$tt($options,'AdvancedSettings')" no-caps/>
+
+                    <!-- 删除应用 -->
+                    <q-btn v-if="hasWriteClientPermissionOrOwnClient"
+                           :loading="deleting" @click="deleteClient" no-caps color="negative" icon="delete"
+                           :label="$tt($options,'deleteClient')"/>
                   </div>
                 </q-list>
               </div>
@@ -495,7 +535,7 @@
           </q-list>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat :label="$t('cancel')" color="accent" :disable="updating.redirectUri" v-close-popup/>
+          <q-btn flat :label="$t('cancel')" color="grey-7" :disable="updating.redirectUri" v-close-popup/>
           <q-btn :label="$t('update')" color="accent"
                  :disable="updating.redirectUri"
                  :loading="updating.redirectUri"
@@ -694,19 +734,98 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- 成员 -->
+    <q-dialog :persistent="updating.members.length>0" style="max-width: 400px;" v-model="edit.members">
+      <q-card class="full-width">
+        <q-card-section>
+          <div class="text-h6">
+            {{ $tt($options, 'clientMembers') }}
+          </div>
+        </q-card-section>
+
+        <q-card-section v-if="edit.members">
+          <div>
+            <no-results class="q-ma-sm" v-if="members==null || members.length == 0"/>
+            <transition
+              v-for="(member,index) in members"
+              :key="member.uid"
+              appear
+              enter-active-class="animated fadeIn"
+              leave-active-class="animated fadeOut"
+            >
+              <q-chip :removable="updating.members.indexOf(member.uid) == -1" loading clickable
+                      @remove="() => removeOrAddMember(member)">
+                <avatar :user="member"/>
+                {{
+                  member.nickname && member.nickname.trim() ? member.nickname.trim() : member.username
+                }}
+                <q-spinner-tail
+                  v-if="updating.members.indexOf(member.uid)>-1"
+                  class="q-pl-sm"
+                  color="grey"
+                  size="1.5em"
+                />
+                <q-tooltip>
+                  <q-item class="q-pa-none">
+                    <q-item-section avatar style="min-width: 0px">
+                      <avatar :user="member"/>
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>
+                        {{ member.username }}
+                      </q-item-label>
+                      <q-item-label v-if="member.email">
+                        <q-icon name="email"/>
+                        {{ member.email }}
+                      </q-item-label>
+                      <q-item-label v-if="member.phone">
+                        <q-icon name="phone"/>
+                        {{ member.phone }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-tooltip>
+              </q-chip>
+            </transition>
+          </div>
+        </q-card-section>
+
+        <div class="q-pa-sm">
+          <q-separator/>
+        </div>
+
+        <users-list>
+          <template v-slot:side="{user}">
+            <q-btn
+              :disable="updating.members.indexOf(user.uid)>-1"
+              :loading="updating.members.indexOf(user.uid)>-1"
+              @click.stop="()=>removeOrAddMember(user)"
+              flat round
+              :icon="client && client.members && client.members.indexOf(user.uid) >= 0 ? 'remove' : 'add'"/>
+          </template>
+        </users-list>
+
+        <q-card-actions align="right">
+          <q-btn :disable="updating.members.length>0"
+                 :loading="updating.members.length>0"
+                 :label="$t('done')" color="accent" v-close-popup/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
-import EditPage from "../../components/EditPage";
-import Avatar from "../../components/Avatar";
-import RequireAuthorization from "../../components/RequireAuthorization";
-import ClientLogo from "../../components/ClientLogo";
-import NoResults from '../../components/NoResults'
+import EditPage from "../../components/common/EditPage";
+import Avatar from "../../components/api/Avatar";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import ClientLogo from "../../components/api/ClientLogo";
+import NoResults from '../../components/common/NoResults'
+import UsersList from "../../components/api/UsersList";
 
 export default {
   name: "Client",
-  components: {ClientLogo, RequireAuthorization, Avatar, EditPage, NoResults},
+  components: {UsersList, ClientLogo, RequireAuthorization, Avatar, EditPage, NoResults},
   data() {
     return {
       user_: null,
@@ -729,6 +848,7 @@ export default {
         scopes: false,
         authorities: false,
         grantTypes: false,
+        members: false,
         newRedirectUri: ""
       },
       updating: {
@@ -739,7 +859,8 @@ export default {
         refreshTokenValidity: false,
         scopes: [],
         authorities: [],
-        grantTypes: []
+        grantTypes: [],
+        members: []
       },
       rules: {
         name: [val => val && val.length <= 64 && (val = val.trim()).length > 0 || this.$tt(this, "clientNameRule")],
@@ -751,6 +872,8 @@ export default {
       authoritiesLoading: false,
       grantTypes: null,
       grantTypesLoading: false,
+      members: null,
+      membersPromise: null,
       deleting: false,
       deleted: false
     }
@@ -1067,6 +1190,46 @@ export default {
           .finally(() => this.grantTypesLoading = false)
       }
     },
+    updateMembers() {
+      if (this.edit.members)
+        return;
+      this.edit.members = true;
+    },
+    indexOfMember(member) {
+      if (member == null || member.uid == null || this.members == null)
+        return -1;
+      for (let i in this.members)
+        if (this.members[i].uid == member.uid)
+          return i;
+      return -1;
+    },
+    removeOrAddMember(member) {
+      if (this.updating.members.indexOf(member.uid) >= 0)
+        return;
+      let contains = this.client.members && this.client.members.indexOf(member.uid) > -1;
+      this.updating.members.push(member.uid);
+      let p = null;
+      if (this.uid == null)
+        p = contains ?
+          this.$clientApi.removeClientMembers(this.clientId, [member.uid]) :
+          this.$clientApi.addClientMembers(this.clientId, [member.uid]);
+      else
+        p = contains ?
+          this.$clientApi.removeUserClientMembers(this.uid, this.clientId, [member.uid]) :
+          this.$clientApi.addUserClientMembers(this.uid, this.clientId, [member.uid]);
+      p.then(res => {
+        if (contains) {
+          this.client.members.splice(this.client.members.indexOf(member.uid), 1)
+          // this.members.splice(this.indexOfMember(member), 1)
+        } else {
+          this.client.members.push(member.uid)
+          // this.members.push(member)
+        }
+      }).finally(() => {
+        this.updating.members.splice(this.updating.members.indexOf(member.uid), 1);
+      })
+
+    },
     addOrRemoveGrantType(type) {
       if (this.updating.grantTypes.indexOf(type.tid) >= 0)
         return;
@@ -1126,11 +1289,17 @@ export default {
     isOwner() {
       return this.owner && this.user_ && this.owner.uid && this.user_.uid && this.owner.uid == this.user_.uid;
     },
+    isMember() {
+      return this.client && this.user_ && this.user_.uid && this.client.members && this.client.members.indexOf(this.user_.uid) >= 0
+    },
     hasWriteClientPermission() {
       return this.hasPermission("WRITE_CLIENT");
     },
     hasWriteClientPermissionOrOwnClient() {
       return this.isOwner || this.hasWriteClientPermission;
+    },
+    hasWriteClientPermissionOrOwnClientOrMemberOfClient() {
+      return this.isOwner || this.isMember || this.hasWriteClientPermission;
     },
     hasGrantClientPermission() {
       return this.hasPermission("GRANT_CLIENT");
@@ -1140,6 +1309,28 @@ export default {
     user_() {
       if (this.user_ && this.user_.uid)
         this.loadClient();
+    },
+    "client.members"() {
+      if (this.client.members == null || this.client.members.length === 0) {
+        this.members = null;
+        this.membersPromise = null;
+      } else {
+        let p = () => this.$usersApi.getUsers(this.client.members)
+          .then(res => {
+            this.members = res.data.data;
+          })
+          .catch(e => {
+            this.members = null;
+            return e;
+          })
+          .finally(() => this.membersPromise = null);
+        if (this.membersPromise == null)
+          this.membersPromise = p()
+        else {
+          this.membersPromise.then(() => p())
+        }
+      }
+
     }
   }
 }

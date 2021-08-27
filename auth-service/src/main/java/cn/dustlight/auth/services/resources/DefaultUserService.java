@@ -1,16 +1,16 @@
 package cn.dustlight.auth.services.resources;
 
 import cn.dustlight.auth.ErrorEnum;
-import cn.dustlight.auth.entities.DefaultPublicUser;
-import cn.dustlight.auth.entities.DefaultUser;
-import cn.dustlight.auth.entities.Role;
-import cn.dustlight.auth.entities.UserRole;
+import cn.dustlight.auth.entities.*;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.mappers.RoleMapper;
 import cn.dustlight.auth.mappers.UserMapper;
+import cn.dustlight.auth.mappers.UserRoleMapper;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.OrderBySqlBuilder;
 import cn.dustlight.auth.util.QueryResults;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DuplicateKeyException;
@@ -27,6 +27,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
+    private final UserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
     private final UniqueGenerator<Long> idGenerator;
     private static final Log logger = LogFactory.getLog(DefaultUserService.class.getName());
@@ -34,17 +35,23 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     /* 表单正则 */
     private Pattern usernamePattern;
     private Pattern emailPattern;
+    private Pattern phonePattern;
     private Pattern passwordPattern;
+    @Getter
+    @Setter
+    private String defaultClientId = "default";
 
     private final OrderBySqlBuilder orderBySqlBuilder = OrderBySqlBuilder.create
             ("uid", "createdAt", "updatedAt", "accountExpiredAt", "credentialsExpiredAt", "unlockedAt");
 
     public DefaultUserService(UserMapper userMapper,
                               RoleMapper roleMapper,
+                              UserRoleMapper userRoleMapper,
                               PasswordEncoder passwordEncoder,
                               UniqueGenerator<Long> idGenerator) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
+        this.userRoleMapper = userRoleMapper;
         this.idGenerator = idGenerator;
         this.passwordEncoder = passwordEncoder;
     }
@@ -56,33 +63,43 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     }
 
     @Override
-    public DefaultUser loadUserByUsername(String s) {
-        if (!StringUtils.hasText(s))
+    public DefaultUser loadUserByUsername(String account) {
+        if (!StringUtils.hasText(account))
             ErrorEnum.USERNAME_INVALID.throwException();
-        DefaultUser u = userMapper.selectUserByUsernameOrEmail(s);
+        DefaultUser u = userMapper.selectUserByAccount(account);
         if (u == null)
             throw new UsernameNotFoundException("user not found");
+        u.setRoles(getRolesWithClientId(u.getUid(), "default"));
         return u;
     }
 
     @Transactional
     @Override
-    public void createUser(String username, String password, String email, String nickname, int gender,
+    public void createUser(String username, String password, String phone, String email, String nickname, int gender,
                            Collection<UserRole> roles, Date accountExpiredAt, Date credentialsExpiredAt, Date unlockedAt, boolean enabled) {
         Long id = idGenerator.generate();
         if (usernamePattern != null && !usernamePattern.matcher(username).matches())
             ErrorEnum.USERNAME_INVALID.throwException();
         if (passwordPattern != null && !passwordPattern.matcher(password).matches())
             ErrorEnum.PASSWORD_INVALID.throwException();
-        if (emailPattern != null && !emailPattern.matcher(email).matches())
+        if (StringUtils.hasText(email) && emailPattern != null && !emailPattern.matcher(email).matches())
             ErrorEnum.EMAIL_INVALID.throwException();
+        if (StringUtils.hasText(phone) && phonePattern != null && !phonePattern.matcher(phone).matches())
+            ErrorEnum.PHONE_INVALID.throwException();
+
+        if (!StringUtils.hasText(email) && !StringUtils.hasText(phone))
+            ErrorEnum.INPUT_INVALID.details("Phone and email is empty").throwException();
+        if (!StringUtils.hasText(email))
+            email = null;
+        if (!StringUtils.hasText(phone))
+            phone = null;
         try {
             // 先创建用户
-            if (!userMapper.insertUser(id, username, encodePassword(password), email, nickname, gender,
+            if (!userMapper.insertUser(id, username, encodePassword(password), phone, email, nickname, gender,
                     accountExpiredAt, credentialsExpiredAt, unlockedAt, enabled))
                 ErrorEnum.CREATE_USER_FAIL.throwException();
             // 再添加角色
-            if (roles != null && roles.size() > 0 && !roleMapper.insertUserRoles(id, roles))
+            if (roles != null && roles.size() > 0 && !roleMapper.insertUserRoles(id, roles, defaultClientId))
                 ErrorEnum.CREATE_ROLE_FAIL.details("fail to insert user roles").throwException();
         } catch (DuplicateKeyException e) {
             ErrorEnum.USER_EXISTS.throwException();
@@ -91,7 +108,19 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     @Override
     public DefaultUser loadUser(Long uid) {
-        return userMapper.selectUser(uid);
+        DefaultUser usr = userMapper.selectUser(uid);
+        if (usr == null)
+            throw new UsernameNotFoundException("user not found");
+        return usr;
+    }
+
+    @Override
+    public DefaultUser loadUser(Long uid, String clientId) {
+        DefaultUser usr = userMapper.selectUser(uid);
+        if (usr == null)
+            throw new UsernameNotFoundException("user not found");
+        usr.setRoles(getRolesWithClientId(usr.getUid(), clientId));
+        return usr;
     }
 
     @Override
@@ -152,6 +181,16 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     }
 
     @Override
+    public void updatePasswordByPhone(String phone, String password) {
+        if (passwordPattern != null && !passwordPattern.matcher(password).matches())
+            ErrorEnum.PASSWORD_INVALID.throwException();
+        if (phonePattern != null && !phonePattern.matcher(phone).matches())
+            ErrorEnum.PHONE_INVALID.throwException();
+        if (!userMapper.updatePasswordByPhone(phone, encodePassword(password)))
+            ErrorEnum.UPDATE_USER_FAIL.details("fail to update password by phone").throwException();
+    }
+
+    @Override
     public void updateNickname(Long uid, String nickname) {
         if (nickname == null || nickname.trim().isEmpty())
             ErrorEnum.UPDATE_USER_FAIL.details("fail to update nickname").throwException();
@@ -174,8 +213,16 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     }
 
     @Override
-    public void addRoles(Long uid, Collection<UserRole> roles) {
-        if (!roleMapper.insertUserRoles(uid, roles))
+    public void updatePhone(Long uid, String phone) {
+        if (phonePattern != null && !phonePattern.matcher(phone).matches())
+            ErrorEnum.PHONE_INVALID.throwException();
+        if (!userMapper.updatePhone(uid, phone))
+            ErrorEnum.UPDATE_USER_FAIL.details("fail to update phone").throwException();
+    }
+
+    @Override
+    public void addRoles(Long uid, Collection<UserRole> roles, String cid) {
+        if (!roleMapper.insertUserRoles(uid, roles, cid))
             ErrorEnum.CREATE_ROLE_FAIL.details("fail to add user roles").throwException();
     }
 
@@ -188,6 +235,21 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     @Override
     public Collection<? extends Role> getRoles(Long uid) {
         return roleMapper.listUserRoles(uid);
+    }
+
+    @Override
+    public Collection<DefaultUserRole> getRolesWithClientId(Long uid, String clientId) {
+        return roleMapper.listUserRolesWithClientId(uid, clientId);
+    }
+
+    @Override
+    public Collection<? extends RoleClient> getRoleClients(Long uid) {
+        return userRoleMapper.selectUserRoleClients(uid);
+    }
+
+    @Override
+    public Collection<? extends RoleClient> getManagedRoleClients(Long uid) {
+        return userRoleMapper.selectManagedUserRoleClients(uid);
     }
 
     @Override
@@ -234,7 +296,18 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
         return userMapper.isEmailExists(email);
     }
 
+    @Override
+    public boolean isPhoneExists(String phone) {
+        if (phonePattern != null && !phonePattern.matcher(phone).matches())
+            ErrorEnum.PHONE_INVALID.throwException();
+        return userMapper.isPhoneExists(phone);
+    }
+
     /* --------------------------------------------------------------------------------------------------- */
+
+    public void setPhonePattern(Pattern phonePattern) {
+        this.phonePattern = phonePattern;
+    }
 
     public void setEmailPattern(Pattern emailPattern) {
         this.emailPattern = emailPattern;
@@ -246,6 +319,10 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
 
     public void setUsernamePattern(Pattern usernamePattern) {
         this.usernamePattern = usernamePattern;
+    }
+
+    public Pattern getPhonePattern() {
+        return phonePattern;
     }
 
     public Pattern getEmailPattern() {

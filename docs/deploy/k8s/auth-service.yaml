@@ -40,28 +40,45 @@ spec:
           #   successThreshold: 1
           #   timeoutSeconds: 1
           ports:
-          - containerPort: 8080
-            name: auth-port
+            - containerPort: 8080
+              name: auth-port
           volumeMounts:
-          - name: config
-            mountPath: /application.yaml
-            subPath: application.yaml
+            - name: config
+              mountPath: /application.yaml
+              subPath: application.yaml
+            - name: auth-data
+              mountPath: /upload/auth
       initContainers:
-      - name: init-cache
-        image: busybox
-        imagePullPolicy: IfNotPresent
-        command: ['sh', '-c', "until nc -z auth-cache 6379; do echo waiting for cache; sleep 2; done"]
-      - name: init-database
-        image: busybox
-        imagePullPolicy: IfNotPresent
-        command: ['sh', '-c', "until nc -z auth-database 3306; do echo waiting for database; sleep 2; done"]
+        - name: init-cache
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: [ 'sh', '-c', "until nc -z auth-cache 6379; do echo waiting for cache; sleep 2; done" ]
+        - name: init-database
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: [ 'sh', '-c', "until nc -z auth-database 3306; do echo waiting for database; sleep 2; done" ]
       volumes:
         - name: config
           configMap:
             name: auth-service-config
             items:
-            - key: application.yaml
-              path: application.yaml
+              - key: application.yaml
+                path: application.yaml
+        - name: auth-data
+          persistentVolumeClaim:
+            claimName: auth-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: auth-data
+  namespace: auth
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
@@ -72,9 +89,9 @@ metadata:
     app: auth-service
 spec:
   ports:
-  - port: 80
-    targetPort: 8080
-    name: auth-port
+    - port: 80
+      targetPort: 8080
+      name: auth-port
   selector:
     app: auth-service
   type: ClusterIP

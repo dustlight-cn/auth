@@ -14,7 +14,7 @@ declare module 'vue/types/vue' {
      * @param key
      * @param notKey 是否不允许 key 和值一样
      */
-    $tt(context: any, key: string, notKey: boolean): string | null;
+    $tt(context: any, key: string, notKey?: boolean): string | null;
 
     changeLanguage(lang: string): null,
 

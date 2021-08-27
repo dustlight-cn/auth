@@ -67,10 +67,10 @@
 </template>
 
 <script>
-import AvatarButton from "../components/AvatarButton";
-import Logo from "../components/Logo";
-import Footer from "../components/Footer";
-import LanguageSelector from "../components/LanguageSelector";
+import AvatarButton from "../components/common/AvatarButton";
+import Logo from "../components/common/Logo";
+import Footer from "../components/common/Footer";
+import LanguageSelector from "../components/common/LanguageSelector";
 
 const c = {
   name: 'MainLayout',

@@ -233,7 +233,7 @@
 </template>
 
 <script>
-import reCaptcha from '../../components/ReCaptcha'
+import reCaptcha from '../../components/common/ReCaptcha'
 
 export default {
   name: "SignUp",
@@ -290,7 +290,7 @@ export default {
       if (!this.verify(this.sendEmailCode))
         return;
       this.isBusy = true;
-      this.$codeApi.createRegistrationCode(this.model.recaptcha, this.model.email)
+      this.$codeApi.createRegistrationEmailCode(this.model.recaptcha, this.model.email)
         .then(this.sendEmailCodeSuccess)
         .catch(this.sendEmailCodeFailed)
         .finally(() => {

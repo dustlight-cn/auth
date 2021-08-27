@@ -1,31 +1,28 @@
 package cn.dustlight.auth.controllers.resources;
 
-import cn.dustlight.auth.entities.DefaultClient;
-import cn.dustlight.auth.services.storages.StorageHandler;
-import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.Client;
+import cn.dustlight.auth.entities.DefaultClient;
 import cn.dustlight.auth.services.ClientService;
+import cn.dustlight.auth.services.storages.StorageHandler;
+import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.util.QueryResults;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Tag(name = "Clients", description = "应用的增删改查")
@@ -166,12 +163,32 @@ public class ClientResource {
         }
     }
 
+    @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
+    @PutMapping("clients/{cid}/members")
+    @Operation(summary = "添加应用成员", description = "应用和用户需要 WRITE_CLIENT 权限。")
+    public void addClientMembers(@PathVariable("cid") String cid,
+                                 @RequestParam("uids") Collection<Long> uids) {
+        clientService.addMembers(cid, uids);
+    }
+
+    @PreAuthorize("(#oauth2.client or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
+    @DeleteMapping("clients/{cid}/members")
+    @Operation(summary = "移除应用成员", description = "应用和用户需要 WRITE_CLIENT 权限。")
+    public void removeClientMembers(@PathVariable("cid") String cid,
+                                    @RequestParam("uids") Collection<Long> uids) {
+        clientService.removeMembers(cid, uids);
+    }
+
     /* ------------------------------------------------------------------------------------------------ */
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('READ_CLIENT')) and #oauth2.clientHasAnyRole('READ_CLIENT')")
     @GetMapping("users/{uid}/clients")
     @Operation(summary = "查询用户应用", description = "应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。")
-    public QueryResults<? extends Client> getUserClients(@PathVariable("uid") Long uid, @RequestParam(required = false, name = "q") String keywords, @RequestParam(required = false) Collection<String> order, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer limit) {
+    public QueryResults<? extends Client> getUserClients(@PathVariable("uid") Long uid,
+                                                         @RequestParam(required = false, name = "q") String keywords,
+                                                         @RequestParam(required = false) Collection<String> order,
+                                                         @RequestParam(required = false) Integer offset,
+                                                         @RequestParam(required = false) Integer limit) {
         if (keywords == null || keywords.length() == 0)
             return setLogo(clientService.list(uid, order, offset, limit));
         return setLogo(clientService.search(keywords, uid, order, offset, limit));
@@ -180,16 +197,18 @@ public class ClientResource {
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @DeleteMapping("users/{uid}/clients")
     @Operation(summary = "删除用户应用", description = "应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。")
-    public void removeUserClients(@PathVariable("uid") Long uid, @RequestParam Collection<String> cids) {
+    public void removeUserClients(@PathVariable("uid") Long uid,
+                                  @RequestParam Collection<String> cids) {
         clientService.delete(uid, cids);
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('READ_CLIENT')) and #oauth2.clientHasAnyRole('READ_CLIENT')")
     @GetMapping("users/{uid}/clients/{cid}")
     @Operation(summary = "获取用户应用", description = "应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。")
-    public Client getUserClient(@PathVariable("uid") Long uid, @PathVariable("cid") String cid) {
+    public Client getUserClient(@PathVariable("uid") Long uid,
+                                @PathVariable("cid") String cid) {
         DefaultClient result = clientService.loadClientByClientId(cid);
-        if (result == null || !uid.equals(result.getUid()))
+        if (result == null || !clientService.isOwnerOrMember(cid, uid))
             ErrorEnum.CLIENT_NOT_FOUND.throwException();
         return setLogo(result);
     }
@@ -197,7 +216,8 @@ public class ClientResource {
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @DeleteMapping("users/{uid}/clients/{cid}")
     @Operation(summary = "删除用户应用", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
-    public void removeUserClient(@PathVariable("uid") Long uid, @PathVariable("cid") String cid) {
+    public void removeUserClient(@PathVariable("uid") Long uid,
+                                 @PathVariable("cid") String cid) {
         clientService.delete(uid, Arrays.asList(cid));
         try {
             storageHandler.remove(generateLogoKey(cid));
@@ -221,36 +241,44 @@ public class ClientResource {
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @PutMapping("users/{uid}/clients/{cid}/secret")
     @Operation(summary = "更新用户应用密钥", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
-    public String updateUserClientSecret(@PathVariable("uid") Long uid, @PathVariable("cid") String cid) {
+    public String updateUserClientSecret(@PathVariable("uid") Long uid,
+                                         @PathVariable("cid") String cid) {
         return clientService.updateSecret(cid, uid);
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @PutMapping("users/{uid}/clients/{cid}/name")
     @Operation(summary = "更新用户应用名称", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
-    public void updateUserClientName(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("name") String name) {
+    public void updateUserClientName(@PathVariable("uid") Long uid,
+                                     @PathVariable("cid") String cid,
+                                     @RequestParam("name") String name) {
         clientService.updateName(cid, uid, name);
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @PutMapping("users/{uid}/clients/{cid}/description")
     @Operation(summary = "更新用户应用描述", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
-    public void updateUserClientDescription(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("description") String description) {
+    public void updateUserClientDescription(@PathVariable("uid") Long uid,
+                                            @PathVariable("cid") String cid,
+                                            @RequestParam("description") String description) {
         clientService.updateDescription(cid, uid, description);
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @PutMapping("users/{uid}/clients/{cid}/redirect")
     @Operation(summary = "更新用户应用回调地址", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
-    public void updateUserClientRedirectUri(@PathVariable("uid") Long uid, @PathVariable("cid") String cid, @RequestParam("redirectUri") String redirectUri) {
+    public void updateUserClientRedirectUri(@PathVariable("uid") Long uid,
+                                            @PathVariable("cid") String cid,
+                                            @RequestParam("redirectUri") String redirectUri) {
         clientService.updateRedirectUri(cid, uid, redirectUri);
     }
 
     @GetMapping("users/{uid}/clients/{cid}/logo")
     @Operation(summary = "获取用户应用 Logo", description = "应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。")
-    public void getUserClientLogo(@PathVariable("uid") Long uid, @PathVariable("cid") String cid) {
-        if (!clientService.isOwner(cid, uid))
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+    public void getUserClientLogo(@PathVariable("uid") Long uid,
+                                  @PathVariable("cid") String cid) {
+        if (!clientService.isOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
         getClientLogo(cid);
     }
 
@@ -258,10 +286,33 @@ public class ClientResource {
     @PutMapping("users/{uid}/clients/{cid}/logo")
     @Operation(summary = "更新用户应用 Logo", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。"
             , requestBody = @RequestBody(required = true, content = @Content(mediaType = "image/*", schema = @Schema(type = "string", format = "binary"))))
-    public void updateUserClientLogo(@PathVariable("uid") Long uid, @PathVariable("cid") String cid) {
-        if (!clientService.isOwner(cid, uid))
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+    public void updateUserClientLogo(@PathVariable("uid") Long uid,
+                                     @PathVariable("cid") String cid) {
+        if (!clientService.isOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
         updateClientLogo(cid);
+    }
+
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
+    @PutMapping("users/{uid}/clients/{cid}/members")
+    @Operation(summary = "添加应用成员", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
+    public void addUserClientMembers(@PathVariable("uid") Long uid,
+                                     @PathVariable("cid") String cid,
+                                     @RequestParam("uids") Collection<Long> uids) {
+        if (!clientService.isOwner(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
+        clientService.addMembers(cid, uids);
+    }
+
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
+    @DeleteMapping("users/{uid}/clients/{cid}/members")
+    @Operation(summary = "移除应用成员", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
+    public void removeUserClientMembers(@PathVariable("uid") Long uid,
+                                        @PathVariable("cid") String cid,
+                                        @RequestParam("uids") Collection<Long> uids) {
+        if (!clientService.isOwner(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
+        clientService.removeMembers(cid, uids);
     }
 
     /* ----------------------------------------------------------------------------------------------------- */

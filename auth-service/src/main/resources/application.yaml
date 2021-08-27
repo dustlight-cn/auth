@@ -1,24 +1,24 @@
 mysql:
-  host: "instance-2"  # MySQL 服务器地址
-  port: 30010         # MySQL 服务端口
+  host: "localhost"  # MySQL 服务器地址
+  port: 3306         # MySQL 服务端口
   db: auth            # MySQL 数据库
   charset: "utf8"     # 字符编码
   ssl: false          # 连接启用 SSL
   username: "root"    # 数据库用户名
   password: "123456"  # 数据库密码
 redis:
-  host: "instance-2"  # Redis 服务器地址
-  port: 30020         # Redis 服务端口
+  host: "localhost"  # Redis 服务器地址
+  port: 6379         # Redis 服务端口
   password: ""        # Redis 密码
 #smtp:
-#  host: "smtp.exmail.qq.com" # SMTP 服务器地址
-#  user: "YOUR_USERNAME"
-#  pass: "YOUR_PASSWORD"
+#  host: "" # SMTP 服务器地址
+#  user: ""
+#  pass: ""
 
 dustlight:
   auth:
     captcha:
-#      enabled: false # 是否开启 Captcha （登录注册人机识别）
+      enabled: true # 是否开启 Captcha （登录注册人机识别）
     storage:
       storage-type: local # 储存模式，可选本地储存或者云储存。（local | storage）
       prefix: "upload/auth/" # 储存地址前缀：本地储存模式时代表本地储存目录，云储存模式则代表存储对象 key 的前缀。
@@ -30,6 +30,7 @@ dustlight:
         username: "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$" # 用户名正则限制
         email: "^\\S+@\\S+$"  # 邮箱地址正则限制
         password: "^.{6,20}$" # 密码正则限制
+        phone: "^\\+(9[976]\\d|8[987530]\\d|6[987]\\d|5[90]\\d|42\\d|3[875]\\d|2[98654321]\\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\\d{1,14}$" # 手机号码正则
     jwt:
       signing-key: |-
         -----BEGIN RSA PRIVATE KEY-----
@@ -81,6 +82,26 @@ dustlight:
       random-string:
         chars: "0123456789" # 生成随机字符验证码的字符池
         length: 6 # 随机字符验证码的长度
+    sender:
+    #      tencent:
+    #        sms:
+    #          secret-id: <腾讯云密钥 ID>
+    #          secret-key: <腾讯云密钥 Key>
+    #          default-app-id: <默认短信 SdkAppID>
+    #          default-sign: <默认短信签名>
+    #          default-template-id: <默认短信模板ID>
+    #      alibaba:
+    #        sms:
+    #          access-key-id: <阿里云密钥 ID>
+    #          access-key-secret: <阿里云密钥 Key>
+    #          default-template-code: <默认短信模板>
+    #          default-sign-name: <默认短信签名>
+    #          sign-names:
+    #            name1: <签名>
+    #            name2: <签名>
+    #          template-codes:
+    #            template1: <模板>
+    #            template2: <模板>
     verifier:
       string-equals:
         trim: true

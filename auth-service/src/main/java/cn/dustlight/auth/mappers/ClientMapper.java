@@ -54,12 +54,15 @@ public interface ClientMapper {
             @Result(column = "cid", property = "cid"),
             @Result(column = "cid", property = "types", many = @Many(select = "cn.dustlight.auth.mappers.GrantTypeMapper.listClientGrantTypes")),
             @Result(column = "cid", property = "scopes", many = @Many(select = "cn.dustlight.auth.mappers.ScopeMapper.listClientScopes")),
-            @Result(column = "cid", property = "authorities", many = @Many(select = "cn.dustlight.auth.mappers.AuthorityMapper.listClientAuthorities"))
+            @Result(column = "cid", property = "authorities", many = @Many(select = "cn.dustlight.auth.mappers.AuthorityMapper.listClientAuthorities")),
+            @Result(column = "cid", property = "members", many = @Many(select = "cn.dustlight.auth.mappers.ClientMapper.getClientMemberIds"))
     })
     DefaultClient loadClient(@Param("clientId") String clientId);
 
     @Select("<script>SELECT clients.* FROM clients," +
-            "(SELECT cid FROM clients WHERE uid=#{uid}" +
+            "((SELECT cid FROM clients WHERE uid=#{uid}) " +
+            "UNION " +
+            "(SELECT cid FROM client_members WHERE uid=#{uid}) " +
             "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
             "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> offset #{offset}</if></if>) AS c" +
             " WHERE clients.cid=c.cid</script>")
@@ -68,11 +71,17 @@ public interface ClientMapper {
                                               @Param("offset") Integer offset,
                                               @Param("limit") Integer limit);
 
-    @Select("SELECT COUNT(cid) FROM clients WHERE uid=#{uid}")
+    @Select("SELECT COUNT(cid) FROM " +
+            "((SELECT cid FROM clients WHERE uid=#{uid}) " +
+            "UNION " +
+            "(SELECT cid FROM client_members WHERE uid=#{uid})) " +
+            "AS c")
     Integer countUserClients(@Param("uid") Long uid);
 
     @Select("<script>SELECT clients.* FROM clients," +
-            "(SELECT cid FROM clients WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key}) AND uid=#{uid}" +
+            "(SELECT cid FROM " +
+            "(SELECT * FROM clients WHERE cid IN ((SELECT cid FROM clients WHERE uid=#{uid}) UNION (SELECT cid FROM client_members WHERE uid=#{uid}))) AS tmp " +
+            "WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key})" +
             "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
             "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> offset #{offset}</if></if>) AS c" +
             " WHERE clients.cid=c.cid</script>")
@@ -82,9 +91,11 @@ public interface ClientMapper {
                                                 @Param("offset") Integer offset,
                                                 @Param("limit") Integer limit);
 
-    @Select("SELECT COUNT(cid) FROM clients WHERE uid=#{uid} AND MATCH(name,description,redirectUri,cid) AGAINST(#{key})")
+    @Select("SELECT COUNT(cid) FROM " +
+            "(SELECT * FROM clients WHERE cid IN ((SELECT cid FROM clients WHERE uid=#{uid}) UNION (SELECT cid FROM client_members WHERE uid=#{uid}))) AS tmp " +
+            "WHERE MATCH(name,description,redirectUri,cid) AGAINST(#{key})")
     Integer countSearchUserClients(@Param("uid") Long uid,
-                               @Param("key") String key);
+                                   @Param("key") String key);
 
     @Select("SELECT COUNT(uid) FROM clients WHERE cid=#{cid} AND uid=#{uid} LIMIT 1")
     Boolean isClientOwner(@Param("cid") String cid,
@@ -130,37 +141,17 @@ public interface ClientMapper {
     Boolean updateClientSecret(@Param("cid") String cid,
                                @Param("secret") String secret);
 
-    @Update("UPDATE clients SET secret=#{secret} WHERE cid=#{cid} AND uid=#{uid}")
-    Boolean updateUserClientSecret(@Param("cid") String cid,
-                                   @Param("uid") Long uid,
-                                   @Param("secret") String secret);
-
     @Update("UPDATE clients SET name=#{name} WHERE cid=#{cid}")
     Boolean updateClientName(@Param("cid") String cid,
                              @Param("name") String name);
-
-    @Update("UPDATE clients SET name=#{name} WHERE cid=#{cid} AND uid=#{uid}")
-    Boolean updateUserClientName(@Param("cid") String cid,
-                                 @Param("uid") Long uid,
-                                 @Param("name") String name);
 
     @Update("UPDATE clients SET description=#{description} WHERE cid=#{cid}")
     Boolean updateClientDescription(@Param("cid") String cid,
                                     @Param("description") String description);
 
-    @Update("UPDATE clients SET description=#{description} WHERE cid=#{cid} AND uid=#{uid}")
-    Boolean updateUserClientDescription(@Param("cid") String cid,
-                                        @Param("uid") Long uid,
-                                        @Param("description") String description);
-
     @Update("UPDATE clients SET redirectUri=#{redirectUri} WHERE cid=#{cid}")
     Boolean updateClientRedirectUri(@Param("cid") String cid,
                                     @Param("redirectUri") String redirectUri);
-
-    @Update("UPDATE clients SET redirectUri=#{redirectUri} WHERE cid=#{cid} AND uid=#{uid}")
-    Boolean updateUserClientRedirectUri(@Param("cid") String cid,
-                                        @Param("uid") Long uid,
-                                        @Param("redirectUri") String redirectUri);
 
     @Update("UPDATE clients SET accessTokenValidity=#{accessTokenValidity} WHERE cid=#{cid}")
     Boolean updateClientAccessTokenValidity(@Param("cid") String cid,
@@ -195,4 +186,35 @@ public interface ClientMapper {
 
     /* --------------------------------------------------------------------------------------------------------- */
 
+    @Select("SELECT COUNT(uid) FROM " +
+            "((SELECT uid FROM clients WHERE cid=#{cid}) " +
+            "UNION " +
+            "(SELECT uid FROM client_members WHERE cid=#{cid})) AS c " +
+            "WHERE uid=#{uid} " +
+            "LIMIT 1")
+    Boolean isClientOwnerOrMember(@Param("cid") String cid,
+                                  @Param("uid") Long uid);
+
+    @Select("SELECT uid FROM client_members WHERE cid=#{cid}")
+    Collection<Long> getClientMemberIds(@Param("cid") String cid);
+
+    @Insert("<script>" +
+            "INSERT IGNORE INTO client_members (cid,uid) VALUES " +
+            "<foreach collection='uids' item='uid' separator=','>" +
+            "(#{cid},#{uid})" +
+            "</foreach> " +
+            "</script>")
+    Boolean addClientMembers(@Param("cid") String cid,
+                             @Param("uids") Collection<Long> uids);
+
+    @Insert("<script>" +
+            "DELETE FROM client_members WHERE cid=#{cid} AND uid IN " +
+            "<foreach collection='uids' item='uid' separator=',' open='(' close=')'>" +
+            "#{uid}" +
+            "</foreach>" +
+            "</script>")
+    Boolean removeClientMembers(@Param("cid") String cid,
+                             @Param("uids") Collection<Long> uids);
+
+    /* --------------------------------------------------------------------------------------------------------- */
 }

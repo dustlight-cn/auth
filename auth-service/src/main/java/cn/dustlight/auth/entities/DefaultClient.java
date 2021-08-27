@@ -22,6 +22,7 @@ public class DefaultClient implements Client {
     private Integer accessTokenValidity, refreshTokenValidity, status;
     private Long uid;
     private Collection<Resource> resources;
+    private Collection<Long> members;
     private Collection<? extends ClientScope> scopes;
     private Collection<GrantType> types;
     private Collection<String> authorities;
@@ -60,6 +61,15 @@ public class DefaultClient implements Client {
     @Override
     public Date getUpdatedAt() {
         return updatedAt;
+    }
+
+    @Override
+    public Collection<Long> getMembers() {
+        return members;
+    }
+
+    public void setMembers(Collection<Long> members) {
+        this.members = members;
     }
 
     @Override

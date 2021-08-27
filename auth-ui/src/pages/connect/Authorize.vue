@@ -142,7 +142,7 @@
               </q-item>
               <div class="q-pb-md text-caption text-grey text-center">
                 {{ $tt($options, 'redirect') }}
-                <div><b>{{ $route.query.redirect_uri }}</b></div>
+                <div><b style="word-break: break-all">{{ $route.query.redirect_uri }}</b></div>
               </div>
             </q-list>
 
@@ -210,11 +210,11 @@
 </template>
 
 <script>
-import RequireAuthorization from "../../components/RequireAuthorization";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
 import SignIn from "./SignIn";
-import AvatarButton from "../../components/AvatarButton";
-import ClientLogo from "../../components/ClientLogo";
-import Avatar from "../../components/Avatar";
+import AvatarButton from "../../components/common/AvatarButton";
+import ClientLogo from "../../components/api/ClientLogo";
+import Avatar from "../../components/api/Avatar";
 
 export default {
   name: "Authorize",
@@ -259,7 +259,7 @@ export default {
       return false;
     },
     withJwt(){
-      return this.$route.query.jwt != null ? Boolean(this.$route.query.jwt) : false
+      return this.$route.query.jwt != null ? this.$route.query.jwt.toUpperCase() == "TRUE" : false
     }
   },
   methods: {
@@ -292,15 +292,14 @@ export default {
       if (this.approving)
         return;
       this.approving = true;
-      let s = "";
+      let s = new Set();
       this.client.scopes.forEach(scope => {
         if (scope.value) {
           if (s.length > 0)
             s += ",";
-          s += scope.name;
+          s.add(scope.name);
         }
       })
-
       this.$authorizationAi.createAuthorization(true, s, this.withJwt)
         .then(res => window.location = res.data.redirect)
         .catch((e) => {
@@ -312,7 +311,8 @@ export default {
       if (this.canceling)
         return;
       this.canceling = true;
-      this.$authorizationAi.createAuthorization(false, [], this.withJwt)
+      let s = new Set();
+      this.$authorizationAi.createAuthorization(false, s, this.withJwt)
         .then(res => window.location = res.data.redirect)
         .catch((e) => {
           this.canceling = false

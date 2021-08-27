@@ -18,6 +18,10 @@ public interface PublicUser extends User, Serializable {
 
     @JsonIgnore
     @Override
+    String getPhone();
+
+    @JsonIgnore
+    @Override
     Date getAccountExpiredAt();
 
     @JsonIgnore
@@ -26,7 +30,7 @@ public interface PublicUser extends User, Serializable {
 
     @JsonIgnore
     @Override
-    Collection<UserRole> getUserRoles();
+    Collection<? extends UserRole> getUserRoles();
 
     @JsonIgnore
     @Override

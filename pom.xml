@@ -12,7 +12,7 @@
     <groupId>cn.dustlight.auth</groupId>
     <artifactId>auth-parent</artifactId>
     <name>auth-parent</name>
-    <version>1.0.6-alpha-3</version>
+    <version>1.1.1-alpha</version>
     <description>Parent project of OAuth2 Server based on Spring Cloud Security</description>
 
     <modules>
@@ -24,8 +24,8 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <captcha.version>0.0.6</captcha.version>
-        <storage.version>0.0.4</storage.version>
+        <captcha.version>1.0.1</captcha.version>
+        <storage.version>0.0.5</storage.version>
 
         <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
         <spring-doc.version>1.5.2</spring-doc.version>
@@ -63,6 +63,11 @@
                 <artifactId>captcha</artifactId>
                 <type>pom</type>
                 <scope>import</scope>
+                <version>${captcha.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dustlight.captcha</groupId>
+                <artifactId>aliyun-sms</artifactId>
                 <version>${captcha.version}</version>
             </dependency>
 
@@ -115,7 +120,6 @@
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${spring-doc.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -184,6 +188,11 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                    <version>1.3</version>
                 </plugin>
                 <!-- GPG -->
                 <plugin>

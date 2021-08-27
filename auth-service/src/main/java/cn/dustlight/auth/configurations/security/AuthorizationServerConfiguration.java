@@ -1,11 +1,13 @@
 package cn.dustlight.auth.configurations.security;
 
-import cn.dustlight.auth.configurations.components.StorageConfiguration;
-import cn.dustlight.auth.configurations.documents.DocumentConfiguration;
 import cn.dustlight.auth.configurations.components.ServicesConfiguration;
+import cn.dustlight.auth.configurations.components.StorageConfiguration;
 import cn.dustlight.auth.configurations.components.TokenConfiguration;
+import cn.dustlight.auth.configurations.documents.DocumentConfiguration;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.UserService;
+import cn.dustlight.auth.services.oauth.AuthTokenService;
+import cn.dustlight.auth.services.oauth.granters.AuthImplicitTokenGranter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -17,18 +19,23 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
-import org.springframework.security.oauth2.provider.OAuth2RequestValidator;
-import org.springframework.security.oauth2.provider.TokenGranter;
+import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
+import org.springframework.security.oauth2.provider.client.ClientCredentialsTokenGranter;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeTokenGranter;
 import org.springframework.security.oauth2.provider.endpoint.RedirectResolver;
+import org.springframework.security.oauth2.provider.implicit.ImplicitTokenGranter;
+import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswordTokenGranter;
+import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EnableAuthorizationServer
 @Import({TokenConfiguration.class,
@@ -51,7 +58,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private AuthorizationCodeServices authorizationCodeServices;
 
     @Autowired
-    private TokenStore authTokenStore;
+    private AuthTokenService authTokenService;
 
     @Autowired
     private AccessTokenConverter accessTokenConverter;
@@ -81,7 +88,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.userDetailsService(userService)
-                .tokenStore(authTokenStore)
+                .tokenServices(authTokenService)
                 .accessTokenConverter(accessTokenConverter)
                 .authorizationCodeServices(authorizationCodeServices)
                 .authenticationManager(authenticationManager);
@@ -96,11 +103,27 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Bean
     @ConditionalOnMissingBean
     public TokenGranter tokenGranter(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
-        return configurer.getTokenGranter();
+
+        ClientDetailsService clientDetails = configurer.getClientDetailsService();
+        AuthorizationServerTokenServices tokenServices = configurer.getTokenServices();
+        AuthorizationCodeServices authorizationCodeServices = configurer.getAuthorizationCodeServices();
+        OAuth2RequestFactory requestFactory = configurer.getOAuth2RequestFactory();
+
+        List<TokenGranter> tokenGranters = new ArrayList<>();
+        tokenGranters.add(new AuthorizationCodeTokenGranter(tokenServices, authorizationCodeServices, clientDetails,
+                requestFactory));
+        tokenGranters.add(new RefreshTokenGranter(tokenServices, clientDetails, requestFactory));
+        ImplicitTokenGranter implicit = new AuthImplicitTokenGranter(tokenServices, clientDetails, requestFactory);
+        tokenGranters.add(implicit);
+        tokenGranters.add(new ClientCredentialsTokenGranter(tokenServices, clientDetails, requestFactory));
+        if (authenticationManager != null) {
+            tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager, tokenServices,
+                    clientDetails, requestFactory));
+        }
+        return new CompositeTokenGranter(tokenGranters);
     }
 
     @Bean
-    @ConditionalOnMissingBean
     public AuthorizationServerTokenServices authorizationServerTokenServices(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
         return configurer.getTokenServices();
     }

@@ -16,6 +16,7 @@ public class DefaultUser implements User {
     private String password;
     private String nickname;
     private String email;
+    private String phone;
     private String avatar;
     private int gender;
     private Date createdAt;
@@ -23,12 +24,17 @@ public class DefaultUser implements User {
     private Date accountExpiredAt;
     private Date credentialsExpiredAt;
     private Date unlockedAt;
-    private Collection<UserRole> roles;
+    private Collection<? extends UserRole> roles;
     private boolean enabled;
 
     @Override
     public Long getUid() {
         return uid;
+    }
+
+    @Override
+    public String getPhone() {
+        return phone;
     }
 
     @Override
@@ -52,7 +58,7 @@ public class DefaultUser implements User {
     }
 
     @Override
-    public Collection<UserRole> getUserRoles() {
+    public Collection<? extends UserRole> getUserRoles() {
         return roles;
     }
 
@@ -158,6 +164,10 @@ public class DefaultUser implements User {
         this.nickname = nickname;
     }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -182,7 +192,7 @@ public class DefaultUser implements User {
         this.credentialsExpiredAt = credentialsExpiredAt;
     }
 
-    public void setRoles(Collection<UserRole> roles) {
+    public void setRoles(Collection<? extends UserRole> roles) {
         this.roles = roles;
     }
 

@@ -204,7 +204,7 @@
 </template>
 
 <script>
-import reCaptcha from '../../components/ReCaptcha'
+import reCaptcha from '../../components/common/ReCaptcha'
 
 export default {
   name: "ResetPassword",

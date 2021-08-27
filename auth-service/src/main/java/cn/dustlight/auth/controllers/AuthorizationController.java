@@ -5,19 +5,20 @@ import cn.dustlight.auth.controllers.resources.ClientResource;
 import cn.dustlight.auth.controllers.resources.UserResource;
 import cn.dustlight.auth.entities.*;
 import cn.dustlight.auth.services.ClientService;
+import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.services.oauth.EnhancedTokenStore;
 import cn.dustlight.auth.util.Constants;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -64,6 +65,9 @@ public class AuthorizationController {
     private ClientService clientService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private ApprovalStore authApprovalStore;
 
     @Autowired
@@ -103,6 +107,7 @@ public class AuthorizationController {
     @GetMapping("oauth/authorization")
     public AuthorizationResponse getAuthorization(@Parameter(hidden = true) @RequestParam Map<String, String> parameters,
                                                   @RequestParam("client_id") String clientId,
+                                                  @Parameter(schema = @Schema(allowableValues = {"code", "token"}, defaultValue = "code"))
                                                   @RequestParam(value = "response_type", defaultValue = "code") String responseType,
                                                   @RequestParam(value = "redirect_uri", required = false) String redirectUri,
                                                   @RequestParam(value = "scope", required = false) Collection<String> scopes,
@@ -110,7 +115,6 @@ public class AuthorizationController {
                                                   @RequestParam(value = "jwt", required = false) Boolean isJwt,
                                                   HttpServletRequest httpServletRequest,
                                                   Principal principal) {
-        logger.info("？？？？？？？？？" + isJwt);
         try {
             AuthorizationRequest authorizationRequest = oAuth2RequestFactory.createAuthorizationRequest(parameters);
 
@@ -132,6 +136,18 @@ public class AuthorizationController {
             if (!StringUtils.hasText(resolvedRedirect))
                 throw new RedirectMismatchException("A redirectUri must be either supplied or preconfigured in the ClientDetails");
 
+            /* ------------------------------------------------------------------------------------------ */
+            DefaultUser user = (DefaultUser) ((Authentication) principal).getPrincipal();
+            Collection<UserRole> roles = userService.getRolesWithClientId(user.getUid(), clientId);
+            user.setRoles(roles);
+            Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+            authorizationRequest.setAuthorities(authorities);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(((Authentication) principal).getPrincipal(),
+                    ((Authentication) principal).getCredentials(),
+                    authorities);
+            usernamePasswordAuthenticationToken.setDetails(((Authentication) principal).getDetails());
+            /* ------------------------------------------------------------------------------------------ */
+
             authorizationRequest.setRedirectUri(resolvedRedirect);
 
             oAuth2RequestValidator.validateScope(authorizationRequest, client);
@@ -151,9 +167,9 @@ public class AuthorizationController {
             response.setRedirect(resolvedRedirect);
             if (authorizationRequest.isApproved()) {
                 if (responseTypes.contains("token")) {
-                    response.setRedirect(getImplicitGrantRedirect(authorizationRequest, (Authentication) principal, isJwt));
+                    response.setRedirect(getImplicitGrantRedirect(authorizationRequest, usernamePasswordAuthenticationToken, isJwt));
                 } else if (responseTypes.contains("code")) {
-                    response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, (Authentication) principal, isJwt));
+                    response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, usernamePasswordAuthenticationToken, isJwt));
                 }
             }
 
@@ -182,11 +198,12 @@ public class AuthorizationController {
     @Operation(summary = "应用授权", description = "应用需要 AUTHORIZE 权限。")
     @PostMapping("oauth/authorization")
     public AuthorizationResponse createAuthorization(@RequestParam("approved") boolean approved,
-                                                     @RequestParam("scope") Set<String> scopes,
+                                                     @RequestParam(value = "scope", required = false) Set<String> scopes,
                                                      @RequestParam(value = "jwt", required = false) Boolean isJwt,
                                                      HttpServletRequest httpServletRequest,
                                                      Principal principal) {
-        logger.info("!!!!!!!!!!!" + isJwt);
+        if (scopes == null)
+            scopes = Collections.emptySet();
         Map<String, String> approvalParameters = new LinkedHashMap<>();
         approvalParameters.put("user_oauth_approval", approved ? "true" : "false");
         for (String scope : scopes)
@@ -217,6 +234,19 @@ public class AuthorizationController {
         }
 
         try {
+
+            /* ------------------------------------------------------------------------------------------ */
+            DefaultUser user = (DefaultUser) ((Authentication) principal).getPrincipal();
+            Collection<UserRole> roles = userService.getRolesWithClientId(user.getUid(), authorizationRequest.getClientId());
+            user.setRoles(roles);
+            Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+            authorizationRequest.setAuthorities(authorities);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(((Authentication) principal).getPrincipal(),
+                    ((Authentication) principal).getCredentials(),
+                    authorities);
+            usernamePasswordAuthenticationToken.setDetails(((Authentication) principal).getDetails());
+            /* ------------------------------------------------------------------------------------------ */
+
             Set<String> responseTypes = authorizationRequest.getResponseTypes();
 
             authorizationRequest.setApprovalParameters(approvalParameters);
@@ -238,9 +268,9 @@ public class AuthorizationController {
                         new UserDeniedAuthorizationException("User denied access"),
                         responseTypes.contains("token")));
             } else if (responseTypes.contains("token")) {
-                response.setRedirect(getImplicitGrantRedirect(authorizationRequest, (Authentication) principal, isJwt));
+                response.setRedirect(getImplicitGrantRedirect(authorizationRequest, usernamePasswordAuthenticationToken, isJwt));
             } else {
-                response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, (Authentication) principal, isJwt));
+                response.setRedirect(getAuthorizationCodeRedirect(authorizationRequest, usernamePasswordAuthenticationToken, isJwt));
             }
             return response;
         } finally {

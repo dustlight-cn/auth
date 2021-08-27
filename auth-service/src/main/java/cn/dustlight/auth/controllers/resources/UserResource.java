@@ -5,16 +5,15 @@ import cn.dustlight.auth.entities.DefaultPublicUser;
 import cn.dustlight.auth.entities.DefaultUser;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.User;
+import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.services.oauth.EnhancedTokenStore;
 import cn.dustlight.auth.services.storages.StorageHandler;
-import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.util.QueryResults;
 import cn.dustlight.captcha.annotations.CodeParam;
 import cn.dustlight.captcha.annotations.CodeValue;
 import cn.dustlight.captcha.annotations.Store;
 import cn.dustlight.captcha.annotations.VerifyCode;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,7 +21,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +62,8 @@ public class UserResource {
                                        String authority) {
         SimpleGrantedAuthority a = new SimpleGrantedAuthority(authority);
         return auth2Authentication.getOAuth2Request().getAuthorities().contains(a) &&
-                (!auth2Authentication.isClientOnly() && auth2Authentication.getUserAuthentication().getAuthorities().contains(a));
+                (!auth2Authentication.isClientOnly() && auth2Authentication.getUserAuthentication().getAuthorities().contains(a)
+                || auth2Authentication.isClientOnly());
 
     }
 
@@ -88,13 +87,14 @@ public class UserResource {
 
     @PreAuthorize("(#oauth2.client or hasAuthority('CREATE_USER')) and #oauth2.clientHasRole('CREATE_USER')")
     @PostMapping("users")
-    @Operation(summary = "创建用户（用户名和邮箱不可重复）", description = "应用和用户需要 CREATE_USER 权限。")
+    @Operation(summary = "创建用户（用户名、邮箱、手机号码不可重复）", description = "应用和用户需要 CREATE_USER 权限。")
     public User createUser(@RequestParam(name = "username") String username,
                            @RequestParam(name = "password") String password,
-                           @RequestParam(name = "email") String email) {
+                           @RequestParam(name = "email",required = false) String email,
+                           @RequestParam(name = "phone",required = false) String phone) {
         DefaultUserRole defaultRole = new DefaultUserRole();
         defaultRole.setRoleName("User");
-        userService.createUser(username, password, email, username, 0,
+        userService.createUser(username, password, phone,email, username, 0,
                 Arrays.asList(defaultRole), null, null, null,
                 true);
         logger.debug(String.format("创建用户: [%s] 邮箱：[%s]", username, email));
@@ -103,7 +103,7 @@ public class UserResource {
 
     @PreAuthorize("(#oauth2.client or hasAuthority('DELETE_USER')) and #oauth2.clientHasRole('DELETE_USER')")
     @DeleteMapping("users/{uid}")
-    @io.swagger.v3.oas.annotations.Operation(summary = "删除用户（永久删除）", description = "应用和用户需要 DELETE_USER 权限。")
+    @Operation(summary = "删除用户（永久删除）", description = "应用和用户需要 DELETE_USER 权限。")
     public void deleteUser(@PathVariable Long uid) {
         DefaultUser user = userService.loadUser(uid);
         if (user == null)
@@ -200,6 +200,16 @@ public class UserResource {
                                 @CodeValue("ChangeEmail") @RequestParam String code,
                                 @CodeParam(value = "ChangeEmail", name = "email") @Parameter(hidden = true) String email) {
         userService.updateEmail(uid, email);
+    }
+
+    @PreAuthorize("(#oauth2.client or hasAnyAuthority('WRITE_USER_PHONE')) and #oauth2.clientHasRole('WRITE_USER_PHONE')")
+    @VerifyCode(value = "ChangePhone", store = @Store("userCodeStore"))
+    @PutMapping("users/{uid}/phone")
+    @Operation(summary = "更新用户手机号码", description = "应用和用户需拥有 WRITE_USER_PHONE 权限。")
+    public void updateUserPhone(@PathVariable Long uid,
+                                @CodeValue("ChangePhone") @RequestParam String code,
+                                @CodeParam(value = "ChangePhone", name = "phone") @Parameter(hidden = true) String phone) {
+        userService.updatePhone(uid, phone);
     }
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAnyAuthority('WRITE_USER')) and #oauth2.clientHasRole('WRITE_USER')")

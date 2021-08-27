@@ -135,8 +135,8 @@
 </template>
 
 <script>
-import RequireAuthorization from "components/RequireAuthorization.vue";
-import ClientLogo from "../../components/ClientLogo";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import ClientLogo from "../../components/api/ClientLogo";
 
 export default {
   name: "Clients",

@@ -123,11 +123,15 @@ declare module 'vue/types/vue' {
   }
 }
 
+let app_obj: any = null
+
 const errorHandler = (error: any): any => {
   let res = error == null ? null : error.response;
   let e: AuthException;
-  if (res != null && res.data != null) {
-    e = new AuthException(res.data.code, res.data.message, res.data.details);
+
+  if (res != null && res.data != null && res.data.message) {
+    const message = app_obj.i18n.messages[app_obj.i18n?.locale].errors[res.data.code] || res.data.message
+    e = new AuthException(res.data.code, message, res.data.details);
   } else {
     e = new AuthException(-10, error.name || "Error", error.message);
   }
@@ -139,14 +143,17 @@ const errorHandler = (error: any): any => {
 };
 
 globalAxios.interceptors.response.use(res => res, errorHandler)
-const withCredentials = globalAxios.create({
-  withCredentials: true
-})
+
+const stateless = globalAxios.create()
+const withCredentials = globalAxios.create({withCredentials: true})
+
 withCredentials.interceptors.response.use(res => res, errorHandler);
+stateless.interceptors.response.use(res => res, errorHandler);
 
-export default boot(({Vue}) => {
+
+export default boot(({Vue, app}) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-
+  app_obj = app
   Vue.prototype.$s = new S(Vue.prototype.$q.localStorage);
   let path = config.host != null ? config.host : BASE_PATH;
   Vue.prototype.$apiCfg = new Configuration({
@@ -160,15 +167,15 @@ export default boot(({Vue}) => {
       return token.access_token;
     }
   })
-  Vue.prototype.$tokenApi = new TokenApi(Vue.prototype.$apiCfg);
+  Vue.prototype.$tokenApi = new TokenApi(Vue.prototype.$apiCfg, path, stateless);
   Vue.prototype.$userApi = new UserApi(Vue.prototype.$apiCfg, path, withCredentials);
-  Vue.prototype.$usersApi = new UsersApi(Vue.prototype.$apiCfg);
+  Vue.prototype.$usersApi = new UsersApi(Vue.prototype.$apiCfg, path, stateless);
   Vue.prototype.$authorizationAi = new AuthorizationApi(Vue.prototype.$apiCfg, path, withCredentials);
   Vue.prototype.$codeApi = new CodeApi(Vue.prototype.$apiCfg, path, withCredentials);
-  Vue.prototype.$clientApi = new ClientsApi(Vue.prototype.$apiCfg);
-  Vue.prototype.$grantTypesApi = new GrantTypesApi(Vue.prototype.$apiCfg);
-  Vue.prototype.$authoritiesApi = new AuthoritiesApi(Vue.prototype.$apiCfg);
-  Vue.prototype.$scopesApi = new ScopesApi(Vue.prototype.$apiCfg);
-  Vue.prototype.$rolesApi = new RolesApi(Vue.prototype.$apiCfg);
+  Vue.prototype.$clientApi = new ClientsApi(Vue.prototype.$apiCfg, path, stateless);
+  Vue.prototype.$grantTypesApi = new GrantTypesApi(Vue.prototype.$apiCfg, path, stateless);
+  Vue.prototype.$authoritiesApi = new AuthoritiesApi(Vue.prototype.$apiCfg, path, stateless);
+  Vue.prototype.$scopesApi = new ScopesApi(Vue.prototype.$apiCfg, path, stateless);
+  Vue.prototype.$rolesApi = new RolesApi(Vue.prototype.$apiCfg, path, stateless);
 });
 

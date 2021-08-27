@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import reCaptcha from "../../components/ReCaptcha";
+import reCaptcha from "../../components/common/ReCaptcha";
 
 export default {
   name: "SignIn",
@@ -175,12 +175,6 @@ export default {
     onSignInFail(e) {
       this.$refs.captcha.$emit("reload")
       this.model.password = ""
-      let title = this.$tt(this, "error");
-      let msg = e.message
-      if (e.response != null && e.response.data != null) {
-        // title = e.response.data.message || title
-        msg = e.response.data.details || msg
-      }
     }
   }
 }

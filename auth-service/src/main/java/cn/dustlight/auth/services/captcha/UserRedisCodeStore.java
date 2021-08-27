@@ -1,7 +1,8 @@
 package cn.dustlight.auth.services.captcha;
 
 import cn.dustlight.auth.entities.User;
-import cn.dustlight.captcha.store.*;
+import cn.dustlight.captcha.store.RedisCodeStore;
+import cn.dustlight.captcha.store.StoreCodeException;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

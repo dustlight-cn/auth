@@ -59,6 +59,13 @@ public interface Client extends ClientDetails, Datable, Serializable {
     Integer getStatus();
 
     /**
+     * 获取应用成员
+     */
+    @ArraySchema(schema = @Schema(type = "string"))
+    @JsonSerialize(using = ToStringCollectionSerializer.class)
+    Collection<Long> getMembers();
+
+    /**
      * 获取授权作用域
      *
      * @return 授权作用域
