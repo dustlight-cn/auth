@@ -137,25 +137,31 @@ data:
             chars: "0123456789" # 生成随机字符验证码的字符池
             length: 6 # 随机字符验证码的长度
         sender:
-        #      tencent:
-        #        sms:
-        #          secret-id: <腾讯云密钥 ID>
-        #          secret-key: <腾讯云密钥 Key>
-        #          default-app-id: <默认短信 SdkAppID>
-        #          default-sign: <默认短信签名>
-        #          default-template-id: <默认短信模板ID>
-        #      alibaba:
-        #        sms:
-        #          access-key-id: <阿里云密钥 ID>
-        #          access-key-secret: <阿里云密钥 Key>
-        #          default-template-code: <默认短信模板>
-        #          default-sign-name: <默认短信签名>
-        #          sign-names:
-        #            name1: <签名>
-        #            name2: <签名>
-        #          template-codes:
-        #            template1: <模板>
-        #            template2: <模板>
+    #      tencent:
+    #        sms:
+    #          secret-id: <腾讯云密钥 ID>
+    #          secret-key: <腾讯云密钥 Key>
+    #          default-app-id: <默认短信 SdkAppID>
+    #          default-sign: <默认短信签名>
+    #          default-template-id: myDefaultName
+    #          signs:
+    #            myDefaultName: <签名>
+    #          template-ids:
+    #            signup: <模板>
+    #            changePhone: <模板>
+    #            resetPassword: <模板>
+    #      alibaba:
+    #        sms:
+    #          access-key-id: <阿里云密钥 ID>
+    #          access-key-secret: <阿里云密钥 Key>
+    #          default-template-code: <默认短信模板>
+    #          default-sign-name: myDefaultName
+    #          sign-names:
+    #            myDefaultName: <签名>
+    #          template-codes:
+    #            signup: <模板>
+    #            changePhone: <模板>
+    #            resetPassword: <模板>
         verifier:
           string-equals:
             trim: true
