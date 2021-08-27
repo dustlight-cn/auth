@@ -131,7 +131,7 @@ spring:
       reload:
         enabled: true # 是否监听 Kubernetes 配置更改
   datasource:
-    url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}&allowPublicKeyRetrieval=${mysql.allowPublicKeyRetrieval$:false}
+    url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}&allowPublicKeyRetrieval=${mysql.allowPublicKeyRetrieval:false}
     username: ${mysql.username}
     password: ${mysql.password}
     hikari:
