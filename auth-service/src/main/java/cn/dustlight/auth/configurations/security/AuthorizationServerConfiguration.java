@@ -1,9 +1,9 @@
 package cn.dustlight.auth.configurations.security;
 
-import cn.dustlight.auth.configurations.components.StorageConfiguration;
-import cn.dustlight.auth.configurations.documents.DocumentConfiguration;
 import cn.dustlight.auth.configurations.components.ServicesConfiguration;
+import cn.dustlight.auth.configurations.components.StorageConfiguration;
 import cn.dustlight.auth.configurations.components.TokenConfiguration;
+import cn.dustlight.auth.configurations.documents.DocumentConfiguration;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.services.oauth.AuthTokenService;
@@ -31,7 +31,6 @@ import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 

@@ -1,25 +1,22 @@
 package cn.dustlight.auth.controllers.resources;
 
-import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.entities.Authority;
 import cn.dustlight.auth.entities.DefaultAuthority;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.services.AuthorityService;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.RoleService;
-
+import cn.dustlight.auth.util.Constants;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Tag(name = "Authorities", description = "权限资源的增删改查。")

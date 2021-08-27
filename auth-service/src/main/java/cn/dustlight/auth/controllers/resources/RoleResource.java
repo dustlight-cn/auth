@@ -9,11 +9,9 @@ import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.services.RoleService;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.Constants;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;

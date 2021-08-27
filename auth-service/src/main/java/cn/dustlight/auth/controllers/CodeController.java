@@ -2,14 +2,12 @@ package cn.dustlight.auth.controllers;
 
 import cn.dustlight.auth.util.Constants;
 import cn.dustlight.captcha.annotations.*;
-
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.*;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -4,7 +4,6 @@ import cn.dustlight.auth.AuthException;
 import cn.dustlight.auth.ErrorDetails;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.captcha.CaptchaException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;

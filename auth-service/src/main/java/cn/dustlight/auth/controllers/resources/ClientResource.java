@@ -1,32 +1,28 @@
 package cn.dustlight.auth.controllers.resources;
 
-import cn.dustlight.auth.entities.DefaultClient;
-import cn.dustlight.auth.entities.User;
-import cn.dustlight.auth.services.storages.StorageHandler;
-import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.Client;
+import cn.dustlight.auth.entities.DefaultClient;
 import cn.dustlight.auth.services.ClientService;
+import cn.dustlight.auth.services.storages.StorageHandler;
+import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.util.QueryResults;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Tag(name = "Clients", description = "应用的增删改查")

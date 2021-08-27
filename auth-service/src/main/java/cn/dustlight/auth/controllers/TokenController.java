@@ -5,7 +5,6 @@ import cn.dustlight.auth.configurations.components.TokenConfiguration;
 import cn.dustlight.auth.entities.Client;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.util.Constants;
-
 import cn.dustlight.captcha.annotations.Store;
 import cn.dustlight.captcha.annotations.Verifier;
 import cn.dustlight.captcha.annotations.VerifyCode;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,7 +38,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 
 @Tag(name = "Token", description = "Token 颁发。")
 @RestController

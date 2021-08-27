@@ -8,13 +8,11 @@ import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.services.oauth.EnhancedTokenStore;
 import cn.dustlight.auth.util.Constants;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;

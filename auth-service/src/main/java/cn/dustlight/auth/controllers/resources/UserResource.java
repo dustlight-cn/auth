@@ -5,16 +5,15 @@ import cn.dustlight.auth.entities.DefaultPublicUser;
 import cn.dustlight.auth.entities.DefaultUser;
 import cn.dustlight.auth.entities.DefaultUserRole;
 import cn.dustlight.auth.entities.User;
+import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.services.oauth.EnhancedTokenStore;
 import cn.dustlight.auth.services.storages.StorageHandler;
-import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.util.Constants;
 import cn.dustlight.auth.util.QueryResults;
 import cn.dustlight.captcha.annotations.CodeParam;
 import cn.dustlight.captcha.annotations.CodeValue;
 import cn.dustlight.captcha.annotations.Store;
 import cn.dustlight.captcha.annotations.VerifyCode;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,7 +21,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +103,7 @@ public class UserResource {
 
     @PreAuthorize("(#oauth2.client or hasAuthority('DELETE_USER')) and #oauth2.clientHasRole('DELETE_USER')")
     @DeleteMapping("users/{uid}")
-    @io.swagger.v3.oas.annotations.Operation(summary = "删除用户（永久删除）", description = "应用和用户需要 DELETE_USER 权限。")
+    @Operation(summary = "删除用户（永久删除）", description = "应用和用户需要 DELETE_USER 权限。")
     public void deleteUser(@PathVariable Long uid) {
         DefaultUser user = userService.loadUser(uid);
         if (user == null)
