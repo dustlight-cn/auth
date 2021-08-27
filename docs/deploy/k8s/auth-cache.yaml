@@ -17,23 +17,23 @@ spec:
         app: auth-cache
     spec:
       containers:
-      - name: auth-cache
-        image: redis:latest
-        ports:
-        - containerPort: 6379
-          name: cache-port
-        volumeMounts:
-        - name: cache-data
-          mountPath: /data
+        - name: auth-cache
+          image: redis:latest
+          ports:
+            - containerPort: 6379
+              name: cache-port
+          volumeMounts:
+            - name: cache-data
+              mountPath: /data
       dnsPolicy: ClusterFirst
   volumeClaimTemplates:
-  - metadata:
-      name: cache-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 100Gi
+    - metadata:
+        name: cache-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
@@ -44,7 +44,7 @@ metadata:
     app: auth-cache
 spec:
   ports:
-  - port: 6379
-    name: cache-port
+    - port: 6379
+      name: cache-port
   selector:
     app: auth-cache

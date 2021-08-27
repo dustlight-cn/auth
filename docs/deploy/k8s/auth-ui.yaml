@@ -22,13 +22,13 @@ spec:
             - name: API_BACKEND
               value: http://auth-service
           ports:
-          - containerPort: 80
-            name: auth-ui-port
+            - containerPort: 80
+              name: auth-ui-port
       initContainers:
-      - name: init-service
-        image: busybox
-        imagePullPolicy: IfNotPresent
-        command: ['sh', '-c', "until nc -z auth-service 80; do echo waiting for auth-service; sleep 2; done"]
+        - name: init-service
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: [ 'sh', '-c', "until nc -z auth-service 80; do echo waiting for auth-service; sleep 2; done" ]
 ---
 apiVersion: v1
 kind: Service
@@ -39,28 +39,9 @@ metadata:
     app: auth-ui
 spec:
   ports:
-  - port: 80
-    targetPort: 80
-    name: auth-ui-port
+    - port: 80
+      targetPort: 80
+      name: auth-ui-port
   selector:
     app: auth-ui
-  type: ClusterIP
----
-# 创建 Ingress
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: auth-ui
-  namespace: auth
-  annotations:
-    nginx.org/client-max-body-size: 20m
-spec:
-  ingressClassName: nginx
-  rules:
-    - http:
-        paths:
-          - path: /
-            backend:
-              serviceName: auth-ui
-              servicePort: 80
-      host: accounts.wgv
+  type: NodePort

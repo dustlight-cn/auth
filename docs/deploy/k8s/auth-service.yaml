@@ -1,15 +1,3 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: auth-data
-  namespace: auth
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 100Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,26 +19,26 @@ spec:
         - name: auth-service
           image: dustlightcn/auth-service:latest
           # 配置 SMTP 服务后开启健康检查，否则检查将失败。
-          livenessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /actuator/health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 70
-            periodSeconds: 70
-            successThreshold: 1
-            timeoutSeconds: 1
-          readinessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /actuator/health
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 70
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
+          # livenessProbe:
+          #   failureThreshold: 3
+          #   httpGet:
+          #     path: /actuator/health
+          #     port: 8080
+          #     scheme: HTTP
+          #   initialDelaySeconds: 70
+          #   periodSeconds: 70
+          #   successThreshold: 1
+          #   timeoutSeconds: 1
+          # readinessProbe:
+          #   failureThreshold: 3
+          #   httpGet:
+          #     path: /actuator/health
+          #     port: 8080
+          #     scheme: HTTP
+          #   initialDelaySeconds: 70
+          #   periodSeconds: 10
+          #   successThreshold: 1
+          #   timeoutSeconds: 1
           ports:
             - containerPort: 8080
               name: auth-port
@@ -64,11 +52,11 @@ spec:
         - name: init-cache
           image: busybox
           imagePullPolicy: IfNotPresent
-          command: ['sh', '-c', "until nc -z auth-cache 6379; do echo waiting for cache; sleep 2; done"]
+          command: [ 'sh', '-c', "until nc -z auth-cache 6379; do echo waiting for cache; sleep 2; done" ]
         - name: init-database
           image: busybox
           imagePullPolicy: IfNotPresent
-          command: ['sh', '-c', "until nc -z auth-database 3306; do echo waiting for database; sleep 2; done"]
+          command: [ 'sh', '-c', "until nc -z auth-database 3306; do echo waiting for database; sleep 2; done" ]
       volumes:
         - name: config
           configMap:
@@ -81,6 +69,18 @@ spec:
             claimName: auth-data
 ---
 apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: auth-data
+  namespace: auth
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: auth-service
@@ -89,28 +89,9 @@ metadata:
     app: auth-service
 spec:
   ports:
-  - port: 80
-    targetPort: 8080
-    name: auth-port
+    - port: 80
+      targetPort: 8080
+      name: auth-port
   selector:
     app: auth-service
   type: ClusterIP
----
-# 创建 Ingress
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: auth-service
-  namespace: auth
-  annotations:
-    nginx.org/client-max-body-size: 20m
-spec:
-  ingressClassName: nginx
-  rules:
-    - http:
-        paths:
-          - path: /
-            backend:
-              serviceName: auth-service
-              servicePort: 80
-      host: api.wgv
