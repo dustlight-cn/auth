@@ -49,6 +49,8 @@ public class CodeController {
     }
 
     @SendCode(value = "Register", sender = @Sender("verifiedSmsSender"), parameters = {
+            @Parameter(name = "TEMPLATE_CODE", value = "signup"),
+            @Parameter(name = "TEMPLATE_ID", value = "signup"),
             @Parameter(name = "CHECK_EXISTS", value = "false") // 检查号码是否不存在
     })
     @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
@@ -83,6 +85,7 @@ public class CodeController {
             store = @Store("userCodeStore"),
             parameters = {
                     @Parameter(name = "TEMPLATE_CODE", value = "changePhone"),
+                    @Parameter(name = "TEMPLATE_ID", value = "changePhone"),
                     @Parameter(name = "CHECK_EXISTS", value = "false") // 检查号码是否不存在
             })
     @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
@@ -114,6 +117,7 @@ public class CodeController {
             sender = @Sender("verifiedSmsSender"),
             parameters = {
                     @Parameter(name = "TEMPLATE_CODE", value = "resetPassword"),
+                    @Parameter(name = "TEMPLATE_ID", value = "resetPassword"),
             })
     @VerifyCode(store = @Store("reCaptchaStore"), verifier = @Verifier("reCaptchaVerifier"))
     @PostMapping("code/password/phone")

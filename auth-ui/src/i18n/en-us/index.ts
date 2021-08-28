@@ -92,19 +92,24 @@ export default {
       "codeRule": "Please enter verification code, the message may be blocked as spam, please check your email carefully."
     }
   },
-  "ResetPassword": {
-    "title": " Retrieve Password",
+"ResetPassword": {
+  "title": "Retrieve Password",
+    "byPhone": "Retrieve password by my phone.",
+    "byEmail": "Retrieve password by my email."
+},
+  "ResetPasswordByEmail": {
+    "title": "Retrieve Password By Email",
     "continue": "Next",
     "back": "Back",
     "done": "Reset Password",
     "success": "Password reset successfully",
     "step1": {
       "title": "Enter your email address",
-      "caption": "Please enter your account email address to receive the verification code.",
+      "caption": "Please enter your email address to receive the verification code.",
       "email": "Email",
       "emailHint": "Your email address, which is used to receive the verification code.",
       "emailRule": "Please enter a valid email address.",
-      "emailNotExists": "The email is not bound to any accounts."
+      "emailNotExists": "This email didn't bound to any accounts."
     },
     "step2": {
       "title": "Reset Password",
@@ -117,7 +122,35 @@ export default {
       "confirmPasswordRule": "The password entered twice is inconsistent.",
       "code": "Code",
       "codeHint": "The email verification code you receive, the message may be blocked as spam, please check your email carefully.",
-      "codeRule": "Please enter verification code, the message may be blocked as spam, please check your email carefully."
+      "codeRule": "Please enter verification code."
+    }
+  },
+  "ResetPasswordByPhone": {
+    "title": "Retrieve Password By Phone",
+    "continue": "Next",
+    "back": "Back",
+    "done": "Reset Password",
+    "success": "Password reset successfully",
+    "step1": {
+      "title": "Enter your phone number",
+      "caption": "Please enter your phone number to receive the verification code.",
+      "phone": "Phone Number",
+      "phoneHint": "Your phone number, which is used to receive the verification code.",
+      "phoneRule": "Please enter a valid mobile phone number with an international area code.",
+      "phoneNotExists": "This phone number didn't bound to any accounts."
+    },
+    "step2": {
+      "title": "Reset Password",
+      "caption": "Set your new password.",
+      "password": "New Password",
+      "passwordHint": "Your new password to sign in to the website.",
+      "passwordRule": "The password is between 6 and 20 characters long.",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordHint": "Confirm the password.",
+      "confirmPasswordRule": "The password entered twice is inconsistent.",
+      "code": "Code",
+      "codeHint": "The sms verification code you receive.",
+      "codeRule": "Please enter verification code."
     }
   },
   "Authorize": {
