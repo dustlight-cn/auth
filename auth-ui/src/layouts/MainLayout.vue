@@ -59,7 +59,7 @@
       </transition>
     </q-page-container>
 
-    <q-footer>
+    <q-footer style="z-index: -1">
       <Footer/>
     </q-footer>
 
