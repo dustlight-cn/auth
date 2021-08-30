@@ -12,15 +12,10 @@
     </q-header>
 
     <q-page-container>
-      <transition
-        appear
-        enter-active-class="animated fadeIn"
-      >
-        <router-view/>
-      </transition>
+      <router-view/>
     </q-page-container>
 
-    <q-footer style="z-index: -1">
+    <q-footer style="z-index: 0">
       <Footer/>
     </q-footer>
 
