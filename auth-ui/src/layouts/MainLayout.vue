@@ -51,15 +51,10 @@
       <div v-if="subtitle" class="flex flex-center text-grey text-center q-mt-md">
         {{ subtitle }}
       </div>
-      <transition
-        appear
-        enter-active-class="animated fadeIn"
-      >
-        <router-view ref="page"/>
-      </transition>
+      <router-view ref="page"/>
     </q-page-container>
 
-    <q-footer style="z-index: -1">
+    <q-footer>
       <Footer/>
     </q-footer>
 
