@@ -1,7 +1,9 @@
 package cn.dustlight.auth.configurations.components;
 
 import cn.dustlight.auth.ErrorEnum;
+import cn.dustlight.auth.entities.User;
 import cn.dustlight.auth.properties.AuthorizationCodeProperties;
+import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.oauth.AuthTokenService;
 import cn.dustlight.auth.services.oauth.AuthUserAuthenticationConverter;
 import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
@@ -78,14 +80,16 @@ public class TokenConfiguration {
     }
 
     @Bean
-    public AccessTokenConverter accessTokenConverter() {
+    public AccessTokenConverter accessTokenConverter(@Autowired ClientService clientService) {
         DefaultAccessTokenConverter accessTokenConverter = new DefaultAccessTokenConverter() {
             @Override
             public Map<String, ?> convertAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
                 Map claims = super.convertAccessToken(token, authentication);
+                boolean isMember = clientService.isOwnerOrMember(authentication.getOAuth2Request().getClientId(), ((User) authentication.getUserAuthentication().getPrincipal()).getUid());
                 if (claims == null)
                     return null;
                 claims.put("active", true);
+                claims.put("member", isMember);
                 return claims;
             }
         };
