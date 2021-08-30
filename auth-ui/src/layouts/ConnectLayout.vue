@@ -15,7 +15,7 @@
       <router-view/>
     </q-page-container>
 
-    <q-footer>
+    <q-footer style="z-index: 0">
       <Footer/>
     </q-footer>
 

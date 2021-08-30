@@ -23,7 +23,7 @@
       <router-view ref="page"/>
     </q-page-container>
 
-    <q-footer>
+    <q-footer style="z-index: 0">
       <Footer/>
     </q-footer>
 
