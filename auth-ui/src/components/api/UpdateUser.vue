@@ -8,12 +8,12 @@
             <div v-if="caption" class="text-caption">{{ caption }}</div>
           </q-card-section>
           <slot v-bind="{user:(user_clone||(user&&user.uid?(user_clone=user):user)),busy}"/>
-          <q-card-actions>
+          <div class="q-gutter-sm text-right q-pa-md">
             <q-space/>
             <q-btn no-caps :disable="busy" @click="onCancel" flat :label="$t('cancel')" color="grey-7"/>
             <q-btn :disable="disableSubmitButton" no-caps :loading="busy" type="submit" color="accent"
                    :label="$t('update')"/>
-          </q-card-actions>
+          </div>
         </q-form>
       </div>
       <require-authorization v-else v-slot="{user,token,loading}">
