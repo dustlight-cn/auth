@@ -53,7 +53,7 @@ IGNORE INTO `roles` (`rid`,`roleName`,`roleDescription`,`cid`) VALUES
 INSERT
 IGNORE INTO `scopes` (`sid`,`name`,`subtitle`,`description`) VALUES
 (0,'read:user','读取用户信息','读取您的所有个人资料，包括头像、用户名、昵称和邮箱等。'),
-(1,'write:user','修改用户信息','此授权作用域暂无任何意义。');
+(1,'read:client','读取用户应用','读取您创建或管理的应用，包括应用的名称、描述等。');
 
 /* 授权类型 GrantTypes */
 INSERT

@@ -181,7 +181,7 @@ public class ClientResource {
 
     /* ------------------------------------------------------------------------------------------------ */
 
-    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('READ_CLIENT')) and #oauth2.clientHasAnyRole('READ_CLIENT')")
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('READ_CLIENT')) and (#oauth2.clientHasAnyRole('READ_CLIENT') or #oauth2.hasAnyScope('read:client'))")
     @GetMapping("users/{uid}/clients")
     @Operation(summary = "查询用户应用", description = "应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。")
     public QueryResults<? extends Client> getUserClients(@PathVariable("uid") Long uid,
@@ -196,13 +196,13 @@ public class ClientResource {
 
     @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('WRITE_CLIENT')) and #oauth2.clientHasAnyRole('WRITE_CLIENT')")
     @DeleteMapping("users/{uid}/clients")
-    @Operation(summary = "删除用户应用", description = "应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。")
+    @Operation(summary = "删除用户应用", description = "应用和用户（uid 为当前用户除外）需要 WRITE_CLIENT 权限。")
     public void removeUserClients(@PathVariable("uid") Long uid,
                                   @RequestParam Collection<String> cids) {
         clientService.delete(uid, cids);
     }
 
-    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('READ_CLIENT')) and #oauth2.clientHasAnyRole('READ_CLIENT')")
+    @PreAuthorize("(#oauth2.client or #user.matchUid(#uid) or hasAuthority('READ_CLIENT')) and (#oauth2.clientHasAnyRole('READ_CLIENT') or #oauth2.hasAnyScope('read:client'))")
     @GetMapping("users/{uid}/clients/{cid}")
     @Operation(summary = "获取用户应用", description = "应用和用户（uid 为当前用户除外）需要 READ_CLIENT 权限。")
     public Client getUserClient(@PathVariable("uid") Long uid,
