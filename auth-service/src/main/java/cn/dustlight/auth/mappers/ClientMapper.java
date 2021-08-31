@@ -59,13 +59,15 @@ public interface ClientMapper {
     })
     DefaultClient loadClient(@Param("clientId") String clientId);
 
-    @Select("<script>SELECT clients.* FROM clients," +
+    @Select("<script>" +
+            "SELECT clients.* FROM clients," +
             "((SELECT cid FROM clients WHERE uid=#{uid}) " +
             "UNION " +
-            "(SELECT cid FROM client_members WHERE uid=#{uid}) " +
+            "(SELECT cid FROM client_members WHERE uid=#{uid})) AS c" +
+            " WHERE clients.cid=c.cid" +
             "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
-            "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> offset #{offset}</if></if>) AS c" +
-            " WHERE clients.cid=c.cid</script>")
+            "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> OFFSET #{offset}</if></if>" +
+            "</script>")
     Collection<DefaultClient> listUserClients(@Param("uid") Long uid,
                                               @Param("orderBy") String orderBy,
                                               @Param("offset") Integer offset,
