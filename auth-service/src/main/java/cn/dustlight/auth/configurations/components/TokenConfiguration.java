@@ -85,7 +85,10 @@ public class TokenConfiguration {
             @Override
             public Map<String, ?> convertAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
                 Map claims = super.convertAccessToken(token, authentication);
-                boolean isMember = clientService.isOwnerOrMember(authentication.getOAuth2Request().getClientId(), ((User) authentication.getUserAuthentication().getPrincipal()).getUid());
+                boolean isMember = false;
+                if (authentication.getUserAuthentication() != null &&
+                        authentication.getUserAuthentication().getPrincipal() != null)
+                    isMember = clientService.isOwnerOrMember(authentication.getOAuth2Request().getClientId(), ((User) authentication.getUserAuthentication().getPrincipal()).getUid());
                 if (claims == null)
                     return null;
                 claims.put("active", true);
