@@ -15,7 +15,7 @@
     "auth-client"
   ],
   "dependencies": {
-    "axios": "~0.21.1"
+    "axios": "~0.21.2"
   },
   "author": "Hansin1997 <hansin@dustlight.cn>",
   "license": "Apache-2.0",
