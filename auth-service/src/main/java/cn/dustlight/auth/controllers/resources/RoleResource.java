@@ -62,7 +62,7 @@ public class RoleResource {
         try {
             roleService.createRoles(roles, clientId);
         } catch (Exception e) {
-            ErrorEnum.CREATE_ROLE_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.CREATE_ROLE_FAIL.details(e).throwException();
         }
         return roles;
     }
@@ -78,7 +78,7 @@ public class RoleResource {
         try {
             roleService.removeRolesWithClientId(id, clientId);
         } catch (Exception e) {
-            ErrorEnum.DELETE_ROLE_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.DELETE_ROLE_FAIL.details(e).throwException();
         }
     }
 

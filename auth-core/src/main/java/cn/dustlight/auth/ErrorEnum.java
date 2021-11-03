@@ -1,6 +1,5 @@
 package cn.dustlight.auth;
 
-
 public enum ErrorEnum {
 
     NO_ERRORS(-1, "No errors"),
@@ -93,6 +92,12 @@ public enum ErrorEnum {
     public ErrorDetails details(String details) {
         ErrorDetails instance = new ErrorDetails(this.details.getCode(), this.details.getMessage());
         instance.setDetails(details != null ? details : this.details.getDetails());
+        return instance;
+    }
+
+    public ErrorDetails details(Throwable cause) {
+        ErrorDetails instance = new ErrorDetails(this.details.getCode(), this.details.getMessage());
+        instance.setDetails(cause);
         return instance;
     }
 }

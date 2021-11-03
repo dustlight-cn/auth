@@ -112,7 +112,7 @@ public class UserResource {
         try {
             storageHandler.remove(generateAvatarKey(uid));
         } catch (Exception e) {
-            ErrorEnum.DELETE_USER_AVATAR_FAIL.details(e.getMessage());
+            ErrorEnum.DELETE_USER_AVATAR_FAIL.details(e);
         }
         try {
             enhancedTokenStore.deleteUserToken(user.getUsername());
@@ -242,7 +242,7 @@ public class UserResource {
             String key = generateAvatarKey(uid);
             storageHandler.handle(key, attributes.getRequest(), attributes.getResponse());
         } catch (IOException e) {
-            ErrorEnum.UPDATE_USER_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.UPDATE_USER_FAIL.details(e).throwException();
         }
     }
 
@@ -254,7 +254,7 @@ public class UserResource {
             String key = generateAvatarKey(uid);
             storageHandler.handle(key, attributes.getRequest(), attributes.getResponse(), "image/*");
         } catch (IOException e) {
-            ErrorEnum.RESOURCE_NOT_FOUND.details(e.getMessage()).throwException();
+            ErrorEnum.RESOURCE_NOT_FOUND.details(e).throwException();
         }
     }
 

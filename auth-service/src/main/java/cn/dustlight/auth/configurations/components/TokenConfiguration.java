@@ -210,7 +210,7 @@ public class TokenConfiguration {
                     _hash = pem.hashCode();
                 }
             } catch (JOSEException e) {
-                ErrorEnum.OAUTH_ERROR.details(e.getMessage()).throwException();
+                ErrorEnum.OAUTH_ERROR.details(e).throwException();
             }
             return jwkSet;
         }

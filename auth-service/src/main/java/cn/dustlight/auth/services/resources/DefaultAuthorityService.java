@@ -45,7 +45,7 @@ public class DefaultAuthorityService implements AuthorityService {
             if (!authorityMapper.insertAuthority(idGenerator.generate(), name, description, cid))
                 ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
         } catch (Exception e) {
-            ErrorEnum.CREATE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.CREATE_AUTHORITY_FAIL.details(e).throwException();
         }
     }
 
@@ -56,7 +56,7 @@ public class DefaultAuthorityService implements AuthorityService {
             if (!authorityMapper.insertAuthorities(authorities, clientId))
                 ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
         } catch (Exception e) {
-            ErrorEnum.CREATE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.CREATE_AUTHORITY_FAIL.details(e).throwException();
         }
 
     }
@@ -67,7 +67,7 @@ public class DefaultAuthorityService implements AuthorityService {
             if (!authorityMapper.deleteAuthority(aid))
                 ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
         } catch (Exception e) {
-            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e).throwException();
         }
     }
 
@@ -77,7 +77,7 @@ public class DefaultAuthorityService implements AuthorityService {
             if (!authorityMapper.deleteAuthorityWithClientId(aid, cid))
                 ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
         } catch (Exception e) {
-            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e).throwException();
         }
     }
 
@@ -87,7 +87,7 @@ public class DefaultAuthorityService implements AuthorityService {
             if (!authorityMapper.deleteAuthorities(aids))
                 ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
         } catch (Exception e) {
-            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e).throwException();
         }
     }
 
@@ -97,7 +97,7 @@ public class DefaultAuthorityService implements AuthorityService {
             if (!authorityMapper.deleteAuthoritiesWithClientId(aids, cid))
                 ErrorEnum.DELETE_AUTHORITY_FAIL.throwException();
         } catch (Exception e) {
-            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.DELETE_AUTHORITY_FAIL.details(e).throwException();
         }
     }
 }

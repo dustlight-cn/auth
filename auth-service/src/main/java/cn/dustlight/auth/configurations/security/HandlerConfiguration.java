@@ -28,7 +28,7 @@ public class HandlerConfiguration {
             log.debug(e.getMessage(), e);
             send(httpServletResponse,
                     HttpStatus.FORBIDDEN,
-                    ErrorEnum.ACCESS_DENIED.details(e.getMessage()),
+                    ErrorEnum.ACCESS_DENIED.details(e),
                     mapper);
         };
     }
@@ -40,7 +40,7 @@ public class HandlerConfiguration {
             log.debug(e.getMessage(), e);
             send(httpServletResponse,
                     HttpStatus.FORBIDDEN,
-                    ErrorEnum.UNAUTHORIZED.details(e.getMessage()),
+                    ErrorEnum.UNAUTHORIZED.details(e),
                     mapper);
         };
     }

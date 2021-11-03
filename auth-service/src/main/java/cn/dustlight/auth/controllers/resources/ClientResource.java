@@ -68,7 +68,7 @@ public class ClientResource {
         try {
             storageHandler.remove(generateLogoKey(cid));
         } catch (Exception e) {
-            ErrorEnum.DELETE_CLIENT_LOGO_FAIL.details(e.getMessage());
+            ErrorEnum.DELETE_CLIENT_LOGO_FAIL.details(e);
         }
     }
 
@@ -145,7 +145,7 @@ public class ClientResource {
             String key = generateLogoKey(cid);
             storageHandler.handle(key, attributes.getRequest(), attributes.getResponse(), "image/*");
         } catch (IOException e) {
-            ErrorEnum.RESOURCE_NOT_FOUND.details(e.getMessage()).throwException();
+            ErrorEnum.RESOURCE_NOT_FOUND.details(e).throwException();
         }
     }
 
@@ -159,7 +159,7 @@ public class ClientResource {
             String key = generateLogoKey(cid);
             storageHandler.handle(key, attributes.getRequest(), attributes.getResponse());
         } catch (IOException e) {
-            ErrorEnum.UPDATE_CLIENT_FAIL.details(e.getMessage()).throwException();
+            ErrorEnum.UPDATE_CLIENT_FAIL.details(e).throwException();
         }
     }
 
@@ -222,7 +222,7 @@ public class ClientResource {
         try {
             storageHandler.remove(generateLogoKey(cid));
         } catch (Exception e) {
-            ErrorEnum.DELETE_CLIENT_LOGO_FAIL.details(e.getMessage());
+            ErrorEnum.DELETE_CLIENT_LOGO_FAIL.details(e);
         }
     }
 

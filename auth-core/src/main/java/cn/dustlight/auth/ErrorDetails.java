@@ -37,6 +37,11 @@ public class ErrorDetails {
         this.details = details;
     }
 
+    public void setDetails(Throwable throwable) {
+        this.details = throwable.getMessage();
+        this.authException.initCause(throwable);
+    }
+
     public ErrorDetails message(String message) {
         this.message = message;
         return this;
@@ -58,6 +63,10 @@ public class ErrorDetails {
 
     public void throwException() throws AuthException {
         throw authException;
+    }
+
+    public Exception getException() {
+        return authException;
     }
 
     @Override

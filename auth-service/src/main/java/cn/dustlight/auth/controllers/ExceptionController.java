@@ -30,7 +30,7 @@ public class ExceptionController {
     public ErrorDetails onException(Throwable e, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         logger.error(String.format("Error on path: %s, remote ip: %s", request.getContextPath(), request.getRemoteAddr()), e);
-        return logger.isDebugEnabled() ? ErrorEnum.UNKNOWN.details(e.getMessage()) : ErrorEnum.UNKNOWN.getDetails();
+        return logger.isDebugEnabled() ? ErrorEnum.UNKNOWN.details(e) : ErrorEnum.UNKNOWN.getDetails();
     }
 
     @ExceptionHandler(AuthException.class)
@@ -48,7 +48,6 @@ public class ExceptionController {
             response.setStatus(HttpStatus.CONFLICT.value());
         else
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-
         logger.debug(e.getErrorDetails().getMessage(), e);
         return e.getErrorDetails();
     }
@@ -57,28 +56,28 @@ public class ExceptionController {
     public ErrorDetails onCaptchaException(CaptchaException e, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         logger.debug(e.getMessage(), e);
-        return ErrorEnum.CODE_INVALID.details(e.getMessage());
+        return ErrorEnum.CODE_INVALID.details(e);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ErrorDetails onAuthenticationException(AuthenticationException e, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         logger.debug(e.getMessage(), e);
-        return ErrorEnum.UNAUTHORIZED.details(e.getMessage());
+        return ErrorEnum.UNAUTHORIZED.details(e);
     }
 
     @ExceptionHandler(OAuth2Exception.class)
     public ErrorDetails onClientAuthenticationException(OAuth2Exception e, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         logger.debug(e.getMessage(), e);
-        return ErrorEnum.OAUTH_ERROR.details(e.getMessage());
+        return ErrorEnum.OAUTH_ERROR.details(e);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ErrorDetails onAccessDeniedException(AccessDeniedException e, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         logger.debug(e.getMessage(), e);
-        return ErrorEnum.ACCESS_DENIED.details(e.getMessage());
+        return ErrorEnum.ACCESS_DENIED.details(e);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
@@ -92,7 +91,7 @@ public class ExceptionController {
     public ErrorDetails onMissingServletRequestParameter(MissingServletRequestParameterException e, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         logger.debug(e.getMessage(), e);
-        return ErrorEnum.INPUT_INVALID.details(e.getMessage());
+        return ErrorEnum.INPUT_INVALID.details(e);
     }
 
     @ExceptionHandler(ServletException.class)
@@ -102,6 +101,6 @@ public class ExceptionController {
             statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
         response.setStatus(statusCode);
         logger.debug(e.getMessage(), e);
-        return logger.isDebugEnabled() ? ErrorEnum.UNKNOWN.details(e.getMessage()) : ErrorEnum.UNAUTHORIZED.getDetails();
+        return logger.isDebugEnabled() ? ErrorEnum.UNKNOWN.details(e) : ErrorEnum.UNAUTHORIZED.getDetails();
     }
 }
