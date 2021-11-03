@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `users`
   COLLATE = utf8mb4_general_ci;
 
 /* 部门表 */
-CREATE TABLE `departments` (
+CREATE TABLE IF NOT EXISTS `departments` (
     `did` bigint NOT NULL,
     `org` bigint NOT NULL,
     `name` varchar(256) NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE `departments` (
   COLLATE = utf8mb4_general_ci;
 
 /* 用户部门表 */
-CREATE TABLE `user_department` (
+CREATE TABLE IF NOT EXISTS `user_department` (
     `uid` bigint NOT NULL,
     `did` bigint NOT NULL,
     `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
