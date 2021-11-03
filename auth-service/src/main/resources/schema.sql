@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `users`
     `enabled`              tinyint(1)               DEFAULT '1',
     `createdAt`            datetime                 DEFAULT CURRENT_TIMESTAMP,
     `updatedAt`            datetime                 DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `organization`         tinyint(1)               DEFAULT '0'
+    `organization`         tinyint(1)               DEFAULT '0',
     PRIMARY KEY (`uid`),
     UNIQUE KEY `username_UNIQUE` (`username`),
     UNIQUE KEY `phone_UNIQUE` (`phone`),
