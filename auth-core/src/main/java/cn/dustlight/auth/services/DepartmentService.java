@@ -88,7 +88,7 @@ public interface DepartmentService {
      * @param did 部门 ID
      * @return 被删除的部门对象
      */
-    Department deleteDepartment(Long org,
+    void deleteDepartment(Long org,
                        Long did);
 
     /**
@@ -97,6 +97,6 @@ public interface DepartmentService {
      * @param did 部门 ID
      * @return 被删除的部门对象
      */
-    Department deleteDepartment(Long did);
+    void deleteDepartment(Long did);
 
 }

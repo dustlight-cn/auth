@@ -66,9 +66,12 @@ public class DepartmentTest {
             departments = departmentService.getDepartments(user.getUid());
 
             logger.info("List Department\n" + toJson(departments));
-//            System.out.println(toJson(d));
-        } catch (Throwable e) {
-            e.printStackTrace();
+            Assert.isTrue(departments.size() > 0, "Departments is empty");
+
+            d = departmentService.getDepartment(d.getDid());
+
+            logger.info("Department\n" + toJson(d));
+            Assert.notNull(d, "Departments is null");
         } finally {
             if (user == null)
                 user = userService.loadUserByUsername(username);

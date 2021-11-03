@@ -25,7 +25,7 @@ public class DefaultDepartmentService implements DepartmentService {
 
     @Override
     public Collection<DefaultDepartment> getDepartments(Long org) {
-        return departmentMapper.selectDepartmentByOrg(org);
+        return departmentMapper.selectDepartmentsByOrg(org);
     }
 
     @Override
@@ -40,12 +40,18 @@ public class DefaultDepartmentService implements DepartmentService {
 
     @Override
     public DefaultDepartment getDepartment(Long org, Long did) {
-        return null;
+        DefaultDepartment dept = departmentMapper.selectDepartmentByIdAndOrg(org, did);
+        if (dept == null)
+            throw ErrorEnum.DEPARTMENT_NOT_FOUND.getException();
+        return dept;
     }
 
     @Override
     public DefaultDepartment getDepartment(Long did) {
-        return null;
+        DefaultDepartment dept = departmentMapper.selectDepartmentById(did);
+        if (dept == null)
+            throw ErrorEnum.DEPARTMENT_NOT_FOUND.getException();
+        return dept;
     }
 
     @Override
@@ -80,13 +86,15 @@ public class DefaultDepartmentService implements DepartmentService {
     }
 
     @Override
-    public DefaultDepartment deleteDepartment(Long org, Long did) {
-        return null;
+    public void deleteDepartment(Long org, Long did) {
+        if (!departmentMapper.deleteDepartmentByIdAndOrg(org, did))
+            throw ErrorEnum.DELETE_DEPARTMENT_FAIL.getException();
     }
 
     @Override
-    public DefaultDepartment deleteDepartment(Long did) {
-        return null;
+    public void deleteDepartment(Long did) {
+        if (!departmentMapper.deleteDepartmentById(did))
+            throw ErrorEnum.DELETE_DEPARTMENT_FAIL.getException();
     }
 
 }
