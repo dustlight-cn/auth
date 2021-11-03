@@ -17,18 +17,21 @@ public enum ErrorEnum {
     PASSWORD_INVALID(1003, "Password invalid"),
     PHONE_INVALID(1004, "Phone invalid"),
     CODE_INVALID(1005, "Code invalid"),
+    USER_NOT_ORGANIZATION(1006, "User is not organization"),
 
     RESOURCE_NOT_FOUND(2000, "Resource not found"),
     EMAIL_NOT_FOUND(2001, "Email not found"),
     USER_NOT_FOUND(2002, "User not found"),
     CLIENT_NOT_FOUND(2003, "Client not found"),
     PHONE_NOT_FOUND(2004, "Phone not found"),
+    DEPARTMENT_NOT_FOUND(2004, "Department not found"),
 
     RESOURCE_EXISTS(3000, "Resource already exists"),
     EMAIL_EXISTS(3001, "Email already exists"),
     USER_EXISTS(3002, "User already exists"),
     CLIENT_EXISTS(3003, "Client already exists"),
     PHONE_EXISTS(3004, "Phone already exists"),
+    DEPARTMENT_EXISTS(3005, "Department already exists"),
 
     CREATE_RESOURCE_FAIL(4000, "Fail to create resource"),
     CREATE_USER_FAIL(4001, "Fail to create user"),
@@ -37,6 +40,7 @@ public enum ErrorEnum {
     CREATE_SCOPE_FAIL(4004, "Fail to create scope"),
     CREATE_CLIENT_FAIL(4005, "Fail to create client"),
     CREATE_GRANT_TYPE_FAIL(4006, "Fail to create grant type"),
+    CREATE_DEPARTMENT_FAIL(4007, "Fail to create department"),
 
     UPDATE_RESOURCE_FAIL(5000, "Fail to update resource"),
     UPDATE_USER_FAIL(5001, "Fail to update user"),
@@ -47,6 +51,7 @@ public enum ErrorEnum {
     UPDATE_GRANT_TYPE_FAIL(5006, "Fail to update grant type"),
     UPDATE_PASSWORD_FAIL_EMAIL_OR_PHONE_NOT_EXIST(5007, "Fail to update password"),
     UPDATE_PASSWORD_FAIL_ORIGINAL_PASSWORD(5008, "Fail to update password"),
+    UPDATE_DEPARTMENT_PASSWORD(5009, "Fail to update department"),
 
     DELETE_RESOURCE_FAIL(6000, "Fail to delete resource"),
     DELETE_USER_FAIL(6001, "Fail to delete user"),
@@ -57,7 +62,8 @@ public enum ErrorEnum {
     DELETE_GRANT_TYPE_FAIL(6006, "Fail to delete grant type"),
     DELETE_USER_AVATAR_FAIL(6007, "Fail to delete user's avatar"),
     DELETE_USER_TOKEN_FAIL(6008, "Fail to delete user's token"),
-    DELETE_CLIENT_LOGO_FAIL(6009, "Fail to delete client's logo");
+    DELETE_CLIENT_LOGO_FAIL(6009, "Fail to delete client's logo"),
+    DELETE_DEPARTMENT_FAIL(6010, "Fail to delete department");
 
     private ErrorDetails details;
 

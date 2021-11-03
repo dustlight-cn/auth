@@ -253,6 +253,14 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
     void updateEnabled(Collection<Long> uids, boolean enabled);
 
     /**
+     * 更新用户是否为组织账号
+     *
+     * @param uids    用户 uid 集合
+     * @param isOrganization 用户是否组织账号
+     */
+    void updateOrganization(Collection<Long> uids, boolean isOrganization);
+
+    /**
      * 删除用户
      *
      * @param uids 用户uid集合
@@ -282,4 +290,12 @@ public interface UserService<T extends User, V extends PublicUser> extends UserD
      * @return 邮箱是否存在
      */
     boolean isPhoneExists(String phone);
+
+    /**
+     * 判断用户是否组织账号
+     *
+     * @param uid 用户 ID
+     * @return
+     */
+    boolean isOrganization(Long uid);
 }

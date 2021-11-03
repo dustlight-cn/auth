@@ -102,7 +102,7 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
             if (roles != null && roles.size() > 0 && !roleMapper.insertUserRoles(id, roles, defaultClientId))
                 ErrorEnum.CREATE_ROLE_FAIL.details("fail to insert user roles").throwException();
         } catch (DuplicateKeyException e) {
-            ErrorEnum.USER_EXISTS.throwException();
+            throw ErrorEnum.USER_EXISTS.details(e).getException();
         }
     }
 
@@ -277,6 +277,12 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
     }
 
     @Override
+    public void updateOrganization(Collection<Long> uids, boolean isOrganization) {
+        if (!userMapper.updateOrganization(uids, isOrganization))
+            ErrorEnum.UPDATE_USER_FAIL.details("fail to update organization").throwException();
+    }
+
+    @Override
     public void deleteUsers(Collection<Long> uids) {
         if (!userMapper.deleteUsers(uids))
             ErrorEnum.DELETE_USER_FAIL.throwException();
@@ -301,6 +307,14 @@ public class DefaultUserService implements UserService<DefaultUser, DefaultPubli
         if (phonePattern != null && !phonePattern.matcher(phone).matches())
             ErrorEnum.PHONE_INVALID.throwException();
         return userMapper.isPhoneExists(phone);
+    }
+
+    @Override
+    public boolean isOrganization(Long uid) {
+        DefaultUser user = loadUser(uid);
+        if (user == null)
+            throw ErrorEnum.USER_NOT_FOUND.getException();
+        return user.isOrganization();
     }
 
     /* --------------------------------------------------------------------------------------------------- */

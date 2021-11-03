@@ -89,4 +89,12 @@ public class ServicesConfiguration {
                                              @Autowired UniqueGenerator<Long> generator) {
         return new DefaultGrantTypeService(grantTypeMapper, generator);
     }
+
+    @Bean("departmentService")
+    @ConditionalOnMissingBean(name = "departmentService")
+    public DepartmentService departmentService(@Autowired DepartmentMapper departmentMapper,
+                                               @Autowired UserService userService,
+                                               @Autowired UniqueGenerator<Long> generator) {
+        return new DefaultDepartmentService(departmentMapper, userService, generator);
+    }
 }

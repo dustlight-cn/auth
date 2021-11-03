@@ -122,6 +122,12 @@ public interface UserMapper {
     Boolean updateEnabled(@Param("uids") Collection<Long> uids,
                           @Param("enabled") boolean enabled);
 
+    @Update("<script>UPDATE users SET organization=#{isOrganization} WHERE uid IN " +
+            "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
+            "</script>")
+    Boolean updateOrganization(@Param("uids") Collection<Long> uids,
+                               @Param("isOrganization") boolean isOrganization);
+
     @Update("<script>UPDATE users SET accountExpiredAt=#{accountExpiredAt} WHERE uid IN " +
             "<foreach collection='uids' item='uid' open='(' close=')'>#{uid}</foreach>" +
             "</script>")
