@@ -69,6 +69,10 @@ public enum ErrorEnum {
         this.details.throwException();
     }
 
+    public AuthException getException() {
+        return this.details.getException();
+    }
+
     public ErrorDetails getDetails() {
         return details;
     }

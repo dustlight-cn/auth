@@ -65,7 +65,7 @@ public class ErrorDetails {
         throw authException;
     }
 
-    public Exception getException() {
+    public AuthException getException() {
         return authException;
     }
 
