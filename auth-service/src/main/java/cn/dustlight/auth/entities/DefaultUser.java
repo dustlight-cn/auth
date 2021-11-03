@@ -26,6 +26,7 @@ public class DefaultUser implements User {
     private Date unlockedAt;
     private Collection<? extends UserRole> roles;
     private boolean enabled;
+    private boolean organization;
 
     @Override
     public Long getUid() {
@@ -202,5 +203,14 @@ public class DefaultUser implements User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public void setOrganization(boolean organization) {
+        this.organization = organization;
+    }
+
+    @Override
+    public boolean isOrganization() {
+        return organization;
     }
 }

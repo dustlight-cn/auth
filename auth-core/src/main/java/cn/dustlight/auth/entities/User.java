@@ -101,4 +101,11 @@ public interface User extends UserDetails, Datable, Serializable {
     @JsonSerialize(using = ToStringCollectionSerializer.class)
     @Override
     Collection<? extends GrantedAuthority> getAuthorities();
+
+    /**
+     * 是否组织账号
+     *
+     * @return
+     */
+    boolean isOrganization();
 }
