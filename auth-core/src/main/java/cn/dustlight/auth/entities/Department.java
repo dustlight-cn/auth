@@ -25,7 +25,7 @@ public interface Department extends Datable, Serializable {
      * @return 组织 ID
      */
     @JsonSerialize(using = ToStringSerializer.class)
-    Long getOrganization();
+    Long getOrg();
 
     /**
      * 获取部门名称
