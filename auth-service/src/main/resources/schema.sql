@@ -12,18 +12,52 @@ CREATE TABLE IF NOT EXISTS `users`
     `phone`                VARCHAR(20)  NULL,
     `email`                varchar(320) NULL,
     `nickname`             varchar(32)  NOT NULL    DEFAULT '',
-    `gender`               int(2) unsigned zerofill DEFAULT '00',
+    `gender`               TINYINT      DEFAULT '0',
     `accountExpiredAt`     datetime                 DEFAULT NULL,
     `credentialsExpiredAt` datetime                 DEFAULT NULL,
     `unlockedAt`           datetime                 DEFAULT NULL,
     `enabled`              tinyint(1)               DEFAULT '1',
     `createdAt`            datetime                 DEFAULT CURRENT_TIMESTAMP,
     `updatedAt`            datetime                 DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `organization`         tinyint(1)               DEFAULT '0'
     PRIMARY KEY (`uid`),
     UNIQUE KEY `username_UNIQUE` (`username`),
     UNIQUE KEY `phone_UNIQUE` (`phone`),
     UNIQUE KEY `email_UNIQUE` (`email`),
     FULLTEXT KEY `user_keywords` (`username`, `phone`, `email`, `nickname`) WITH PARSER ngram
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;
+
+/* 部门表 */
+CREATE TABLE `departments` (
+    `did` bigint NOT NULL,
+    `org` bigint NOT NULL,
+    `name` varchar(256) NOT NULL,
+    `description` varchar(1024) DEFAULT NULL,
+    `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+    `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `parent` bigint DEFAULT NULL,
+    PRIMARY KEY (`did`),
+    UNIQUE KEY `org_name_unique` (`org`,`name`),
+    KEY `dept_parent_idx` (`parent`),
+    FULLTEXT KEY `name_description_keyword` (`name`,`description`)  WITH PARSER `ngram`,
+    CONSTRAINT `dept_org` FOREIGN KEY (`org`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `dept_parent` FOREIGN KEY (`parent`) REFERENCES `departments` (`did`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;
+
+/* 用户部门表 */
+CREATE TABLE `user_department` (
+    `uid` bigint NOT NULL,
+    `did` bigint NOT NULL,
+    `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`uid`,`did`),
+    KEY `user_dept_uid_index` (`uid`),
+    KEY `user_dept_did_index` (`did`),
+    CONSTRAINT `user_dept_did` FOREIGN KEY (`did`) REFERENCES `departments` (`did`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `user_dept_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;

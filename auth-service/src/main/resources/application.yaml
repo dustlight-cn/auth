@@ -147,7 +147,7 @@ spring:
       maximum-pool-size: 8  # 数据库连接池最大连接数
       minimum-idle: 2       # 数据库连接池最小连接数
     initialization-mode: always   # 启动时是否自动建表以及导入默认数据
-    schema: classpath:scheme.sql
+    schema: classpath:schema.sql
     data: classpath:data.sql
   redis:
     host: ${redis.host}
