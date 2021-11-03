@@ -1,6 +1,6 @@
 {
   "name": "@plus/auth-client-axios-js",
-  "version": "1.1.1-alpha",
+  "version": "1.1.2-alpha",
   "description": "Client SDK for Auth-Service",
   "main": "index.js",
   "scripts": {
