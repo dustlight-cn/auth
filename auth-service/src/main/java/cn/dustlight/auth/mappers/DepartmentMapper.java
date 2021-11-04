@@ -28,6 +28,27 @@ public interface DepartmentMapper {
     @Delete("DELETE FROM `departments` WHERE did=#{did}")
     boolean deleteDepartmentById(@Param("did") Long did);
 
+    @Update("<script>" +
+            "UPDATE `departments` SET" +
+            "<if test='name'> name=#{name}</if>" +
+            "<if test='description'> description=#{description}</if>" +
+            " WHERE did=#{did}" +
+            "</script>")
+    boolean updateDepartment(@Param("did") Long did,
+                             @Param("name") String name,
+                             @Param("description") String description);
+
+    @Update("<script>" +
+            "UPDATE `departments` SET" +
+            "<if test='name'> name=#{name}</if>" +
+            "<if test='description'> description=#{description}</if>" +
+            " WHERE org=#{org} AND did=#{did}" +
+            "</script>")
+    boolean updateDepartmentWithOrg(@Param("did") Long did,
+                                    @Param("org") Long org,
+                                    @Param("name") String name,
+                                    @Param("description") String description);
+
     @Select("SELECT * FROM `departments` WHERE org=#{org} AND did=#{did} LIMIT 1")
     DefaultDepartment selectDepartmentByIdAndOrg(@Param("org") Long org,
                                                  @Param("did") Long did);
@@ -51,7 +72,6 @@ public interface DepartmentMapper {
             "SELECT * FROM p")
     Collection<DefaultDepartment> selectDepartmentWithChildrenWithOrg(@Param("org") Long org,
                                                                       @Param("did") Long did);
-
 
     @Select("WITH recursive p AS ( " +
             "SELECT * FROM departments WHERE did=#{did} " +

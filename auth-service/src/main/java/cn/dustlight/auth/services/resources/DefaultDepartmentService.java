@@ -2,7 +2,6 @@ package cn.dustlight.auth.services.resources;
 
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.DefaultDepartment;
-import cn.dustlight.auth.entities.Department;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.mappers.DepartmentMapper;
 import cn.dustlight.auth.services.DepartmentService;
@@ -106,6 +105,28 @@ public class DefaultDepartmentService implements DepartmentService {
     @Override
     public DefaultDepartment createDepartment(Long org, String name, String description) {
         return createDepartment(org, name, description, null);
+    }
+
+    @Override
+    public void updateDepartment(Long org, Long did, String name, String description) {
+        if (!departmentMapper.updateDepartmentWithOrg(did, org, name, description))
+            throw ErrorEnum.UPDATE_DEPARTMENT_FAIL.getException();
+    }
+
+    @Override
+    public void updateDepartment(Long did, String name, String description) {
+        if (!departmentMapper.updateDepartment(did, name, description))
+            throw ErrorEnum.UPDATE_DEPARTMENT_FAIL.getException();
+    }
+
+    @Override
+    public void updateDepartmentParent(Long did, Long org, Long parent) {
+
+    }
+
+    @Override
+    public void updateDepartmentParent(Long did, Long parent) {
+
     }
 
     @Override

@@ -98,6 +98,50 @@ public interface DepartmentService {
                                 String description);
 
     /**
+     * 更新部门
+     *
+     * @param org         组织 ID
+     * @param did         部门 ID
+     * @param name        部门名称
+     * @param description 部门简介
+     */
+    void updateDepartment(Long org,
+                          Long did,
+                          String name,
+                          String description);
+
+    /**
+     * 更新部门
+     *
+     * @param did         部门 ID
+     * @param name        部门名称
+     * @param description 部门简介
+     */
+    void updateDepartment(Long did,
+                          String name,
+                          String description);
+
+    /**
+     * 更新部门父级部门
+     *
+     * @param did    部门 ID
+     * @param org    组织 ID
+     * @param parent 父级部门
+     */
+    void updateDepartmentParent(Long did,
+                                Long org,
+                                Long parent);
+
+    /**
+     * 更新部门父级部门
+     *
+     * @param did    部门 ID
+     * @param parent 父级部门
+     */
+    void updateDepartmentParent(Long did,
+                                Long parent);
+
+    /**
      * 删除部门
      *
      * @param org 组织 ID

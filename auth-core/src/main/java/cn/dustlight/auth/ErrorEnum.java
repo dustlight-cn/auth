@@ -51,7 +51,7 @@ public enum ErrorEnum {
     UPDATE_GRANT_TYPE_FAIL(5006, "Fail to update grant type"),
     UPDATE_PASSWORD_FAIL_EMAIL_OR_PHONE_NOT_EXIST(5007, "Fail to update password"),
     UPDATE_PASSWORD_FAIL_ORIGINAL_PASSWORD(5008, "Fail to update password"),
-    UPDATE_DEPARTMENT_PASSWORD(5009, "Fail to update department"),
+    UPDATE_DEPARTMENT_FAIL(5009, "Fail to update department"),
 
     DELETE_RESOURCE_FAIL(6000, "Fail to delete resource"),
     DELETE_USER_FAIL(6001, "Fail to delete user"),
