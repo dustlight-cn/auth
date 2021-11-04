@@ -2,6 +2,7 @@ package cn.dustlight.auth.services.resources;
 
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.DefaultDepartment;
+import cn.dustlight.auth.entities.Department;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.mappers.DepartmentMapper;
 import cn.dustlight.auth.services.DepartmentService;
@@ -30,12 +31,34 @@ public class DefaultDepartmentService implements DepartmentService {
 
     @Override
     public Collection<DefaultDepartment> getDepartmentsWithChildren(Long org, Long did) {
-        return null;
+        Collection<DefaultDepartment> result = departmentMapper.selectDepartmentWithChildrenWithOrg(org, did);
+        if (result.size() == 0)
+            throw ErrorEnum.DEPARTMENT_NOT_FOUND.getException();
+        return result;
+    }
+
+    @Override
+    public Collection<DefaultDepartment> getDepartmentsWithChildren(Long did) {
+        Collection<DefaultDepartment> result = departmentMapper.selectDepartmentWithChildren(did);
+        if (result.size() == 0)
+            throw ErrorEnum.DEPARTMENT_NOT_FOUND.getException();
+        return result;
     }
 
     @Override
     public Collection<DefaultDepartment> getDepartmentsWithParents(Long org, Long did) {
-        return null;
+        Collection<DefaultDepartment> result = departmentMapper.selectDepartmentWithParentWithOrg(org, did);
+        if (result.size() == 0)
+            throw ErrorEnum.DEPARTMENT_NOT_FOUND.getException();
+        return result;
+    }
+
+    @Override
+    public Collection<DefaultDepartment> getDepartmentsWithParents(Long did) {
+        Collection<DefaultDepartment> result = departmentMapper.selectDepartmentWithParent(did);
+        if (result.size() == 0)
+            throw ErrorEnum.DEPARTMENT_NOT_FOUND.getException();
+        return result;
     }
 
     @Override

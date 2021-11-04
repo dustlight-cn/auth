@@ -25,7 +25,15 @@ public interface DepartmentService {
      * @return
      */
     Collection<? extends Department> getDepartmentsWithChildren(Long org,
-                                             Long did);
+                                                                Long did);
+
+    /**
+     * 获取部门以及子部门
+     *
+     * @param did 部门 ID
+     * @return
+     */
+    Collection<? extends Department> getDepartmentsWithChildren(Long did);
 
     /**
      * 获取部门以及父部门
@@ -35,7 +43,15 @@ public interface DepartmentService {
      * @return
      */
     Collection<? extends Department> getDepartmentsWithParents(Long org,
-                                            Long did);
+                                                               Long did);
+
+    /**
+     * 获取部门以及父部门
+     *
+     * @param did 部门 ID
+     * @return
+     */
+    Collection<? extends Department> getDepartmentsWithParents(Long did);
 
     /**
      * 获取部门
@@ -45,7 +61,7 @@ public interface DepartmentService {
      * @return
      */
     Department getDepartment(Long org,
-                    Long did);
+                             Long did);
 
     /**
      * 获取部门
@@ -65,9 +81,9 @@ public interface DepartmentService {
      * @return 新建的部门对象
      */
     Department createDepartment(Long org,
-                       String name,
-                       String description,
-                       Long parent);
+                                String name,
+                                String description,
+                                Long parent);
 
     /**
      * 创建部门
@@ -78,8 +94,8 @@ public interface DepartmentService {
      * @return 新建的部门对象
      */
     Department createDepartment(Long org,
-                       String name,
-                       String description);
+                                String name,
+                                String description);
 
     /**
      * 删除部门
@@ -89,7 +105,7 @@ public interface DepartmentService {
      * @return 被删除的部门对象
      */
     void deleteDepartment(Long org,
-                       Long did);
+                          Long did);
 
     /**
      * 删除部门

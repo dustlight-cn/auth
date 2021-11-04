@@ -81,6 +81,12 @@ public class DepartmentTest {
 
     }
 
+    @Test
+    public void childrenAndParentTest() {
+        Collection<? extends Department> departments = departmentService.getDepartmentsWithParents(0L, 6L);
+        logger.info(toJson(departments));
+    }
+
     @SneakyThrows
     private String toJson(Object... obj) {
         if (obj == null || obj.length == 0)

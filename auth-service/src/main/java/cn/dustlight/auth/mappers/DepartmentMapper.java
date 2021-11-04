@@ -34,4 +34,39 @@ public interface DepartmentMapper {
 
     @Select("SELECT * FROM `departments` WHERE did=#{did} LIMIT 1")
     DefaultDepartment selectDepartmentById(@Param("did") Long did);
+
+    @Select("WITH recursive p AS ( " +
+            "SELECT * FROM departments WHERE did=#{did} " +
+            "UNION ALL " +
+            "SELECT d.* FROM departments as d,p WHERE d.parent=p.did " +
+            ") " +
+            "SELECT * FROM p")
+    Collection<DefaultDepartment> selectDepartmentWithChildren(@Param("did") Long did);
+
+    @Select("WITH recursive p AS ( " +
+            "SELECT * FROM departments WHERE did=#{did} AND org=#{org} " +
+            "UNION ALL " +
+            "SELECT d.* FROM departments as d,p WHERE d.parent=p.did AND d.org=#{org} " +
+            ") " +
+            "SELECT * FROM p")
+    Collection<DefaultDepartment> selectDepartmentWithChildrenWithOrg(@Param("org") Long org,
+                                                                      @Param("did") Long did);
+
+
+    @Select("WITH recursive p AS ( " +
+            "SELECT * FROM departments WHERE did=#{did} " +
+            "UNION ALL " +
+            "SELECT d.* FROM departments as d,p WHERE d.did=p.parent " +
+            ") " +
+            "SELECT * FROM p")
+    Collection<DefaultDepartment> selectDepartmentWithParent(@Param("did") Long did);
+
+    @Select("WITH recursive p AS ( " +
+            "SELECT * FROM departments WHERE did=#{did} AND org=#{org} " +
+            "UNION ALL " +
+            "SELECT d.* FROM departments as d,p WHERE d.did=p.parent AND d.org=#{org} " +
+            ") " +
+            "SELECT * FROM p")
+    Collection<DefaultDepartment> selectDepartmentWithParentWithOrg(@Param("org") Long org,
+                                                                    @Param("did") Long did);
 }
