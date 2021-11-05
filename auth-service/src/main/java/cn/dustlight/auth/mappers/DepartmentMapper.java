@@ -1,6 +1,8 @@
 package cn.dustlight.auth.mappers;
 
 import cn.dustlight.auth.entities.DefaultDepartment;
+import cn.dustlight.auth.entities.DefaultDepartmentPublicUser;
+import cn.dustlight.auth.entities.DefaultDepartmentUser;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,8 @@ import java.util.Collection;
 @Service
 @Mapper
 public interface DepartmentMapper {
+
+    /* ----------------------------------------- 部门增删改查 ------------------------------------------------------ */
 
     @Select("SELECT * FROM `departments` WHERE org=#{org}")
     Collection<DefaultDepartment> selectDepartmentsByOrg(@Param("org") Long org);
@@ -118,4 +122,100 @@ public interface DepartmentMapper {
             "SELECT * FROM p")
     Collection<DefaultDepartment> selectDepartmentWithParentWithOrg(@Param("org") Long org,
                                                                     @Param("did") Long did);
+
+    @Select("SELECT count(did) FROM `departments` WHERE did=#{did} LIMIT 1")
+    boolean isDepartmentExists(@Param("did") Long did);
+
+    @Select("SELECT count(did) FROM `departments` WHERE did=#{did} AND org=#{org} LIMIT 1")
+    boolean isDepartmentExists(@Param("did") Long did,
+                               @Param("org") Long org);
+
+    /* ----------------------------------------------------------------------------------------------------------- */
+
+    /* ----------------------------------------- 部门用户增删改查 --------------------------------------------------- */
+
+    @Insert("<script>" +
+            "INSERT IGNORE INTO `user_department` (uid,did) VALUES " +
+            "<foreach item='user' collection='users' separator=','>" +
+            "(#{user},#{did})" +
+            "</foreach>" +
+            "</script>")
+    boolean insertDepartmentUsers(@Param("did") Long did,
+                                  @Param("users") Collection<Long> users);
+
+    @Delete("<script>" +
+            "DELETE FROM `user_department` WHERE did=#{did} AND uid IN " +
+            "<foreach item='user' collection='users' open='(' close=')' separator=','>" +
+            "#{user}" +
+            "</foreach>" +
+            "</script>")
+    boolean deleteDepartmentUsers(@Param("did") Long did,
+                                  @Param("users") Collection<Long> users);
+
+    @Select("<script>" +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
+            "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>" +
+            "#(did)" +
+            "</foreach>" +
+            ") AS ud " +
+            "WHERE ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentUser> selectDepartmentUsers(@Param("dids") Collection<Long> dids);
+
+    @Select("<script>" +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
+            "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
+            "(SELECT did FROM `departments` WHERE org=#{org} AND did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>" +
+            "#(did)" +
+            "</foreach>" +
+            ")) AS ud " +
+            "WHERE ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentUser> selectDepartmentUsersWithOrg(@Param("dids") Collection<Long> dids,
+                                                                   @Param("org") Long org);
+
+    @Select("<script>" +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
+            "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>" +
+            "#(did)" +
+            "</foreach>" +
+            ") AS ud " +
+            "WHERE ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentPublicUser> selectDepartmentPublicUsers(@Param("dids") Collection<Long> dids);
+
+    @Select("<script>" +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
+            "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
+            "(SELECT did FROM `departments` WHERE org=#{org} AND did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>" +
+            "#(did)" +
+            "</foreach>" +
+            ")) AS ud " +
+            "WHERE ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentPublicUser> selectDepartmentPublicUsersWithOrg(@Param("dids") Collection<Long> dids,
+                                                                               @Param("org") Long org);
+
+    @Select("<script>" +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
+            "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
+            "(SELECT did FROM `departments` WHERE org=#{org})) AS ud " +
+            "WHERE ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentUser> selectOrganizationUsers(@Param("org") Long org);
+
+    @Select("<script>" +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
+            "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
+            "(SELECT did FROM `departments` WHERE org=#{org})) AS ud " +
+            "WHERE ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentPublicUser> selectOrganizationPublicUsers(@Param("org") Long org);
+
+    /* ----------------------------------------------------------------------------------------------------------- */
+
 }

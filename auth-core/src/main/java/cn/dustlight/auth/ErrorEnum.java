@@ -41,6 +41,7 @@ public enum ErrorEnum {
     CREATE_CLIENT_FAIL(4005, "Fail to create client"),
     CREATE_GRANT_TYPE_FAIL(4006, "Fail to create grant type"),
     CREATE_DEPARTMENT_FAIL(4007, "Fail to create department"),
+    CREATE_DEPARTMENT_USER_FAIL(4008, "Fail to insert user into department"),
 
     UPDATE_RESOURCE_FAIL(5000, "Fail to update resource"),
     UPDATE_USER_FAIL(5001, "Fail to update user"),
@@ -63,7 +64,8 @@ public enum ErrorEnum {
     DELETE_USER_AVATAR_FAIL(6007, "Fail to delete user's avatar"),
     DELETE_USER_TOKEN_FAIL(6008, "Fail to delete user's token"),
     DELETE_CLIENT_LOGO_FAIL(6009, "Fail to delete client's logo"),
-    DELETE_DEPARTMENT_FAIL(6010, "Fail to delete department");
+    DELETE_DEPARTMENT_FAIL(6010, "Fail to delete department"),
+    DELETE_DEPARTMENT_USER_FAIL(6011, "Fail to remove user from department");
 
     private ErrorDetails details;
 

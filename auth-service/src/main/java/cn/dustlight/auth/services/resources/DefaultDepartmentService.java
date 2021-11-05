@@ -2,7 +2,7 @@ package cn.dustlight.auth.services.resources;
 
 import cn.dustlight.auth.AuthException;
 import cn.dustlight.auth.ErrorEnum;
-import cn.dustlight.auth.entities.DefaultDepartment;
+import cn.dustlight.auth.entities.*;
 import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.mappers.DepartmentMapper;
 import cn.dustlight.auth.services.DepartmentService;
@@ -12,8 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.dao.DuplicateKeyException;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 @Getter
 @Setter
@@ -160,4 +159,81 @@ public class DefaultDepartmentService implements DepartmentService {
             throw ErrorEnum.DELETE_DEPARTMENT_FAIL.getException();
     }
 
+    @Override
+    public Map<Long, Collection<DefaultDepartmentUser>> getOrganizationUsers(Long org) {
+        return transformUserDepartmentMap(departmentMapper.selectOrganizationUsers(org));
+    }
+
+    @Override
+    public Map<Long, Collection<DefaultDepartmentPublicUser>> getOrganizationPublicUsers(Long org) {
+        return transformUserDepartmentMap(departmentMapper.selectOrganizationPublicUsers(org));
+    }
+
+    @Override
+    public Collection<DefaultDepartmentUser> getDepartmentUsers(Collection<Long> dids) {
+        if (dids == null || dids.size() == 0)
+            return Collections.emptyList();
+        return departmentMapper.selectDepartmentUsers(dids);
+    }
+
+    @Override
+    public Collection<DefaultDepartmentUser> getDepartmentUsers(Collection<Long> dids, Long org) {
+        if (dids == null || dids.size() == 0)
+            return Collections.emptyList();
+        return departmentMapper.selectDepartmentUsersWithOrg(dids, org);
+    }
+
+    @Override
+    public Collection<DefaultDepartmentPublicUser> getDepartmentPublicUsers(Collection<Long> dids) {
+        if (dids == null || dids.size() == 0)
+            return Collections.emptyList();
+        return departmentMapper.selectDepartmentPublicUsers(dids);
+    }
+
+    @Override
+    public Collection<DefaultDepartmentPublicUser> getDepartmentPublicUsers(Collection<Long> dids, Long org) {
+        if (dids == null || dids.size() == 0)
+            return Collections.emptyList();
+        return departmentMapper.selectDepartmentPublicUsersWithOrg(dids, org);
+    }
+
+    @Override
+    public void addDepartmentUsers(Long did, Collection<Long> users) {
+        if (!departmentMapper.insertDepartmentUsers(did, users))
+            throw ErrorEnum.CREATE_DEPARTMENT_USER_FAIL.getException();
+    }
+
+    @Override
+    public void addDepartmentUsers(Long did, Long org, Collection<Long> users) {
+        if (!departmentMapper.isDepartmentExists(did, org))
+            throw ErrorEnum.DEPARTMENT_NOT_FOUND.getException();
+        addDepartmentUsers(did, users);
+    }
+
+    @Override
+    public void removeDepartmentUsers(Long did, Collection<Long> users) {
+        if (!departmentMapper.deleteDepartmentUsers(did, users))
+            throw ErrorEnum.DELETE_DEPARTMENT_USER_FAIL.getException();
+    }
+
+    @Override
+    public void removeDepartmentUsers(Long did, Long org, Collection<Long> users) {
+        if (!departmentMapper.isDepartmentExists(did, org))
+            throw ErrorEnum.DEPARTMENT_NOT_FOUND.getException();
+        removeDepartmentUsers(did, users);
+    }
+
+    public static <T extends DepartmentUser> Map<Long, Collection<T>> transformUserDepartmentMap(Collection<T> users) {
+        if (users == null || users.size() == 0)
+            return Collections.emptyMap();
+        Map<Long, Collection<T>> result = new HashMap<>();
+        for (T user : users) {
+            Long deptId = user.getDepartmentId();
+            Collection<T> collection = result.get(deptId);
+            if (collection == null)
+                result.put(deptId, (collection = new HashSet<>()));
+            collection.add(user);
+        }
+        return result;
+    }
 }

@@ -1,13 +1,16 @@
 package cn.dustlight.auth.services;
 
-import cn.dustlight.auth.entities.Department;
+import cn.dustlight.auth.entities.*;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * 部门相关服务
  */
 public interface DepartmentService {
+
+    /* ----------------------------------------- 部门增删改查 ------------------------------------------------------ */
 
     /**
      * 获取组织的所有部门
@@ -158,5 +161,33 @@ public interface DepartmentService {
      * @return 被删除的部门对象
      */
     void deleteDepartment(Long did);
+
+    /* ----------------------------------------------------------------------------------------------------------- */
+
+    /* ----------------------------------------- 部门用户增删改查 --------------------------------------------------- */
+
+    Map<Long, ? extends Collection<? extends DepartmentUser>> getOrganizationUsers(Long org);
+
+    Map<Long, ? extends Collection<? extends DepartmentPublicUser>> getOrganizationPublicUsers(Long org);
+
+
+    Collection<? extends DepartmentUser> getDepartmentUsers(Collection<Long> dids);
+
+    Collection<? extends DepartmentUser> getDepartmentUsers(Collection<Long> dids, Long org);
+
+    Collection<? extends DepartmentPublicUser> getDepartmentPublicUsers(Collection<Long> dids);
+
+    Collection<? extends DepartmentPublicUser> getDepartmentPublicUsers(Collection<Long> dids, Long org);
+
+
+    void addDepartmentUsers(Long did, Collection<Long> users);
+
+    void addDepartmentUsers(Long did, Long org, Collection<Long> users);
+
+    void removeDepartmentUsers(Long did, Collection<Long> users);
+
+    void removeDepartmentUsers(Long did, Long org, Collection<Long> users);
+
+    /* ----------------------------------------------------------------------------------------------------------- */
 
 }
