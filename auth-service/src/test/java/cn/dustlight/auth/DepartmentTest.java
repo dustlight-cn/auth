@@ -100,6 +100,11 @@ public class DepartmentTest {
         logger.info(toJson(departmentService.getDepartmentsWithChildren(0L, 2L)));
     }
 
+    @Test
+    public void listOrganizationUsers() {
+        logger.info(departmentService.getOrganizationUsers(0L));
+    }
+
     @SneakyThrows
     private String toJson(Object... obj) {
         if (obj == null || obj.length == 0)

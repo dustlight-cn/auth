@@ -205,7 +205,7 @@ public class DefaultDepartmentService implements DepartmentService {
 
     @Override
     public void addDepartmentUsers(Long did, Long org, Collection<Long> users) {
-        if (!departmentMapper.isDepartmentExists(did, org))
+        if (!departmentMapper.isDepartmentWithOrgExists(did, org))
             throw ErrorEnum.DEPARTMENT_NOT_FOUND.getException();
         addDepartmentUsers(did, users);
     }
@@ -218,7 +218,7 @@ public class DefaultDepartmentService implements DepartmentService {
 
     @Override
     public void removeDepartmentUsers(Long did, Long org, Collection<Long> users) {
-        if (!departmentMapper.isDepartmentExists(did, org))
+        if (!departmentMapper.isDepartmentWithOrgExists(did, org))
             throw ErrorEnum.DEPARTMENT_NOT_FOUND.getException();
         removeDepartmentUsers(did, users);
     }

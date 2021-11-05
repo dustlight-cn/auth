@@ -127,8 +127,8 @@ public interface DepartmentMapper {
     boolean isDepartmentExists(@Param("did") Long did);
 
     @Select("SELECT count(did) FROM `departments` WHERE did=#{did} AND org=#{org} LIMIT 1")
-    boolean isDepartmentExists(@Param("did") Long did,
-                               @Param("org") Long org);
+    boolean isDepartmentWithOrgExists(@Param("did") Long did,
+                                      @Param("org") Long org);
 
     /* ----------------------------------------------------------------------------------------------------------- */
 
