@@ -1,5 +1,6 @@
 package cn.dustlight.auth.services.resources;
 
+import cn.dustlight.auth.AuthException;
 import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.DefaultDepartment;
 import cn.dustlight.auth.generator.UniqueGenerator;
@@ -100,6 +101,8 @@ public class DefaultDepartmentService implements DepartmentService {
         } catch (DuplicateKeyException duplicateKeyException) {
             throw ErrorEnum.DEPARTMENT_EXISTS.details(duplicateKeyException).getException();
         } catch (Throwable throwable) {
+            if (throwable instanceof AuthException && ((AuthException) throwable).getErrorDetails().getCode() == ErrorEnum.CREATE_DEPARTMENT_FAIL.getCode())
+                throw throwable;
             throw ErrorEnum.CREATE_DEPARTMENT_FAIL.details(throwable).getException();
         }
     }
@@ -111,14 +114,22 @@ public class DefaultDepartmentService implements DepartmentService {
 
     @Override
     public void updateDepartment(Long org, Long did, String name, String description) {
-        if (!departmentMapper.updateDepartmentWithOrg(did, org, name, description))
-            throw ErrorEnum.UPDATE_DEPARTMENT_FAIL.getException();
+        try {
+            if (!departmentMapper.updateDepartmentWithOrg(did, org, name, description))
+                throw ErrorEnum.UPDATE_DEPARTMENT_FAIL.getException();
+        } catch (DuplicateKeyException e) {
+            throw ErrorEnum.DEPARTMENT_EXISTS.details(e).getException();
+        }
     }
 
     @Override
     public void updateDepartment(Long did, String name, String description) {
-        if (!departmentMapper.updateDepartment(did, name, description))
-            throw ErrorEnum.UPDATE_DEPARTMENT_FAIL.getException();
+        try {
+            if (!departmentMapper.updateDepartment(did, name, description))
+                throw ErrorEnum.UPDATE_DEPARTMENT_FAIL.getException();
+        } catch (DuplicateKeyException e) {
+            throw ErrorEnum.DEPARTMENT_EXISTS.details(e).getException();
+        }
     }
 
     @Override

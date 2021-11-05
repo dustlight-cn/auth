@@ -1,6 +1,6 @@
 package cn.dustlight.auth.entities;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import  io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 

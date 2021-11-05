@@ -14,7 +14,7 @@ public interface DepartmentMapper {
     Collection<DefaultDepartment> selectDepartmentsByOrg(@Param("org") Long org);
 
     @Insert("INSERT INTO `departments` (`did`,`org`,`name`,`description`,`parent`) " +
-            "(SELECT #{did},#{org},#{name},#{description},did FROM `department` WHERE did=#{parent} AND org=#{org} LIMIT 1)")
+            "(SELECT #{did},#{org},#{name},#{description},did FROM `departments` WHERE did=#{parent} AND org=#{org} LIMIT 1)")
     boolean insertDepartment(@Param("did") Long did,
                              @Param("org") Long org,
                              @Param("name") String name,
@@ -36,20 +36,20 @@ public interface DepartmentMapper {
     boolean deleteDepartmentById(@Param("did") Long did);
 
     @Update("<script>" +
-            "UPDATE `departments` SET" +
-            "<if test='name'> name=#{name}</if>" +
-            "<if test='description'> description=#{description}</if>" +
-            " WHERE did=#{did}" +
+            "UPDATE `departments` SET " +
+            "name=<choose><when test='name'>#{name}</when><otherwise>name</otherwise></choose>, " +
+            "description=<choose><when test='description'>#{description}</when><otherwise>description</otherwise></choose> " +
+            "WHERE did=#{did}" +
             "</script>")
     boolean updateDepartment(@Param("did") Long did,
                              @Param("name") String name,
                              @Param("description") String description);
 
     @Update("<script>" +
-            "UPDATE `departments` SET" +
-            "<if test='name'> name=#{name}</if>" +
-            "<if test='description'> description=#{description}</if>" +
-            " WHERE org=#{org} AND did=#{did}" +
+            "UPDATE `departments` SET " +
+            "name=<choose><when test='name'>#{name}</when><otherwise>name</otherwise></choose>, " +
+            "description=<choose><when test='description'>#{description}</when><otherwise>description</otherwise></choose> " +
+            "WHERE org=#{org} AND did=#{did}" +
             "</script>")
     boolean updateDepartmentWithOrg(@Param("did") Long did,
                                     @Param("org") Long org,

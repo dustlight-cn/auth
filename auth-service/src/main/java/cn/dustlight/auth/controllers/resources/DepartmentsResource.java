@@ -25,13 +25,13 @@ public class DepartmentsResource {
     @Autowired
     private DepartmentService departmentService;
 
-//    @PreAuthorize("")
+    //    @PreAuthorize("")
     @GetMapping("/departments")
     public Collection<? extends Department> getDepartments(OAuth2Authentication authentication) {
         return departmentService.getDepartments(UserExpressionMethods.obtainUser(authentication).getUid());
     }
 
-//    @PreAuthorize("")
+    //    @PreAuthorize("")
     @PostMapping("/departments")
     public Department createDepartment(@RequestParam(name = "name") String name,
                                        @RequestParam(name = "description", required = false) String description,
@@ -43,22 +43,37 @@ public class DepartmentsResource {
         return departmentService.createDepartment(user.getUid(), name, description, parent);
     }
 
-//    @PreAuthorize("")
+    //    @PreAuthorize("")
     @GetMapping("/departments/{did}")
     public Department getDepartment(@PathVariable(name = "did") Long did) {
         return departmentService.getDepartment(did);
     }
 
-//    @PreAuthorize("")
+    //    @PreAuthorize("")
     @GetMapping("/departments/{did}/parents")
     public Collection<? extends Department> getParentDepartments(@PathVariable(name = "did") Long did) {
         return departmentService.getDepartmentsWithParents(did);
     }
 
-//    @PreAuthorize("")
+    //    @PreAuthorize("")
     @GetMapping("/departments/{did}/children")
     public Collection<? extends Department> getChildrenDepartments(@PathVariable(name = "did") Long did) {
         return departmentService.getDepartmentsWithChildren(did);
+    }
+
+    //    @PreAuthorize("")
+    @PutMapping("/departments/{did}")
+    public void updateDepartment(@PathVariable(name = "did") Long did,
+                                 @RequestParam(name = "name", required = false) String name,
+                                 @RequestParam(name = "description", required = false) String description) {
+        departmentService.updateDepartment(did, name, description);
+    }
+
+    //    @PreAuthorize("")
+    @PutMapping("/departments/{did}/parent")
+    public void updateDepartmentParent(@PathVariable(name = "did") Long did,
+                                       @RequestParam(name = "parent") Long parent) {
+        departmentService.updateDepartmentParent(did, parent);
     }
 
 }

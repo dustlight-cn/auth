@@ -1,11 +1,14 @@
 package cn.dustlight.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class ErrorDetails {
 
     private String message;
     private int code;
     private String details;
-    private AuthException authException;
+    @JsonIgnore
+    private transient AuthException authException;
 
     public ErrorDetails(int code, String message) {
         this.code = code;
@@ -65,6 +68,7 @@ public class ErrorDetails {
         throw authException;
     }
 
+    @JsonIgnore
     public AuthException getException() {
         return authException;
     }
