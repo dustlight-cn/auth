@@ -13,13 +13,20 @@ public interface DepartmentMapper {
     @Select("SELECT * FROM `departments` WHERE org=#{org}")
     Collection<DefaultDepartment> selectDepartmentsByOrg(@Param("org") Long org);
 
-    @Insert("INSERT INTO `departments` (`did`,`org`,`name`,`description`,`parent`) VALUES " +
-            "(#{did},#{org},#{name},#{description},#{parent})")
+    @Insert("INSERT INTO `departments` (`did`,`org`,`name`,`description`,`parent`) " +
+            "(SELECT #{did},#{org},#{name},#{description},did FROM `department` WHERE did=#{parent} AND org=#{org} LIMIT 1)")
     boolean insertDepartment(@Param("did") Long did,
                              @Param("org") Long org,
                              @Param("name") String name,
                              @Param("description") String description,
                              @Param("parent") Long parent);
+
+    @Insert("INSERT INTO `departments` (`did`,`org`,`name`,`description`) VALUES " +
+            "(#{did},#{org},#{name},#{description})")
+    boolean insertDepartmentWithoutParent(@Param("did") Long did,
+                                          @Param("org") Long org,
+                                          @Param("name") String name,
+                                          @Param("description") String description);
 
     @Delete("DELETE FROM `departments` WHERE org=#{org} AND did=#{did}")
     boolean deleteDepartmentByIdAndOrg(@Param("org") Long org,

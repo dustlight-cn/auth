@@ -1,5 +1,6 @@
 package cn.dustlight.auth.util;
 
+import cn.dustlight.auth.ErrorEnum;
 import cn.dustlight.auth.entities.User;
 import cn.dustlight.auth.services.ClientService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -68,10 +69,24 @@ public class UserExpressionMethods {
         return clientService.isOwnerOrMember(clientId, user.getUid());
     }
 
+    public boolean isOrganization() {
+        User user = obtainUser();
+        if (user == null)
+            return false;
+        return user.isOrganization();
+    }
+
     private User obtainUser() {
         if (this.authentication == null || authentication.getPrincipal() == null ||
                 !(this.authentication.getPrincipal() instanceof User))
             return null;
         return (User) this.authentication.getPrincipal();
+    }
+
+    public static User obtainUser(OAuth2Authentication authentication) {
+        if (authentication == null || authentication.getPrincipal() == null ||
+                !(authentication.getPrincipal() instanceof User))
+            throw ErrorEnum.UNAUTHORIZED.details("OAuth2Authentication is null or principal not user").getException();
+        return (User) authentication.getPrincipal();
     }
 }

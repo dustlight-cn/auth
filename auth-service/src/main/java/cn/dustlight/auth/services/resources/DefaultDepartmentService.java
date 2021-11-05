@@ -82,7 +82,9 @@ public class DefaultDepartmentService implements DepartmentService {
             throw ErrorEnum.USER_NOT_ORGANIZATION.getException();
         try {
             Long id = idGenerator.generate();
-            if (departmentMapper.insertDepartment(id, org, name, description, parent)) {
+            if (parent != null ?
+                    departmentMapper.insertDepartment(id, org, name, description, parent) :
+                    departmentMapper.insertDepartmentWithoutParent(id, org, name, description)) {
                 Date d = new Date();
                 DefaultDepartment defaultDepartment = new DefaultDepartment();
                 defaultDepartment.setCreatedAt(d);
