@@ -6,15 +6,12 @@ import cn.dustlight.auth.generator.UniqueGenerator;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.GrantTypeService;
 import cn.dustlight.auth.util.Constants;
-
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.Collection;
 

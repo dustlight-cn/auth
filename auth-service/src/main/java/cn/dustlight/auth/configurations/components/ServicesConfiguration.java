@@ -29,10 +29,11 @@ public class ServicesConfiguration {
     @ConditionalOnMissingBean(name = "userService")
     public UserService<DefaultUser, DefaultPublicUser> userService(@Autowired UserMapper userMapper,
                                                                    @Autowired RoleMapper roleMapper,
+                                                                   @Autowired UserRoleMapper userRoleMapper,
                                                                    @Autowired PasswordEncoder passwordEncoder,
                                                                    @Autowired UniqueGenerator<Long> idGenerator,
                                                                    @Autowired PatternProperties properties) {
-        DefaultUserService userService = new DefaultUserService(userMapper, roleMapper, passwordEncoder, idGenerator);
+        DefaultUserService userService = new DefaultUserService(userMapper, roleMapper, userRoleMapper, passwordEncoder, idGenerator);
         if (properties != null) {
             if (properties.getUsername() != null)
                 userService.setUsernamePattern(Pattern.compile(properties.getUsername()));
@@ -40,6 +41,8 @@ public class ServicesConfiguration {
                 userService.setPasswordPattern(Pattern.compile(properties.getPassword()));
             if (properties.getEmail() != null)
                 userService.setEmailPattern(Pattern.compile(properties.getEmail()));
+            if (properties.getPhone() != null)
+                userService.setPhonePattern(Pattern.compile(properties.getPhone()));
         }
         return userService;
     }

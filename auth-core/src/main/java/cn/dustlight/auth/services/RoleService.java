@@ -16,6 +16,8 @@ public interface RoleService {
      */
     Collection<? extends Role> listRoles();
 
+    Collection<? extends Role> listRolesWithClientId(String clientId);
+
     /**
      * 获取角色
      *
@@ -37,15 +39,17 @@ public interface RoleService {
      *
      * @param name        角色名
      * @param description 角色描述
+     * @param cid         应用ID
      */
-    void createRole(String name, String description);
+    void createRole(String name, String description, String cid);
 
     /**
      * 创建角色
      *
      * @param roles 角色信息集合
+     * @param cid   应用ID
      */
-    void createRoles(Collection<? extends Role> roles);
+    void createRoles(Collection<? extends Role> roles, String cid);
 
     /**
      * 删除角色
@@ -54,12 +58,16 @@ public interface RoleService {
      */
     void removeRole(Long rid);
 
+    void removeRoleWithClientId(Long rid, String clientId);
+
     /**
      * 删除角色
      *
      * @param rids 角色id集合
      */
     void removeRoles(Collection<Long> rids);
+
+    void removeRolesWithClientId(Collection<Long> rids, String clientId);
 
     /**
      * 获取角色权限
@@ -74,9 +82,10 @@ public interface RoleService {
      *
      * @param rid  角色id
      * @param aids 权限id集合
+     * @param clientId 应用id
      * @return
      */
-    void createRoleAuthorities(Long rid, Collection<Long> aids);
+    void createRoleAuthorities(Long rid, Collection<Long> aids, String clientId);
 
     /**
      * 删除角色权限

@@ -29,7 +29,7 @@
     </template>
 
     <template v-slot:unauthorized>
-      <q-btn rounded color="black"
+      <q-btn rounded color="accent"
              :label="$tt($options,'signIn')"
              replace
              :to="{name:'login',query: {redirect_uri: $route.fullPath}}"/>
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import Avatar from './Avatar'
+import Avatar from '../api/Avatar'
 import RequireAuthorization from './RequireAuthorization';
 
 export default {

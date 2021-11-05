@@ -1,0 +1,26 @@
+{
+  "name": "@plus/auth-client-axios-js",
+  "version": "1.1.1-alpha",
+  "description": "Client SDK for Auth-Service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dustlight-cn/auth.git"
+  },
+  "keywords": [
+    "authorization",
+    "auth-client"
+  ],
+  "dependencies": {
+    "axios": "~0.21.1"
+  },
+  "author": "Hansin1997 <hansin@dustlight.cn>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dustlight-cn/auth/issues"
+  },
+  "homepage": "https://github.com/dustlight-cn/auth#readme"
+}

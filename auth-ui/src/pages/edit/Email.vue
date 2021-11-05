@@ -34,7 +34,7 @@
             :disable="isBusy"
             debounce="1000"
             color="accent"
-            v-model="model.email == null ? (model.email = (model.user = user).email) : model.email"
+            v-model="model.email == null ? (model.email = ((model.user = user).email || '')) : model.email"
             autocomplete="email"
             :label="$tt('SignUp','step1.email')"
             :hint="$tt('SignUp','step1.emailHint')"
@@ -98,9 +98,9 @@
 </template>
 
 <script>
-import RequireAuthorization from "../../components/RequireAuthorization";
-import UpdateUser from "../../components/UpdateUser";
-import ReCaptcha from "../../components/ReCaptcha";
+import RequireAuthorization from "../../components/common/RequireAuthorization";
+import UpdateUser from "../../components/api/UpdateUser";
+import ReCaptcha from "../../components/common/ReCaptcha";
 
 export default {
   name: "Email",

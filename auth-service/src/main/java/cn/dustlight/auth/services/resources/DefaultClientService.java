@@ -158,6 +158,11 @@ public class DefaultClientService implements ClientService<DefaultClient> {
     }
 
     @Override
+    public boolean isOwnerOrMember(String cid, Long uid) {
+        return clientMapper.isClientOwnerOrMember(cid, uid);
+    }
+
+    @Override
     public String updateSecret(String cid) {
         String secret = secretGenerator.generate();
         if (!clientMapper.updateClientSecret(cid, passwordEncoder.encode(secret)))
@@ -167,8 +172,10 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public String updateSecret(String cid, Long uid) {
+        if (!isOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
         String secret = secretGenerator.generate();
-        if (!clientMapper.updateUserClientSecret(cid, uid, passwordEncoder.encode(secret)))
+        if (!clientMapper.updateClientSecret(cid, passwordEncoder.encode(secret)))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to update client secret").throwException();
         return secret;
     }
@@ -181,7 +188,9 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public void updateName(String cid, Long uid, String name) {
-        if (!clientMapper.updateUserClientName(cid, uid, name))
+        if (!isOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
+        if (!clientMapper.updateClientName(cid, name))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to update client name").throwException();
     }
 
@@ -193,7 +202,9 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public void updateDescription(String cid, Long uid, String description) {
-        if (!clientMapper.updateUserClientDescription(cid, uid, description))
+        if (!isOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
+        if (!clientMapper.updateClientDescription(cid, description))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to update client description").throwException();
     }
 
@@ -205,7 +216,9 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public void updateRedirectUri(String cid, Long uid, String redirectUri) {
-        if (!clientMapper.updateUserClientRedirectUri(cid, uid, redirectUri))
+        if (!isOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
+        if (!clientMapper.updateClientRedirectUri(cid, redirectUri))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to update client redirect uri").throwException();
     }
 
@@ -253,7 +266,7 @@ public class DefaultClientService implements ClientService<DefaultClient> {
     @Override
     public Collection<? extends Scope> listScopes(String cid, Long uid) {
         if (!clientMapper.isClientOwner(cid, uid))
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+            ErrorEnum.ACCESS_DENIED.throwException();
         return scopeMapper.listClientScopes(cid);
     }
 
@@ -265,8 +278,8 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public void addScopes(String cid, Long uid, Collection<Long> sids) {
-        if (!clientMapper.isClientOwner(cid, uid))
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if (!clientMapper.isClientOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
         if (!scopeMapper.insertClientScopeByScopeIds(cid, sids, false))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to insert client scopes").throwException();
     }
@@ -279,8 +292,8 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public void removeScopes(String cid, Long uid, Collection<Long> sids) {
-        if (!clientMapper.isClientOwner(cid, uid))
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if (!clientMapper.isClientOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
         if (!scopeMapper.deleteClientScopes(cid, sids))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to delete client scopes").throwException();
     }
@@ -292,8 +305,8 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public Collection<? extends GrantType> listGrantTypes(String cid, Long uid) {
-        if (!clientMapper.isClientOwner(cid, uid))
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if (!clientMapper.isClientOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
         return grantTypeMapper.listClientGrantTypes(cid);
     }
 
@@ -305,8 +318,8 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public void addGrantTypes(String cid, Long uid, Collection<Long> tids) {
-        if (!clientMapper.isClientOwner(cid, uid))
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if (!clientMapper.isClientOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
         if (!grantTypeMapper.insertClientGrantTypes(cid, tids))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to insert client grant types").throwException();
     }
@@ -319,8 +332,8 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public void removeGrantTypes(String cid, Long uid, Collection<Long> tids) {
-        if (!clientMapper.isClientOwner(cid, uid))
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if (!clientMapper.isClientOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
         if (!grantTypeMapper.deleteClientGrantTypes(cid, tids))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to delete client grant types").throwException();
     }
@@ -332,8 +345,8 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public Collection<String> listAuthorities(String cid, Long uid) {
-        if (!clientMapper.isClientOwner(cid, uid))
-            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if (!clientMapper.isClientOwnerOrMember(cid, uid))
+            ErrorEnum.ACCESS_DENIED.throwException();
         return authorityMapper.listClientAuthorities(cid);
     }
 
@@ -345,7 +358,7 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public void addAuthorities(String cid, Long uid, Collection<Long> aids) {
-        if (!clientMapper.isClientOwner(cid, uid))
+        if (!clientMapper.isClientOwnerOrMember(cid, uid))
             ErrorEnum.CLIENT_NOT_FOUND.throwException();
         if (!authorityMapper.insertClientAuthorities(cid, aids))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to insert client authorities").throwException();
@@ -359,10 +372,37 @@ public class DefaultClientService implements ClientService<DefaultClient> {
 
     @Override
     public void removeAuthorities(String cid, Long uid, Collection<Long> aids) {
-        if (!clientMapper.isClientOwner(cid, uid))
+        if (!clientMapper.isClientOwnerOrMember(cid, uid))
             ErrorEnum.CLIENT_NOT_FOUND.throwException();
         if (!authorityMapper.deleteClientAuthorities(cid, aids))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to delete client authorities").throwException();
     }
 
+    @Override
+    public void addMembers(String cid, Collection<Long> uids) {
+        if (!clientMapper.addClientMembers(cid, uids))
+            ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to insert client authorities").throwException();
+    }
+
+    @Override
+    public void addMembers(String cid, Long uid, Collection<Long> uids) {
+        if (!clientMapper.isClientOwner(cid, uid))
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if (!clientMapper.addClientMembers(cid, uids))
+            ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to insert client authorities").throwException();
+    }
+
+    @Override
+    public void removeMembers(String cid, Collection<Long> uids) {
+        if (!clientMapper.removeClientMembers(cid, uids))
+            ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to delete client authorities").throwException();
+    }
+
+    @Override
+    public void removeMembers(String cid, Long uid, Collection<Long> uids) {
+        if (!clientMapper.isClientOwner(cid, uid))
+            ErrorEnum.CLIENT_NOT_FOUND.throwException();
+        if (!clientMapper.removeClientMembers(cid, uids))
+            ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to delete client authorities").throwException();
+    }
 }

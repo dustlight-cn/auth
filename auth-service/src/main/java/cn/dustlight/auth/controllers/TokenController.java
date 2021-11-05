@@ -5,15 +5,14 @@ import cn.dustlight.auth.configurations.components.TokenConfiguration;
 import cn.dustlight.auth.entities.Client;
 import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.util.Constants;
-
 import cn.dustlight.captcha.annotations.Store;
 import cn.dustlight.captcha.annotations.Verifier;
 import cn.dustlight.captcha.annotations.VerifyCode;
 import com.nimbusds.jose.jwk.JWKSet;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +38,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 
 @Tag(name = "Token", description = "Token 颁发。")
 @RestController
@@ -95,6 +95,7 @@ public class TokenController {
         if (userAuth == null || !userAuth.isAuthenticated()) {
             throw new InvalidGrantException("Could not authenticate user: " + username);
         }
+
         Client defaultClient = clientService.loadClientByClientId("default");
         TokenRequest tokenRequest = new TokenRequest(null, defaultClient.getClientId(), defaultClient.getScope(), null);
         OAuth2Request request = tokenRequest.createOAuth2Request(defaultClient);
@@ -138,10 +139,12 @@ public class TokenController {
     @Operation(summary = "颁发 OAuth2 令牌", security = @SecurityRequirement(name = "ClientCredentials"))
     @PostMapping("oauth/token")
     public ResponseEntity<OAuth2AccessToken> grantOAuthToken(@RequestParam(value = "code", required = false) String code,
+                                                             @Parameter(schema = @Schema(allowableValues = {"authorization_code", "refresh_token", "implicit", "client_credentials", "password"}, defaultValue = "authorization_code"))
                                                              @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
                                                              @RequestParam(value = "redirect_uri", required = false) String redirectUri,
                                                              @RequestParam(value = "username", required = false) String username,
                                                              @RequestParam(value = "password", required = false) String password,
+                                                             @RequestParam(value = "refresh_token", required = false) String refreshToken,
                                                              @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
                                                              HttpServletRequest request) {
         Client client = getClient(request);
@@ -183,13 +186,15 @@ public class TokenController {
     @Operation(summary = "颁发签名 JWT（JWS）", security = @SecurityRequirement(name = "ClientCredentials"))
     @PostMapping("jws")
     public ResponseEntity<OAuth2AccessToken> grantJws(@RequestParam(value = "code", required = false) String code,
+                                                      @Parameter(schema = @Schema(allowableValues = {"authorization_code", "refresh_token", "implicit", "client_credentials", "password"}, defaultValue = "authorization_code"))
                                                       @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
                                                       @RequestParam(value = "redirect_uri", required = false) String redirectUri,
                                                       @RequestParam(value = "username", required = false) String username,
                                                       @RequestParam(value = "password", required = false) String password,
+                                                      @RequestParam(value = "refresh_token", required = false) String refreshToken,
                                                       @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
                                                       HttpServletRequest request) {
-        ResponseEntity<OAuth2AccessToken> response = grantOAuthToken(code, grantType, redirectUri, username, password, parameters, request);
+        ResponseEntity<OAuth2AccessToken> response = grantOAuthToken(code, grantType, redirectUri, username, password,refreshToken, parameters, request);
         OAuth2AccessToken token = response.getBody();
         OAuth2Authentication auth = resourceServerTokenServices.loadAuthentication(token.getValue());
         return getResponse(jwt.convert(token, auth));

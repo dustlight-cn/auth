@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.dustlight.auth</groupId>
         <artifactId>auth-parent</artifactId>
-        <version>1.0.6-alpha-3</version>
+        <version>1.1.1-alpha-1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>auth-service</artifactId>
@@ -47,6 +47,14 @@
         <dependency>
             <groupId>cn.dustlight.captcha</groupId>
             <artifactId>email-sender</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.dustlight.captcha</groupId>
+            <artifactId>tencent-sms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.dustlight.captcha</groupId>
+            <artifactId>aliyun-sms</artifactId>
         </dependency>
 
         <!-- ==================================================================== -->
@@ -126,6 +134,23 @@
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
         </dependency>
+
+        <!-- JAXB API -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -133,6 +158,23 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!-- Compiler -->
             <plugin>
@@ -153,6 +195,24 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <apiDocsUrl>http://localhost:8080/v1/api-doc</apiDocsUrl>
+                    <outputFileName>openapi.json</outputFileName>
+                    <skip>false</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -22,6 +22,7 @@ jobs:
       uses: actions/setup-node@v2.1.5
     - name: Build Auth-UI
       run: |
+        cp -r auth-client-axios auth-ui/auth-client-axios
         cd auth-ui
         npm i
         sudo npm install -g @quasar/cli

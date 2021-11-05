@@ -31,7 +31,8 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
             Constants.API_ROOT + "/types/**",
             Constants.API_ROOT + "/scopes",
             Constants.API_ROOT + "/scopes/**",
-            Constants.API_ROOT + "/code/email"
+            Constants.API_ROOT + "/code/email",
+            Constants.API_ROOT + "/code/phone"
     };
 
     @Override

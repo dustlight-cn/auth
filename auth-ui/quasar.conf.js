@@ -51,7 +51,9 @@ module.exports = configure(function (/* ctx */) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
-
+      env: {
+        mode: process.env.mode
+      },
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
@@ -79,8 +81,8 @@ module.exports = configure(function (/* ctx */) {
       port: 80,
       open: true, // opens browser window automatically
       proxy: {
-        '/v1':{
-          target: 'http://127.0.0.1:8080',
+        '/v1': {
+          target: 'http://localhost:8080',
           changeOrigin: true,
         }
       }

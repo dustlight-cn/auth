@@ -29,6 +29,11 @@ public class DefaultRoleService implements RoleService {
     }
 
     @Override
+    public Collection<? extends Role> listRolesWithClientId(String clientId) {
+        return roleMapper.listRolesWithClientId(clientId);
+    }
+
+    @Override
     public Collection<? extends Role> getRoles(Collection<Long> rids) {
         return roleMapper.selectRoles(rids);
     }
@@ -39,14 +44,14 @@ public class DefaultRoleService implements RoleService {
     }
 
     @Override
-    public void createRole(String name, String description) {
-        if (!roleMapper.insertRole(idGenerator.generate(), name, description))
+    public void createRole(String name, String description, String cid) {
+        if (!roleMapper.insertRole(idGenerator.generate(), name, description, cid))
             ErrorEnum.CREATE_ROLE_FAIL.throwException();
     }
 
     @Override
-    public void createRoles(Collection<? extends Role> roles) {
-        if (!roleMapper.insertRoles(roles))
+    public void createRoles(Collection<? extends Role> roles, String clientID) {
+        if (!roleMapper.insertRoles(roles, clientID))
             ErrorEnum.CREATE_ROLE_FAIL.throwException();
     }
 
@@ -57,8 +62,20 @@ public class DefaultRoleService implements RoleService {
     }
 
     @Override
+    public void removeRoleWithClientId(Long rid, String clientId) {
+        if (!roleMapper.deleteRoleWithClientId(rid, clientId))
+            ErrorEnum.DELETE_ROLE_FAIL.throwException();
+    }
+
+    @Override
     public void removeRoles(Collection<Long> rids) {
         if (!roleMapper.deleteRoles(rids))
+            ErrorEnum.DELETE_ROLE_FAIL.throwException();
+    }
+
+    @Override
+    public void removeRolesWithClientId(Collection<Long> rids, String clientId) {
+        if (!roleMapper.deleteRolesWithClientId(rids, clientId))
             ErrorEnum.DELETE_ROLE_FAIL.throwException();
     }
 
@@ -68,8 +85,8 @@ public class DefaultRoleService implements RoleService {
     }
 
     @Override
-    public void createRoleAuthorities(Long rid, Collection<Long> aids) {
-        if (!authorityMapper.insertRoleAuthorities(rid, aids))
+    public void createRoleAuthorities(Long rid, Collection<Long> aids, String clientId) {
+        if (!authorityMapper.insertRoleAuthorities(rid, aids, clientId))
             ErrorEnum.CREATE_AUTHORITY_FAIL.throwException();
     }
 

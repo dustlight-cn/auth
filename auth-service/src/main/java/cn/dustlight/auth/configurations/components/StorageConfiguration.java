@@ -1,7 +1,7 @@
 package cn.dustlight.auth.configurations.components;
 
-import cn.dustlight.auth.services.storages.StorageHandler;
 import cn.dustlight.auth.services.storages.CdnStorageProxy;
+import cn.dustlight.auth.services.storages.StorageHandler;
 import cn.dustlight.storage.core.RestfulStorage;
 import cn.dustlight.storage.core.Storage;
 import cn.dustlight.storage.local.LocalStorage;

@@ -12,11 +12,12 @@ import java.util.Date;
 @Mapper
 public interface UserMapper {
 
-    @Insert("INSERT INTO users (uid,username,password,email,nickname,gender,accountExpiredAt,credentialsExpiredAt,unlockedAt,enabled) VALUES" +
-            "(#{uid},#{username},#{password},#{email},#{nickname},#{gender},#{accountExpiredAt},#{credentialsExpiredAt},#{unlockedAt},#{enabled})")
+    @Insert("INSERT INTO users (uid,username,password,phone,email,nickname,gender,accountExpiredAt,credentialsExpiredAt,unlockedAt,enabled) VALUES" +
+            "(#{uid},#{username},#{password},#{phone},#{email},#{nickname},#{gender},#{accountExpiredAt},#{credentialsExpiredAt},#{unlockedAt},#{enabled})")
     Boolean insertUser(@Param("uid") Long uid,
                        @Param("username") String username,
                        @Param("password") String password,
+                       @Param("phone") String phone,
                        @Param("email") String email,
                        @Param("nickname") String nickname,
                        @Param("gender") int gender,
@@ -25,14 +26,11 @@ public interface UserMapper {
                        @Param("unlockedAt") Date unlockedAt,
                        @Param("enabled") boolean enabled);
 
-    @Select("SELECT * FROM users WHERE username=#{uoe} OR email=#{uoe} LIMIT 1")
+    @Select("SELECT * FROM users WHERE username=#{account} OR email=#{account} OR phone=#{account} LIMIT 1")
     @Results(id = "User", value = {
-            @Result(column = "uid", property = "uid"),
-            @Result(column = "uid",
-                    property = "roles",
-                    many = @Many(select = "cn.dustlight.auth.mappers.RoleMapper.listUserRoles"))
+            @Result(column = "uid", property = "uid")
     })
-    DefaultUser selectUserByUsernameOrEmail(@Param("uoe") String uoe);
+    DefaultUser selectUserByAccount(@Param("account") String account);
 
     @Select("SELECT * FROM users WHERE uid=#{uid} LIMIT 1")
     @ResultMap("User")
@@ -66,11 +64,11 @@ public interface UserMapper {
                                       @Param("offset") Integer offset,
                                       @Param("limit") Integer limit);
 
-    @Select("SELECT count(uid) FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})")
+    @Select("SELECT count(uid) FROM users WHERE MATCH (username,phone,email,nickname) AGAINST(#{keywords})")
     Integer countSearch(@Param("keywords") String keywords);
 
     @Select("<script>SELECT users.* FROM users," +
-            "(SELECT uid FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})" +
+            "(SELECT uid FROM users WHERE MATCH (username,phone,email,nickname) AGAINST(#{keywords})" +
             "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
             "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")
@@ -81,7 +79,7 @@ public interface UserMapper {
                                         @Param("limit") Integer limit);
 
     @Select("<script>SELECT users.* FROM users," +
-            "(SELECT uid FROM users WHERE MATCH (username,email,nickname) AGAINST(#{keywords})" +
+            "(SELECT uid FROM users WHERE MATCH (username,phone,email,nickname) AGAINST(#{keywords})" +
             "<if test='orderBy!=null'> ORDER BY ${orderBy}</if>" +
             "<if test='limit!=null'> LIMIT #{limit}<if test='offset!=null'> OFFSET #{offset}</if></if>) AS tmp " +
             "WHERE users.uid=tmp.uid</script>")
@@ -98,9 +96,17 @@ public interface UserMapper {
     Boolean updatePasswordByEmail(@Param("email") String email,
                                   @Param("password") String password);
 
+    @Update("UPDATE users SET password=#{password} WHERE phone=#{phone}")
+    Boolean updatePasswordByPhone(@Param("phone") String phone,
+                                  @Param("password") String password);
+
     @Update("UPDATE users SET nickname=#{nickname} WHERE uid=#{uid}")
     Boolean updateNickname(@Param("uid") Long uid,
                            @Param("nickname") String nickname);
+
+    @Update("UPDATE users SET phone=#{phone} WHERE uid=#{uid}")
+    Boolean updatePhone(@Param("uid") Long uid,
+                        @Param("phone") String phone);
 
     @Update("UPDATE users SET email=#{email} WHERE uid=#{uid}")
     Boolean updateEmail(@Param("uid") Long uid,
@@ -144,4 +150,7 @@ public interface UserMapper {
 
     @Select("SELECT COUNT(uid) FROM users WHERE email=#{email} LIMIT 1")
     Boolean isEmailExists(@Param("email") String email);
+
+    @Select("SELECT COUNT(uid) FROM users WHERE phone=#{phone} LIMIT 1")
+    Boolean isPhoneExists(@Param("phone") String phone);
 }

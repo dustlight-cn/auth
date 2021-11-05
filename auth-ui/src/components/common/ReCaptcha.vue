@@ -65,6 +65,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.grecaptcha-badge{
+  z-index: 1;
+}
 </style>

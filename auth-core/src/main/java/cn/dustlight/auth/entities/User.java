@@ -36,6 +36,13 @@ public interface User extends UserDetails, Datable, Serializable {
     String getEmail();
 
     /**
+     * 获取用户注册手机号
+     *
+     * @return 用户手机号
+     */
+    String getPhone();
+
+    /**
      * 获取用户昵称
      *
      * @return 用户昵称
@@ -67,7 +74,7 @@ public interface User extends UserDetails, Datable, Serializable {
      */
     @JsonProperty("roles")
     @Schema(name = "roles")
-    Collection<UserRole> getUserRoles();
+    Collection<? extends UserRole> getUserRoles();
 
     /**
      * 获取账号过期时间

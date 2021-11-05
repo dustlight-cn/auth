@@ -12,15 +12,10 @@
     </q-header>
 
     <q-page-container>
-      <transition
-        appear
-        enter-active-class="animated fadeIn"
-      >
-        <router-view/>
-      </transition>
+      <router-view/>
     </q-page-container>
 
-    <q-footer>
+    <q-footer style="z-index: 0">
       <Footer/>
     </q-footer>
 
@@ -28,9 +23,9 @@
 </template>
 
 <script>
-import LanguageSelector from '../components/LanguageSelector'
-import Logo from "../components/Logo";
-import Footer from "../components/Footer";
+import LanguageSelector from '../components/common/LanguageSelector'
+import Logo from "../components/common/Logo";
+import Footer from "../components/common/Footer";
 
 export default {
   name: 'ConnectLayout',

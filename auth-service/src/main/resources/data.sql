@@ -8,46 +8,52 @@ INSERT
 IGNORE INTO `users` (`uid`,`username`,`password`,`enabled`) VALUES
 (0,'root','$2a$10$GP57XrnKif0JriZlHCyu2OwfMvB3/VpOUEZPvvAnleVOPYpvMR79e',1);
 
+/* 应用 Clients */
+INSERT
+IGNORE INTO `clients` (`cid`,`uid`,`secret`,`name`,`description`,`redirectUri`,`accessTokenValidity`,`refreshTokenValidity`,`additionalInformation`,`status`) VALUES
+('default',0,NULL,'default','系统默认应用',NULL,7200,86400,NULL,0); -- 默认应用，提供授权中心使用
+
 /* 权限 Authorities */
 INSERT
-IGNORE INTO `authorities` (`aid`,`authorityName`,`authorityDescription`) VALUES
-(0,'WRITE_AUTHORITY','创建、修改以及删除任意权限。'),
-(1,'WRITE_TYPE','创建、修改以及删除任意授权模式。'),
-(2,'WRITE_SCOPE','创建、修改以及删除任意授权作用域。'),
-(3,'WRITE_ROLE','创建、修改以及删除任意角色。'),
-(4,'WRITE_USER','修改任意用户的昵称、头像以及性别。'),
-(5,'WRITE_USER_PASSWORD','修改任意用户的密码。'),
-(6,'WRITE_USER_EMAIL','修改任意用户的邮箱地址。'),
-(7,'WRITE_CLIENT','创建、修改以及删除任意应用，包括应用详情、应用权限、应用授权模式以及应用授权作用域。'),
+IGNORE INTO `authorities` (`aid`,`authorityName`,`authorityDescription`,`cid`) VALUES
+(0,'WRITE_AUTHORITY','创建、修改以及删除任意权限。','default'),
+(1,'WRITE_TYPE','创建、修改以及删除任意授权模式。','default'),
+(2,'WRITE_SCOPE','创建、修改以及删除任意授权作用域。','default'),
+(3,'WRITE_ROLE','创建、修改以及删除任意角色。','default'),
+(4,'WRITE_USER','修改任意用户的昵称、头像以及性别。','default'),
+(5,'WRITE_USER_PASSWORD','修改任意用户的密码。','default'),
+(6,'WRITE_USER_EMAIL','修改任意用户的邮箱地址。','default'),
+(7,'WRITE_USER_PHONE','修改任意用户的手机号码。','default'),
+(8,'WRITE_CLIENT','创建、修改以及删除任意应用，包括应用详情、应用权限、应用授权模式以及应用授权作用域。','default'),
 
-(100,'READ_USER','读取任意用户的全部信息，包括个人详情和角色信息。'),
-(101,'READ_CLIENT','读取任意应用的全部信息，包括应用详情、应用权限、应用授权模式以及应用授权作用域。'),
+(100,'READ_USER','读取任意用户的全部信息，包括个人详情和角色信息。','default'),
+(101,'READ_CLIENT','读取任意应用的全部信息，包括应用详情、应用权限、应用授权模式以及应用授权作用域。','default'),
 
-(200,'CREATE_USER','创建用户。'),
-(201,'CREATE_CLIENT','创建用户应用。'),
+(200,'CREATE_USER','创建用户。','default'),
+(201,'CREATE_CLIENT','创建用户应用。','default'),
 
-(300,'DELETE_USER','删除用户。'),
-(301,'LOCK_USER','封禁或锁定用户。'),
+(300,'DELETE_USER','删除用户。','default'),
+(301,'LOCK_USER','封禁或锁定用户。','default'),
 
-(400,'GRANT_ROLE','为角色添加或删除权限。'),
-(401,'GRANT_CLIENT','为应用添加或删除权限。'),
-(402,'GRANT_USER','为用户添加或删除角色。'),
+(400,'GRANT_ROLE','为角色添加或删除权限。','default'),
+(401,'GRANT_CLIENT','为应用添加或删除权限。','default'),
+(402,'GRANT_USER','为用户添加或删除角色。','default'),
 
-(500,'AUTHORIZE','应用授权。');
+(500,'AUTHORIZE','应用授权。','default');
 
 /* 角色 Roles */
 INSERT
-IGNORE INTO `roles` (`rid`,`roleName`,`roleDescription`) VALUES
-(0,'User','用户'),
-(1,'Developer','开发者'),
-(2,'Administrator','管理员'),
-(3,'Root','超级管理员');
+IGNORE INTO `roles` (`rid`,`roleName`,`roleDescription`,`cid`) VALUES
+(0,'User','用户','default'),
+(1,'Developer','开发者','default'),
+(2,'Administrator','管理员','default'),
+(3,'Root','超级管理员','default');
 
 /* 授权作用域 Scopes */
 INSERT
 IGNORE INTO `scopes` (`sid`,`name`,`subtitle`,`description`) VALUES
 (0,'read:user','读取用户信息','读取您的所有个人资料，包括头像、用户名、昵称和邮箱等。'),
-(1,'write:user','修改用户信息','此授权作用域暂无任何意义。');
+(1,'read:client','读取用户应用','读取您创建或管理的应用，包括应用的名称、描述等。');
 
 /* 授权类型 GrantTypes */
 INSERT
@@ -57,11 +63,6 @@ IGNORE INTO `types` (`tid`,`name`,`description`) VALUES
 (2,'implicit','隐式授权模式'),
 (3,'client_credentials','客户端凭据模式');
 -- (4,'password','密码模式'); 此授权模式不安全，可绕过验证直接登录。
-
-/* 应用 Clients */
-INSERT
-IGNORE INTO `clients` (`cid`,`uid`,`secret`,`name`,`description`,`redirectUri`,`accessTokenValidity`,`refreshTokenValidity`,`additionalInformation`,`status`) VALUES
-('default',0,NULL,'default','系统默认应用',NULL,7200,86400,NULL,0); -- 默认应用，提供授权中心使用
 
 /* 应用权限 ClientAuthorities */
 INSERT

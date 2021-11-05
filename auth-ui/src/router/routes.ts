@@ -19,7 +19,17 @@ const routes: RouteConfig[] = [
       {path: 'login', name: "login", component: () => import('pages/connect/SignIn.vue')},
       {path: 'join', name: "join", component: () => import('pages/connect/SignUp.vue')},
       {path: 'authorize', name: "authorize", component: () => import('pages/connect/Authorize.vue')},
-      {path: 'reset-password', name: "reset-password", component: () => import('pages/connect/ResetPassword.vue')}
+      {path: 'reset-password', name: "reset-password", component: () => import('pages/connect/ResetPassword.vue')},
+      {
+        path: 'reset-password/email',
+        name: "reset-password-email",
+        component: () => import('pages/connect/ResetPasswordByEmail.vue')
+      },
+      {
+        path: 'reset-password/phone',
+        name: "reset-password-phone",
+        component: () => import('pages/connect/ResetPasswordByPhone.vue')
+      }
     ]
   },
   {
@@ -31,9 +41,15 @@ const routes: RouteConfig[] = [
       {path: 'personal-info/password', name: "password", component: () => import('pages/edit/Password.vue')},
       {path: 'personal-info/avatar', name: "avatar", component: () => import('pages/edit/Avatar.vue')},
       {path: 'personal-info/email', name: "email", component: () => import('pages/edit/Email.vue')},
+      {path: 'personal-info/phone', name: "phone", component: () => import('pages/edit/Phone.vue')},
 
       {path: 'clients/new', name: "new-client", component: () => import('pages/edit/NewClient.vue')},
       {path: 'client/:id', name: "client", component: () => import ('pages/edit/Client.vue')},
+      {
+        path: 'client/:id/advanced-settings',
+        name: "client-advanced-settings",
+        component: () => import ('pages/edit/ClientAdvancedSettings.vue')
+      },
 
       {path: 'users/new', name: "new-user", component: () => import('pages/edit/NewUser.vue')},
       {path: 'user/:id', name: "user", component: () => import('pages/edit/User.vue')}

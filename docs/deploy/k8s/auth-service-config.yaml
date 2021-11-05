@@ -6,35 +6,78 @@ metadata:
 data:
   application.yaml: |-
     mysql:
-      host: "auth-database" # MySQL 服务器地址
-      port: 3306            # MySQL 服务端口
-      db: auth              # MySQL 数据库
-      charset: "utf8"       # 字符编码
-      ssl: false            # 连接启用 SSL
-      username: "root"      # 数据库用户名
-      password: "123456"    # 数据库密码
+      host: "auth-database"  # MySQL 服务器地址
+      port: 3306         # MySQL 服务端口
+      db: auth            # MySQL 数据库
+      charset: "utf8"     # 字符编码
+      ssl: false          # 连接启用 SSL
+      username: "root"    # 数据库用户名
+      password: "123456"  # 数据库密码
+      allowPublicKeyRetrieval: true
     redis:
-      host: "auth-cache"    # Redis 服务器地址
-      port: 6379           # Redis 服务端口
-      password: ""          # Redis 密码
+      host: "auth-cache"  # Redis 服务器地址
+      port: 6379         # Redis 服务端口
+      password: ""        # Redis 密码
     #smtp:
-    #  host: "smtp.exmail.qq.com" # SMTP 服务器地址
-    #  user: "YOUR_USERNAME"
-    #  pass: "YOUR_PASSWORD"
+    #  host: "" # SMTP 服务器地址
+    #  user: ""
+    #  pass: ""
 
     dustlight:
       auth:
+        captcha:
+          enabled: true # 是否开启 Captcha （登录注册人机识别）
         storage:
           storage-type: local # 储存模式，可选本地储存或者云储存。（local | storage）
           prefix: "upload/auth/" # 储存地址前缀：本地储存模式时代表本地储存目录，云储存模式则代表存储对象 key 的前缀。
-    #      base-url: "https://accounts.dustlight.cn/" # 当启用云储存时，自定义生成访问链接的域名以及协议。（通常用于 CDN 或者自定义域名）
-    #      simple-mode: true # 当云储存启用时，是否忽略对象 URL 的 Query 部分，以便前端能够利用缓存减少请求次数提高访问速度。（仅适用于公有读储存桶）
-    #      default-expiration: 900000 # 当云储存启用时，生成签名的有效期。（单位为毫秒，默认为15分钟）
+          # base-url: "https://accounts.dustlight.cn/" # 当启用云储存时，自定义生成访问链接的域名以及协议。（通常用于 CDN 或者自定义域名）
+          # simple-mode: true # 当云储存启用时，是否忽略对象 URL 的 Query 部分，以便前端能够利用缓存减少请求次数提高访问速度。（仅适用于公有读储存桶）
+          # default-expiration: 900000 # 当云储存启用时，生成签名的有效期。（单位为毫秒，默认为15分钟）
         service:
           pattern:
             username: "^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$" # 用户名正则限制
             email: "^\\S+@\\S+$"  # 邮箱地址正则限制
             password: "^.{6,20}$" # 密码正则限制
+            phone: "^\\+(9[976]\\d|8[987530]\\d|6[987]\\d|5[90]\\d|42\\d|3[875]\\d|2[98654321]\\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\\d{1,14}$" # 手机号码正则
+        jwt:
+          signing-key: |-
+            -----BEGIN RSA PRIVATE KEY-----
+            MIIEpAIBAAKCAQEAuGI2UvGsFIZxGedsIV8WjEgQuJlhjPJ5kVN7l+BKvf6X+Xhh
+            YcITrM8qd7RvTqMHlGWbttGvbjoIVlb89hH51dIngaXDSxoXga7KPLwoZ+2IcAHI
+            bqVOfQ519tQ0w4W9jUMtRLJveVmrjnJMVT6qBkAJipCKeXeAn/7S5C6N4ElPVuyB
+            342D91/pkqPyLADGWMmXoklbSnSwzTFw68NsT+W+NDb5nbMaOMb4bcQYP/7+CYfb
+            tzv64f05KEwjTv4kT0F3OgUD1ggor5hxUuEP0Qsj+fayK3i3dnwpzgtgiQyYnJ3t
+            8+SJENqEruBBYiIH10Omk8NxVRNW0UOF9cvjBwIDAQABAoIBAEZIQXbKYhKM0I3U
+            NdZenYSpb5498P496vLnRIQ23aagZiOUrGIMDV3gtcpdP9RUtm3tcTZ1pQ46FrV6
+            gP/3CCll6uMzYUa+Ull/W91cx3YeB9TSCSmL32gx2+tTJi2lTASNp7K45V73PDqW
+            /Nu9gCfTvw9PW0lDsQbLpm2OBUyJXzwWQ/rWieb3iLXL2vB8eH1wLjGpQxPk+2nR
+            e86u9uIuXtaDZtm4UiD+TkzDfB71F3TAerwBs6MGkNZ/rREk0V8TYLnE32H1Q/Si
+            kns9m81APVo2cPbi+lYclvQXKPOAVmeRWrnuSKL/cUECa4cd6ARoCMp6AiX8WFxV
+            RwowBKECgYEA52N2GSPRsMyXJdSqLwfc/OQ9WnYBZ6rcHhVTsRhZ8lpIjAJiB8eG
+            5/X9hmrA6Lwfj20QMwbbSEJ5BFynwdH2zZkFZ7oKsdUY+tp75sG97gcwY/IcllbR
+            Dhd1ry9CbuginpMsNVa1+ZRGsWqN6AOnJnMgj+Pg7FLf6BxvhB8RvDECgYEAy/7X
+            u08XcVjINuyBSr8kxV4Ja2HCdNYP94m7UhH/Yq9qAhe9Dah52wnq3uIw5FUzwcNr
+            gAVRMk2X8eMS01+4nsPggkNtgQByLWnPzf0zAWBNRfGyyUAqQdOder8a9NwvKRXg
+            lCZBlbbi9MMkMqMdgE+HOl1XSWWzrhJdCWrZHLcCgYA9VaQMbe47iz/Vi1XBObhe
+            YLHStM0SibvnTYftvaK6Fyx70HXj0gP0oMQfSVTxXEyRXDubCwo9UUF64oSlX96o
+            CRPhtvL2yKHifN+y/1A1NDqjg54IS+MGdTmAwmo9s9LZbfGeAeoiyicjCDetdKpu
+            Cr5q5eDNQ/qOMFtvDj1JQQKBgQC8vLUmhP/AjA752gmpeX3w6Zc3dcRvStqNAS6B
+            uUsbKAahlwsARv8vLFbVDluD9lyjikW8ta6xJt9NGfWCAY8TvVDL1MzMzPfWko6E
+            HB6DyHDWJNBwqOAv9TU/qu6q28j6b1ZQW7DUbtg+8wlbnFUgMPSBiHjI3MLIbA8O
+            NoBXswKBgQCRHPlZsoKFtXYNsq54D6IOZS62T4sP1wYvwgfV/OCJHx6F2jgg5Vqb
+            x/VS/1gfi8uibxsoqw8sZ5gtXrhOGZvVtihdZhZ/WFvTec61qBbNfFtoeu4pnzPE
+            PcvKmeNk0LBtrBiTKPHWv0RwtjzYRgmZf9FyoHqvMpeiW7D8ll/vPg==
+            -----END RSA PRIVATE KEY-----
+          verifier-key: |-
+            -----BEGIN PUBLIC KEY-----
+            MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuGI2UvGsFIZxGedsIV8W
+            jEgQuJlhjPJ5kVN7l+BKvf6X+XhhYcITrM8qd7RvTqMHlGWbttGvbjoIVlb89hH5
+            1dIngaXDSxoXga7KPLwoZ+2IcAHIbqVOfQ519tQ0w4W9jUMtRLJveVmrjnJMVT6q
+            BkAJipCKeXeAn/7S5C6N4ElPVuyB342D91/pkqPyLADGWMmXoklbSnSwzTFw68Ns
+            T+W+NDb5nbMaOMb4bcQYP/7+CYfbtzv64f05KEwjTv4kT0F3OgUD1ggor5hxUuEP
+            0Qsj+fayK3i3dnwpzgtgiQyYnJ3t8+SJENqEruBBYiIH10Omk8NxVRNW0UOF9cvj
+            BwIDAQAB
+            -----END PUBLIC KEY-----
       # 验证码配置，详情请参考：https://github.com/dustlight-cn/captcha
       captcha:
         default:
@@ -47,6 +90,32 @@ data:
           random-string:
             chars: "0123456789" # 生成随机字符验证码的字符池
             length: 6 # 随机字符验证码的长度
+        sender:
+    #      tencent:
+    #        sms:
+    #          secret-id: <腾讯云密钥 ID>
+    #          secret-key: <腾讯云密钥 Key>
+    #          default-app-id: <默认短信 SdkAppID>
+    #          default-sign: <默认短信签名>
+    #          default-template-id: myDefaultName
+    #          signs:
+    #            myDefaultName: <签名>
+    #          template-ids:
+    #            signup: <模板>
+    #            changePhone: <模板>
+    #            resetPassword: <模板>
+    #      alibaba:
+    #        sms:
+    #          access-key-id: <阿里云密钥 ID>
+    #          access-key-secret: <阿里云密钥 Key>
+    #          default-template-code: <默认短信模板>
+    #          default-sign-name: myDefaultName
+    #          sign-names:
+    #            myDefaultName: <签名>
+    #          template-codes:
+    #            signup: <模板>
+    #            changePhone: <模板>
+    #            resetPassword: <模板>
         verifier:
           string-equals:
             trim: true
@@ -72,11 +141,10 @@ data:
         kubernetes:
           config:
             name: ${spring.application.name}  # Kubernetes 配置名称
-            namespace: auth
           reload:
             enabled: true # 是否监听 Kubernetes 配置更改
       datasource:
-        url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}&allowPublicKeyRetrieval=true
+        url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}&allowPublicKeyRetrieval=${mysql.allowPublicKeyRetrieval:true}
         username: ${mysql.username}
         password: ${mysql.password}
         hikari:

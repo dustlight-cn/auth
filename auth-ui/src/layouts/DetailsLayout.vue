@@ -20,15 +20,10 @@
       <div v-if="subtitle" class="flex flex-center text-grey text-center q-mt-md">
         {{ subtitle }}
       </div>
-      <transition
-        appear
-        enter-active-class="animated fadeIn"
-      >
-        <router-view ref="page"/>
-      </transition>
+      <router-view ref="page"/>
     </q-page-container>
 
-    <q-footer>
+    <q-footer style="z-index: 0">
       <Footer/>
     </q-footer>
 
@@ -36,10 +31,10 @@
 </template>
 
 <script>
-import AvatarButton from "../components/AvatarButton";
-import Logo from "../components/Logo";
-import Footer from "../components/Footer";
-import LanguageSelector from "../components/LanguageSelector";
+import AvatarButton from "../components/common/AvatarButton";
+import Logo from "../components/common/Logo";
+import Footer from "../components/common/Footer";
+import LanguageSelector from "../components/common/LanguageSelector";
 
 export default {
   name: "DetailsLayout",
