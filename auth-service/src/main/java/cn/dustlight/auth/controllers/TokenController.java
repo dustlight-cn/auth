@@ -90,17 +90,21 @@ public class TokenController {
     public ResponseEntity<OAuth2AccessToken> grantToken(@RequestParam("username") String username,
                                                         @RequestParam("password") String password,
                                                         @RequestParam("g-recaptcha-response") String recaptchaResponse) {
-        Authentication userAuth = new UsernamePasswordAuthenticationToken(username, password);
-        userAuth = authenticationManager.authenticate(userAuth);
-        if (userAuth == null || !userAuth.isAuthenticated()) {
-            throw new InvalidGrantException("Could not authenticate user: " + username);
-        }
+        try {
+            Authentication userAuth = new UsernamePasswordAuthenticationToken(username, password);
+            userAuth = authenticationManager.authenticate(userAuth);
+            if (userAuth == null || !userAuth.isAuthenticated()) {
+                throw new InvalidGrantException("Could not authenticate user: " + username);
+            }
 
-        Client defaultClient = clientService.loadClientByClientId("default");
-        TokenRequest tokenRequest = new TokenRequest(null, defaultClient.getClientId(), defaultClient.getScope(), null);
-        OAuth2Request request = tokenRequest.createOAuth2Request(defaultClient);
-        OAuth2AccessToken token = authorizationServerTokenServices.createAccessToken(new OAuth2Authentication(request, userAuth));
-        return getResponse(token);
+            Client defaultClient = clientService.loadClientByClientId("default");
+            TokenRequest tokenRequest = new TokenRequest(null, defaultClient.getClientId(), defaultClient.getScope(), null);
+            OAuth2Request request = tokenRequest.createOAuth2Request(defaultClient);
+            OAuth2AccessToken token = authorizationServerTokenServices.createAccessToken(new OAuth2Authentication(request, userAuth));
+            return getResponse(token);
+        } catch (Throwable e) {
+            throw ErrorEnum.SIGN_IN_FAIL.details(e).getException();
+        }
     }
 
     @Operation(summary = "删除令牌", security = @SecurityRequirement(name = "AccessToken"))

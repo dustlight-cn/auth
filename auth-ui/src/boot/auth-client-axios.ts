@@ -139,7 +139,7 @@ const errorHandler = (error: any): any => {
     V.prototype.$s.clear();
   }
   V.prototype.$throw(e);
-  return Promise.reject(e);
+  return Promise.reject(error);
 };
 
 globalAxios.interceptors.response.use(res => res, errorHandler)

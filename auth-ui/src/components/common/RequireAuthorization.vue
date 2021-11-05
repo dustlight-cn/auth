@@ -66,7 +66,9 @@ export default {
           lastTimestamp = new Date().getTime();
           this.$userApi.getTokenUser()
             .then(res => this.$s.storeUser(res.data))
-            .catch(e => this.$s.storeUser({}))
+            .catch(e => e.response && e.response.status == 403 ?
+              this.$s.clear() :
+              this.$s.storeUser({}))
             .finally(() => lock = false)
         }
       }
