@@ -121,12 +121,18 @@ public class DefaultDepartmentService implements DepartmentService {
 
     @Override
     public void updateDepartmentParent(Long did, Long org, Long parent) {
-
+        if (parent != null ?
+                !departmentMapper.updateDepartmentParentWithOrg(did, org, parent) :
+                !departmentMapper.updateDepartmentParentToNullWithOrg(did, org))
+            throw ErrorEnum.UPDATE_DEPARTMENT_FAIL.getException();
     }
 
     @Override
     public void updateDepartmentParent(Long did, Long parent) {
-
+        if (parent != null ?
+                !departmentMapper.updateDepartmentParent(did, parent) :
+                !departmentMapper.updateDepartmentParentToNull(did))
+            throw ErrorEnum.UPDATE_DEPARTMENT_FAIL.getException();
     }
 
     @Override

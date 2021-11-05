@@ -49,6 +49,28 @@ public interface DepartmentMapper {
                                     @Param("name") String name,
                                     @Param("description") String description);
 
+    @Update("UPDATE `departments` AS d INNER JOIN " +
+            "(SELECT did,org FROM `departments` WHERE did=#{parent} LIMIT 1) AS p " +
+            "SET d.parent=p.did WHERE d.did=#{did} AND d.org=p.org")
+    boolean updateDepartmentParent(@Param("did") Long did,
+                                   @Param("parent") Long parent);
+
+    @Update("UPDATE `departments` AS d INNER JOIN " +
+            "(SELECT did FROM `departments` WHERE did=#{parent} AND org=#{org} LIMIT 1) AS p " +
+            "SET d.parent=p.did WHERE d.did=#{did} AND d.org=#{org}")
+    boolean updateDepartmentParentWithOrg(@Param("did") Long did,
+                                          @Param("org") Long org,
+                                          @Param("parent") Long parent);
+
+    @Update("UPDATE `departments` " +
+            "SET parent=NULL WHERE did=#{did}")
+    boolean updateDepartmentParentToNull(@Param("did") Long did);
+
+    @Update("UPDATE `departments` " +
+            "SET parent=NULL WHERE did=#{did} AND org=#{org}")
+    boolean updateDepartmentParentToNullWithOrg(@Param("did") Long did,
+                                                @Param("org") Long org);
+
     @Select("SELECT * FROM `departments` WHERE org=#{org} AND did=#{did} LIMIT 1")
     DefaultDepartment selectDepartmentByIdAndOrg(@Param("org") Long org,
                                                  @Param("did") Long did);

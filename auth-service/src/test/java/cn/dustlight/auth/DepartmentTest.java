@@ -87,6 +87,19 @@ public class DepartmentTest {
         logger.info(toJson(departments));
     }
 
+    @Test
+    public void updateDepartmentTest() {
+        departmentService.updateDepartment(0L, 2L, "服务端开发", null);
+        logger.info(toJson(departmentService.getDepartment(0L, 2L)));
+    }
+
+    @Test
+    public void updateDepartmentParentTest() {
+        logger.info(toJson(departmentService.getDepartmentsWithChildren(0L, 2L)));
+        departmentService.updateDepartmentParent(3L, 0L, 2L);
+        logger.info(toJson(departmentService.getDepartmentsWithChildren(0L, 2L)));
+    }
+
     @SneakyThrows
     private String toJson(Object... obj) {
         if (obj == null || obj.length == 0)
