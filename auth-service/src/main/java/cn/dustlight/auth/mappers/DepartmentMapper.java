@@ -156,7 +156,7 @@ public interface DepartmentMapper {
             "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
             "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
             "<foreach collection='dids' item='did' open='(' close=')' separator=','>" +
-            "#(did)" +
+            "#{did}" +
             "</foreach>" +
             ") AS ud " +
             "WHERE ud.uid=u.uid" +
@@ -168,7 +168,7 @@ public interface DepartmentMapper {
             "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
             "(SELECT did FROM `departments` WHERE org=#{org} AND did IN " +
             "<foreach collection='dids' item='did' open='(' close=')' separator=','>" +
-            "#(did)" +
+            "#{did}" +
             "</foreach>" +
             ")) AS ud " +
             "WHERE ud.uid=u.uid" +
@@ -180,7 +180,7 @@ public interface DepartmentMapper {
             "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
             "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
             "<foreach collection='dids' item='did' open='(' close=')' separator=','>" +
-            "#(did)" +
+            "#{did}" +
             "</foreach>" +
             ") AS ud " +
             "WHERE ud.uid=u.uid" +
@@ -192,7 +192,7 @@ public interface DepartmentMapper {
             "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
             "(SELECT did FROM `departments` WHERE org=#{org} AND did IN " +
             "<foreach collection='dids' item='did' open='(' close=')' separator=','>" +
-            "#(did)" +
+            "#{did}" +
             "</foreach>" +
             ")) AS ud " +
             "WHERE ud.uid=u.uid" +

@@ -102,7 +102,22 @@ public class DepartmentTest {
 
     @Test
     public void listOrganizationUsers() {
-        logger.info(departmentService.getOrganizationUsers(0L));
+        logger.info(toJson(departmentService.getOrganizationUsers(0L)));
+    }
+
+    @Test
+    public void listOrganizationPublicUsers() {
+        logger.info(toJson(departmentService.getOrganizationPublicUsers(0L)));
+    }
+
+    @Test
+    public void listDepartmentUsers() {
+        logger.info(toJson(departmentService.getDepartmentUsers(Arrays.asList(2L), 0L)));
+    }
+
+    @Test
+    public void listDepartmentPublicUsers() {
+        logger.info(toJson(departmentService.getDepartmentPublicUsers(Arrays.asList(2L), 0L)));
     }
 
     @SneakyThrows
