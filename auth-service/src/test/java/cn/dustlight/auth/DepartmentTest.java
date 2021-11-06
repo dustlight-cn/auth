@@ -101,6 +101,18 @@ public class DepartmentTest {
     }
 
     @Test
+    public void addDepartmentUserTest() {
+        departmentService.addDepartmentUsers(2L, Arrays.asList(541707601734467584L));
+        logger.info(toJson(departmentService.getDepartmentUsers(Arrays.asList(2L), 0L)));
+    }
+
+    @Test
+    public void removeDepartmentUserTest() {
+        departmentService.removeDepartmentUsers(2L, Arrays.asList(541707601734467584L));
+        logger.info(toJson(departmentService.getDepartmentUsers(Arrays.asList(2L), 0L)));
+    }
+
+    @Test
     public void listOrganizationUsers() {
         logger.info(toJson(departmentService.getOrganizationUsers(0L)));
     }

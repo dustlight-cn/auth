@@ -52,12 +52,16 @@ CREATE TABLE IF NOT EXISTS `departments` (
 CREATE TABLE IF NOT EXISTS `user_department` (
     `uid` bigint NOT NULL,
     `did` bigint NOT NULL,
+    `org` bigint NOT NULL,
     `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`uid`,`did`),
     KEY `user_dept_uid_index` (`uid`),
     KEY `user_dept_did_index` (`did`),
+    KEY `user_dept_org_idx`   (`org`),
+    UNIQUE KEY `user_org_unique`(`uid`,`org`),
     CONSTRAINT `user_dept_did` FOREIGN KEY (`did`) REFERENCES `departments` (`did`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `user_dept_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `user_dept_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `user_dept_org` FOREIGN KEY (`org`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;

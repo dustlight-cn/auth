@@ -135,10 +135,12 @@ public interface DepartmentMapper {
     /* ----------------------------------------- 部门用户增删改查 --------------------------------------------------- */
 
     @Insert("<script>" +
-            "INSERT IGNORE INTO `user_department` (uid,did) VALUES " +
-            "<foreach item='user' collection='users' separator=','>" +
-            "(#{user},#{did})" +
+            "INSERT INTO `user_department` (uid,did,org) " +
+            "(SELECT u.uid,#{did} AS did,d.org FROM `users` AS u,(SELECT org FROM `departments` WHERE did=#{did} LIMIT 1) AS d WHERE uid IN " +
+            "<foreach item='user' collection='users' open='(' close=')' separator=','>" +
+            "#{user}" +
             "</foreach>" +
+            ") ON DUPLICATE KEY UPDATE did=values(did)" +
             "</script>")
     boolean insertDepartmentUsers(@Param("did") Long did,
                                   @Param("users") Collection<Long> users);
