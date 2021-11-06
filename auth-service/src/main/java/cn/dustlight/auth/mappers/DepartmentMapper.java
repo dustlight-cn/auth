@@ -166,6 +166,30 @@ public interface DepartmentMapper {
     Collection<DefaultDepartmentUser> selectDepartmentUsers(@Param("dids") Collection<Long> dids);
 
     @Select("<script>" +
+            "WITH recursive p AS (" +
+            "SELECT did,parent FROM departments WHERE did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>#{did}</foreach>" +
+            "UNION ALL " +
+            "SELECT d.did,d.parent FROM departments as d,p WHERE d.parent=p.did) " +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt FROM " +
+            "p,user_department as ud,users AS u " +
+            "WHERE p.did=ud.did AND ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentUser> selectDepartmentWithChildrenUsers(@Param("dids") Collection<Long> dids);
+
+    @Select("<script>" +
+            "WITH recursive p AS (" +
+            "SELECT did,parent FROM departments WHERE did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>#{did}</foreach>" +
+            "UNION ALL " +
+            "SELECT d.did,d.parent FROM departments as d,p WHERE d.did=p.parent) " +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt FROM " +
+            "p,user_department as ud,users AS u " +
+            "WHERE p.did=ud.did AND ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentUser> selectDepartmentWithParentUsers(@Param("dids") Collection<Long> dids);
+
+    @Select("<script>" +
             "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
             "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
             "(SELECT did FROM `departments` WHERE org=#{org} AND did IN " +
@@ -179,6 +203,32 @@ public interface DepartmentMapper {
                                                                    @Param("org") Long org);
 
     @Select("<script>" +
+            "WITH recursive p AS (" +
+            "SELECT did,parent FROM departments WHERE org=#{org} AND did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>#{did}</foreach>" +
+            "UNION ALL " +
+            "SELECT d.did,d.parent FROM departments as d,p WHERE d.parent=p.did) " +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt FROM " +
+            "p,user_department as ud,users AS u " +
+            "WHERE p.did=ud.did AND ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentUser> selectDepartmentWithOrgWithChildrenUsers(@Param("dids") Collection<Long> dids,
+                                                                               @Param("org") Long org);
+
+    @Select("<script>" +
+            "WITH recursive p AS (" +
+            "SELECT did,parent FROM departments WHERE org=#{org} AND did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>#{did}</foreach>" +
+            "UNION ALL " +
+            "SELECT d.did,d.parent FROM departments as d,p WHERE d.did=p.parent) " +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt FROM " +
+            "p,user_department as ud,users AS u " +
+            "WHERE p.did=ud.did AND ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentUser> selectDepartmentWithOrgWithParentUsers(@Param("dids") Collection<Long> dids,
+                                                                             @Param("org") Long org);
+
+    @Select("<script>" +
             "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
             "FROM `users` AS u,(SELECT * FROM `user_department` WHERE did IN " +
             "<foreach collection='dids' item='did' open='(' close=')' separator=','>" +
@@ -188,6 +238,30 @@ public interface DepartmentMapper {
             "WHERE ud.uid=u.uid" +
             "</script>")
     Collection<DefaultDepartmentPublicUser> selectDepartmentPublicUsers(@Param("dids") Collection<Long> dids);
+
+    @Select("<script>" +
+            "WITH recursive p AS (" +
+            "SELECT did,parent FROM departments WHERE did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>#{did}</foreach>" +
+            "UNION ALL " +
+            "SELECT d.did,d.parent FROM departments as d,p WHERE d.parent=p.did) " +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt FROM " +
+            "p,user_department as ud,users AS u " +
+            "WHERE p.did=ud.did AND ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentPublicUser> selectDepartmentWithChildrenPublicUsers(@Param("dids") Collection<Long> dids);
+
+    @Select("<script>" +
+            "WITH recursive p AS (" +
+            "SELECT did,parent FROM departments WHERE did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>#{did}</foreach>" +
+            "UNION ALL " +
+            "SELECT d.did,d.parent FROM departments as d,p WHERE d.did=p.parent) " +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt FROM " +
+            "p,user_department as ud,users AS u " +
+            "WHERE p.did=ud.did AND ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentPublicUser> selectDepartmentWithParentPublicUsers(@Param("dids") Collection<Long> dids);
 
     @Select("<script>" +
             "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +
@@ -201,6 +275,32 @@ public interface DepartmentMapper {
             "</script>")
     Collection<DefaultDepartmentPublicUser> selectDepartmentPublicUsersWithOrg(@Param("dids") Collection<Long> dids,
                                                                                @Param("org") Long org);
+
+    @Select("<script>" +
+            "WITH recursive p AS (" +
+            "SELECT did,parent FROM departments WHERE org=#{org} AND did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>#{did}</foreach>" +
+            "UNION ALL " +
+            "SELECT d.did,d.parent FROM departments as d,p WHERE d.parent=p.did) " +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt FROM " +
+            "p,user_department as ud,users AS u " +
+            "WHERE p.did=ud.did AND ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentPublicUser> selectDepartmentWithOrgWithChildrenPublicUsers(@Param("dids") Collection<Long> dids,
+                                                                                           @Param("org") Long org);
+
+    @Select("<script>" +
+            "WITH recursive p AS (" +
+            "SELECT did,parent FROM departments WHERE org=#{org} AND did IN " +
+            "<foreach collection='dids' item='did' open='(' close=')' separator=','>#{did}</foreach>" +
+            "UNION ALL " +
+            "SELECT d.did,d.parent FROM departments as d,p WHERE d.did=p.parent) " +
+            "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt FROM " +
+            "p,user_department as ud,users AS u " +
+            "WHERE p.did=ud.did AND ud.uid=u.uid" +
+            "</script>")
+    Collection<DefaultDepartmentPublicUser> selectDepartmentWithOrgWithParentPublicUsers(@Param("dids") Collection<Long> dids,
+                                                                                         @Param("org") Long org);
 
     @Select("<script>" +
             "SELECT u.*,ud.did AS departmentId,ud.createdAt AS joinedDepartmentAt " +

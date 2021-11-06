@@ -132,6 +132,22 @@ public class DepartmentTest {
         logger.info(toJson(departmentService.getDepartmentPublicUsers(Arrays.asList(2L), 0L)));
     }
 
+    @Test
+    public void listDepartmentWithChildrenUsers() {
+        logger.info(toJson(departmentService.getDepartmentWithChildrenUsers(Arrays.asList(0L), 0L)));
+        logger.info(toJson(departmentService.getDepartmentWithChildrenUsers(Arrays.asList(2L), 0L)));
+        logger.info(toJson(departmentService.getDepartmentWithChildrenUsers(Arrays.asList(4L), 0L)));
+        logger.info(toJson(departmentService.getDepartmentWithChildrenUsers(Arrays.asList(6L), 0L)));
+    }
+
+    @Test
+    public void listDepartmentWithParentUsers() {
+        logger.info(toJson(departmentService.getDepartmentWithParentUsers(Arrays.asList(0L), 0L)));
+        logger.info(toJson(departmentService.getDepartmentWithParentUsers(Arrays.asList(2L), 0L)));
+        logger.info(toJson(departmentService.getDepartmentWithParentUsers(Arrays.asList(4L), 0L)));
+        logger.info(toJson(departmentService.getDepartmentWithParentUsers(Arrays.asList(6L), 0L)));
+    }
+
     @SneakyThrows
     private String toJson(Object... obj) {
         if (obj == null || obj.length == 0)

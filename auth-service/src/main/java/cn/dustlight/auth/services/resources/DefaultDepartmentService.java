@@ -198,6 +198,46 @@ public class DefaultDepartmentService implements DepartmentService {
     }
 
     @Override
+    public Map<Long, Collection<DefaultDepartmentUser>> getDepartmentWithChildrenUsers(Collection<Long> dids) {
+        return transformUserDepartmentMap(departmentMapper.selectDepartmentWithChildrenUsers(dids));
+    }
+
+    @Override
+    public Map<Long, Collection<DefaultDepartmentUser>> getDepartmentWithChildrenUsers(Collection<Long> dids, Long org) {
+        return transformUserDepartmentMap(departmentMapper.selectDepartmentWithOrgWithChildrenUsers(dids, org));
+    }
+
+    @Override
+    public Map<Long, Collection<DefaultDepartmentPublicUser>> getDepartmentWithChildrenPublicUsers(Collection<Long> dids) {
+        return transformUserDepartmentMap(departmentMapper.selectDepartmentWithChildrenPublicUsers(dids));
+    }
+
+    @Override
+    public Map<Long, Collection<DefaultDepartmentPublicUser>> getDepartmentWithChildrenPublicUsers(Collection<Long> dids, Long org) {
+        return transformUserDepartmentMap(departmentMapper.selectDepartmentWithOrgWithChildrenPublicUsers(dids, org));
+    }
+
+    @Override
+    public Map<Long, Collection<DefaultDepartmentUser>> getDepartmentWithParentUsers(Collection<Long> dids) {
+        return transformUserDepartmentMap(departmentMapper.selectDepartmentWithParentUsers(dids));
+    }
+
+    @Override
+    public Map<Long, Collection<DefaultDepartmentUser>> getDepartmentWithParentUsers(Collection<Long> dids, Long org) {
+        return transformUserDepartmentMap(departmentMapper.selectDepartmentWithOrgWithParentUsers(dids, org));
+    }
+
+    @Override
+    public Map<Long, Collection<DefaultDepartmentPublicUser>> getDepartmentWithParentPublicUsers(Collection<Long> dids) {
+        return transformUserDepartmentMap(departmentMapper.selectDepartmentWithParentPublicUsers(dids));
+    }
+
+    @Override
+    public Map<Long, Collection<DefaultDepartmentPublicUser>> getDepartmentWithParentPublicUsers(Collection<Long> dids, Long org) {
+        return transformUserDepartmentMap(departmentMapper.selectDepartmentWithOrgWithParentPublicUsers(dids, org));
+    }
+
+    @Override
     public void addDepartmentUsers(Long did, Collection<Long> users) {
         if (!departmentMapper.insertDepartmentUsers(did, users))
             throw ErrorEnum.CREATE_DEPARTMENT_USER_FAIL.getException();

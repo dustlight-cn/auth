@@ -180,6 +180,24 @@ public interface DepartmentService {
     Collection<? extends DepartmentPublicUser> getDepartmentPublicUsers(Collection<Long> dids, Long org);
 
 
+    Map<Long, ? extends Collection<? extends DepartmentUser>> getDepartmentWithChildrenUsers(Collection<Long> dids);
+
+    Map<Long, ? extends Collection<? extends DepartmentUser>> getDepartmentWithChildrenUsers(Collection<Long> dids, Long org);
+
+    Map<Long, ? extends Collection<? extends DepartmentPublicUser>> getDepartmentWithChildrenPublicUsers(Collection<Long> dids);
+
+    Map<Long, ? extends Collection<? extends DepartmentPublicUser>> getDepartmentWithChildrenPublicUsers(Collection<Long> dids, Long org);
+
+
+    Map<Long, ? extends Collection<? extends DepartmentUser>> getDepartmentWithParentUsers(Collection<Long> dids);
+
+    Map<Long, ? extends Collection<? extends DepartmentUser>> getDepartmentWithParentUsers(Collection<Long> dids, Long org);
+
+    Map<Long, ? extends Collection<? extends DepartmentPublicUser>> getDepartmentWithParentPublicUsers(Collection<Long> dids);
+
+    Map<Long, ? extends Collection<? extends DepartmentPublicUser>> getDepartmentWithParentPublicUsers(Collection<Long> dids, Long org);
+
+
     void addDepartmentUsers(Long did, Collection<Long> users);
 
     void addDepartmentUsers(Long did, Long org, Collection<Long> users);
