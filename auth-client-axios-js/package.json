@@ -1,7 +1,7 @@
 {
-  "name": "@plus/auth-client-axios-js",
+  "name": "@dustlight/auth-client-axios-js",
   "version": "1.1.1-alpha",
-  "description": "Client SDK for Auth-Service",
+  "description": "Javascript Client SDK for Auth-Service",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

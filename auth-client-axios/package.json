@@ -1,5 +1,5 @@
 {
-  "name": "@plus/auth-client-axios",
+  "name": "@dustlight/auth-client-axios",
   "version": "1.1.1-alpha",
   "description": "Client SDK for Auth-Service",
   "main": "index.ts",
