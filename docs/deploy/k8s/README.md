@@ -7,4 +7,8 @@
 kubectl apply -f https://raw.githubusercontent.com/dustlight-cn/auth/master/docs/deploy/k8s/deploy.yaml
 ```
 
-## 文档待完善
+## HELM 部署
+
+[HELM 部署文档](https://dustlight-cn.github.io/auth-helm)
+
+[HELM Chart 仓库](https://github.com/dustlight-cn/auth-helm)

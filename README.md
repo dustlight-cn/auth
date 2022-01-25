@@ -48,6 +48,10 @@
 * [ ] 密码模式 *password* （出于安全考虑默认不启用，如需启用可以自行创建。）
 
 ## 快速开始
+### HELM 部署
+[HELM 部署文档](https://dustlight-cn.github.io/auth-helm)
+
+
 ### Kubernetes 一键部署服务
 
 > 使用 ```kubectl``` 一键部署服务，集群中需要至少三个持久卷（```PersistentVolume```）用于 MySQL 数据库 与 Redis 以及上传文件的持久化。
