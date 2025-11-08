@@ -20,6 +20,7 @@ dustlight:
   auth:
     oidc:
       issuer: "" # OpenID Connect issuer URL（根据实际部署环境修改）
+      authorize-endpoint: "" # 授权端点 URL （前端地址）
     captcha:
       enabled: true # 是否开启 Captcha （登录注册人机识别）
     storage:
@@ -132,12 +133,12 @@ dustlight:
 spring:
   application:
     name: auth-service  # 应用名
-#  cloud:
-#    kubernetes:
-#      config:
-#        name: ${spring.application.name}  # Kubernetes 配置名称
-#      reload:
-#        enabled: true # 是否监听 Kubernetes 配置更改
+  cloud:
+    kubernetes:
+      config:
+        name: ${spring.application.name}  # Kubernetes 配置名称
+      reload:
+        enabled: true # 是否监听 Kubernetes 配置更改
   datasource:
     url: jdbc:mysql://${mysql.host:localhost}:${mysql.port:3306}/${mysql.db}?characterEncoding=${mysql.charset:utf8}&useSSL=${mysql.ssl:false}&allowPublicKeyRetrieval=${mysql.allowPublicKeyRetrieval:true}
     username: ${mysql.username}
