@@ -18,6 +18,8 @@ redis:
 
 dustlight:
   auth:
+    oidc:
+      issuer: "https://accounts.dustlight.cn" # OpenID Connect issuer URL（根据实际部署环境修改）
     captcha:
       enabled: true # 是否开启 Captcha （登录注册人机识别）
     storage:
