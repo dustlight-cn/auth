@@ -23,8 +23,8 @@ jobs:
     - name: Build Auth-UI
       run: |
         cp -r auth-client-axios auth-ui/auth-client-axios
-        cd auth-ui
-        npm i
+        cd auth-client-axios && npm i && cd ..
+        cd auth-ui && npm i
         sudo npm install -g @quasar/cli
         quasar build
     - name: Build Auth-Service
