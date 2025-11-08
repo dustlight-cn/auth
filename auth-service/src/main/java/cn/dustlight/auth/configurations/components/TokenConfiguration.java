@@ -7,6 +7,7 @@ import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.oauth.AuthTokenService;
 import cn.dustlight.auth.services.oauth.AuthUserAuthenticationConverter;
 import cn.dustlight.auth.services.oauth.EnhancedRedisTokenStore;
+import cn.dustlight.auth.services.oauth.PkceAuthorizationCodeService;
 import cn.dustlight.auth.services.oauth.RedisAuthorizationCodeService;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWK;
@@ -93,7 +94,68 @@ public class TokenConfiguration {
                     return null;
                 claims.put("active", true);
                 claims.put("member", isMember);
+                
+                // Add OpenID Connect claims when 'openid' scope is present
+                if (authentication.getOAuth2Request().getScope().contains("openid")) {
+                    addOidcClaims(claims, authentication);
+                }
+                
                 return claims;
+            }
+            
+            private void addOidcClaims(Map claims, OAuth2Authentication authentication) {
+                if (authentication.getUserAuthentication() == null) {
+                    return;
+                }
+                
+                Object principal = authentication.getUserAuthentication().getPrincipal();
+                if (!(principal instanceof User)) {
+                    return;
+                }
+                
+                User user = (User) principal;
+                java.util.Set<String> scopes = authentication.getOAuth2Request().getScope();
+                
+                // Standard OIDC claims
+                claims.put("sub", String.valueOf(user.getUid()));
+                
+                // Add nonce if present
+                Map<String, String> requestParams = authentication.getOAuth2Request().getRequestParameters();
+                if (requestParams != null && requestParams.containsKey("nonce")) {
+                    claims.put("nonce", requestParams.get("nonce"));
+                }
+                
+                // Profile scope claims
+                if (scopes.contains("profile")) {
+                    if (user.getNickname() != null) {
+                        claims.put("name", user.getNickname());
+                    }
+                    if (user.getUsername() != null) {
+                        claims.put("preferred_username", user.getUsername());
+                    }
+                    if (user.getAvatar() != null) {
+                        claims.put("picture", user.getAvatar());
+                    }
+                    if (user.getGender() != 0) {
+                        String gender = user.getGender() == 1 ? "male" : user.getGender() == 2 ? "female" : "other";
+                        claims.put("gender", gender);
+                    }
+                    if (user.getUpdatedAt() != null) {
+                        claims.put("updated_at", user.getUpdatedAt().getTime() / 1000);
+                    }
+                }
+                
+                // Email scope claims
+                if (scopes.contains("email") && user.getEmail() != null) {
+                    claims.put("email", user.getEmail());
+                    claims.put("email_verified", true);
+                }
+                
+                // Phone scope claims
+                if (scopes.contains("phone") && user.getPhone() != null) {
+                    claims.put("phone_number", user.getPhone());
+                    claims.put("phone_number_verified", true);
+                }
             }
         };
         AuthUserAuthenticationConverter userAuthenticationConverter = new AuthUserAuthenticationConverter();
@@ -137,7 +199,8 @@ public class TokenConfiguration {
         redisTemplate.setValueSerializer(RedisSerializer.java());
         redisTemplate.setHashKeySerializer(RedisSerializer.string());
         redisTemplate.setHashValueSerializer(RedisSerializer.java());
-        RedisAuthorizationCodeService instance = new RedisAuthorizationCodeService(redisTemplate);
+        // Use PKCE-aware authorization code service for OAuth 2.1 support
+        PkceAuthorizationCodeService instance = new PkceAuthorizationCodeService(redisTemplate);
         if (properties != null) {
             if (properties.getDuration() != null)
                 instance.setDuration(properties.getDuration());
