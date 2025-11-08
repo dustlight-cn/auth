@@ -83,7 +83,15 @@ module.exports = configure(function (/* ctx */) {
       proxy: {
         '/v1': {
           target: 'http://localhost:8080',
-          changeOrigin: true,
+          changeOrigin: false,
+        },
+        "/.well-known": {
+          target: 'http://localhost:8080',
+          changeOrigin: false,
+        },
+        "/realms": {
+          target: 'http://localhost:8080',
+          changeOrigin: false,
         }
       }
     },

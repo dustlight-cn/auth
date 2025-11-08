@@ -97,6 +97,9 @@ public class AuthorizationController {
     @Autowired
     private AuthorizationCodeServices authorizationCodeServices;
 
+    @Autowired(required = false)
+    private cn.dustlight.auth.services.oauth.PkceAuthorizationCodeService pkceAuthorizationCodeService;
+
     private Object implicitLock = new Object();
 
     /**
@@ -473,7 +476,22 @@ public class AuthorizationController {
         try {
             OAuth2Request storedOAuth2Request = oAuth2RequestFactory.createOAuth2Request(authorizationRequest);
             OAuth2Authentication combinedAuth = new OAuth2Authentication(storedOAuth2Request, authentication);
-            String code = authorizationCodeServices.createAuthorizationCode(combinedAuth);
+            
+            // Check for PKCE parameters (OAuth 2.1)
+            Map<String, String> requestParams = authorizationRequest.getRequestParameters();
+            String codeChallenge = requestParams.get("code_challenge");
+            String codeChallengeMethod = requestParams.get("code_challenge_method");
+            
+            String code;
+            if (codeChallenge != null && pkceAuthorizationCodeService != null) {
+                // Store with PKCE parameters
+                code = authorizationCodeServices.createAuthorizationCode(combinedAuth);
+                pkceAuthorizationCodeService.storeWithPkce(code, combinedAuth, codeChallenge, codeChallengeMethod);
+            } else {
+                // Standard authorization code flow
+                code = authorizationCodeServices.createAuthorizationCode(combinedAuth);
+            }
+            
             return code;
         } catch (OAuth2Exception e) {
             if (authorizationRequest.getState() != null) {

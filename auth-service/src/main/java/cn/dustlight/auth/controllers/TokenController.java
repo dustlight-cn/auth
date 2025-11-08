@@ -8,6 +8,7 @@ import cn.dustlight.auth.util.Constants;
 import cn.dustlight.captcha.annotations.Store;
 import cn.dustlight.captcha.annotations.Verifier;
 import cn.dustlight.captcha.annotations.VerifyCode;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nimbusds.jose.jwk.JWKSet;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +27,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.*;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
@@ -39,7 +42,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+
+import static cn.dustlight.auth.controllers.OidcDiscoveryController.getBaseUrl;
 
 @Tag(name = "Token", description = "Token 颁发。")
 @RestController
@@ -48,6 +54,9 @@ import java.util.Map;
 public class TokenController {
 
     private final Log logger = LogFactory.getLog(getClass());
+
+    @Value("${dustlight.auth.oidc.issuer:}")
+    private String issuer;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -137,7 +146,9 @@ public class TokenController {
     }
 
     @Operation(summary = "颁发 OAuth2 令牌", security = @SecurityRequirement(name = "ClientCredentials"))
-    @PostMapping("oauth/token")
+    @PostMapping(value = {
+            "oauth/token"
+    })
     public ResponseEntity<OAuth2AccessToken> grantOAuthToken(@RequestParam(value = "code", required = false) String code,
                                                              @Parameter(schema = @Schema(allowableValues = {"authorization_code", "refresh_token", "implicit", "client_credentials", "password"}, defaultValue = "authorization_code"))
                                                              @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
@@ -147,6 +158,23 @@ public class TokenController {
                                                              @RequestParam(value = "refresh_token", required = false) String refreshToken,
                                                              @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
                                                              HttpServletRequest request) {
+        return grantOAuthTokenWithRealm(code, grantType, redirectUri, username, password, refreshToken, parameters, null, request);
+    }
+
+    @Operation(summary = "颁发 OAuth2 令牌", security = @SecurityRequirement(name = "ClientCredentials"))
+    @PostMapping(value = {
+            "realms/{realm}/oauth/token"
+    })
+    public ResponseEntity<OAuth2AccessToken> grantOAuthTokenWithRealm(@RequestParam(value = "code", required = false) String code,
+                                                                      @Parameter(schema = @Schema(allowableValues = {"authorization_code", "refresh_token", "implicit", "client_credentials", "password"}, defaultValue = "authorization_code"))
+                                                                      @RequestParam(value = "grant_type", defaultValue = "authorization_code") String grantType,
+                                                                      @RequestParam(value = "redirect_uri", required = false) String redirectUri,
+                                                                      @RequestParam(value = "username", required = false) String username,
+                                                                      @RequestParam(value = "password", required = false) String password,
+                                                                      @RequestParam(value = "refresh_token", required = false) String refreshToken,
+                                                                      @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
+                                                                      @PathVariable(name = "realm", required = false) String realm,
+                                                                      HttpServletRequest request) {
         Client client = getClient(request);
 
         String clientId = client.getClientId();
@@ -177,9 +205,33 @@ public class TokenController {
             tokenRequest.setScope(OAuth2Utils.parseParameterList(parameters.get(OAuth2Utils.SCOPE)));
 
         // 授权
-        OAuth2AccessToken token = tokenGranter.grant(tokenRequest.getGrantType(), tokenRequest);
+        DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken) tokenGranter.grant(tokenRequest.getGrantType(), tokenRequest);
         if (token == null)
             throw new UnsupportedGrantTypeException("Unsupported grant type: " + tokenRequest.getGrantType());
+
+        if (token.getScope() != null && token.getScope().contains("openid")) {
+            // 如果包含 openid scope，则在 token 中添加 id_token
+            token.setAdditionalInformation(new HashMap<>());
+            OAuth2Authentication auth = resourceServerTokenServices.loadAuthentication(token.getValue());
+            String baseUrl = getBaseUrl(request);
+            String issuer = this.issuer;
+            if (issuer == null || issuer.isEmpty()) {
+                issuer = baseUrl;
+            }
+            if(StringUtils.hasText(realm)) {
+                if (!issuer.endsWith("/"))
+                    issuer += "/";
+                issuer += "realms/" + realm;
+            }
+            token.getAdditionalInformation().put("iss", issuer);
+            token.getAdditionalInformation().put("aud", clientId);
+            OAuth2AccessToken _token = jwt.convert(token, auth);
+            _token.getAdditionalInformation().remove("iss");
+            _token.getAdditionalInformation().remove("aud");
+
+            return getResponse(new OpenIDAccessToken(token, _token.getValue()));
+        }
+
         return getResponse(token);
     }
 
@@ -194,7 +246,7 @@ public class TokenController {
                                                       @RequestParam(value = "refresh_token", required = false) String refreshToken,
                                                       @RequestParam @Parameter(hidden = true) Map<String, String> parameters,
                                                       HttpServletRequest request) {
-        ResponseEntity<OAuth2AccessToken> response = grantOAuthToken(code, grantType, redirectUri, username, password,refreshToken, parameters, request);
+        ResponseEntity<OAuth2AccessToken> response = grantOAuthToken(code, grantType, redirectUri, username, password, refreshToken, parameters, request);
         OAuth2AccessToken token = response.getBody();
         OAuth2Authentication auth = resourceServerTokenServices.loadAuthentication(token.getValue());
         return getResponse(jwt.convert(token, auth));
@@ -255,6 +307,34 @@ public class TokenController {
 
         public void setToken(String token) {
             this.token = token;
+        }
+    }
+
+
+    public static class OpenIDAccessToken extends DefaultOAuth2AccessToken {
+
+        public OpenIDAccessToken(String value) {
+            super(value);
+        }
+
+        public OpenIDAccessToken(OAuth2AccessToken accessToken) {
+            super(accessToken);
+        }
+
+        public OpenIDAccessToken(OAuth2AccessToken accessToken, String idToken) {
+            super(accessToken);
+            this.setIdToken(idToken);
+        }
+
+
+        @JsonProperty("id_token")
+        public String getIdToken() {
+            Object idToken = this.getAdditionalInformation().get("id_token");
+            return idToken != null ? idToken.toString() : null;
+        }
+
+        public void setIdToken(String idToken) {
+            this.getAdditionalInformation().put("id_token", idToken);
         }
     }
 }

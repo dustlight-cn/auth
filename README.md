@@ -41,11 +41,23 @@
 
 ### 支持的授权模式
 
-* [X] 授权码模式 *authorization_code* 
+* [X] 授权码模式 *authorization_code* （支持 OAuth 2.1 PKCE）
 * [X] 客户端凭据模式 *client_credentials*
 * [X] 隐式授权模式 *implicit*
 * [X] 令牌刷新 *refresh_token*
 * [ ] 密码模式 *password* （出于安全考虑默认不启用，如需启用可以自行创建。）
+
+### OAuth 2.1 和 OpenID Connect
+
+* [X] PKCE (Proof Key for Code Exchange) 支持
+* [X] OpenID Connect Discovery (`.well-known/openid-configuration`)
+* [X] UserInfo 端点 (`/userinfo`)
+* [X] ID Token 支持（JWT 中包含 OIDC 标准声明）
+* [X] 标准 OIDC 作用域（`openid`, `profile`, `email`, `phone`）
+
+详细文档请参考：
+* [OAuth 2.1 和 OpenID Connect 中文文档](docs/OAuth2.1-OIDC.md)
+* [OAuth 2.1 and OpenID Connect English Documentation](docs/OAuth2.1-OIDC-EN.md)
 
 ## 快速开始
 ### HELM 部署

@@ -8,6 +8,9 @@ import cn.dustlight.auth.services.ClientService;
 import cn.dustlight.auth.services.UserService;
 import cn.dustlight.auth.services.oauth.AuthTokenService;
 import cn.dustlight.auth.services.oauth.granters.AuthImplicitTokenGranter;
+import cn.dustlight.auth.services.oauth.PkceAuthorizationCodeService;
+import cn.dustlight.auth.services.oauth.PkceAuthorizationCodeTokenGranter;
+import cn.dustlight.auth.services.oauth.PkceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -102,7 +105,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Bean
     @ConditionalOnMissingBean
-    public TokenGranter tokenGranter(@Autowired AuthorizationServerEndpointsConfigurer configurer) {
+    public TokenGranter tokenGranter(@Autowired AuthorizationServerEndpointsConfigurer configurer,
+                                     @Autowired(required = false) PkceService pkceService,
+                                     @Autowired(required = false) PkceAuthorizationCodeService pkceAuthorizationCodeService) {
 
         ClientDetailsService clientDetails = configurer.getClientDetailsService();
         AuthorizationServerTokenServices tokenServices = configurer.getTokenServices();
@@ -110,8 +115,16 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         OAuth2RequestFactory requestFactory = configurer.getOAuth2RequestFactory();
 
         List<TokenGranter> tokenGranters = new ArrayList<>();
-        tokenGranters.add(new AuthorizationCodeTokenGranter(tokenServices, authorizationCodeServices, clientDetails,
-                requestFactory));
+        
+        // Use PKCE-aware authorization code granter if PKCE service is available (OAuth 2.1)
+        if (pkceService != null && pkceAuthorizationCodeService != null) {
+            tokenGranters.add(new PkceAuthorizationCodeTokenGranter(tokenServices, authorizationCodeServices, 
+                    clientDetails, requestFactory, pkceService, pkceAuthorizationCodeService));
+        } else {
+            tokenGranters.add(new AuthorizationCodeTokenGranter(tokenServices, authorizationCodeServices, clientDetails,
+                    requestFactory));
+        }
+        
         tokenGranters.add(new RefreshTokenGranter(tokenServices, clientDetails, requestFactory));
         ImplicitTokenGranter implicit = new AuthImplicitTokenGranter(tokenServices, clientDetails, requestFactory);
         tokenGranters.add(implicit);

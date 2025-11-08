@@ -1,6 +1,6 @@
 {
   "name": "@dustlight/auth-client-axios-js",
-  "version": "1.1.1-alpha",
+  "version": "1.2.0-alpha-1",
   "description": "Javascript Client SDK for Auth-Service",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "auth-client"
   ],
   "dependencies": {
-    "axios": "~0.21.1"
+    "axios": "^1.13.2"
   },
   "author": "Hansin1997 <hansin@dustlight.cn>",
   "license": "Apache-2.0",
