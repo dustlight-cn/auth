@@ -4,6 +4,7 @@ import cn.dustlight.auth.util.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,100 +22,139 @@ public class OidcDiscoveryController {
     @Value("${dustlight.auth.oidc.issuer:}")
     private String issuer;
 
-    @Operation(summary = "OpenID Connect Discovery", 
-               description = "返回 OpenID Provider 配置元数据")
-    @GetMapping(value = "/.well-known/openid-configuration", produces = "application/json")
+    @Value("${dustlight.auth.oidc.authorize-endpoint:}")
+    private String authorizeEndpoint;
+
+
+    @Operation(summary = "OpenID Connect Discovery",
+            description = "返回 OpenID Provider 配置元数据")
+    @GetMapping(value = {
+            "/.well-known/openid-configuration",
+    }, produces = "application/json")
     public Map<String, Object> getConfiguration(HttpServletRequest request) {
+        return getConfigurationWithRealm(null, request);
+    }
+
+
+    @Operation(summary = "OpenID Connect Discovery",
+            description = "返回 OpenID Provider 配置元数据")
+    @GetMapping(value = {
+            "/realms/{realm}/.well-known/openid-configuration"
+    }, produces = "application/json")
+    public Map<String, Object> getConfigurationWithRealm(
+            @PathVariable(name = "realm") String realm,
+            HttpServletRequest request) {
+
         String baseUrl = getBaseUrl(request);
-        if (issuer == null || issuer.isEmpty()) {
+        String issuer = this.issuer;
+        if (!StringUtils.hasText(issuer)) {
             issuer = baseUrl;
+        }
+        String authorizeEndpoint = this.authorizeEndpoint;
+        if (!StringUtils.hasText(authorizeEndpoint)) {
+            authorizeEndpoint = baseUrl;
+            if(!authorizeEndpoint.endsWith("/"))
+                authorizeEndpoint += "/";
+            authorizeEndpoint = authorizeEndpoint + "authorize";
+        }
+
+        boolean hasRealm = StringUtils.hasText(realm);
+        // 如果有 realm，则在 issuer 和相关端点中添加 realm 路径
+        if (hasRealm) {
+            if (!issuer.endsWith("/"))
+                issuer += "/";
+            issuer += "realms/" + realm;
         }
 
         Map<String, Object> config = new LinkedHashMap<>();
-        
+
         // Core OpenID Connect Discovery 1.0 fields
         config.put("issuer", issuer);
-        config.put("authorization_endpoint", baseUrl + Constants.API_ROOT + "oauth/authorize");
-        config.put("token_endpoint", baseUrl + Constants.API_ROOT + "oauth/token");
-        config.put("userinfo_endpoint", baseUrl + Constants.API_ROOT + "userinfo");
-        config.put("jwks_uri", baseUrl + Constants.API_ROOT + "jwk");
-        
+        config.put("authorization_endpoint", authorizeEndpoint);
+        if (!hasRealm) {
+            config.put("token_endpoint", baseUrl + Constants.API_ROOT + "/oauth/token");
+        } else {
+            config.put("token_endpoint", baseUrl + Constants.API_ROOT + "/realms/" + realm + "/oauth/token");
+        }
+        config.put("userinfo_endpoint", baseUrl + Constants.API_ROOT + "/userinfo");
+        config.put("jwks_uri", baseUrl + Constants.API_ROOT + "/jwk");
+
         // Supported scopes
         config.put("scopes_supported", Arrays.asList(
-            "openid",
-            "profile", 
-            "email",
-            "phone"
+                "openid",
+                "profile",
+                "email",
+                "phone"
         ));
-        
+
         // Supported response types
         config.put("response_types_supported", Arrays.asList(
-            "code",
-            "token",
-            "id_token",
-            "code token",
-            "code id_token",
-            "token id_token",
-            "code token id_token"
+                "code",
+                "token",
+                "id_token",
+                "code token",
+                "code id_token",
+                "token id_token",
+                "code token id_token"
         ));
-        
+
         // Supported response modes
         config.put("response_modes_supported", Arrays.asList(
-            "query",
-            "fragment",
-            "form_post"
+                "query",
+                "fragment",
+                "form_post"
         ));
-        
+
         // Supported grant types
         config.put("grant_types_supported", Arrays.asList(
-            "authorization_code",
-            "implicit",
-            "refresh_token",
-            "client_credentials"
+                "authorization_code",
+                "implicit",
+                "refresh_token",
+                "client_credentials"
         ));
-        
+
         // Subject types
         config.put("subject_types_supported", Arrays.asList("public"));
-        
+
         // ID Token signing algorithms
         config.put("id_token_signing_alg_values_supported", Arrays.asList(
-            "RS256"
+                "RS256"
         ));
-        
+
         // Token endpoint auth methods
         config.put("token_endpoint_auth_methods_supported", Arrays.asList(
-            "client_secret_basic",
-            "client_secret_post"
+                "client_secret_basic",
+                "client_secret_post"
         ));
-        
+
         // Claims supported
         config.put("claims_supported", Arrays.asList(
-            "sub",
-            "name",
-            "preferred_username",
-            "picture",
-            "email",
-            "email_verified",
-            "phone_number",
-            "phone_number_verified",
-            "gender",
-            "updated_at"
+                "sub",
+                "name",
+                "preferred_username",
+                "picture",
+                "email",
+                "email_verified",
+                "phone_number",
+                "phone_number_verified",
+                "gender",
+                "updated_at"
         ));
-        
+
         // PKCE support (OAuth 2.1)
         config.put("code_challenge_methods_supported", Arrays.asList(
-            "S256",
-            "plain"
+                "S256",
+                "plain"
         ));
-        
+
         // Additional OAuth 2.0 endpoints
-        config.put("revocation_endpoint", baseUrl + Constants.API_ROOT + "token");
-        config.put("introspection_endpoint", baseUrl + Constants.API_ROOT + "token/validity");
-        
+        config.put("revocation_endpoint", baseUrl + Constants.API_ROOT + "/token");
+        config.put("introspection_endpoint", baseUrl + Constants.API_ROOT + "/token/validity");
+
         return config;
     }
 
-    private String getBaseUrl(HttpServletRequest request) {
+    public static String getBaseUrl(HttpServletRequest request) {
         String scheme = request.getHeader("X-Forwarded-Proto");
         if (scheme == null) {
             scheme = request.getScheme();

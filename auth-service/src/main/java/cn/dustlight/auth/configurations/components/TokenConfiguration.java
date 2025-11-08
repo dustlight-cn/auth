@@ -80,87 +80,100 @@ public class TokenConfiguration {
         return new EnhancedRedisTokenStore(redisConnectionFactory, redisTokenStore);
     }
 
+    public static class OpenIdAccessTokenConverter extends DefaultAccessTokenConverter {
+
+        private final ClientService clientService;
+
+        public OpenIdAccessTokenConverter(ClientService clientService) {
+            this.clientService = clientService;
+        }
+
+        @Override
+        public Map<String, ?> convertAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
+            Map claims = super.convertAccessToken(token, authentication);
+            boolean isMember = false;
+            if (authentication.getUserAuthentication() != null &&
+                    authentication.getUserAuthentication().getPrincipal() != null)
+                isMember = clientService.isOwnerOrMember(authentication.getOAuth2Request().getClientId(), ((User) authentication.getUserAuthentication().getPrincipal()).getUid());
+            if (claims == null)
+                return null;
+            claims.put("active", true);
+            claims.put("member", isMember);
+
+            // Add OpenID Connect claims when 'openid' scope is present
+            if (authentication.getOAuth2Request().getScope().contains("openid")) {
+                addOidcClaims(claims, authentication);
+            }
+
+            if(token.getAdditionalInformation().get("iss") != null)
+                claims.put("iss", token.getAdditionalInformation().get("iss"));
+            if(token.getAdditionalInformation().get("aud") != null)
+                claims.put("aud", token.getAdditionalInformation().get("aud"));
+            if(token.getAdditionalInformation().get("sub") != null)
+                claims.put("sub", token.getAdditionalInformation().get("sub"));
+
+            return claims;
+        }
+
+        private void addOidcClaims(Map claims, OAuth2Authentication authentication) {
+            if (authentication.getUserAuthentication() == null) {
+                return;
+            }
+
+            Object principal = authentication.getUserAuthentication().getPrincipal();
+            if (!(principal instanceof User)) {
+                return;
+            }
+
+            User user = (User) principal;
+            java.util.Set<String> scopes = authentication.getOAuth2Request().getScope();
+
+            // Standard OIDC claims
+            claims.put("sub", String.valueOf(user.getUsername()));
+
+            // Add nonce if present
+            Map<String, String> requestParams = authentication.getOAuth2Request().getRequestParameters();
+            if (requestParams != null && requestParams.containsKey("nonce")) {
+                claims.put("nonce", requestParams.get("nonce"));
+            }
+
+            // Profile scope claims
+            if (scopes.contains("profile")) {
+                if (user.getNickname() != null) {
+                    claims.put("name", user.getNickname());
+                }
+                if (user.getUsername() != null) {
+                    claims.put("preferred_username", user.getUsername());
+                }
+                if (user.getAvatar() != null) {
+                    claims.put("picture", user.getAvatar());
+                }
+                if (user.getGender() != 0) {
+                    String gender = user.getGender() == 1 ? "male" : user.getGender() == 2 ? "female" : "other";
+                    claims.put("gender", gender);
+                }
+                if (user.getUpdatedAt() != null) {
+                    claims.put("updated_at", user.getUpdatedAt().getTime() / 1000);
+                }
+            }
+
+            // Email scope claims
+            if (scopes.contains("email") && user.getEmail() != null) {
+                claims.put("email", user.getEmail());
+                claims.put("email_verified", true);
+            }
+
+            // Phone scope claims
+            if (scopes.contains("phone") && user.getPhone() != null) {
+                claims.put("phone_number", user.getPhone());
+                claims.put("phone_number_verified", true);
+            }
+        }
+    }
+
     @Bean
-    public AccessTokenConverter accessTokenConverter(@Autowired ClientService clientService) {
-        DefaultAccessTokenConverter accessTokenConverter = new DefaultAccessTokenConverter() {
-            @Override
-            public Map<String, ?> convertAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
-                Map claims = super.convertAccessToken(token, authentication);
-                boolean isMember = false;
-                if (authentication.getUserAuthentication() != null &&
-                        authentication.getUserAuthentication().getPrincipal() != null)
-                    isMember = clientService.isOwnerOrMember(authentication.getOAuth2Request().getClientId(), ((User) authentication.getUserAuthentication().getPrincipal()).getUid());
-                if (claims == null)
-                    return null;
-                claims.put("active", true);
-                claims.put("member", isMember);
-                
-                // Add OpenID Connect claims when 'openid' scope is present
-                if (authentication.getOAuth2Request().getScope().contains("openid")) {
-                    addOidcClaims(claims, authentication);
-                }
-                
-                return claims;
-            }
-            
-            private void addOidcClaims(Map claims, OAuth2Authentication authentication) {
-                if (authentication.getUserAuthentication() == null) {
-                    return;
-                }
-                
-                Object principal = authentication.getUserAuthentication().getPrincipal();
-                if (!(principal instanceof User)) {
-                    return;
-                }
-                
-                User user = (User) principal;
-                java.util.Set<String> scopes = authentication.getOAuth2Request().getScope();
-                
-                // Standard OIDC claims
-                claims.put("sub", String.valueOf(user.getUid()));
-                
-                // Add nonce if present
-                Map<String, String> requestParams = authentication.getOAuth2Request().getRequestParameters();
-                if (requestParams != null && requestParams.containsKey("nonce")) {
-                    claims.put("nonce", requestParams.get("nonce"));
-                }
-                
-                // Profile scope claims
-                if (scopes.contains("profile")) {
-                    if (user.getNickname() != null) {
-                        claims.put("name", user.getNickname());
-                    }
-                    if (user.getUsername() != null) {
-                        claims.put("preferred_username", user.getUsername());
-                    }
-                    if (user.getAvatar() != null) {
-                        claims.put("picture", user.getAvatar());
-                    }
-                    if (user.getGender() != 0) {
-                        String gender = user.getGender() == 1 ? "male" : user.getGender() == 2 ? "female" : "other";
-                        claims.put("gender", gender);
-                    }
-                    if (user.getUpdatedAt() != null) {
-                        claims.put("updated_at", user.getUpdatedAt().getTime() / 1000);
-                    }
-                }
-                
-                // Email scope claims
-                if (scopes.contains("email") && user.getEmail() != null) {
-                    claims.put("email", user.getEmail());
-                    claims.put("email_verified", true);
-                }
-                
-                // Phone scope claims
-                if (scopes.contains("phone") && user.getPhone() != null) {
-                    claims.put("phone_number", user.getPhone());
-                    claims.put("phone_number_verified", true);
-                }
-            }
-        };
-        AuthUserAuthenticationConverter userAuthenticationConverter = new AuthUserAuthenticationConverter();
-        accessTokenConverter.setUserTokenConverter(userAuthenticationConverter);
-        return accessTokenConverter;
+    public OpenIdAccessTokenConverter accessTokenConverter(@Autowired ClientService clientService) {
+        return new OpenIdAccessTokenConverter(clientService);
     }
 
     @Bean

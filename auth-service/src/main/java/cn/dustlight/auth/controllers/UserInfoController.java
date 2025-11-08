@@ -42,7 +42,7 @@ public class UserInfoController {
             
             // Standard OpenID Connect claims
             // 'sub' (subject) is always returned
-            userInfo.put("sub", String.valueOf(user.getUid()));
+            userInfo.put("sub", user.getUsername());
             
             // Profile scope claims
             if (scopes.contains("profile") || scopes.contains("openid")) {
