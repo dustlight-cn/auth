@@ -21,6 +21,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
     public static final String[] resources = {
             Constants.API_ROOT + "/users/**",
+            Constants.API_ROOT + "/userinfo",
             Constants.API_ROOT + "/authorities",
             Constants.API_ROOT + "/authorities/**",
             Constants.API_ROOT + "/roles",

@@ -18,6 +18,9 @@ redis:
 
 dustlight:
   auth:
+    oidc:
+      issuer: "" # OpenID Connect issuer URL（根据实际部署环境修改）
+      authorize-endpoint: "" # 授权端点 URL （前端地址）
     captcha:
       enabled: true # 是否开启 Captcha （登录注册人机识别）
     storage:
