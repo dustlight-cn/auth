@@ -265,14 +265,18 @@ public class UserResource {
     }
 
     public static <T extends DefaultUser> T setAvatar(T user) {
+        String url = getUserAvatar(user);
+        user.setAvatar(url);
+        return user;
+    }
+
+    public static <T extends DefaultUser> String getUserAvatar(T user) {
         if (user == null)
             return null;
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        String url = URI.create(attributes.getRequest().getRequestURL().toString())
+        return URI.create(attributes.getRequest().getRequestURL().toString())
                 .resolve(Constants.API_ROOT + "/users/" + user.getUid() + "/avatar")
                 .toASCIIString();
-        user.setAvatar(url);
-        return user;
     }
 
     public static <T extends DefaultUser, C extends Collection<T>> C setAvatar(C users) {

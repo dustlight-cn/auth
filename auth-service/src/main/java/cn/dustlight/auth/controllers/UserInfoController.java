@@ -1,5 +1,7 @@
 package cn.dustlight.auth.controllers;
 
+import cn.dustlight.auth.controllers.resources.UserResource;
+import cn.dustlight.auth.entities.DefaultUser;
 import cn.dustlight.auth.entities.User;
 import cn.dustlight.auth.util.Constants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -7,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -50,8 +53,11 @@ public class UserInfoController {
                     userInfo.put("name", user.getNickname());
                     userInfo.put("preferred_username", user.getUsername());
                 }
-                if (user.getAvatar() != null) {
-                    userInfo.put("picture", user.getAvatar());
+                if(user instanceof DefaultUser) {
+                    String avatar = UserResource.getUserAvatar((DefaultUser)user);
+                    if (StringUtils.hasText(avatar)) {
+                        userInfo.put("picture", user.getAvatar());
+                    }
                 }
                 if (user.getGender() != 0) {
                     // Map gender integer to string: 1=male, 2=female, 0=unspecified
