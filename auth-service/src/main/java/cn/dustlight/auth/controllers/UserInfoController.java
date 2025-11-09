@@ -56,7 +56,7 @@ public class UserInfoController {
                 if(user instanceof DefaultUser) {
                     String avatar = UserResource.getUserAvatar((DefaultUser)user);
                     if (StringUtils.hasText(avatar)) {
-                        userInfo.put("picture", user.getAvatar());
+                        userInfo.put("picture", avatar);
                     }
                 }
                 if (user.getGender() != 0) {
