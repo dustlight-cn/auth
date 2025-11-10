@@ -26,6 +26,11 @@ public interface GrantTypeMapper {
             "#{tid}</foreach></script>")
     Collection<DefaultGrantType> selectGrantTypes(@Param("tids") Collection<Long> tids);
 
+    @Select("<script>SELECT * FROM types WHERE name IN " +
+            "<foreach collection='names' item='name' open='(' separator=',' close=')'>" +
+            "#{name}</foreach></script>")
+    Collection<DefaultGrantType> selectGrantTypesByNames(@Param("names") Collection<String> names);
+
     @Insert("INSERT INTO types (tid,name,description) VALUES (#{tid},#{name},#{description}) " +
             "ON DUPLICATE KEY UPDATE name=VALUES(name),description=VALUES(description)")
     Boolean insertType(@Param("tid") Long tid,

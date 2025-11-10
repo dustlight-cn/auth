@@ -53,7 +53,10 @@ IGNORE INTO `roles` (`rid`,`roleName`,`roleDescription`,`cid`) VALUES
 INSERT
 IGNORE INTO `scopes` (`sid`,`name`,`subtitle`,`description`) VALUES
 (0,'read:user','读取用户信息','读取您的所有个人资料，包括头像、用户名、昵称和邮箱等。'),
-(1,'read:client','读取用户应用','读取您创建或管理的应用，包括应用的名称、描述等。');
+(1,'read:client','读取用户应用','读取您创建或管理的应用，包括应用的名称、描述等。'),
+(2,'openid','OpenID Connect','用于 OpenID Connect 身份认证。'),
+(3,'profile','用户档案','读取您的基本档案信息，包括昵称、性别等。'),
+(4,'email','电子邮件','读取您的电子邮件地址。');
 
 /* 授权类型 GrantTypes */
 INSERT

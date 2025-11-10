@@ -109,6 +109,26 @@ kubectl apply -f https://raw.githubusercontent.com/dustlight-cn/auth/master/docs
 | 转换 JWT | [/v1/jws](https://api.dustlight.cn/v1/jws) | ```GET``` |
 | 获取 JWT 公钥 （JWK） | [/v1/jwk](https://api.dustlight.cn/v1/jwk) | ```GET``` |
 
+#### OpenID Connect 端点
+
+| 功能 | URL | 方法 | 说明 |
+| --- | --- | --- | --- |
+| Discovery 文档 | [/.well-known/openid-configuration](https://api.dustlight.cn/.well-known/openid-configuration) | ```GET``` | OpenID Connect 服务发现端点 |
+| UserInfo 端点 | [/v1/oauth/userinfo](https://api.dustlight.cn/v1/oauth/userinfo) | ```GET``` / ```POST``` | 获取当前用户信息（需要 access_token） |
+| 授权端点 | [/v1/oauth/authorize](https://api.dustlight.cn/v1/oauth/authorize) | ```GET``` | OpenID Connect 授权端点（支持 PKCE） |
+| Token 端点 | [/v1/oauth/token](https://api.dustlight.cn/v1/oauth/token) | ```POST``` | 获取 access_token 和 id_token |
+| JWK 公钥 | [/v1/jwk](https://api.dustlight.cn/v1/jwk) | ```GET``` | 获取用于验证 JWT 签名的公钥 |
+
+**标准 OIDC 作用域：**
+- `openid` - 必需，用于启用 OpenID Connect
+- `profile` - 获取用户基本档案信息（昵称、性别等）
+- `email` - 获取用户电子邮件地址
+- `phone` - 获取用户手机号码
+
+**自动配置特性：**
+- 新建应用时，系统会自动添加 `authorization_code` 和 `refresh_token` 授权模式（如果系统中存在）
+- 新建应用时，系统会自动添加 `openid`、`profile`、`email` 作用域（如果系统中存在）
+
 #### 接口浏览
 
 | Open API | URL |
