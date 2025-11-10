@@ -28,6 +28,11 @@ public interface ScopeMapper {
             "#{sid}</foreach></script>")
     Collection<DefaultScope> selectScopes(@Param("sids") Collection<Long> sids);
 
+    @Select("<script>SELECT * FROM scopes WHERE name IN " +
+            "<foreach collection='names' item='name' open='(' separator=',' close=')'>" +
+            "#{name}</foreach></script>")
+    Collection<DefaultScope> selectScopesByNames(@Param("names") Collection<String> names);
+
     @Insert("INSERT INTO scopes (sid,name,subtitle,description) VALUES " +
             "(#{sid},#{name},#{subtitle},#{description}) " +
             "ON DUPLICATE KEY UPDATE name=VALUES(name),subtitle=VALUES(subtitle),description=VALUES(description)")

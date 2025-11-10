@@ -102,11 +102,17 @@ public class DefaultClientService implements ClientService<DefaultClient> {
             if (!clientMapper.insertClient(id, uid, passwordEncoder.encode(secret), name, description, redirectUri,
                     accessTokenValidity, refreshTokenValidity, additionalInformation, status))
                 ErrorEnum.CREATE_CLIENT_FAIL.throwException();
-            if (scopes != null && scopes.size() > 0 &&
-                    !scopeMapper.insertClientScopeByScopeIds(id, scopes, false))
+            
+            // Auto-add default scopes if not provided
+            Collection<Long> scopesToAdd = enhanceScopesWithDefaults(scopes);
+            if (scopesToAdd != null && scopesToAdd.size() > 0 &&
+                    !scopeMapper.insertClientScopeByScopeIds(id, scopesToAdd, false))
                 ErrorEnum.CREATE_SCOPE_FAIL.details("fail to insert client scopes").throwException();
-            if (grantTypes != null && grantTypes.size() > 0
-                    && !grantTypeMapper.insertClientGrantTypes(id, grantTypes))
+            
+            // Auto-add default grant types if not provided
+            Collection<Long> grantTypesToAdd = enhanceGrantTypesWithDefaults(grantTypes);
+            if (grantTypesToAdd != null && grantTypesToAdd.size() > 0
+                    && !grantTypeMapper.insertClientGrantTypes(id, grantTypesToAdd))
                 ErrorEnum.CREATE_GRANT_TYPE_FAIL.details("fail to insert client grant types").throwException();
         } catch (DuplicateKeyException e) {
             ErrorEnum.CLIENT_EXISTS.throwException();
@@ -126,11 +132,17 @@ public class DefaultClientService implements ClientService<DefaultClient> {
         try {
             if (!clientMapper.insertClientDefault(id, uid, passwordEncoder.encode(secret), name, description, redirectUri))
                 ErrorEnum.CREATE_CLIENT_FAIL.throwException();
-            if (scopes != null && scopes.size() > 0 &&
-                    !scopeMapper.insertClientScopeByScopeIds(id, scopes, false))
+            
+            // Auto-add default scopes if not provided
+            Collection<Long> scopesToAdd = enhanceScopesWithDefaults(scopes);
+            if (scopesToAdd != null && scopesToAdd.size() > 0 &&
+                    !scopeMapper.insertClientScopeByScopeIds(id, scopesToAdd, false))
                 ErrorEnum.CREATE_SCOPE_FAIL.details("fail to insert client scopes").throwException();
-            if (grantTypes != null && grantTypes.size() > 0
-                    && !grantTypeMapper.insertClientGrantTypes(id, grantTypes))
+            
+            // Auto-add default grant types if not provided
+            Collection<Long> grantTypesToAdd = enhanceGrantTypesWithDefaults(grantTypes);
+            if (grantTypesToAdd != null && grantTypesToAdd.size() > 0
+                    && !grantTypeMapper.insertClientGrantTypes(id, grantTypesToAdd))
                 ErrorEnum.CREATE_GRANT_TYPE_FAIL.details("fail to insert client grant types").throwException();
         } catch (DuplicateKeyException e) {
             ErrorEnum.CLIENT_EXISTS.throwException();
@@ -404,5 +416,63 @@ public class DefaultClientService implements ClientService<DefaultClient> {
             ErrorEnum.CLIENT_NOT_FOUND.throwException();
         if (!clientMapper.removeClientMembers(cid, uids))
             ErrorEnum.UPDATE_CLIENT_FAIL.details("fail to delete client authorities").throwException();
+    }
+
+    /**
+     * Enhance the provided scopes with default OIDC scopes if they exist in the system
+     * @param scopes User-provided scopes (can be null or empty)
+     * @return Enhanced collection of scope IDs
+     */
+    private Collection<Long> enhanceScopesWithDefaults(Collection<Long> scopes) {
+        java.util.Set<Long> result = new java.util.HashSet<>();
+        
+        // Add user-provided scopes first
+        if (scopes != null && !scopes.isEmpty()) {
+            result.addAll(scopes);
+        }
+        
+        // Query for default OIDC scopes
+        try {
+            Collection<String> defaultScopeNames = java.util.Arrays.asList("openid", "profile", "email");
+            Collection<cn.dustlight.auth.entities.DefaultScope> defaultScopes = scopeMapper.selectScopesByNames(defaultScopeNames);
+            if (defaultScopes != null && !defaultScopes.isEmpty()) {
+                for (cn.dustlight.auth.entities.DefaultScope scope : defaultScopes) {
+                    result.add(scope.getSid());
+                }
+            }
+        } catch (Exception e) {
+            // If querying default scopes fails, just continue with user-provided scopes
+        }
+        
+        return result;
+    }
+
+    /**
+     * Enhance the provided grant types with default authorization_code and refresh_token if they exist in the system
+     * @param grantTypes User-provided grant types (can be null or empty)
+     * @return Enhanced collection of grant type IDs
+     */
+    private Collection<Long> enhanceGrantTypesWithDefaults(Collection<Long> grantTypes) {
+        java.util.Set<Long> result = new java.util.HashSet<>();
+        
+        // Add user-provided grant types first
+        if (grantTypes != null && !grantTypes.isEmpty()) {
+            result.addAll(grantTypes);
+        }
+        
+        // Query for default grant types
+        try {
+            Collection<String> defaultGrantTypeNames = java.util.Arrays.asList("authorization_code", "refresh_token");
+            Collection<cn.dustlight.auth.entities.DefaultGrantType> defaultGrantTypes = grantTypeMapper.selectGrantTypesByNames(defaultGrantTypeNames);
+            if (defaultGrantTypes != null && !defaultGrantTypes.isEmpty()) {
+                for (cn.dustlight.auth.entities.DefaultGrantType grantType : defaultGrantTypes) {
+                    result.add(grantType.getTid());
+                }
+            }
+        } catch (Exception e) {
+            // If querying default grant types fails, just continue with user-provided grant types
+        }
+        
+        return result;
     }
 }
